@@ -5,16 +5,15 @@ import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
-import Chart from './pages/Chart';
-import ECommerce from './pages/Dashboard/ECommerce';
+import ECommerce from './pages/Inicio/Graficas';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
-import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
+import Bitacora from './pages/Inicio/Bitacora';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,13 +33,12 @@ function App() {
     <DefaultLayout>
       <Routes>
         <Route index element={<ECommerce />} />
+        <Route path="Bitacora" element={<Bitacora />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="profile" element={<Profile />} />
         <Route path="forms/form-elements" element={<FormElements />} />
         <Route path="forms/form-layout" element={<FormLayout />} />
-        <Route path="tables" element={<Tables />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="chart" element={<Chart />} />
         <Route path="ui/alerts" element={<Alerts />} />
         <Route path="ui/buttons" element={<Buttons />} />
         <Route path="auth/signin" element={<SignIn />} />
