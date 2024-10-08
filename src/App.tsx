@@ -14,6 +14,7 @@ import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Inicio/Bitacora';
+import Catedratico from './pages/Catedratico';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,6 +36,7 @@ function App() {
         <Route index element={<ECommerce />} />
         <Route path="Bitacora" element={<Bitacora />} />
         <Route path="calendar" element={<Calendar />} />
+        <Route path="catedratico" element={<Catedratico />} />
         <Route path="profile" element={<Profile />} />
         <Route path="forms/form-elements" element={<FormElements />} />
         <Route path="forms/form-layout" element={<FormLayout />} />

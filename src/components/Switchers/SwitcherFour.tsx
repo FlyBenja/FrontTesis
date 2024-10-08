@@ -1,29 +1,30 @@
-import { useState } from 'react';
+import React from 'react';
 
-const SwitcherFour = () => {
-  const [enabled, setEnabled] = useState<boolean>(false);
+interface SwitcherFourProps {
+  enabled: boolean;
+  onChange: () => void;
+  uniqueId: string; // Agregamos un uniqueId para hacer único el id del input
+}
 
+const SwitcherFour: React.FC<SwitcherFourProps> = ({ enabled, onChange, uniqueId }) => {
   return (
     <div>
-      <label
-        htmlFor="toggle4"
-        className="flex cursor-pointer select-none items-center"
-      >
+      <label htmlFor={`toggle-${uniqueId}`} className="flex cursor-pointer select-none items-center">
         <div className="relative">
           <input
             type="checkbox"
-            id="toggle4"
+            id={`toggle-${uniqueId}`} // Usamos el uniqueId para hacer único el input
             className="sr-only"
-            onChange={() => {
-              setEnabled(!enabled);
-            }}
+            checked={enabled}
+            onChange={onChange}
           />
-          <div className="block h-8 w-14 rounded-full bg-black"></div>
-          <div
-            className={`absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white transition ${
-              enabled && '!right-1 !translate-x-full'
-            }`}
-          ></div>
+          <div className="block h-8 w-14 rounded-full bg-gray-300 transition duration-300 ease-in-out">
+            <div
+              className={`absolute left-1 top-1 h-6 w-6 rounded-full bg-white shadow transition-transform duration-300 ease-in-out ${
+                enabled ? 'translate-x-6 bg-green-500' : 'bg-gray-200'
+              }`}
+            ></div>
+          </div>
         </div>
       </label>
     </div>
