@@ -15,6 +15,25 @@ const Catedraticos: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
   const catedraticosPerPage = 7; // Definir cuántos catedráticos mostrar por página
+  const [maxPageButtons, setMaxPageButtons] = useState(10); // Estado para manejar cuántos botones de paginación mostrar
+
+  // Escuchar el tamaño de la pantalla y ajustar la cantidad de botones
+  const updateMaxButtons = () => {
+    if (window.innerWidth < 640) {
+      setMaxPageButtons(4); // Mostrar solo 4 botones en pantallas pequeñas
+    } else {
+      setMaxPageButtons(10); // Mostrar 10 botones en pantallas más grandes
+    }
+  };
+
+  useEffect(() => {
+    updateMaxButtons(); // Establecer el número inicial de botones
+    window.addEventListener('resize', updateMaxButtons); // Escuchar cambios en el tamaño de la pantalla
+
+    return () => {
+      window.removeEventListener('resize', updateMaxButtons); // Limpiar el listener al desmontar el componente
+    };
+  }, []);
 
   // Generar datos de catedráticos con foto, nombre y carnet
   useEffect(() => {
@@ -76,7 +95,6 @@ const Catedraticos: React.FC = () => {
   // Generar botones de paginación
   const renderPaginationButtons = () => {
     const buttons = [];
-    const maxPageButtons = 5; // Mostrar hasta 5 botones de paginación
     const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
@@ -97,7 +115,37 @@ const Catedraticos: React.FC = () => {
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h2 className="text-2xl font-semibold mb-3 text-black dark:text-white">Lista de Catedráticos</h2>
-      <div className="max-w-full overflow-x-auto">
+
+      {/* Modo teléfono: mostrar como cards */}
+      <div className="block sm:hidden">
+        {currentCatedraticos.map((catedratico) => (
+          <div key={catedratico.id} className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg dark:bg-boxdark dark:border-strokedark">
+            <div className="flex items-center">
+              <img src={catedratico.profilePicture} alt={catedratico.name} className="w-10 h-10 rounded-full mr-4" />
+              <div>
+                <p className="text-lg font-bold text-black dark:text-white">{catedratico.name}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{catedratico.carnet}</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <SwitcherFour
+                enabled={catedratico.isActive}
+                onChange={() => handleToggleSwitch(catedratico.id)}
+                uniqueId={String(catedratico.id)}
+              />
+              <button
+                onClick={() => setCatedraticos((prev) => prev.filter((item) => item.id !== catedratico.id))}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Modo escritorio: mostrar como tabla */}
+      <div className="hidden sm:block max-w-full overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
           <thead>
             <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
@@ -139,7 +187,6 @@ const Catedraticos: React.FC = () => {
 
       {/* Paginación */}
       <div className="flex justify-center mt-4">
-        {/* Botón de flecha izquierda */}
         <button
           onClick={() => paginate(currentPage - 1)}
           className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
@@ -148,10 +195,8 @@ const Catedraticos: React.FC = () => {
           &#8592;
         </button>
 
-        {/* Botones de paginación */}
         {renderPaginationButtons()}
 
-        {/* Botón de flecha derecha */}
         <button
           onClick={() => paginate(currentPage + 1)}
           className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"

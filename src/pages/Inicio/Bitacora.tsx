@@ -17,10 +17,18 @@ const Bitacora: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
   const logsPerPage = 10; // Definimos el número de registros por página
 
-  // Estado para detectar el tamaño de la pantalla
-  const [maxPageButtons, setMaxPageButtons] = useState(10); // Por defecto, mostramos 10 botones
+  // Estado para manejar la cantidad de botones de paginación
+  const [maxPageButtons, setMaxPageButtons] = useState(10);
 
-  // Generar 300 ejemplos de entradas de bitácora con roles, fecha y hora
+  // Escuchar el tamaño de la pantalla y ajustar la cantidad de botones
+  const updateMaxButtons = () => {
+    if (window.innerWidth < 640) {
+      setMaxPageButtons(4); // Mostrar solo 4 botones en pantallas pequeñas
+    } else {
+      setMaxPageButtons(10); // Mostrar 10 botones en pantallas más grandes
+    }
+  };
+
   useEffect(() => {
     const generateLogs = (): LogEntry[] => {
       const users = ['Juan Pérez', 'María López', 'Pedro González', 'Ana Méndez', 'Carlos Rivera'];
@@ -33,8 +41,8 @@ const Bitacora: React.FC = () => {
         const randomRole = roles[Math.floor(Math.random() * roles.length)];
         const randomAction = actions[Math.floor(Math.random() * actions.length)];
         const randomDate = new Date(2024, 9, Math.floor(Math.random() * 30) + 1);
-        const dateString = randomDate.toISOString().split('T')[0]; // Obtener fecha en formato YYYY-MM-DD
-        const timeString = randomDate.toTimeString().split(' ')[0]; // Obtener hora en formato HH:MM:SS
+        const dateString = randomDate.toISOString().split('T')[0];
+        const timeString = randomDate.toTimeString().split(' ')[0];
 
         logsArray.push({
           id: i,
@@ -51,20 +59,9 @@ const Bitacora: React.FC = () => {
     const logsData = generateLogs();
     setLogs(logsData);
 
-    // Escuchar el tamaño de la pantalla y ajustar la cantidad de botones
-    const updateMaxButtons = () => {
-      if (window.innerWidth < 640) {
-        setMaxPageButtons(6); // Mostrar solo 6 botones en pantallas pequeñas
-      } else {
-        setMaxPageButtons(10); // Mostrar 10 botones en pantallas más grandes
-      }
-    };
-
-    // Actualizar cuando se cambie el tamaño de la pantalla
-    window.addEventListener('resize', updateMaxButtons);
-
-    // Llamada inicial para definir el número de botones al cargar
+    // Actualizar la cantidad de botones cuando cambia el tamaño de la pantalla
     updateMaxButtons();
+    window.addEventListener('resize', updateMaxButtons);
 
     // Limpiar el event listener al desmontar el componente
     return () => window.removeEventListener('resize', updateMaxButtons);
@@ -88,23 +85,9 @@ const Bitacora: React.FC = () => {
   // Generar botones de paginación
   const renderPaginationButtons = () => {
     const buttons = [];
+    const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
-    // Siempre mostrar el botón para la primera página
-    buttons.push(
-      <button
-        key={1}
-        onClick={() => paginate(1)}
-        className={`mx-1 px-3 py-1 rounded-md border ${currentPage === 1 ? 'bg-blue-500 text-white' : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'}`}
-      >
-        1
-      </button>
-    );
-
-    // Calcular el rango de botones de página a mostrar
-    const startPage = Math.max(2, currentPage - Math.floor((maxPageButtons - 2) / 2)); // -2 para dejar espacio a los botones de inicio y final
-    const endPage = Math.min(totalPages - 1, startPage + maxPageButtons - 3); // -3 para incluir inicio, final y flechas
-
-    // Botones intermedios
     for (let i = startPage; i <= endPage; i++) {
       buttons.push(
         <button
@@ -116,27 +99,27 @@ const Bitacora: React.FC = () => {
         </button>
       );
     }
-
-    // Mostrar el botón de la última página
-    if (totalPages > 1) {
-      buttons.push(
-        <button
-          key={totalPages}
-          onClick={() => paginate(totalPages)}
-          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === totalPages ? 'bg-blue-500 text-white' : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'}`}
-        >
-          {totalPages}
-        </button>
-      );
-    }
-
     return buttons;
   };
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h2 className="text-2xl font-semibold mb-3 text-black dark:text-white">Bitácora de Actividades</h2>
-      <div className="max-w-full overflow-x-auto">
+
+      {/* Modo teléfono: mostrar como cards */}
+      <div className="block sm:hidden">
+        {currentLogs.map((log) => (
+          <div key={log.id} className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg dark:bg-boxdark dark:border-strokedark">
+            <p className="text-lg font-bold text-black dark:text-white">{log.user}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{log.role}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{log.action}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{log.date} - {log.time}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Modo escritorio: mostrar como tabla */}
+      <div className="hidden sm:block max-w-full overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
           <thead>
             <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
@@ -163,7 +146,6 @@ const Bitacora: React.FC = () => {
 
       {/* Paginación */}
       <div className="flex justify-center mt-4">
-        {/* Botón de flecha izquierda */}
         <button
           onClick={() => paginate(currentPage - 1)}
           className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
@@ -172,10 +154,8 @@ const Bitacora: React.FC = () => {
           &#8592;
         </button>
 
-        {/* Botones de paginación */}
         {renderPaginationButtons()}
 
-        {/* Botón de flecha derecha */}
         <button
           onClick={() => paginate(currentPage + 1)}
           className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
