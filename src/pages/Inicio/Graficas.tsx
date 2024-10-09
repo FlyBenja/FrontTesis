@@ -1,11 +1,13 @@
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import React from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartTwo from '../../components/Charts/ChartTwo';
 
-const ECommerce: React.FC = () => {
+const Graficas: React.FC = () => {
   return (
     <>
+      <Breadcrumb pageName="Graficas" /> {/* Agregar el Breadcrumb */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
@@ -101,4 +103,4 @@ const ECommerce: React.FC = () => {
   );
 };
 
-export default ECommerce;
+export default Graficas;
