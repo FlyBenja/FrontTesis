@@ -18,10 +18,14 @@ const SwitcherFour: React.FC<SwitcherFourProps> = ({ enabled, onChange, uniqueId
             checked={enabled}
             onChange={onChange}
           />
-          <div className="block h-8 w-14 rounded-full bg-gray-300 transition duration-300 ease-in-out">
+          <div
+            className={`block h-8 w-14 rounded-full transition duration-300 ease-in-out ${
+              enabled ? 'bg-green-500' : 'bg-red-500'
+            }`}
+          >
             <div
               className={`absolute left-1 top-1 h-6 w-6 rounded-full bg-white shadow transition-transform duration-300 ease-in-out ${
-                enabled ? 'translate-x-6 bg-green-500' : 'bg-gray-200'
+                enabled ? 'translate-x-6' : 'translate-x-0'
               }`}
             ></div>
           </div>
