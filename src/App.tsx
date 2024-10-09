@@ -2,12 +2,8 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import Loader from './common/Loader';
-import SignIn from './pages/Authentication/SignIn';
-import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
 import ECommerce from './pages/Inicio/Graficas';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Alerts from './pages/UiElements/Alerts';
@@ -41,12 +37,8 @@ function App() {
         <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="forms/form-elements" element={<FormElements />} />
-        <Route path="forms/form-layout" element={<FormLayout />} />
         <Route path="settings" element={<Settings />} />
         <Route path="ui/alerts" element={<Alerts />} />
-        <Route path="auth/signin" element={<SignIn />} />
-        <Route path="auth/signup" element={<SignUp />} />
       </Routes>
     </DefaultLayout>
   );
