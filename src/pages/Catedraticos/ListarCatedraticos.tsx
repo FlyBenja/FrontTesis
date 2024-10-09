@@ -1,3 +1,4 @@
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import React, { useState, useEffect } from 'react';
 import SwitcherFour from '../../components/Switchers/SwitcherFour'; // Asegúrate de que esta ruta sea correcta
 
@@ -10,7 +11,7 @@ interface Catedratico {
   isActive: boolean; // Para manejar el estado del toggle switch
 }
 
-// Componente Catedraticos
+// Componente Listar Catedraticos
 const ListarCatedraticos: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
@@ -113,99 +114,101 @@ const ListarCatedraticos: React.FC = () => {
   };
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <h2 className="text-2xl font-semibold mb-3 text-black dark:text-white">Lista de Catedráticos</h2>
+    <>
+      <Breadcrumb pageName="Lista de Catedráticos" /> {/* Añadido el Breadcrumb */}
+      <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
 
-      {/* Modo teléfono: mostrar como cards */}
-      <div className="block sm:hidden">
-        {currentCatedraticos.map((catedratico) => (
-          <div key={catedratico.id} className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg dark:bg-boxdark dark:border-strokedark">
-            <div className="flex items-center">
-              <img src={catedratico.profilePicture} alt={catedratico.name} className="w-10 h-10 rounded-full mr-4" />
-              <div>
-                <p className="text-lg font-bold text-black dark:text-white">{catedratico.name}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{catedratico.carnet}</p>
+        {/* Modo teléfono: mostrar como cards */}
+        <div className="block sm:hidden">
+          {currentCatedraticos.map((catedratico) => (
+            <div key={catedratico.id} className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg dark:bg-boxdark dark:border-strokedark">
+              <div className="flex items-center">
+                <img src={catedratico.profilePicture} alt={catedratico.name} className="w-10 h-10 rounded-full mr-4" />
+                <div>
+                  <p className="text-lg font-bold text-black dark:text-white">{catedratico.name}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{catedratico.carnet}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between mt-2">
+                <SwitcherFour
+                  enabled={catedratico.isActive}
+                  onChange={() => handleToggleSwitch(catedratico.id)}
+                  uniqueId={String(catedratico.id)}
+                />
+                <button
+                  onClick={() => setCatedraticos((prev) => prev.filter((item) => item.id !== catedratico.id))}
+                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                >
+                  Eliminar
+                </button>
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2">
-              <SwitcherFour
-                enabled={catedratico.isActive}
-                onChange={() => handleToggleSwitch(catedratico.id)}
-                uniqueId={String(catedratico.id)}
-              />
-              <button
-                onClick={() => setCatedraticos((prev) => prev.filter((item) => item.id !== catedratico.id))}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      {/* Modo escritorio: mostrar como tabla */}
-      <div className="hidden sm:block max-w-full overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
-          <thead>
-            <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
-              <th className="py-2 px-4">Foto</th>
-              <th className="py-2 px-4">Nombre</th>
-              <th className="py-2 px-4">Carnet</th>
-              <th className="py-2 px-4">Activo</th>
-              <th className="py-2 px-4">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCatedraticos.map((catedratico) => (
-              <tr key={catedratico.id} className="border-t border-gray-200 dark:border-strokedark">
-                <td className="py-2 px-4 text-black dark:text-white">
-                  <img src={catedratico.profilePicture} alt={catedratico.name} className="w-10 h-10 rounded-full" />
-                </td>
-                <td className="py-2 px-4 text-black dark:text-white">{catedratico.name}</td>
-                <td className="py-2 px-4 text-black dark:text-white">{catedratico.carnet}</td>
-                <td className="py-2 px-4 text-black dark:text-white">
-                  <SwitcherFour
-                    enabled={catedratico.isActive}
-                    onChange={() => handleToggleSwitch(catedratico.id)}
-                    uniqueId={String(catedratico.id)} // Pasamos un uniqueId basado en el id del catedrático
-                  />
-                </td>
-                <td className="py-2 px-4 text-black dark:text-white">
-                  <button
-                    onClick={() => setCatedraticos((prev) => prev.filter((item) => item.id !== catedratico.id))}
-                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                  >
-                    Eliminar
-                  </button>
-                </td>
+        {/* Modo escritorio: mostrar como tabla */}
+        <div className="hidden sm:block max-w-full overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
+            <thead>
+              <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
+                <th className="py-2 px-4">Foto</th>
+                <th className="py-2 px-4">Nombre</th>
+                <th className="py-2 px-4">Carnet</th>
+                <th className="py-2 px-4">Activo</th>
+                <th className="py-2 px-4">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentCatedraticos.map((catedratico) => (
+                <tr key={catedratico.id} className="border-t border-gray-200 dark:border-strokedark">
+                  <td className="py-2 px-4 text-black dark:text-white">
+                    <img src={catedratico.profilePicture} alt={catedratico.name} className="w-10 h-10 rounded-full" />
+                  </td>
+                  <td className="py-2 px-4 text-black dark:text-white">{catedratico.name}</td>
+                  <td className="py-2 px-4 text-black dark:text-white">{catedratico.carnet}</td>
+                  <td className="py-2 px-4 text-black dark:text-white">
+                    <SwitcherFour
+                      enabled={catedratico.isActive}
+                      onChange={() => handleToggleSwitch(catedratico.id)}
+                      uniqueId={String(catedratico.id)} // Pasamos un uniqueId basado en el id del catedrático
+                    />
+                  </td>
+                  <td className="py-2 px-4 text-black dark:text-white">
+                    <button
+                      onClick={() => setCatedraticos((prev) => prev.filter((item) => item.id !== catedratico.id))}
+                      className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Paginación */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+            disabled={currentPage === 1}
+          >
+            &#8592;
+          </button>
+
+          {renderPaginationButtons()}
+
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+            disabled={currentPage === totalPages}
+          >
+            &#8594;
+          </button>
+        </div>
       </div>
-
-      {/* Paginación */}
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-          disabled={currentPage === 1}
-        >
-          &#8592;
-        </button>
-
-        {renderPaginationButtons()}
-
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-          disabled={currentPage === totalPages}
-        >
-          &#8594;
-        </button>
-      </div>
-    </div>
+    </>
   );
 };
 

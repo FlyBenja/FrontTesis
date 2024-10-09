@@ -11,7 +11,6 @@ import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Alerts from './pages/UiElements/Alerts';
-import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Inicio/Bitacora';
 import SubirCatedraticos from './pages/Catedraticos/SubirCatedraticos';
@@ -46,7 +45,6 @@ function App() {
         <Route path="forms/form-layout" element={<FormLayout />} />
         <Route path="settings" element={<Settings />} />
         <Route path="ui/alerts" element={<Alerts />} />
-        <Route path="ui/buttons" element={<Buttons />} />
         <Route path="auth/signin" element={<SignIn />} />
         <Route path="auth/signup" element={<SignUp />} />
       </Routes>
