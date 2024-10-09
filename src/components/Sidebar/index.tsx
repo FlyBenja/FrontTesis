@@ -233,10 +233,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                         >
-                    <path
-                      d="M19 2H13C11.9 2 11 2.9 11 4V14C11 15.1 11.9 16 13 16H19C20.1 16 21 15.1 21 14V4C21 2.9 20.1 2 19 2ZM19 14H13V4H19V14ZM5 6C6.1 6 7 5.1 7 4C7 2.9 6.1 2 5 2C3.9 2 3 2.9 3 4C3 5.1 3.9 6 5 6ZM10 8H0V10H10V8ZM10 12H0V14H10V12Z"
-                      fill="currentColor"
-                    />
+                          <path
+                            d="M19 2H13C11.9 2 11 2.9 11 4V14C11 15.1 11.9 16 13 16H19C20.1 16 21 15.1 21 14V4C21 2.9 20.1 2 19 2ZM19 14H13V4H19V14ZM5 6C6.1 6 7 5.1 7 4C7 2.9 6.1 2 5 2C3.9 2 3 2.9 3 4C3 5.1 3.9 6 5 6ZM10 8H0V10H10V8ZM10 12H0V14H10V12Z"
+                            fill="currentColor"
+                          />
                         </svg>
                         Catedraticos
                         <svg
@@ -264,13 +264,39 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <NavLink
-                              to="/admin/catedratico"
+                              to="/admin/subir-catedraticos"
                               className={({ isActive }) =>
                                 'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
                                 (isActive && '!text-white')
                               }
                             >
-                              Listado Catedraticos
+                              Subir Catedraticos
+                            </NavLink>
+                          </li>
+                        </ul>
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/admin/listado-catedraticos"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Listar Catedraticos
+                            </NavLink>
+                          </li>
+                        </ul>
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/admin/crear-catedraticos"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Crear Catedraticos
                             </NavLink>
                           </li>
                         </ul>

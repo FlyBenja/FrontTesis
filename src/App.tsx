@@ -14,7 +14,9 @@ import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Inicio/Bitacora';
-import Catedratico from './pages/Catedratico';
+import SubirCatedraticos from './pages/Catedraticos/SubirCatedraticos';
+import ListarCatedraticos from './pages/Catedraticos/ListarCatedraticos';
+import CrearCatedraticos from './pages/Catedraticos/CrearCatedraticos';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,8 +37,10 @@ function App() {
       <Routes>
         <Route index element={<ECommerce />} />
         <Route path="Bitacora" element={<Bitacora />} />
+        <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
+        <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
+        <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
         <Route path="calendar" element={<Calendar />} />
-        <Route path="catedratico" element={<Catedratico />} />
         <Route path="profile" element={<Profile />} />
         <Route path="forms/form-elements" element={<FormElements />} />
         <Route path="forms/form-layout" element={<FormLayout />} />

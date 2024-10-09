@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SwitcherFour from '../components/Switchers/SwitcherFour'; // Asegúrate de que esta ruta sea correcta
+import SwitcherFour from '../../components/Switchers/SwitcherFour'; // Asegúrate de que esta ruta sea correcta
 
 // Definir el tipo de datos para los catedráticos
 interface Catedratico {
@@ -11,7 +11,7 @@ interface Catedratico {
 }
 
 // Componente Catedraticos
-const Catedraticos: React.FC = () => {
+const ListarCatedraticos: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
   const catedraticosPerPage = 7; // Definir cuántos catedráticos mostrar por página
@@ -209,4 +209,4 @@ const Catedraticos: React.FC = () => {
   );
 };
 
-export default Catedraticos;
+export default ListarCatedraticos;
