@@ -32,27 +32,27 @@ const CrearTernas: React.FC = () => {
   // Cargar estudiantes simulados
   useEffect(() => {
     const datosEstudiantes = [
-        { id: 1, nombre: 'Luis Alvarado', fotoPerfil: 'https://randomuser.me/api/portraits/men/1.jpg' },
-        { id: 2, nombre: 'María García', fotoPerfil: 'https://randomuser.me/api/portraits/women/1.jpg' },
-        { id: 3, nombre: 'Carlos Sánchez', fotoPerfil: 'https://randomuser.me/api/portraits/men/2.jpg' },
-        { id: 4, nombre: 'Ana López', fotoPerfil: 'https://randomuser.me/api/portraits/women/2.jpg' },
-        { id: 5, nombre: 'Pedro Gómez', fotoPerfil: 'https://randomuser.me/api/portraits/men/3.jpg' },
-        { id: 6, nombre: 'Claudia Hernández', fotoPerfil: 'https://randomuser.me/api/portraits/women/3.jpg' },
-        { id: 7, nombre: 'Jorge Martínez', fotoPerfil: 'https://randomuser.me/api/portraits/men/4.jpg' },
-        { id: 8, nombre: 'Lucía Fernández', fotoPerfil: 'https://randomuser.me/api/portraits/women/4.jpg' },
-        { id: 9, nombre: 'Daniel Pérez', fotoPerfil: 'https://randomuser.me/api/portraits/men/5.jpg' },
-        { id: 10, nombre: 'Sofía Ramírez', fotoPerfil: 'https://randomuser.me/api/portraits/women/5.jpg' },
-        { id: 11, nombre: 'Fernando Rodríguez', fotoPerfil: 'https://randomuser.me/api/portraits/men/6.jpg' },
-        { id: 12, nombre: 'Gabriela Torres', fotoPerfil: 'https://randomuser.me/api/portraits/women/6.jpg' },
-        { id: 13, nombre: 'Ricardo Ruiz', fotoPerfil: 'https://randomuser.me/api/portraits/men/7.jpg' },
-        { id: 14, nombre: 'Patricia Ortiz', fotoPerfil: 'https://randomuser.me/api/portraits/women/7.jpg' },
-        { id: 15, nombre: 'David Moreno', fotoPerfil: 'https://randomuser.me/api/portraits/men/8.jpg' },
-        { id: 16, nombre: 'Elena Castro', fotoPerfil: 'https://randomuser.me/api/portraits/women/8.jpg' },
-        { id: 17, nombre: 'Héctor Gutiérrez', fotoPerfil: 'https://randomuser.me/api/portraits/men/9.jpg' },
-        { id: 18, nombre: 'Verónica Jiménez', fotoPerfil: 'https://randomuser.me/api/portraits/women/9.jpg' },
-        { id: 19, nombre: 'Manuel Silva', fotoPerfil: 'https://randomuser.me/api/portraits/men/10.jpg' },
-        { id: 20, nombre: 'Isabel Molina', fotoPerfil: 'https://randomuser.me/api/portraits/women/10.jpg' },
-      ];      
+      { id: 1, nombre: 'Luis Alvarado', fotoPerfil: 'https://randomuser.me/api/portraits/men/1.jpg' },
+      { id: 2, nombre: 'María García', fotoPerfil: 'https://randomuser.me/api/portraits/women/1.jpg' },
+      { id: 3, nombre: 'Carlos Sánchez', fotoPerfil: 'https://randomuser.me/api/portraits/men/2.jpg' },
+      { id: 4, nombre: 'Ana López', fotoPerfil: 'https://randomuser.me/api/portraits/women/2.jpg' },
+      { id: 5, nombre: 'Pedro Gómez', fotoPerfil: 'https://randomuser.me/api/portraits/men/3.jpg' },
+      { id: 6, nombre: 'Claudia Hernández', fotoPerfil: 'https://randomuser.me/api/portraits/women/3.jpg' },
+      { id: 7, nombre: 'Jorge Martínez', fotoPerfil: 'https://randomuser.me/api/portraits/men/4.jpg' },
+      { id: 8, nombre: 'Lucía Fernández', fotoPerfil: 'https://randomuser.me/api/portraits/women/4.jpg' },
+      { id: 9, nombre: 'Daniel Pérez', fotoPerfil: 'https://randomuser.me/api/portraits/men/5.jpg' },
+      { id: 10, nombre: 'Sofía Ramírez', fotoPerfil: 'https://randomuser.me/api/portraits/women/5.jpg' },
+      { id: 11, nombre: 'Fernando Rodríguez', fotoPerfil: 'https://randomuser.me/api/portraits/men/6.jpg' },
+      { id: 12, nombre: 'Gabriela Torres', fotoPerfil: 'https://randomuser.me/api/portraits/women/6.jpg' },
+      { id: 13, nombre: 'Ricardo Ruiz', fotoPerfil: 'https://randomuser.me/api/portraits/men/7.jpg' },
+      { id: 14, nombre: 'Patricia Ortiz', fotoPerfil: 'https://randomuser.me/api/portraits/women/7.jpg' },
+      { id: 15, nombre: 'David Moreno', fotoPerfil: 'https://randomuser.me/api/portraits/men/8.jpg' },
+      { id: 16, nombre: 'Elena Castro', fotoPerfil: 'https://randomuser.me/api/portraits/women/8.jpg' },
+      { id: 17, nombre: 'Héctor Gutiérrez', fotoPerfil: 'https://randomuser.me/api/portraits/men/9.jpg' },
+      { id: 18, nombre: 'Verónica Jiménez', fotoPerfil: 'https://randomuser.me/api/portraits/women/9.jpg' },
+      { id: 19, nombre: 'Manuel Silva', fotoPerfil: 'https://randomuser.me/api/portraits/men/10.jpg' },
+      { id: 20, nombre: 'Isabel Molina', fotoPerfil: 'https://randomuser.me/api/portraits/women/10.jpg' },
+    ];
     setEstudiantes(datosEstudiantes);
   }, []);
 
@@ -60,7 +60,7 @@ const CrearTernas: React.FC = () => {
   const spinRoulette = () => {
     if (!selectedEstudiante || isSpinning) return; // Evitar que gire sin seleccionar estudiante y si ya está girando
     setIsSpinning(true);
-    
+
     // Configurar la duración total del giro para dar exactamente 15 vueltas rápidas a 0.25 segundos por vuelta
     const totalSpinTime = 50 * 0.01; // 15 vueltas a 0.25 segundos por vuelta
 
@@ -71,12 +71,16 @@ const CrearTernas: React.FC = () => {
     setSelectedTernaIndex(randomIndex);
   };
 
-  // Al detener el giro, mostrar la terna final
+  // Al detener el giro, mostrar la terna final y reiniciar valores
   const handleStopSpinning = () => {
     setIsSpinning(false);
     if (selectedTernaIndex !== null) {
       console.log(`Terna seleccionada: ${ternas[selectedTernaIndex]}`);
     }
+
+    // Reiniciar la selección después de que se detenga la ruleta
+    setSelectedEstudiante(null);
+    setSelectedTernaIndex(null);
   };
 
   return (
@@ -91,13 +95,17 @@ const CrearTernas: React.FC = () => {
             <div
               key={estudiante.id}
               onClick={() => setSelectedEstudiante(estudiante)}
-              className={`cursor-pointer flex flex-col items-center w-32 p-2 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-boxdark dark:border-strokedark ${
-                selectedEstudiante?.id === estudiante.id ? 'bg-green-400' : ''
+              className={`cursor-pointer flex flex-col items-center w-32 p-4 border border-gray-200 rounded-lg shadow-md ${
+                selectedEstudiante?.id === estudiante.id
+                  ? 'bg-blue-400 text-white dark:bg-white dark:text-black' // Color en modo claro y oscuro
+                  : 'bg-white dark:bg-boxdark dark:text-white'
               }`}
             >
               <img src={estudiante.fotoPerfil} alt={estudiante.nombre} className="w-20 h-20 rounded-full" />
-              <div className="mt-2 text-center text-black dark:text-white">
-                <p className="text-sm font-semibold">{estudiante.nombre}</p>
+              <div className="mt-2 text-center">
+                <p className={`text-sm font-semibold`}>
+                  {estudiante.nombre}
+                </p>
               </div>
             </div>
           ))}
