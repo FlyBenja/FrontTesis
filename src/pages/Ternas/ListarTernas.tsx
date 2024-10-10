@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 interface Persona {
@@ -14,36 +15,92 @@ const ListarTernas: React.FC = () => {
     { presidente: 'Gabriela Ruiz', secretario: 'David Hernández', vocal: 'Elena Gómez' },
     { presidente: 'Jorge Martínez', secretario: 'Clara Castillo', vocal: 'Daniel Flores' },
     { presidente: 'Marcos Díaz', secretario: 'Silvia Peña', vocal: 'Fernando Torres' },
-    { presidente: 'Julia Fernández', secretario: 'César López', vocal: 'Laura Gil' },
-    { presidente: 'Ricardo Ortega', secretario: 'Valeria Mena', vocal: 'Héctor Ramos' },
-    { presidente: 'Diana Rodríguez', secretario: 'Oscar Herrera', vocal: 'Andrea Morales' },
-    { presidente: 'Luis Aguilar', secretario: 'Sandra Guzmán', vocal: 'Javier Suárez' },
-    { presidente: 'Marta Paredes', secretario: 'Ignacio Castro', vocal: 'Sofía Ramírez' },
-    { presidente: 'Manuel Reyes', secretario: 'Beatriz Acosta', vocal: 'Pablo Salazar' },
-    { presidente: 'Claudia Solano', secretario: 'Mario Navarro', vocal: 'Gina Esquivel' },
-    { presidente: 'Pedro Rivas', secretario: 'Francisca Ríos', vocal: 'Adrián Mendoza' },
-    { presidente: 'Roberto Campos', secretario: 'Lourdes Rivera', vocal: 'Felipe Vega' },
-    { presidente: 'Cristina Vargas', secretario: 'Alberto Franco', vocal: 'Elisa Pérez' },
-    { presidente: 'Emilio Zamora', secretario: 'Victoria Serrano', vocal: 'Raúl Morales' },
-    { presidente: 'Paola Quintana', secretario: 'Diego Fernández', vocal: 'Carmen Espinoza' },
-    { presidente: 'Fernando Ortiz', secretario: 'Inés Molina', vocal: 'Tomás Castañeda' },
   ];
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const ternasPerPage = 7;
+  const [maxPageButtons] = useState(10);
+
+  const indexOfLastTerna = currentPage * ternasPerPage;
+  const indexOfFirstTerna = indexOfLastTerna - ternasPerPage;
+  const currentTernas = ternas.slice(indexOfFirstTerna, indexOfLastTerna);
+
+  // Número total de páginas
+  const totalPages = Math.ceil(ternas.length / ternasPerPage);
+
+  // Cambiar de página
+  const paginate = (pageNumber: number) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  // Generar botones de paginación
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => paginate(i)}
+          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'}`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return buttons;
+  };
 
   return (
     <>
       <Breadcrumb pageName="Listar Ternas" />
-      <div className="mx-auto max-w-5xl px-4 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {ternas.map((terna, index) => (
-            <div key={index} className="rounded-lg border border-gray-200 bg-white shadow-md p-4 dark:bg-boxdark dark:border-strokedark">
-              <h2 className="text-xl font-semibold text-center text-black dark:text-white mb-4">Terna {index + 1}</h2>
-              <div className="text-black dark:text-white">
-                <p><strong>Presidente:</strong> {terna.presidente}</p>
-                <p><strong>Secretario:</strong> {terna.secretario}</p>
-                <p><strong>Vocal:</strong> {terna.vocal}</p>
-              </div>
-            </div>
-          ))}
+      <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+        <div className="hidden sm:block max-w-full overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
+            <thead>
+              <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
+                <th className="py-2 px-4">No. Terna</th>
+                <th className="py-2 px-4">Presidente</th>
+                <th className="py-2 px-4">Secretario</th>
+                <th className="py-2 px-4">Vocal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentTernas.map((terna, index) => (
+                <tr key={index} className="border-t border-gray-200 dark:border-strokedark">
+                  <td className="py-2 px-4 text-black dark:text-white">{indexOfFirstTerna + index + 1}</td>
+                  <td className="py-2 px-4 text-black dark:text-white">{terna.presidente}</td>
+                  <td className="py-2 px-4 text-black dark:text-white">{terna.secretario}</td>
+                  <td className="py-2 px-4 text-black dark:text-white">{terna.vocal}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Paginación */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+            disabled={currentPage === 1}
+          >
+            &#8592;
+          </button>
+
+          {renderPaginationButtons()}
+
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+            disabled={currentPage === totalPages}
+          >
+            &#8594;
+          </button>
         </div>
       </div>
     </>
