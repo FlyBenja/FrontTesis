@@ -4,14 +4,16 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Loader from './common/Loader';
 import Calendar from './pages/Calendar';
 import ECommerce from './pages/Inicio/Graficas';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
+import Profile from './pages/DatosPerfil/Profile';
+import Settings from './pages/DatosPerfil/Settings';
 import Alerts from './pages/UiElements/Alerts';
 import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Inicio/Bitacora';
 import SubirCatedraticos from './pages/Catedraticos/SubirCatedraticos';
 import ListarCatedraticos from './pages/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Catedraticos/CrearCatedraticos';
+import CrearTernas from './pages/Ternas/Crearternas';
+import ListarTernas from './pages/Ternas/ListarTernas';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,6 +37,8 @@ function App() {
         <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
         <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
         <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
+        <Route path="crear-ternas" element={<CrearTernas />} />
+        <Route path="listado-ternas" element={<ListarTernas />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
