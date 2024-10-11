@@ -51,9 +51,8 @@ const SubirCatedraticos = () => {
               />
 
               <button
-                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${
-                  fileSelected ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'
-                }`}
+                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${fileSelected ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                  }`}
                 onClick={handleConfirm}
                 disabled={!fileSelected}
               >

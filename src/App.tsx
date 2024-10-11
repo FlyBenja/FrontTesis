@@ -9,6 +9,7 @@ import Settings from './pages/DatosPerfil/Settings';
 import Alerts from './pages/UiElements/Alerts';
 import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Inicio/Bitacora';
+import SubirEstudiantes from './pages/Estudiantes/SubirEstudiantes';
 import ListarEstudiantes from './pages/Estudiantes/ListarEstudiantes';
 import SubirCatedraticos from './pages/Catedraticos/SubirCatedraticos';
 import ListarCatedraticos from './pages/Catedraticos/ListarCatedraticos';
@@ -36,6 +37,7 @@ function App() {
         <Route index element={<ECommerce />} />
         <Route path="Bitacora" element={<Bitacora />} />
         <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
+        <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
         <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
         <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
         <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
