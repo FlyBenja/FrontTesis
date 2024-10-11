@@ -202,6 +202,94 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </SidebarLinkGroup>
               {/* <!-- Menu Item Dashboard --> */}
 
+              {/* <!-- Menu Item Estudiantes --> */}
+              <SidebarLinkGroup
+                activeCondition={pathname === '/admin/ui' || pathname.includes('ui')}
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/admin/ui' || pathname.includes('ui')) &&
+                          'bg-graydark dark:bg-meta-4'
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <svg
+                          className="fill-current"
+                          width="18"
+                          height="19"
+                          viewBox="0 0 18 19"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clipPath="url(#clip0_130_9807)">
+                            <path
+                              d="M10 5.5C11.76 5.5 13 4.26 13 3C13 1.74 11.76 0.5 10 0.5C8.24 0.5 7 1.74 7 3C7 4.26 8.24 5.5 10 5.5ZM10 7C7.24 7 5 9.24 5 12V14H15V12C15 9.24 12.76 7 10 7Z"
+                              fill="currentColor"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_130_9807">
+                              <rect
+                                width="18"
+                                height="18"
+                                fill="white"
+                                transform="translate(0 0.052124)"
+                              />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                        Estudiantes
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                            }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
+                          }`}
+                      >
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/admin/listado-estudiantes"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Listar Estudiantes
+                            </NavLink>
+                          </li>
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+              {/* <!-- Menu Item Estudiantes --> */}
+
               {/* <!-- Menu Item Catedraticos --> */}
               <SidebarLinkGroup
                 activeCondition={pathname === '/admin/ui' || pathname.includes('ui')}
@@ -334,14 +422,27 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <svg
                           className="fill-current"
                           width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
+                          height="19"
+                          viewBox="0 0 18 19"
+                          fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                         >
-                          <path
-                            d="M7 12c2.21 0 4-1.79 4-4S9.21 4 7 4 3 5.79 3 8s1.79 4 4 4zm10 0c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM7 14c-2.67 0-8 1.34-8 4v2h8v-2c0-1.33 3.33-2 5-2 1.67 0 5 .67 5 2v2h8v-2c0-2.66-5.33-4-8-4-1.54 0-4.31.56-5 1.04C11.31 14.56 8.54 14 7 14zm10 0c-.46 0-1.32.1-2 .3 1.12.9 2 2.37 2 3.7v2h8v-2c0-2.66-5.33-4-8-4z"
-                            fill="currentColor"
-                          />
+                          <g clipPath="url(#clip0_130_9807)">
+                            <path
+                              d="M6 8C7.10457 8 8 7.10457 8 6C8 4.89543 7.10457 4 6 4C4.89543 4 4 4.89543 4 6C4 7.10457 4.89543 8 6 8ZM6 9.5C4.067 9.5 2.5 11.067 2.5 13V14H9.5V13C9.5 11.067 7.933 9.5 6 9.5ZM13 8C14.1046 8 15 7.10457 15 6C15 4.89543 14.1046 4 13 4C11.8954 4 11 4.89543 11 6C11 7.10457 11.8954 8 13 8ZM17.5 14H17V13C17 11.067 15.433 9.5 13.5 9.5C13.0355 9.5 12.5895 9.58086 12.1794 9.72135C12.7219 10.3553 13.5 11.5689 13.5 13V14H17.5Z"
+                              fill="currentColor"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_130_9807">
+                              <rect
+                                width="18"
+                                height="18"
+                                fill="white"
+                                transform="translate(0 0.052124)"
+                              />
+                            </clipPath>
+                          </defs>
                         </svg>
                         Ternas
                         <svg
