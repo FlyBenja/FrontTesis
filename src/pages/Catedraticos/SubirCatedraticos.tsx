@@ -66,7 +66,7 @@ const SubirCatedraticos = () => {
                 </p>
                 <button
                   onClick={handleDownloadTemplate}
-                  className="mt-2 rounded bg-secondary p-2 font-medium text-white hover:bg-opacity-90 transition-opacity"
+                  className="mt-2 rounded bg-primary p-2 font-medium text-white hover:bg-opacity-90 transition-opacity"
                 >
                   Descargar Plantilla
                 </button>
