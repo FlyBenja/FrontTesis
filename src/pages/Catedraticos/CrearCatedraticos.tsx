@@ -4,7 +4,7 @@ const CrearCatedraticos = () => {
   return (
     <>
       <Breadcrumb pageName="Crear Catedrático" /> {/* Añadido el Breadcrumb */}
-      <div className="flex justify-center mt-16">
+      <div className="flex justify-center mt-8">
         <div className="w-full max-w-md">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">

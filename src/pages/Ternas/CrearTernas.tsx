@@ -86,7 +86,7 @@ const CrearTernas: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="Crear Ternas" />
-      <div className="mx-auto max-w-5xl px-4 py-6">
+      <div className="mx-auto max-w-5xl px-4 py-1">
         <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Selecciona un Estudiante:</h2>
 
         {/* Sección de Estudiantes */}
