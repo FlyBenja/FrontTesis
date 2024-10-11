@@ -3,7 +3,8 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import Calendar from './pages/Calendar';
-import ECommerce from './pages/Inicio/Graficas';
+import TimeLine from './pages/Estudiantes/TimeLine';
+import Graficas from './pages/Inicio/Graficas';
 import Profile from './pages/DatosPerfil/Profile';
 import Settings from './pages/DatosPerfil/Settings';
 import Alerts from './pages/UiElements/Alerts';
@@ -34,7 +35,7 @@ function App() {
   ) : (
     <DefaultLayout>
       <Routes>
-        <Route index element={<ECommerce />} />
+        <Route index element={<Graficas />} />
         <Route path="Bitacora" element={<Bitacora />} />
         <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
         <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
@@ -44,6 +45,7 @@ function App() {
         <Route path="crear-ternas" element={<CrearTernas />} />
         <Route path="listado-ternas" element={<ListarTernas />} />
         <Route path="calendar" element={<Calendar />} />
+        <Route path="time-line" element={<TimeLine />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
         <Route path="ui/alerts" element={<Alerts />} />

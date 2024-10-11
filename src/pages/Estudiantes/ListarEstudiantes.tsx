@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 interface Estudiante {
@@ -21,6 +22,8 @@ const ListarEstudiantes: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const estudiantesPerPage = 5;
   const [maxPageButtons] = useState(10);
+
+  const navigate = useNavigate(); // Para navegar entre rutas
 
   // Cargar los datos simulados de los estudiantes
   useEffect(() => {
@@ -107,6 +110,11 @@ const ListarEstudiantes: React.FC = () => {
     return buttons;
   };
 
+  // Función para manejar el clic en un estudiante
+  const handleStudentClick = (estudiante: Estudiante) => {
+    navigate(`/admin/time-line`, { state: { estudiante } });
+  };
+
   return (
     <>
       <Breadcrumb pageName="Listar Estudiantes" />
@@ -163,7 +171,11 @@ const ListarEstudiantes: React.FC = () => {
             <tbody>
               {currentEstudiantes.length > 0 ? (
                 currentEstudiantes.map(estudiante => (
-                  <tr key={estudiante.id} className="border-t border-gray-200 dark:border-strokedark">
+                  <tr
+                    key={estudiante.id}
+                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4"
+                    onClick={() => handleStudentClick(estudiante)} // Redirigir al timeline
+                  >
                     <td className="py-2 px-4 text-black dark:text-white">
                       <img src={estudiante.fotoPerfil} alt={estudiante.nombre} className="w-10 h-10 rounded-full" />
                     </td>
