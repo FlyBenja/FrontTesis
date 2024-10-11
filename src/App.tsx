@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import Calendar from './pages/Calendar';
+import CrearTareas from './pages/CrearTareas';
 import Graficas from './pages/Inicio/Graficas';
 import Profile from './pages/DatosPerfil/Profile';
 import Settings from './pages/DatosPerfil/Settings';
@@ -48,6 +49,7 @@ function App() {
         <Route path="crear-ternas" element={<CrearTernas />} />
         <Route path="listado-ternas" element={<ListarTernas />} />
         <Route path="calendar" element={<Calendar />} />
+        <Route path="crear-tareas" element={<CrearTareas />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
         <Route path="ui/alerts" element={<Alerts />} />
