@@ -1,6 +1,6 @@
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import userSix from '../../images/user/user-06.png';
-import ofiLogo from "../../images/Login/sistemas1_11zon.jpg";
+import ofiLogo from '../../images/Login/sistemas1_11zon.png';
 
 const Profile = () => {
   return (
