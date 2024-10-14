@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import umgLogo from "./images/Login/logo3.png";
-import ofiLogo from "./images/Login/sistemas1_11zon.jpg";
+import umgLogo from './images/Login/logo3.png';
+import ofiLogo from './images/Login/sistemas1_11zon.png';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
