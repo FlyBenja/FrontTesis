@@ -14,7 +14,6 @@ interface Estudiante {
 const ListarEstudiantes: React.FC = () => {
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
   const [filteredEstudiantes, setFilteredEstudiantes] = useState<Estudiante[]>([]);
-
   const [searchCarnet, setSearchCarnet] = useState('');
   const [selectedAño, setSelectedAño] = useState<string>('');
   const [selectedCurso, setSelectedCurso] = useState<string>('');
@@ -23,9 +22,8 @@ const ListarEstudiantes: React.FC = () => {
   const estudiantesPerPage = 5;
   const [maxPageButtons] = useState(10);
 
-  const navigate = useNavigate(); // Para navegar entre rutas
+  const navigate = useNavigate();
 
-  // Cargar los datos simulados de los estudiantes
   useEffect(() => {
     const datosEstudiantes: Estudiante[] = [
       { id: 1, nombre: 'Luis Alvarado', carnet: '1234-12-1234', curso: 'Matemáticas', año: 2023, fotoPerfil: 'https://randomuser.me/api/portraits/men/1.jpg' },
@@ -39,22 +37,18 @@ const ListarEstudiantes: React.FC = () => {
     setFilteredEstudiantes(datosEstudiantes);
   }, []);
 
-  // Manejar el cambio del buscador por carnet
   const handleSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCarnet(e.target.value);
   };
 
-  // Manejar el cambio del seleccionador de año
   const handleAñoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedAño(e.target.value);
   };
 
-  // Manejar el cambio del seleccionador de curso
   const handleCursoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCurso(e.target.value);
   };
 
-  // Filtrar los estudiantes
   useEffect(() => {
     let estudiantesFiltrados = estudiantes;
 
@@ -75,22 +69,18 @@ const ListarEstudiantes: React.FC = () => {
     setFilteredEstudiantes(estudiantesFiltrados);
   }, [searchCarnet, selectedAño, selectedCurso, estudiantes]);
 
-  // Calcular el índice de los estudiantes para la paginación
   const indexOfLastEstudiante = currentPage * estudiantesPerPage;
   const indexOfFirstEstudiante = indexOfLastEstudiante - estudiantesPerPage;
   const currentEstudiantes = filteredEstudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante);
 
-  // Número total de páginas
   const totalPages = Math.ceil(filteredEstudiantes.length / estudiantesPerPage);
 
-  // Cambiar de página
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
   };
 
-  // Generar botones de paginación
   const renderPaginationButtons = () => {
     const buttons = [];
     const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
@@ -110,7 +100,6 @@ const ListarEstudiantes: React.FC = () => {
     return buttons;
   };
 
-  // Función para manejar el clic en un estudiante
   const handleStudentClick = (estudiante: Estudiante) => {
     navigate(`/admin/time-line`, { state: { estudiante } });
   };
@@ -120,7 +109,6 @@ const ListarEstudiantes: React.FC = () => {
       <Breadcrumb pageName="Listar Estudiantes" />
       <div className="mx-auto max-w-5xl px-1 py-1">
 
-        {/* Buscador por carnet */}
         <div className="mb-4">
           <input
             type="text"
@@ -131,7 +119,6 @@ const ListarEstudiantes: React.FC = () => {
           />
         </div>
 
-        {/* Seleccionadores por año y curso */}
         <div className="mb-4 flex gap-4">
           <select
             value={selectedAño}
@@ -156,16 +143,13 @@ const ListarEstudiantes: React.FC = () => {
           </select>
         </div>
 
-        {/* Tabla de estudiantes */}
         <div className="max-w-full overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
             <thead>
-              <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
-                <th className="py-2 px-4">Foto</th>
-                <th className="py-2 px-4">Nombre</th>
-                <th className="py-2 px-4">Carnet</th>
-                <th className="py-2 px-4">Curso</th>
-                <th className="py-2 px-4">Año</th>
+              <tr className="bg-gray-100 text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
+                <th className="py-2 px-4 text-center">Foto</th>
+                <th className="py-2 px-4 text-center">Nombre</th>
+                <th className="py-2 px-4 text-center">Carnet</th>
               </tr>
             </thead>
             <tbody>
@@ -174,35 +158,31 @@ const ListarEstudiantes: React.FC = () => {
                   <tr
                     key={estudiante.id}
                     className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
-                    onClick={() => handleStudentClick(estudiante)} // Redirigir al timeline
+                    onClick={() => handleStudentClick(estudiante)}
                   >
-                    <td className="py-2 px-4 text-black dark:text-white">
-                      <img src={estudiante.fotoPerfil} alt={estudiante.nombre} className="w-10 h-10 rounded-full" />
+                    <td className="py-2 px-4 text-center">
+                      <img src={estudiante.fotoPerfil} alt={estudiante.nombre} className="w-10 h-10 rounded-full mx-auto" />
                     </td>
-                    <td className="py-2 px-4 text-black dark:text-white relative group">
+                    <td className="py-2 px-4 text-center relative group">
                       {estudiante.nombre}
                       <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
                         Ir Hacia TimeLine Estudiante
                       </div>
                     </td>
-                    <td className="py-2 px-4 text-black dark:text-white">{estudiante.carnet}</td>
-                    <td className="py-2 px-4 text-black dark:text-white">{estudiante.curso}</td>
-                    <td className="py-2 px-4 text-black dark:text-white">{estudiante.año}</td>
+                    <td className="py-2 px-4 text-center">{estudiante.carnet}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-2 px-4 text-center text-gray-500 dark:text-white">
+                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
                     No se encontraron estudiantes.
                   </td>
                 </tr>
               )}
             </tbody>
-
           </table>
         </div>
 
-        {/* Paginación */}
         <div className="flex justify-center mt-4">
           <button
             onClick={() => paginate(currentPage - 1)}
