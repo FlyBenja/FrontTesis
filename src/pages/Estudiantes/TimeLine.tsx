@@ -55,7 +55,7 @@ const TimeLine: React.FC = () => {
         <button
           key={i}
           onClick={() => paginate(i)}
-          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'}`}
+          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'}`}
         >
           {i}
         </button>
@@ -90,7 +90,7 @@ const TimeLine: React.FC = () => {
               </div>
 
               {/* Contenido del evento */}
-              <div className={`p-4 rounded-lg shadow-md ${index % 2 === 0 ? 'bg-white' : 'bg-blue-100 dark:bg-boxdark'} dark:text-white`}>
+              <div className={`p-4 rounded-lg shadow-md ${index === 0 ? 'bg-white dark:bg-boxdark' : 'bg-white dark:bg-boxdark'} dark:text-white`}>
                 <h3 className="text-lg font-semibold">{event.title}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{event.description}</p>
                 <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">{event.date}</p>
@@ -103,7 +103,7 @@ const TimeLine: React.FC = () => {
         <div className="flex justify-center mt-4">
           <button
             onClick={() => paginate(currentPage - 1)}
-            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+            className="mx-1 px-3 py-1 rounded-md border bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
             disabled={currentPage === 1}
           >
             &#8592;
@@ -113,7 +113,7 @@ const TimeLine: React.FC = () => {
 
           <button
             onClick={() => paginate(currentPage + 1)}
-            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+            className="mx-1 px-3 py-1 rounded-md border bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
             disabled={currentPage === totalPages}
           >
             &#8594;
