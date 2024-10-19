@@ -67,6 +67,17 @@ const TimeLine: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="TimeLine" />
+
+      {/* Botón de retroceder */}
+      <div className="mb-4">
+        <button
+          className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
+          onClick={() => navigate(-1)} // Regresar a la página anterior
+        >
+          <span className="mr-2">←</span> Regresar
+        </button>
+      </div>
+
       <div className="mx-auto max-w-6xl px-6 -my-3">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-black dark:text-white">

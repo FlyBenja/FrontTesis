@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Importamos el hook useNavigate
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 interface Tarea {
@@ -11,9 +11,8 @@ interface Tarea {
 }
 
 const TareasEstudiante: React.FC = () => {
-  const navigate = useNavigate(); // Usamos el hook useNavigate
+  const navigate = useNavigate();
 
-  // Datos simulados de tareas
   const tareas: Tarea[] = [
     {
       id: 1,
@@ -59,24 +58,31 @@ const TareasEstudiante: React.FC = () => {
     },
   ];
 
-  // Función para manejar la navegación según el tipo de tarea
-  const handleNavigate = (tipo: string) => {
-    if (tipo === 'Propuesta de Tesis') {
-      navigate('/admin/propuestas'); // Redirige a /admin/propuestas
+  const handleNavigate = (tarea: Tarea) => {
+    if (tarea.tipo === 'Propuesta de Tesis') {
+      navigate('/admin/propuestas');
     } else {
-      navigate('/admin/capitulo'); // Redirige a /admin/capitulo
+      navigate('/admin/capitulo', { state: { tarea } });
     }
   };
 
   return (
     <>
       <Breadcrumb pageName="Tareas del Estudiante" />
-      <div className="mx-auto max-w-5xl px-4 py-4">
 
-        {/* Propuesta de Tesis */}
+      <div className="mb-4">
+        <button
+          className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
+          onClick={() => navigate(-1)}
+        >
+          <span className="mr-2">←</span> Regresar
+        </button>
+      </div>
+
+      <div className="mx-auto max-w-5xl px-4 py-4">
         <div
           className="mb-6 p-4 bg-blue-100 dark:bg-boxdark rounded-lg shadow-md cursor-pointer"
-          onClick={() => handleNavigate(tareas[0].tipo)} // Añadimos la función para navegar
+          onClick={() => handleNavigate(tareas[0])}
         >
           <h3 className="text-lg font-bold text-primary">Propuesta de Tesis</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -87,7 +93,6 @@ const TareasEstudiante: React.FC = () => {
           </p>
         </div>
 
-        {/* Listado de Tareas */}
         <div>
           <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos</h3>
           <ul className="space-y-4">
@@ -95,7 +100,7 @@ const TareasEstudiante: React.FC = () => {
               <li
                 key={tarea.id}
                 className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md cursor-pointer"
-                onClick={() => handleNavigate(tarea.tipo)} // Añadimos la función para navegar
+                onClick={() => handleNavigate(tarea)}
               >
                 <h4 className="text-lg font-semibold text-black dark:text-white">{tarea.titulo}</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
