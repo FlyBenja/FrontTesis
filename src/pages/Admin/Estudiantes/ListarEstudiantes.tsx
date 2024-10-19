@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 
 interface Estudiante {
   id: number;

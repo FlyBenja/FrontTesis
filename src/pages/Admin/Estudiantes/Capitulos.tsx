@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 
 const Capitulos: React.FC = () => {
   const navigate = useNavigate();

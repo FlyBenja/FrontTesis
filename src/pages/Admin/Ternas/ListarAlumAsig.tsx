@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 
 interface Persona {
-  presidente: string;
-  secretario: string;
-  vocal: string;
+  alumno1: string;
+  alumno2: string;
+  alumno3: string;
 }
 
-const ListarTernas: React.FC = () => {
+const ListarAlumAsig: React.FC = () => {
   // Datos simulados de las ternas
   const ternas: Persona[] = [
-    { presidente: 'Juan Pérez', secretario: 'María López', vocal: 'Carlos Sánchez' },
-    { presidente: 'Ana Méndez', secretario: 'Pedro González', vocal: 'Luis García' },
-    { presidente: 'Gabriela Ruiz', secretario: 'David Hernández', vocal: 'Elena Gómez' },
-    { presidente: 'Jorge Martínez', secretario: 'Clara Castillo', vocal: 'Daniel Flores' },
-    { presidente: 'Marcos Díaz', secretario: 'Silvia Peña', vocal: 'Fernando Torres' },
+    { alumno1: 'Juan Pérez', alumno2: 'María López', alumno3: 'Carlos Sánchez' },
+    { alumno1: 'Ana Méndez', alumno2: 'Pedro González', alumno3: 'Luis García' },
+    { alumno1: 'Gabriela Ruiz', alumno2: 'David Hernández', alumno3: 'Elena Gómez' },
+    { alumno1: 'Jorge Martínez', alumno2: 'Clara Castillo', alumno3: 'Daniel Flores' },
+    { alumno1: 'Marcos Díaz', alumno2: 'Silvia Peña', alumno3: 'Fernando Torres' },
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,25 +57,25 @@ const ListarTernas: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Listar Ternas" />
+      <Breadcrumb pageName="Listar Alumnos Asignados" />
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
         <div className="hidden sm:block max-w-full overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
             <thead>
               <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
                 <th className="py-2 px-4">No. Terna</th>
-                <th className="py-2 px-4">Presidente</th>
-                <th className="py-2 px-4">Secretario</th>
-                <th className="py-2 px-4">Vocal</th>
+                <th className="py-2 px-4">Alumno 1</th>
+                <th className="py-2 px-4">Alumno 2</th>
+                <th className="py-2 px-4">Alumno 3</th>
               </tr>
             </thead>
             <tbody>
               {currentTernas.map((terna, index) => (
                 <tr key={index} className="border-t border-gray-200 dark:border-strokedark">
                   <td className="py-2 px-4 text-black dark:text-white">{indexOfFirstTerna + index + 1}</td>
-                  <td className="py-2 px-4 text-black dark:text-white">{terna.presidente}</td>
-                  <td className="py-2 px-4 text-black dark:text-white">{terna.secretario}</td>
-                  <td className="py-2 px-4 text-black dark:text-white">{terna.vocal}</td>
+                  <td className="py-2 px-4 text-black dark:text-white">{terna.alumno1}</td>
+                  <td className="py-2 px-4 text-black dark:text-white">{terna.alumno2}</td>
+                  <td className="py-2 px-4 text-black dark:text-white">{terna.alumno3}</td>
                 </tr>
               ))}
             </tbody>
@@ -107,4 +107,4 @@ const ListarTernas: React.FC = () => {
   );
 };
 
-export default ListarTernas;
+export default ListarAlumAsig;

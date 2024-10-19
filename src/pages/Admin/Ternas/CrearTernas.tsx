@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 
 interface Catedratico {
   id: number;

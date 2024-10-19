@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { Wheel } from 'react-custom-roulette';
 
 interface Estudiante {

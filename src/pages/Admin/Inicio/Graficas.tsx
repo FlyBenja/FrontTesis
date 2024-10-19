@@ -1,8 +1,8 @@
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import React from 'react';
-import CardDataStats from '../../components/CardDataStats';
-import ChartOne from '../../components/Charts/ChartOne';
-import ChartTwo from '../../components/Charts/ChartTwo';
+import CardDataStats from '../../../components/CardDataStats';
+import ChartOne from '../../../components/Charts/ChartOne';
+import ChartTwo from '../../../components/Charts/ChartTwo';
 
 const Graficas: React.FC = () => {
   return (

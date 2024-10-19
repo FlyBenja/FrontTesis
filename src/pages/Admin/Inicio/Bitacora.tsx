@@ -1,4 +1,4 @@
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import React, { useState, useEffect } from 'react';
 
 // Definir el tipo de datos para la bitácora, incluyendo el campo "role"

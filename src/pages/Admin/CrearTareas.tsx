@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CreaTarea from '../components/Modals/CreaTareas/CreaTarea';
+import CreaTarea from '../../components/Modals/CreaTareas/CreaTarea';
 
 interface Tarea {
   id: number;

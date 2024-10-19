@@ -1,6 +1,6 @@
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import React, { useState, useEffect } from 'react';
-import SwitcherFour from '../../components/Switchers/SwitcherFour'; // Asegúrate de que esta ruta sea correcta
+import SwitcherFour from '../../../components/Switchers/SwitcherFour'; // Asegúrate de que esta ruta sea correcta
 
 // Definir el tipo de datos para los catedráticos
 interface Catedratico {
