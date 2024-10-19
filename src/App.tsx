@@ -7,7 +7,6 @@ import CrearTareas from './pages/CrearTareas';
 import Graficas from './pages/Inicio/Graficas';
 import Profile from './pages/DatosPerfil/Profile';
 import Settings from './pages/DatosPerfil/Settings';
-import Alerts from './pages/UiElements/Alerts';
 import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Inicio/Bitacora';
 import SubirEstudiantes from './pages/Estudiantes/SubirEstudiantes';
@@ -52,7 +51,6 @@ function App() {
         <Route path="crear-tareas" element={<CrearTareas />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="ui/alerts" element={<Alerts />} />
       </Routes>
     </DefaultLayout>
   );
