@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
-import Loader from './common/Loader';
 import Calendar from './pages/Calendar';
 import CrearTareas from './pages/CrearTareas';
 import Graficas from './pages/Inicio/Graficas';
@@ -19,6 +18,7 @@ import SubirCatedraticos from './pages/Catedraticos/SubirCatedraticos';
 import ListarCatedraticos from './pages/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Catedraticos/CrearCatedraticos';
 import CrearTernas from './pages/Ternas/CrearTernas';
+import AsignarTernas from './pages/AsignarTernas';
 import ListarTernas from './pages/Ternas/ListarTernas';
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
   }, []);
 
   return loading ? (
-    <Loader />
+    null
   ) : (
     <DefaultLayout>
       <Routes>
@@ -50,6 +50,7 @@ function App() {
         <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
         <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
         <Route path="crear-ternas" element={<CrearTernas />} />
+        <Route path="asignar-ternas" element={<AsignarTernas />} />
         <Route path="listado-ternas" element={<ListarTernas />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="crear-tareas" element={<CrearTareas />} />
