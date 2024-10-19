@@ -16,8 +16,8 @@ const ListarEstudiantes: React.FC = () => {
   const [filteredEstudiantes, setFilteredEstudiantes] = useState<Estudiante[]>([]);
 
   const [searchCarnet, setSearchCarnet] = useState('');
-  const [selectedAño, setSelectedAño] = useState<string>(''); 
-  const [selectedCurso, setSelectedCurso] = useState<string>(''); 
+  const [selectedAño, setSelectedAño] = useState<string>('');
+  const [selectedCurso, setSelectedCurso] = useState<string>('');
 
   const [currentPage, setCurrentPage] = useState(1);
   const estudiantesPerPage = 5;
@@ -173,13 +173,18 @@ const ListarEstudiantes: React.FC = () => {
                 currentEstudiantes.map(estudiante => (
                   <tr
                     key={estudiante.id}
-                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4"
+                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
                     onClick={() => handleStudentClick(estudiante)} // Redirigir al timeline
                   >
                     <td className="py-2 px-4 text-black dark:text-white">
                       <img src={estudiante.fotoPerfil} alt={estudiante.nombre} className="w-10 h-10 rounded-full" />
                     </td>
-                    <td className="py-2 px-4 text-black dark:text-white">{estudiante.nombre}</td>
+                    <td className="py-2 px-4 text-black dark:text-white relative group">
+                      {estudiante.nombre}
+                      <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
+                        Ir Hacia TimeLine Estudiante
+                      </div>
+                    </td>
                     <td className="py-2 px-4 text-black dark:text-white">{estudiante.carnet}</td>
                     <td className="py-2 px-4 text-black dark:text-white">{estudiante.curso}</td>
                     <td className="py-2 px-4 text-black dark:text-white">{estudiante.año}</td>
@@ -193,6 +198,7 @@ const ListarEstudiantes: React.FC = () => {
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
 
