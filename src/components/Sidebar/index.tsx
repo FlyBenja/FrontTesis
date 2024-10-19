@@ -504,6 +504,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Listar Ternas
                             </NavLink>
                           </li>
+                          <li>
+                            <NavLink
+                              to="/admin/listado-alumno-terna"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                              onClick={() => setSidebarOpen(false)} // Cerrar sidebar
+                            >
+                              Listado Alumno Terna
+                            </NavLink>
+                          </li>
                         </ul>
                       </div>
                     </React.Fragment>

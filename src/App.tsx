@@ -20,7 +20,7 @@ import CrearCatedraticos from './pages/Catedraticos/CrearCatedraticos';
 import CrearTernas from './pages/Ternas/CrearTernas';
 import AsignarTernas from './pages/AsignarTernas';
 import ListarTernas from './pages/Ternas/ListarTernas';
-
+import ListarAlumAsig from './pages/Ternas/ListarAlumAsig';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -52,6 +52,7 @@ function App() {
         <Route path="crear-ternas" element={<CrearTernas />} />
         <Route path="asignar-ternas" element={<AsignarTernas />} />
         <Route path="listado-ternas" element={<ListarTernas />} />
+        <Route path="listado-alumno-terna" element={<ListarAlumAsig />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="crear-tareas" element={<CrearTareas />} />
         <Route path="profile" element={<Profile />} />
