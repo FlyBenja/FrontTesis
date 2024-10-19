@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Importamos el hook useNavigate
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 interface Tarea {
@@ -10,6 +11,8 @@ interface Tarea {
 }
 
 const TareasEstudiante: React.FC = () => {
+  const navigate = useNavigate(); // Usamos el hook useNavigate
+
   // Datos simulados de tareas
   const tareas: Tarea[] = [
     {
@@ -56,13 +59,25 @@ const TareasEstudiante: React.FC = () => {
     },
   ];
 
+  // Función para manejar la navegación según el tipo de tarea
+  const handleNavigate = (tipo: string) => {
+    if (tipo === 'Propuesta de Tesis') {
+      navigate('/admin/propuestas'); // Redirige a /admin/propuestas
+    } else {
+      navigate('/admin/capitulo'); // Redirige a /admin/capitulo
+    }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Tareas del Estudiante" />
       <div className="mx-auto max-w-5xl px-4 py-4">
 
         {/* Propuesta de Tesis */}
-        <div className="mb-6 p-4 bg-blue-100 dark:bg-boxdark rounded-lg shadow-md">
+        <div
+          className="mb-6 p-4 bg-blue-100 dark:bg-boxdark rounded-lg shadow-md cursor-pointer"
+          onClick={() => handleNavigate(tareas[0].tipo)} // Añadimos la función para navegar
+        >
           <h3 className="text-lg font-bold text-primary">Propuesta de Tesis</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             {tareas[0].descripcion}
@@ -77,7 +92,11 @@ const TareasEstudiante: React.FC = () => {
           <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos</h3>
           <ul className="space-y-4">
             {tareas.slice(1).map((tarea) => (
-              <li key={tarea.id} className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md">
+              <li
+                key={tarea.id}
+                className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md cursor-pointer"
+                onClick={() => handleNavigate(tarea.tipo)} // Añadimos la función para navegar
+              >
                 <h4 className="text-lg font-semibold text-black dark:text-white">{tarea.titulo}</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {tarea.descripcion}

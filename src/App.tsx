@@ -13,6 +13,7 @@ import SubirEstudiantes from './pages/Estudiantes/SubirEstudiantes';
 import ListarEstudiantes from './pages/Estudiantes/ListarEstudiantes';
 import TimeLine from './pages/Estudiantes/TimeLine';
 import TareasEstudiante from './pages/Estudiantes/TareasEstudiante';
+import Propuestas from './pages/Estudiantes/Propuestas';
 import SubirCatedraticos from './pages/Catedraticos/SubirCatedraticos';
 import ListarCatedraticos from './pages/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Catedraticos/CrearCatedraticos';
@@ -42,6 +43,7 @@ function App() {
         <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
         <Route path="time-line" element={<TimeLine />} />
         <Route path="tareas-estudiante" element={<TareasEstudiante />} />
+        <Route path="propuestas" element={<Propuestas />} />
         <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
         <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
         <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
