@@ -7,7 +7,7 @@ interface Catedratico {
   fotoPerfil: string;
 }
 
-const CrearTernas: React.FC = () => {
+const CrearComision: React.FC = () => {
   // Listado simulado de 30 catedráticos
   const [catedraticos] = useState<Catedratico[]>([
     { id: 1, nombre: 'Dr. Juan Pérez', fotoPerfil: 'https://randomuser.me/api/portraits/men/1.jpg' },
@@ -52,8 +52,8 @@ const CrearTernas: React.FC = () => {
     }
   };
 
-  // Función para crear la terna (simulado)
-  const handleCrearTerna = () => {
+  // Función para crear la comision (simulado)
+  const handleCrearComision = () => {
     if (terna.length === 3) {
       console.log('Terna creada:', terna);
       // Aquí puedes hacer la llamada a la API o realizar la acción deseada
@@ -77,7 +77,7 @@ const CrearTernas: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Crear Ternas" />
+      <Breadcrumb pageName="Crear Comision" />
       <div className="mx-auto max-w-5xl px-4 py-1">
         <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Listado de Catedráticos:</h2>
 
@@ -106,7 +106,7 @@ const CrearTernas: React.FC = () => {
 
         {/* Card de Ternas */}
         <div className="mt-8">
-          <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Terna:</h2>
+          <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Comision:</h2>
           <div className="p-6 border border-gray-300 rounded-lg shadow-lg bg-white dark:bg-boxdark dark:text-white">
             {terna.length === 0 && <p className="text-gray-400">Presidente</p>}
             {terna.map((catedratico, index) => (
@@ -118,14 +118,14 @@ const CrearTernas: React.FC = () => {
             {terna.length === 2 && <p className="text-gray-400">Vocal</p>}
           </div>
 
-          {/* Botón para crear la terna */}
+          {/* Botón para crear la Comision */}
           <div className="mt-6 text-center">
             <button
-              onClick={handleCrearTerna}
+              onClick={handleCrearComision}
               className={`px-4 py-2 bg-primary text-white rounded-lg ${terna.length !== 3 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
               disabled={terna.length !== 3}
             >
-              Crear Terna
+              Crear Comision
             </button>
           </div>
         </div>
@@ -134,5 +134,5 @@ const CrearTernas: React.FC = () => {
   );
 };
 
-export default CrearTernas;
+export default CrearComision;
   

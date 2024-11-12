@@ -17,8 +17,8 @@ import Capitulos from './pages/Admin/Estudiantes/Capitulos';
 import SubirCatedraticos from './pages/Admin/Catedraticos/SubirCatedraticos';
 import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
-import CrearTernas from './pages/Admin/Ternas/CrearTernas';
-import ListarTernas from './pages/Admin/Ternas/ListarTernas';
+import CrearTernas from './pages/Admin/Ternas/CrearComision';
+import ListarComision from './pages/Admin/Ternas/ListarComision';
 import ListarAlumAsig from './pages/Admin/Ternas/ListarAlumAsig';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,7 +49,7 @@ function App() {
         <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
         <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
         <Route path="crear-ternas" element={<CrearTernas />} />
-        <Route path="listado-ternas" element={<ListarTernas />} />
+        <Route path="listado-ternas" element={<ListarComision />} />
         <Route path="listado-alumno-terna" element={<ListarAlumAsig />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="crear-tareas" element={<CrearTareas />} />

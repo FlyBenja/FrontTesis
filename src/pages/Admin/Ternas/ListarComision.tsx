@@ -7,9 +7,9 @@ interface Persona {
   vocal: string;
 }
 
-const ListarTernas: React.FC = () => {
+const ListarComision: React.FC = () => {
   // Datos simulados de las ternas
-  const ternas: Persona[] = [
+  const comisiones: Persona[] = [
     { presidente: 'Juan Pérez', secretario: 'María López', vocal: 'Carlos Sánchez' },
     { presidente: 'Ana Méndez', secretario: 'Pedro González', vocal: 'Luis García' },
     { presidente: 'Gabriela Ruiz', secretario: 'David Hernández', vocal: 'Elena Gómez' },
@@ -23,10 +23,10 @@ const ListarTernas: React.FC = () => {
 
   const indexOfLastTerna = currentPage * ternasPerPage;
   const indexOfFirstTerna = indexOfLastTerna - ternasPerPage;
-  const currentTernas = ternas.slice(indexOfFirstTerna, indexOfLastTerna);
+  const currentTernas = comisiones.slice(indexOfFirstTerna, indexOfLastTerna);
 
   // Número total de páginas
-  const totalPages = Math.ceil(ternas.length / ternasPerPage);
+  const totalPages = Math.ceil(comisiones.length / ternasPerPage);
 
   // Cambiar de página
   const paginate = (pageNumber: number) => {
@@ -57,13 +57,13 @@ const ListarTernas: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Listar Ternas" />
+      <Breadcrumb pageName="Listar Comision" />
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
         <div className="hidden sm:block max-w-full overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
             <thead>
               <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
-                <th className="py-2 px-4">No. Terna</th>
+                <th className="py-2 px-4">No. Comision</th>
                 <th className="py-2 px-4">Presidente</th>
                 <th className="py-2 px-4">Secretario</th>
                 <th className="py-2 px-4">Vocal</th>
@@ -107,4 +107,4 @@ const ListarTernas: React.FC = () => {
   );
 };
 
-export default ListarTernas;
+export default ListarComision;
