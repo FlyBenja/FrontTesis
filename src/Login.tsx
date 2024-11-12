@@ -8,7 +8,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate("/admin");
+    navigate("/admin/graficas");
   };
 
   return (

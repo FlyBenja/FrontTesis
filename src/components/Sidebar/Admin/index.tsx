@@ -101,27 +101,24 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
-              {/* <!-- Menu Item Dashboard --> */}
-              <SidebarLinkGroup
-                activeCondition={
-                  pathname === '/admin' || pathname.includes('dashboard')
-                }
-              >
-                {(handleClick) => {
-                  const [menuOpen, setMenuOpen] = React.useState(false);
 
+              {/* <!-- Menu Item Inicio --> */}
+              <SidebarLinkGroup
+                activeCondition={pathname === '/admin/ui' || pathname.includes('ui')}
+              >
+                {(handleClick, open) => {
                   return (
                     <React.Fragment>
                       <NavLink
                         to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/admin' ||
-                            pathname.includes('dashboard')) &&
+                        className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/admin/ui' || pathname.includes('ui')) &&
                           'bg-graydark dark:bg-meta-4'
                           }`}
                         onClick={(e) => {
                           e.preventDefault();
-                          sidebarExpanded ? handleClick() : setSidebarExpanded(true);
-                          setMenuOpen(!menuOpen);
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
                         }}
                       >
                         <svg
@@ -151,7 +148,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </svg>
                         Inicio
                         <svg
-                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${menuOpen && 'rotate-180'
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
                             }`}
                           width="20"
                           height="20"
@@ -168,13 +165,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </svg>
                       </NavLink>
                       <div
-                        className={`translate transform overflow-hidden ${!menuOpen && 'hidden'
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
                           }`}
                       >
-                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
                           <li>
                             <NavLink
-                              to="/admin"
+                              to="/admin/graficas"
                               className={({ isActive }) =>
                                 'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
                                 (isActive && '!text-white')
@@ -186,7 +183,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           <li>
                             <NavLink
-                              to="/admin/Bitacora"
+                              to="/admin/bitacora"
                               className={({ isActive }) =>
                                 'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
                                 (isActive && '!text-white')
@@ -202,7 +199,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   );
                 }}
               </SidebarLinkGroup>
-              {/* <!-- Menu Item Dashboard --> */}
+              {/* <!-- Menu Item Inicio --> */}
 
               {/* <!-- Menu Item Estudiantes --> */}
               <SidebarLinkGroup
@@ -482,38 +479,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
                           <li>
                             <NavLink
-                              to="/admin/crear-ternas"
+                              to="/admin/crear-comision"
                               className={({ isActive }) =>
                                 'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
                                 (isActive && '!text-white')
                               }
                               onClick={() => setSidebarOpen(false)} // Cerrar sidebar
                             >
-                              Crear Ternas
+                              Crear Comision
                             </NavLink>
                           </li>
                           <li>
                             <NavLink
-                              to="/admin/listado-ternas"
+                              to="/admin/listado-comision"
                               className={({ isActive }) =>
                                 'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
                                 (isActive && '!text-white')
                               }
                               onClick={() => setSidebarOpen(false)} // Cerrar sidebar
                             >
-                              Listar Ternas
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/admin/listado-alumno-terna"
-                              className={({ isActive }) =>
-                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                (isActive && '!text-white')
-                              }
-                              onClick={() => setSidebarOpen(false)} // Cerrar sidebar
-                            >
-                              Listado Alumno Terna
+                              Listar Comision
                             </NavLink>
                           </li>
                         </ul>

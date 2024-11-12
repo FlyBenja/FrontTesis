@@ -17,9 +17,8 @@ import Capitulos from './pages/Admin/Estudiantes/Capitulos';
 import SubirCatedraticos from './pages/Admin/Catedraticos/SubirCatedraticos';
 import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
-import CrearTernas from './pages/Admin/Ternas/CrearComision';
+import CrearComisiones from './pages/Admin/Ternas/CrearComision';
 import ListarComision from './pages/Admin/Ternas/ListarComision';
-import ListarAlumAsig from './pages/Admin/Ternas/ListarAlumAsig';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -37,20 +36,22 @@ function App() {
   ) : (
     <DefaultLayout>
       <Routes>
-        <Route index element={<Graficas />} />
-        <Route path="Bitacora" element={<Bitacora />} />
+        <Route path="graficas" element={<Graficas />} />
+        <Route path="bitacora" element={<Bitacora />} />
+
         <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
         <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
         <Route path="time-line" element={<TimeLine />} />
         <Route path="tareas-estudiante" element={<TareasEstudiante />} />
         <Route path="propuestas" element={<Propuestas />} />
         <Route path="capitulo" element={<Capitulos />} />
+
         <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
         <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
         <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
-        <Route path="crear-ternas" element={<CrearTernas />} />
-        <Route path="listado-ternas" element={<ListarComision />} />
-        <Route path="listado-alumno-terna" element={<ListarAlumAsig />} />
+
+        <Route path="crear-comision" element={<CrearComisiones />} />
+        <Route path="listado-comision" element={<ListarComision />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="crear-tareas" element={<CrearTareas />} />
         <Route path="profile" element={<Profile />} />
