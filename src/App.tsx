@@ -18,7 +18,6 @@ import SubirCatedraticos from './pages/Admin/Catedraticos/SubirCatedraticos';
 import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
 import CrearTernas from './pages/Admin/Ternas/CrearTernas';
-import AsignarTernas from './pages/Admin/AsignarTernas';
 import ListarTernas from './pages/Admin/Ternas/ListarTernas';
 import ListarAlumAsig from './pages/Admin/Ternas/ListarAlumAsig';
 function App() {
@@ -50,7 +49,6 @@ function App() {
         <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
         <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
         <Route path="crear-ternas" element={<CrearTernas />} />
-        <Route path="asignar-ternas" element={<AsignarTernas />} />
         <Route path="listado-ternas" element={<ListarTernas />} />
         <Route path="listado-alumno-terna" element={<ListarAlumAsig />} />
         <Route path="calendar" element={<Calendar />} />

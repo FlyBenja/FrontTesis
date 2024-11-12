@@ -414,7 +414,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </SidebarLinkGroup>
               {/* <!-- Menu Item Catedraticos --> */}
 
-              {/* <!-- Menu Item Comisiones --> */}
+              {/* <!-- Menu Item Ternas --> */}
               <SidebarLinkGroup
                 activeCondition={pathname === '/admin/ui' || pathname.includes('ui')}
               >
@@ -458,7 +458,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </clipPath>
                           </defs>
                         </svg>
-                        Comisiones
+                        Ternas
                         <svg
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
                             }`}
@@ -522,7 +522,36 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   );
                 }}
               </SidebarLinkGroup>
-              {/* <!-- Menu Item Comisiones --> */}
+              {/* <!-- Menu Item Ternas --> */}
+
+              {/* <!-- Menu Item Asignar Ternas --> */}
+              <li>
+                <NavLink
+                  to="/admin/asignar-ternas"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/asignar-ternas' &&
+                    'bg-graydark dark:bg-meta-4'
+                    }`}
+                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
+                >
+                  <svg
+                    className="fill-current"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12ZM16.5 12C17.3284 12 18 11.3284 18 10.5C18 9.67157 17.3284 9 16.5 9C15.6716 9 15 9.67157 15 10.5C15 11.3284 15.6716 12 16.5 12ZM7.5 12C8.32843 12 9 11.3284 9 10.5C9 9.67157 8.32843 9 7.5 9C6.67157 9 6 9.67157 6 10.5C6 11.3284 6.67157 12 7.5 12ZM3 19C3 17.3431 7.34315 16 12 16C16.6569 16 21 17.3431 21 19V20H3V19Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+
+
+                  Asignar Ternas
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Asignar Ternas --> */}
 
               {/* <!-- Menu Item Crear Tareas --> */}
               <li>
