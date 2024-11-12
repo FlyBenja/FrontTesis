@@ -10,7 +10,7 @@ import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Admin/Inicio/Bitacora';
 import SubirEstudiantes from './pages/Admin/Estudiantes/SubirEstudiantes';
 import ListarEstudiantes from './pages/Admin/Estudiantes/ListarEstudiantes';
-import TimeLine from './pages/Admin/Estudiantes/TimeLine';
+import TimeLineAdmin from './pages/Admin/Estudiantes/TimeLine';
 import TareasEstudiante from './pages/Admin/Estudiantes/TareasEstudiante';
 import Propuestas from './pages/Admin/Estudiantes/Propuestas';
 import Capitulos from './pages/Admin/Estudiantes/Capitulos';
@@ -19,6 +19,7 @@ import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
 import CrearComisiones from './pages/Admin/Ternas/CrearComision';
 import ListarComision from './pages/Admin/Ternas/ListarComision';
+import TimeLineEstudiante from './pages/Estudiantes/TimeLine';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -36,12 +37,13 @@ function App() {
   ) : (
     <DefaultLayout>
       <Routes>
+        //Links para administrador
         <Route path="graficas" element={<Graficas />} />
         <Route path="bitacora" element={<Bitacora />} />
 
         <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
         <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
-        <Route path="time-line" element={<TimeLine />} />
+        <Route path="time-line-admin" element={<TimeLineAdmin />} />
         <Route path="tareas-estudiante" element={<TareasEstudiante />} />
         <Route path="propuestas" element={<Propuestas />} />
         <Route path="capitulo" element={<Capitulos />} />
@@ -56,6 +58,9 @@ function App() {
         <Route path="crear-tareas" element={<CrearTareas />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
+
+        //Links para Estudiantes
+        <Route path="time-line-estudiante" element={<TimeLineEstudiante />} />
       </Routes>
     </DefaultLayout>
   );

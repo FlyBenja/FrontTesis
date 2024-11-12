@@ -15,6 +15,7 @@ root.render(
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/admin/*" element={<App />} />
+        <Route path="/estudiantes/*" element={<App />} />
       </Routes>
     </Router>
   </React.StrictMode>,

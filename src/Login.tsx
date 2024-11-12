@@ -6,9 +6,20 @@ import ofiLogo from './images/Login/sistemas1_11zon.png';
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
+  // Aquí defines el rol de forma estática; puedes modificarlo según tus necesidades
+  const role: number = 3; // Cambia este valor para probar diferentes rutas: 1, 2, o 3.
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate("/admin/graficas");
+    
+    // Redirige según el valor de role
+    if (role === 1) {
+      navigate("/admin/graficas");
+    } else if (role === 2) {
+      navigate("/secretario/");
+    } else if (role === 3) {
+      navigate("/estudiantes/time-line-estudiante");
+    }
   };
 
   return (
