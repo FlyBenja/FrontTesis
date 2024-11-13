@@ -6,6 +6,13 @@ import UserOne from '../../images/user/user-01.png';
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  // Aquí defines el rol de forma estática; puedes modificarlo según tus necesidades
+  const role: number = 3; // Cambia este valor para probar diferentes rutas: 1, 2, o 3.
+
+  // Definir las rutas dinámicamente según el rol
+  const profileLink = role === 1 ? '/admin/profile' : role === 2 ? '/secretario/profile' : '/estudiantes/profile';
+  const settingsLink = role === 1 ? '/admin/settings' : role === 2 ? '/secretario/settings' : '/estudiantes/settings';
+
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -49,7 +56,7 @@ const DropdownUser = () => {
           <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
             <li>
               <Link
-                to="/admin/profile"
+                to={profileLink}
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
                 <svg
@@ -74,7 +81,7 @@ const DropdownUser = () => {
             </li>
             <li>
               <Link
-                to="/admin/settings"
+                to={settingsLink}
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
                 <svg

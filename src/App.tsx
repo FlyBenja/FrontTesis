@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import Calendar from './pages/Admin/Calendar';
+
 import CrearTareas from './pages/Admin/CrearTareas';
 import Graficas from './pages/Admin/Inicio/Graficas';
 import Profile from './pages/DatosPerfil/Profile';
@@ -22,6 +23,7 @@ import ListarComision from './pages/Admin/Ternas/ListarComision';
 
 import Inicio from './pages/Estudiantes/Inicio';
 import Propuesta from './pages/Estudiantes/Propuesta';
+import Cursos from './pages/Estudiantes/Cursos';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -64,6 +66,7 @@ function App() {
         //Links para Estudiantes
         <Route path="inicio" element={<Inicio />} />
         <Route path="propuesta" element={<Propuesta />} />
+        <Route path="cursos" element={<Cursos />} />
       </Routes>
     </DefaultLayout>
   );
