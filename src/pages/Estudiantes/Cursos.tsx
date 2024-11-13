@@ -18,9 +18,9 @@ const Cursos: React.FC = () => {
     },
   ];
 
-  // Función para manejar la redirección
-  const handleNavigate = () => {
-    navigate('/estudiantes/info-curso');
+  // Función para manejar la redirección con el título del curso
+  const handleNavigate = (courseTitle: string) => {
+    navigate('/estudiantes/info-curso', { state: { courseTitle } });
   };
 
   return (
@@ -30,7 +30,7 @@ const Cursos: React.FC = () => {
 
       <div className="max-w-7xl mx-auto p-6 space-y-8">
         <h1 className="text-3xl font-semibold text-gray-800 dark:text-white text-center mb-8">
-          Listado
+          Listado de Cursos
         </h1>
 
         {/* Contenedor de cards centradas */}
@@ -47,7 +47,7 @@ const Cursos: React.FC = () => {
                 {course.description}
               </p>
               <button
-                onClick={handleNavigate}
+                onClick={() => handleNavigate(course.title)}
                 className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               >
                 Ver más detalles

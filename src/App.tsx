@@ -24,6 +24,8 @@ import ListarComision from './pages/Admin/Ternas/ListarComision';
 import Inicio from './pages/Estudiantes/Inicio';
 import Propuesta from './pages/Estudiantes/Propuesta';
 import Cursos from './pages/Estudiantes/Cursos';
+import InfoCurso from './pages/Estudiantes/InfoCurso';
+import InfoCapitulo from './pages/Estudiantes/InfoCapitulo';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -60,6 +62,8 @@ function App() {
         <Route path="listado-comision" element={<ListarComision />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="crear-tareas" element={<CrearTareas />} />
+
+        //Links Generales
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
 
@@ -67,6 +71,8 @@ function App() {
         <Route path="inicio" element={<Inicio />} />
         <Route path="propuesta" element={<Propuesta />} />
         <Route path="cursos" element={<Cursos />} />
+        <Route path="info-curso" element={<InfoCurso />} />
+        <Route path="info-capitulo" element={<InfoCapitulo />} />
       </Routes>
     </DefaultLayout>
   );
