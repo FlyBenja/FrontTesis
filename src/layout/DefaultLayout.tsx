@@ -2,7 +2,7 @@ import React, { useState, ReactNode } from 'react';
 import Header from '../components/Header/index';
 import SidebarAdmin from '../components/Sidebar/Admin';
 import SidebarSecretario from '../components/Sidebar/Secretario/index';
-import SidebarEstudiante from '../components/Sidebar/Estudiantes/index'; // Importa el Sidebar para estudiantes
+import SidebarEstudiante from '../components/Sidebar/Estudiantes'; // Importa el Sidebar para estudiantes
 
 const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

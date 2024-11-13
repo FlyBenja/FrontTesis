@@ -19,7 +19,9 @@ import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
 import CrearComisiones from './pages/Admin/Ternas/CrearComision';
 import ListarComision from './pages/Admin/Ternas/ListarComision';
-import TimeLineEstudiante from './pages/Estudiantes/TimeLine';
+
+import Inicio from './pages/Estudiantes/Inicio';
+import Propuesta from './pages/Estudiantes/Propuesta';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -43,7 +45,7 @@ function App() {
 
         <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
         <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
-        <Route path="time-line-admin" element={<TimeLineAdmin />} />
+        <Route path="time-line" element={<TimeLineAdmin />} />
         <Route path="tareas-estudiante" element={<TareasEstudiante />} />
         <Route path="propuestas" element={<Propuestas />} />
         <Route path="capitulo" element={<Capitulos />} />
@@ -60,7 +62,8 @@ function App() {
         <Route path="settings" element={<Settings />} />
 
         //Links para Estudiantes
-        <Route path="time-line-estudiante" element={<TimeLineEstudiante />} />
+        <Route path="inicio" element={<Inicio />} />
+        <Route path="propuesta" element={<Propuesta />} />
       </Routes>
     </DefaultLayout>
   );

@@ -101,7 +101,7 @@ const ListarEstudiantes: React.FC = () => {
   };
 
   const handleStudentClick = (estudiante: Estudiante) => {
-    navigate(`/admin/time-line-admin`, { state: { estudiante } });
+    navigate(`/admin/time-line`, { state: { estudiante } });
   };
 
   return (
