@@ -7,7 +7,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   // Aquí defines el rol de forma estática; puedes modificarlo según tus necesidades
-  const role: number = 3; // Cambia este valor para probar diferentes rutas: 1, 2, o 3.
+  const role: number = 2; // Cambia este valor para probar diferentes rutas: 1, 2, o 3.
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     if (role === 1) {
       navigate("/admin/graficas");
     } else if (role === 2) {
-      navigate("/secretario/");
+      navigate("/secretario/inicio");
     } else if (role === 3) {
       navigate("/estudiantes/inicio");
     }

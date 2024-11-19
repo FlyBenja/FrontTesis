@@ -8,7 +8,7 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
   // Definimos el rol aquí
-  const role: number = 3 // 1 para Admin, 2 para Secretario, 3 para Estudiante
+  const role: number = 2 // 1 para Admin, 2 para Secretario, 3 para Estudiante
 
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
