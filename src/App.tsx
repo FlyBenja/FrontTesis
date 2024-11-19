@@ -21,11 +21,18 @@ import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
 import CrearComisiones from './pages/Admin/Ternas/CrearComision';
 import ListarComision from './pages/Admin/Ternas/ListarComision';
 
+//Links de Estudiante
 import Inicio from './pages/Estudiantes/Inicio';
 import Propuesta from './pages/Estudiantes/Propuesta';
 import Cursos from './pages/Estudiantes/Cursos';
 import InfoCurso from './pages/Estudiantes/InfoCurso';
 import InfoCapitulo from './pages/Estudiantes/InfoCapitulo';
+
+//Links de Secretario
+import CreaSedes from './pages/Secretario/CreasSedes';
+import CreaAdmin from './pages/Secretario/CrearAdmin';
+import AsignaPG from './pages/Secretario/AsignarPG';
+
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -73,6 +80,11 @@ function App() {
         <Route path="cursos" element={<Cursos />} />
         <Route path="info-curso" element={<InfoCurso />} />
         <Route path="info-capitulo" element={<InfoCapitulo />} />
+
+        //Links para Secretario
+        <Route path="crea-sedes" element={<CreaSedes />} />
+        <Route path="crea-admin" element={<CreaAdmin />} />
+        <Route path="asignapg" element={<AsignaPG />} />
       </Routes>
     </DefaultLayout>
   );

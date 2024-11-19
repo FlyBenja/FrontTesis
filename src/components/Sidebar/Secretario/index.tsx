@@ -101,10 +101,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
             <ul className="mb-6 flex flex-col gap-1.5">
 
-              {/* <!-- Menu Item Time Line --> */}
+              {/* <!-- Menu Item Crear Sedes --> */}
               <li>
                 <NavLink
-                  to="/secretario/inicio"
+                  to="/secretario/crea-sedes"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
@@ -114,51 +114,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     className="fill-current"
                     width="20"
                     height="20"
-                    viewBox="0 0 24 24"
+                    viewBox="0 0 25 25"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"
+                      d="M6 2C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2H6ZM6 4H18V20H6V4ZM8 6H10V8H8V6ZM8 10H10V12H8V10ZM8 14H10V16H8V14ZM14 6H16V8H14V6ZM14 10H16V12H14V10ZM14 14H16V16H14V14Z"
                       fill="currentColor"
+                      transform="scale(1.2)"
                     />
                   </svg>
-                  Inicio
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Time Line --> */}
 
-              {/* <!-- Menu Item Propuestas --> */}
-              <li>
-                <NavLink
-                  to="/secretario/propuesta"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
-                    'bg-graydark dark:bg-meta-4'
-                    }`}
-                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
-                >
-                  <svg
-                    className="fill-current"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6 2C4.89 2 4 2.89 4 4V20C4 21.1 4.89 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2H6ZM13 9V3.5L18.5 9H13ZM6 4H12V10H18V20H6V4ZM8 12H16V14H8V12ZM8 16H14V18H8V16Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Propuestas
+                  Crear Sedes
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Propuestas --> */}
+              {/* <!-- Menu Item Crear Sedes --> */}
 
-              {/* <!-- Menu Item Cursos --> */}
+              {/* <!-- Menu Item Crear Administradores --> */}
               <li>
                 <NavLink
-                  to="/secretario/cursos"
+                  to="/secretario/crea-admin"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
@@ -173,14 +148,41 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M18 2H6C4.89 2 4 2.89 4 4V20C4 21.1 4.89 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.89 19.1 2 18 2ZM6 4H18V20H6V4ZM8 6H16V8H8V6ZM8 10H16V12H8V10ZM8 14H13V16H8V14Z"
+                      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
                       fill="currentColor"
                     />
                   </svg>
-                  Cursos
+                  Crear Admins
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Cursos --> */}
+              {/* <!-- Menu Item Crear Administradores --> */}
+
+              {/* <!-- Menu Item Asignar PG1 y PG2 --> */}
+              <li>
+                <NavLink
+                  to="/secretario/asignapg"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                    'bg-graydark dark:bg-meta-4'
+                    }`}
+                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
+                >
+                  <svg
+                    className="fill-current"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4 4H20C21.1 4 22 4.9 22 6V20C22 21.1 21.1 22 20 22H4C2.9 22 2 21.1 2 20V6C2 4.9 2.9 4 4 4ZM20 8H4V20H20V8ZM9 12H15C15.55 12 16 12.45 16 13C16 13.55 15.55 14 15 14H9C8.45 14 8 13.55 8 13C8 12.45 8.45 12 9 12ZM9 16H12C12.55 16 13 16.45 13 17C13 17.55 12.55 18 12 18H9C8.45 18 8 17.55 8 17C8 16.45 8.45 16 9 16Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Asignar PG
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Asignar PG1 y PG2 --> */}
             </ul>
           </div>
         </nav>

@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     if (role === 1) {
       navigate("/admin/graficas");
     } else if (role === 2) {
-      navigate("/secretario/inicio");
+      navigate("/secretario/crea-sedes");
     } else if (role === 3) {
       navigate("/estudiantes/inicio");
     }
