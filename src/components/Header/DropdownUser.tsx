@@ -7,7 +7,7 @@ const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Aquí defines el rol de forma estática; puedes modificarlo según tus necesidades
-  const role: number = 3; // Cambia este valor para probar diferentes rutas: 1, 2, o 3.
+  const role: number = 2; // Cambia este valor para probar diferentes rutas: 1, 2, o 3.
 
   // Definir las rutas dinámicamente según el rol
   const profileLink = role === 1 ? '/admin/profile' : role === 2 ? '/secretario/profile' : '/estudiantes/profile';
