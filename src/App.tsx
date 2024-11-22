@@ -31,7 +31,7 @@ import InfoCurso from './pages/Estudiantes/InfoCurso';
 import InfoCapitulo from './pages/Estudiantes/InfoCapitulo';
 
 //Links de Secretario
-import CreaSedes from './pages/Secretario/CreasSedes';
+import CreaSedes from './pages/Secretario/CrearSedes';
 import CreaAdmin from './pages/Secretario/CrearAdmin';
 import AsignaPG from './pages/Secretario/AsignarPG';
 

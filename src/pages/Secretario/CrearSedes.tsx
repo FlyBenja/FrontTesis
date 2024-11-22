@@ -1,17 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { getSedes } from '../../ts/Secretario/GetSedes'; // Importar la función para obtener sedes
+import { createSede } from '../../ts/Secretario/createSede'; // Importar la función para crear sede
+import Swal from 'sweetalert2';
 
 const CrearSedes: React.FC = () => {
   const [sedeNombre, setSedeNombre] = useState('');
-  const [sedes, setSedes] = useState<string[]>([]);
+  const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string }[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Llamar a la API al cargar el componente
+  useEffect(() => {
+    const fetchSedes = async () => {
+      try {
+        const fetchedSedes = await getSedes();
+        const sortedSedes = fetchedSedes.sort((a, b) => a.sede_id - b.sede_id);
+        setSedes(sortedSedes);
+      } catch (error) {
+        console.error('Error al obtener las sedes:', error);
+      }
+    };
+
+    fetchSedes();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (sedeNombre) {
-      setSedes((prev) => [...prev, sedeNombre]);
-      setSedeNombre('');
+    if (sedeNombre.trim()) {
+      try {
+        await createSede(sedeNombre); // Crear la sede en el backend
+        const maxId = sedes.length > 0 ? Math.max(...sedes.map((sede) => sede.sede_id)) : 0;
+        const newSede = { sede_id: maxId + 1, nameSede: sedeNombre };
+
+        const updatedSedes = [...sedes, newSede].sort((a, b) => a.sede_id - b.sede_id);
+        setSedes(updatedSedes);
+        setSedeNombre('');
+
+        // Mostrar alerta de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Sede creada',
+          text: `La sede "${sedeNombre}" se ha creado exitosamente.`,
+        });
+      } catch (error) {
+        console.error('Error al crear la sede:', error);
+
+        // Mostrar alerta de error
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: `No se pudo crear la sede. Intenta nuevamente.`,
+        });
+      }
     }
   };
 
@@ -72,16 +113,16 @@ const CrearSedes: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentSedes.map((sede, index) => (
+                  {currentSedes.map((sede) => (
                     <tr
-                      key={index}
+                      key={sede.sede_id}
                       className="hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
                       <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
-                        {index + 1 + (currentPage - 1) * itemsPerPage}
+                        {sede.sede_id}
                       </td>
                       <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
-                        {sede}
+                        {sede.nameSede}
                       </td>
                     </tr>
                   ))}
