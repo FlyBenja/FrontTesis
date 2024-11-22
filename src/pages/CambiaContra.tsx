@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa';
-import Swal from 'sweetalert2'; // Importa SweetAlert2
-import withReactContent from 'sweetalert2-react-content'; // Extensión para React
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import umgLogo from '../images/Login/logo3.png';
 import ofiLogo from '../images/Login/sistemas1_11zon.png';
-import { updatePassword } from '../ts/Generales/UpdatePassword.ts'; // Función de servicio
+import { updatePassword } from '../ts/Generales/UpdatePassword.ts';
 
-const MySwal = withReactContent(Swal); // Configuramos SweetAlert2 para usar con React
+const MySwal = withReactContent(Swal);
 
 const CambiaContra: React.FC = () => {
   const navigate = useNavigate();
@@ -16,78 +16,80 @@ const CambiaContra: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Función para obtener el token de autenticación
   const getAuthToken = (): string | null => {
-    return localStorage.getItem('authToken'); // Recuperamos el token del localStorage
+    return localStorage.getItem('authToken');
+  };
+
+  const getUserRole = (): number | null => {
+    const role = localStorage.getItem('userRole');
+    return role ? parseInt(role, 10) : null;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    console.log('Iniciando el proceso de cambio de contraseña.');
-
-    // Validación de contraseñas
+  
     if (newPassword !== confirmPassword) {
-      console.log('Las contraseñas no coinciden.');
       setLoading(false);
       MySwal.fire({
         icon: 'error',
-        title: 'Error',
-        text: 'Las contraseñas no coinciden.',
+        title: 'Contraseñas no coinciden',
+        text: 'Por favor, asegúrate de que la nueva contraseña y la confirmación sean idénticas.',
         confirmButtonColor: '#d33',
       });
       return;
     }
-
-    // Obtener el token de autenticación
+  
     const token = getAuthToken();
     if (!token) {
-      console.log('Token no encontrado.');
       setLoading(false);
       MySwal.fire({
         icon: 'error',
-        title: 'Error',
-        text: 'No se encontró un token de autenticación.',
+        title: 'Autenticación requerida',
+        text: 'No se encontró un token de autenticación. Por favor, inicia sesión nuevamente.',
         confirmButtonColor: '#d33',
       });
       return;
     }
-
-    // Llamamos a la función de servicio pasando el token
+  
     try {
-      console.log('Llamando a la función `updatePassword`...');
-      const message = await updatePassword(oldPassword, newPassword); // Ahora pasamos el token
-      console.log('Respuesta del servicio `updatePassword`:', message);
-
+      // Llamada al servicio para cambiar la contraseña
+      const response: any = await updatePassword(oldPassword, newPassword);  // Asegúrate de que el tipo de respuesta esté claro
+  
+      // Validar si response tiene la propiedad 'message'
+      const successMessage = response?.message || 'Contraseña cambiada exitosamente.';
+  
       setLoading(false);
       MySwal.fire({
         icon: 'success',
-        title: 'Éxito',
-        text: message,
+        title: 'Contraseña actualizada',
+        text: successMessage,
         confirmButtonColor: '#3085d6',
       }).then(() => {
-        console.log('Redirigiendo al login...');
-        navigate('/login'); // Redirigimos después de cerrar la alerta
+        const rolePaths: { [key: number]: string } = {
+          3: "/admin/graficas",
+          4: "/secretario/crea-sedes",
+          1: "/estudiantes/inicio",
+        };
+  
+        const role = getUserRole();
+        navigate(rolePaths[role!] || "/login");
       });
     } catch (error: any) {
-      console.error('Error en el servicio `updatePassword`:', error);
-
       const errorMessage =
         error?.message ||
-        (error.response && error.response.data) ||
-        'Error desconocido al cambiar la contraseña.';
-
-      console.log('Mensaje de error procesado:', errorMessage);
-
+        (error.response && error.response.data?.message) ||
+        'Ocurrió un error inesperado al intentar cambiar la contraseña.';
+  
       setLoading(false);
       MySwal.fire({
         icon: 'error',
-        title: 'Error',
+        title: 'Error al cambiar la contraseña',
         text: errorMessage,
         confirmButtonColor: '#d33',
       });
     }
-  };
+  };  
 
   return (
     <div
@@ -100,7 +102,6 @@ const CambiaContra: React.FC = () => {
           <h1 className="my-3 text-xl font-semibold text-gray-700">Cambia tu Contraseña</h1>
         </div>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Contraseña actual */}
           <div className="space-y-1">
             <label htmlFor="oldPassword" className="block text-sm font-medium text-gray-700">
               Contraseña Actual
@@ -119,8 +120,6 @@ const CambiaContra: React.FC = () => {
               </span>
             </div>
           </div>
-
-          {/* Nueva contraseña */}
           <div className="space-y-1">
             <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
               Nueva Contraseña
@@ -139,8 +138,6 @@ const CambiaContra: React.FC = () => {
               </span>
             </div>
           </div>
-
-          {/* Confirmar contraseña */}
           <div className="space-y-1">
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
               Confirmar Contraseña
@@ -159,8 +156,6 @@ const CambiaContra: React.FC = () => {
               </span>
             </div>
           </div>
-
-          {/* Botón de envío */}
           <button
             type="submit"
             className={`w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 ${

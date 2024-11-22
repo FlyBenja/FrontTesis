@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { useState } from "react";
-import axios from 'axios';  // Importamos axios directamente
+import Swal from "sweetalert2";
 import umgLogo from './images/Login/logo3.png';
 import ofiLogo from './images/Login/sistemas1_11zon.png';
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -15,27 +16,54 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      // Realizamos la solicitud directamente dentro del componente
       const response = await axios.post('http://localhost:3000/auth/login', { email, password });
 
-      // Guardar el token en el localStorage
+      // Guardar el token y rol en el localStorage
       localStorage.setItem('authToken', response.data.token);
+      localStorage.setItem('userRole', response.data.rol);
 
-      // Si la contraseña debe ser actualizada, redirigir a la página correspondiente
+      // Mapear roles a rutas
+      const rolePaths: { [key: number]: string } = {
+        3: "/admin/graficas",
+        4: "/secretario/crea-sedes",
+        1: "/estudiantes/inicio",
+      };
+
+      // Verificar si la contraseña debe actualizarse
       if (response.data.passwordUpdate === false) {
-        navigate("/cambia/contraseña");
-      }
-      // Redirigir basado en el rol
-      if (response.data.rol === 1) {
-        navigate("/admin/graficas");
-      } else if (response.data.rol === 2) {
-        navigate("/secretario/crea-sedes");
-      } else if (response.data.rol === 3) {
-        navigate("/estudiantes/inicio");
-      }
+        Swal.fire({
+          icon: 'warning',
+          title: 'Cambio de contraseña requerido',
+          text: 'Primero favor de cambiar contraseña temporal.',
+          confirmButtonColor: '#ffc107', // Color amarillo
+        }).then(() => {
+          navigate("/cambia/contraseña");
+        });
+      } else {
+        // Mostrar alerta de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Bienvenido',
+          text: 'Inicio de sesión exitoso.',
+          confirmButtonColor: '#3085d6',
+        }).then(() => {
+          // Verificar si el rol tiene una ruta válida
+          const validRoles = [1, 3, 4];
+          const rolePath = validRoles.includes(response.data.rol)
+            ? rolePaths[response.data.rol]
+            : "/"; // Ruta predeterminada en caso de rol desconocido
 
+          navigate(rolePath);
+        });
+      }
     } catch (error: any) {
-      // En caso de error, mostramos el mensaje
+      // Manejo de errores con alertas
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al iniciar sesión',
+        text: error?.response?.data?.message || 'Ocurrió un error inesperado. Por favor, inténtelo de nuevo.',
+        confirmButtonColor: '#d33',
+      });
       setErrorMessage(error?.response?.data?.message || 'Error desconocido al iniciar sesión');
     }
   };
