@@ -5,8 +5,8 @@ import Calendar from './pages/Admin/Calendar';
 
 import CrearTareas from './pages/Admin/CrearTareas';
 import Graficas from './pages/Admin/Inicio/Graficas';
-import Profile from './pages/DatosPerfil/Profile';
-import Settings from './pages/DatosPerfil/Settings';
+import Profile from './pages/Generales/Profile';
+import Settings from './pages/Generales/Settings';
 import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Admin/Inicio/Bitacora';
 import SubirEstudiantes from './pages/Admin/Estudiantes/SubirEstudiantes';
@@ -20,6 +20,8 @@ import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
 import CrearComisiones from './pages/Admin/Ternas/CrearComision';
 import ListarComision from './pages/Admin/Ternas/ListarComision';
+
+//Links Generales
 
 //Links de Estudiante
 import Inicio from './pages/Estudiantes/Inicio';
