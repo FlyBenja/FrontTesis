@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getSedes } from "../../ts/Secretario/GetSedes"; // Ajusta la ruta según la ubicación de tu archivo
 import { crearAsignacionSedeCurso } from "../../ts/Secretario/CreatePG"; // Ajusta la ruta según la ubicación de tu archivo
 import { getCursosPorSede } from "../../ts/Secretario/GetPgCurso"; // La nueva API para obtener cursos por sede
@@ -183,6 +184,8 @@ const AsignarPG: React.FC = () => {
   };
 
   return (
+    <>
+      <Breadcrumb pageName="Asignar PG" />
     <div className="p-6 max-w-xl mx-auto bg-white dark:bg-boxdark rounded-xl shadow-md">
       <h2 className="text-2xl font-bold text-center mb-6 text-black dark:text-white">
         Asignar PG1 y PG2 a Sede
@@ -230,7 +233,7 @@ const AsignarPG: React.FC = () => {
                 htmlFor="pg1"
                 className={`text-lg ${sede ? "text-black dark:text-white" : "text-gray-500"}`}
               >
-                Activar PG1
+                Activar Proyecto de Graduación I
               </label>
             </div>
             <div className="flex items-center gap-3">
@@ -246,7 +249,7 @@ const AsignarPG: React.FC = () => {
                 htmlFor="pg2"
                 className={`text-lg ${sede ? "text-black dark:text-white" : "text-gray-500"}`}
               >
-                Activar PG2
+                Activar Proyecto de Graduación II
               </label>
             </div>
           </div>
@@ -262,6 +265,7 @@ const AsignarPG: React.FC = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 
