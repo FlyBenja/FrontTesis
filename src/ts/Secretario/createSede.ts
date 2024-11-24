@@ -4,7 +4,7 @@ export const createSede = async (nameSede: string): Promise<void> => {
   try {
     // Recuperar el token desde localStorage
     const token = localStorage.getItem('authToken');
-    
+
     if (!token) {
       throw new Error('Token de autenticación no encontrado');
     }
@@ -21,13 +21,10 @@ export const createSede = async (nameSede: string): Promise<void> => {
       }
     );
   } catch (error) {
-    // Manejo de errores
     if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data
-        ? JSON.stringify(error.response?.data)
-        : 'Error desconocido';
+      const errorMessage = error.response?.data?.message || 'Error desconocido';
       console.error('Error de Axios:', errorMessage);
-      throw new Error(errorMessage);
+      throw new Error(errorMessage); // Propaga el mensaje de error específico
     }
 
     throw new Error('Error desconocido');

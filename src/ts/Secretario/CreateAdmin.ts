@@ -1,14 +1,11 @@
 import axios from 'axios';
 
-export const registerUser = async (
-  email: string,
-  password: string,
-  name: string,
-  carnet: string,
-  sede_id: number,
-  rol_id: number,
-  year: number
-): Promise<void> => {
+export const createAdmin = async (adminData: { 
+  email: string; 
+  name: string; 
+  carnet: string; 
+  sede_id: number; 
+}): Promise<void> => {
   try {
     // Recuperar el token desde localStorage
     const token = localStorage.getItem('authToken');
@@ -17,35 +14,26 @@ export const registerUser = async (
       throw new Error('Token de autenticación no encontrado');
     }
 
-    // Hacer la solicitud POST a la URL de registro
-    await axios.post(
-      'http://localhost:3000/auth/register',
-      {
-        email,
-        password,
-        name,
-        carnet,
-        sede_id,
-        rol_id,
-        year
+    // Hacer la solicitud POST a la URL especificada
+    await axios.post('http://localhost:3000/api/admin/create', adminData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    });
+
+    console.log('Administrador creado exitosamente');
   } catch (error) {
     // Manejo de errores
     if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data
-        ? JSON.stringify(error.response?.data)
-        : 'Error desconocido';
-      console.error('Error de Axios:', errorMessage);
-      throw new Error(errorMessage);
+      // Extraer únicamente el mensaje de error de la API
+      const errorMessage = error.response?.data?.message;
+
+      if (errorMessage) {
+        throw new Error(errorMessage); // Lanzar el mensaje específico
+      }
     }
 
-    throw new Error('Error desconocido');
+    throw error; // Si no es un error de Axios, relanzarlo
   }
 };

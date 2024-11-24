@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getSedes } from '../../ts/Secretario/GetSedes';  // Importa la API para obtener las sedes
-import { registerUser } from '../../ts/Secretario/CreateAdmin';  // Importa la API para registrar administradores
+import { getSedes } from '../../ts/Secretario/GetSedes'; // Importa la API para obtener las sedes
+import { createAdmin } from '../../ts/Secretario/CreateAdmin'; // Importa la API para crear administradores
 import Swal from 'sweetalert2';
 
 interface Admin {
@@ -13,7 +13,7 @@ interface Admin {
 }
 
 const CrearAdmin: React.FC = () => {
-  const [admins, setAdmins] = useState<Admin[]>([]);  // Lista de administradores
+  const [admins, setAdmins] = useState<Admin[]>([]); // Lista de administradores
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [adminUserName, setAdminUserName] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
@@ -30,7 +30,7 @@ const CrearAdmin: React.FC = () => {
         const data = await getSedes();
         // Ordenar las sedes por sede_id de forma ascendente
         const sortedSedes = data.sort((a, b) => a.sede_id - b.sede_id);
-        setSedes(sortedSedes);  // Guardar las sedes ordenadas en el estado
+        setSedes(sortedSedes); // Guardar las sedes ordenadas en el estado
       } catch (error) {
         console.error('Error al obtener las sedes:', error);
       }
@@ -48,7 +48,6 @@ const CrearAdmin: React.FC = () => {
     // Ordenar administradores por id ascendente
     const sortedAdmins = fetchedAdmins.sort((a, b) => a.id - b.id);
     setAdmins(sortedAdmins);
-
   }, []);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -62,54 +61,34 @@ const CrearAdmin: React.FC = () => {
 
   const handleCreateAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validar que los campos necesarios están llenos
-    if (!adminUserName || !adminEmail || !adminCarnet || !adminSede) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Por favor completa todos los campos.',
-        confirmButtonColor: '#FF5A5F', // Rojo para error
-        confirmButtonText: 'Aceptar',
-      });
-      return;
-    }
-    
-    // Obtener el año actual
-    const currentYear = new Date().getFullYear();
-    
-    // Llamar a la API para registrar el usuario
+  
     try {
-      await registerUser(
-        adminEmail,
-        'contratempo', // Contraseña fija
-        adminUserName,
-        adminCarnet,
-        parseInt(adminSede),
-        3,  // rol_id fijo
-        currentYear  // Año actual dinámico
-      );
+      await createAdmin({
+        email: adminEmail,
+        name: adminUserName,
+        carnet: adminCarnet,
+        sede_id: parseInt(adminSede),
+      });
   
       Swal.fire({
         icon: 'success',
         title: 'Administrador creado',
         text: `El administrador ${adminUserName} ha sido creado exitosamente.`,
-        confirmButtonColor: '#28a745', // Verde para éxito
+        confirmButtonColor: '#28a745',
         confirmButtonText: 'Aceptar',
       });
-      handleCloseModal(); // Cerrar el modal
-      // Aquí puedes agregar el nuevo administrador a la lista si es necesario
-    } catch (error) {
-      console.error('Error al crear el administrador:', error);
+  
+      handleCloseModal();
+    } catch (error: any) {
       Swal.fire({
         icon: 'error',
         title: 'Error al crear administrador',
-        text: 'Hubo un problema al crear el administrador. Intenta nuevamente.',
-        confirmButtonColor: '#FF5A5F', // Rojo para error
+        text: error.message, // Mostrar el mensaje específico lanzado por la API
+        confirmButtonColor: '#FF5A5F',
         confirmButtonText: 'Aceptar',
       });
     }
-  };    
+  };  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -220,6 +199,7 @@ const CrearAdmin: React.FC = () => {
             </button>
           </div>
         )}
+      </div>
 
         {/* Modal */}
         {isModalOpen && (
@@ -303,7 +283,6 @@ const CrearAdmin: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
     </>
   );
 };

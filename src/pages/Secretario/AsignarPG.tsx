@@ -90,37 +90,37 @@ const AsignarPG: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     try {
       // Validar la sede seleccionada
       const sedeObj = sedes.find((s) => s.nameSede === sede);
       if (!sedeObj) {
         throw new Error("Sede no encontrada. Por favor, selecciona una sede válida.");
       }
-
+  
       // Obtener el año actual
       const currentYear = new Date().getFullYear();
-
+  
       // Crear payloads basados en los checkboxes seleccionados
       const payloads = [];
-      if (pg1 && !pg1Disabled) {  // Verificar que PG1 esté habilitado
+      if (pg1 && !pg1Disabled) {
         payloads.push({
-          course_id: 1, // PG1
+          course_id: 1,
           sede_id: sedeObj.sede_id,
-          year_id: currentYear, // Año actual
+          year_id: currentYear,
           courseActive: true,
         });
       }
-
-      if (pg2 && !pg2Disabled) {  // Verificar que PG2 esté habilitado
+  
+      if (pg2 && !pg2Disabled) {
         payloads.push({
-          course_id: 2, // PG2
+          course_id: 2,
           sede_id: sedeObj.sede_id,
-          year_id: currentYear, // Año actual
+          year_id: currentYear,
           courseActive: true,
         });
       }
-
+  
       // Verificar si hay payloads y enviarlos
       if (payloads.length > 0) {
         await Promise.all(
@@ -128,32 +128,30 @@ const AsignarPG: React.FC = () => {
             try {
               await crearAsignacionSedeCurso(payload);
             } catch (error) {
-              // Aquí manejamos el error específico según el curso que falló
+              // Manejar errores específicos por curso
               if (payload.course_id === 1) {
-                // Si el error ocurrió para PG1
-                setPg1(false); // Desmarcar PG1
-                throw new Error("El curso Proyecto De Graduación I fuera del periodo de asignación.");
+                setPg1(false);
+                throw new Error("El curso Proyecto de Graduación I no se pudo asignar en este periodo.");
               } else if (payload.course_id === 2) {
-                // Si el error ocurrió para PG2
-                setPg2(false); // Desmarcar PG2
-                throw new Error("El curso Proyecto De Graduación II fuera del periodo de asignación.");
+                setPg2(false);
+                throw new Error("El curso Proyecto de Graduación II no se pudo asignar en este periodo.");
               }
             }
           })
         );
-
-        // Mostrar mensaje de éxito
+  
+        // Alerta de éxito
         Swal.fire({
           icon: "success",
-          title: "Asignación Completada",
-          text: `La asignación se completó con éxito para la sede "${sede}" en el año ${currentYear}.`,
-          confirmButtonText: "Aceptar",
-          confirmButtonColor: "#28a745",
+          title: "¡Asignación completada!",
+          text: `Se asignaron correctamente los cursos seleccionados a la sede "${sede}" para el año ${currentYear}.`,
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#4CAF50",
           customClass: {
             confirmButton: "text-white",
           },
         });
-
+  
         // Resetear el formulario
         setSede("");
         setPg1(false);
@@ -161,27 +159,32 @@ const AsignarPG: React.FC = () => {
         setPg1Disabled(false);
         setPg2Disabled(false);
       } else {
-        // Mostrar un mensaje si no se enviaron payloads
+        // Alerta de información si no hay payloads
         Swal.fire({
           icon: "info",
-          title: "Sin Asignaciones",
-          text: "No se enviaron asignaciones, ya que todos los cursos seleccionados están bloqueados.",
+          title: "Sin asignaciones",
+          text: "No se enviaron asignaciones, todos los cursos seleccionados están bloqueados.",
+          confirmButtonText: "Cerrar",
+          confirmButtonColor: "#007BFF",
+          customClass: {
+            confirmButton: "text-white",
+          },
         });
       }
     } catch (error: any) {
-      // Mostrar el mensaje de error específico en el SweetAlert
+      // Alerta de error específico
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: error.message || "Error desconocido",
+        title: "Error en la asignación",
+        text: error.message || "Ocurrió un error inesperado. Intenta nuevamente.",
         confirmButtonText: "Cerrar",
-        confirmButtonColor: "#dc3545",
+        confirmButtonColor: "#DC3545",
         customClass: {
           confirmButton: "text-white",
         },
       });
     }
-  };
+  };  
 
   return (
     <>

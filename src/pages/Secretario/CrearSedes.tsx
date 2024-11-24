@@ -43,14 +43,14 @@ const CrearSedes: React.FC = () => {
           title: 'Sede creada',
           text: `La sede "${sedeNombre}" se ha creado exitosamente.`,
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error al crear la sede:', error);
 
-        // Mostrar alerta de error
+        // Mostrar alerta con el mensaje específico devuelto por el backend
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: `No se pudo crear la sede. Intenta nuevamente.`,
+          text: error.message || 'Ocurrió un error al crear la sede.',
         });
       }
     }
