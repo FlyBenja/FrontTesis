@@ -70,11 +70,11 @@ const CrearSedes: React.FC = () => {
     <>
       <Breadcrumb pageName="Crear Sedes" />
 
-      <div className="mx-auto max-w-6xl px-6 py-3">
+      <div className="mx-auto max-w-6xl px-6 py-0">
         {/* Formulario para crear sedes */}
         <form
           onSubmit={handleSubmit}
-          className="p-6 bg-white dark:bg-boxdark rounded-lg shadow-md mb-8"
+          className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md mb-8"
         >
           <div className="flex flex-col md:flex-row items-center gap-4">
             <input
@@ -95,7 +95,7 @@ const CrearSedes: React.FC = () => {
         </form>
 
         {/* Tabla para mostrar sedes */}
-        <div className="bg-white dark:bg-boxdark rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-boxdark rounded-lg shadow-md p-4">
           <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
             Sedes Registradas
           </h3>

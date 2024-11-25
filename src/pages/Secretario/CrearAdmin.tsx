@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getSedes } from '../../ts/Secretario/GetSedes'; // Importa la API para obtener las sedes
 import { createAdmin } from '../../ts/Secretario/CreateAdmin'; // Importa la API para crear administradores
+import { getAdmins } from '../../ts/Secretario/GetAdmins'; // Importa la API para obtener los administradores
 import Swal from 'sweetalert2';
 
 interface Admin {
@@ -36,18 +37,27 @@ const CrearAdmin: React.FC = () => {
       }
     };
 
+    const fetchAdmins = async () => {
+      try {
+        const data = await getAdmins();
+        // Transformar los datos para ajustarlos a la interfaz de Admin
+        const transformedAdmins: Admin[] = data.map((admin) => ({
+          id: admin.user_id,
+          nombre: admin.name,
+          email: admin.email,
+          sede: admin.sede.nombre,
+          carnet: admin.carnet,
+        }));
+        // Ordenar administradores por id ascendente
+        const sortedAdmins = transformedAdmins.sort((a, b) => a.id - b.id);
+        setAdmins(sortedAdmins);
+      } catch (error) {
+        console.error('Error al obtener los administradores:', error);
+      }
+    };
+
     fetchSedes();
-
-    // Simular carga de administradores (puedes reemplazarlo con una llamada real a tu API)
-    const fetchedAdmins = [
-      { id: 3, nombre: 'Admin 3', email: 'admin3@example.com', sede: 'Sede 1', carnet: '123' },
-      { id: 1, nombre: 'Admin 1', email: 'admin1@example.com', sede: 'Sede 2', carnet: '456' },
-      { id: 2, nombre: 'Admin 2', email: 'admin2@example.com', sede: 'Sede 3', carnet: '789' },
-    ];
-
-    // Ordenar administradores por id ascendente
-    const sortedAdmins = fetchedAdmins.sort((a, b) => a.id - b.id);
-    setAdmins(sortedAdmins);
+    fetchAdmins();
   }, []);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -78,12 +88,24 @@ const CrearAdmin: React.FC = () => {
         confirmButtonText: 'Aceptar',
       });
   
+      // Volver a cargar los administradores
+      const updatedAdmins = await getAdmins();
+      const transformedAdmins: Admin[] = updatedAdmins.map((admin) => ({
+        id: admin.user_id,
+        nombre: admin.name,
+        email: admin.email,
+        sede: admin.sede.nombre,
+        carnet: admin.carnet,
+      }));
+      const sortedAdmins = transformedAdmins.sort((a, b) => a.id - b.id);
+      setAdmins(sortedAdmins);
+  
       handleCloseModal();
     } catch (error: any) {
       Swal.fire({
         icon: 'error',
         title: 'Error al crear administrador',
-        text: error.message, // Mostrar el mensaje específico lanzado por la API
+        text: error.message,
         confirmButtonColor: '#FF5A5F',
         confirmButtonText: 'Aceptar',
       });
@@ -201,88 +223,88 @@ const CrearAdmin: React.FC = () => {
         )}
       </div>
 
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-boxdark rounded-lg shadow-lg p-6 w-96">
-              <h3 className="text-xl font-semibold text-black dark:text-white mb-4">Nuevo Administrador</h3>
-              <form onSubmit={handleCreateAdmin}>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-                    Nombre
-                  </label>
-                  <input
-                    type="text"
-                    value={adminUserName}
-                    onChange={(e) => setAdminUserName(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
-                    placeholder="Ingrese el nombre del administrador"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-                    Correo
-                  </label>
-                  <input
-                    type="email"
-                    value={adminEmail}
-                    onChange={(e) => setAdminEmail(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
-                    placeholder="Ingrese el correo electrónico"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-                    Carnet
-                  </label>
-                  <input
-                    type="text"
-                    value={adminCarnet}
-                    onChange={(e) => setAdminCarnet(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
-                    placeholder="Ingrese el número de carnet"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-                    Sede
-                  </label>
-                  <select
-                    value={adminSede}
-                    onChange={(e) => setAdminSede(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
-                    required
-                  >
-                    <option value="">Seleccione una sede</option>
-                    {sedes.map((sede) => (
-                      <option key={sede.sede_id} value={sede.sede_id}>
-                        {sede.nameSede}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex justify-end gap-4">
-                  <button
-                    type="button"
-                    onClick={handleCloseModal}
-                    className="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded-md hover:bg-gray-400"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                  >
-                    Guardar
-                  </button>
-                </div>
-              </form>
-            </div>
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-boxdark rounded-lg shadow-lg p-6 w-96">
+            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">Nuevo Administrador</h3>
+            <form onSubmit={handleCreateAdmin}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  value={adminUserName}
+                  onChange={(e) => setAdminUserName(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
+                  placeholder="Ingrese el nombre del administrador"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
+                  Correo
+                </label>
+                <input
+                  type="email"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
+                  placeholder="Ingrese el correo electrónico"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
+                  Carnet
+                </label>
+                <input
+                  type="text"
+                  value={adminCarnet}
+                  onChange={(e) => setAdminCarnet(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
+                  placeholder="Ingrese el número de carnet"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
+                  Sede
+                </label>
+                <select
+                  value={adminSede}
+                  onChange={(e) => setAdminSede(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
+                  required
+                >
+                  <option value="">Seleccione una sede</option>
+                  {sedes.map((sede) => (
+                    <option key={sede.sede_id} value={sede.sede_id}>
+                      {sede.nameSede}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded-md hover:bg-gray-400"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                  Guardar
+                </button>
+              </div>
+            </form>
           </div>
-        )}
+        </div>
+      )}
     </>
   );
 };
