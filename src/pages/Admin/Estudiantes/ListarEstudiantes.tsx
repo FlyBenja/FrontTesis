@@ -1,41 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
+import { getCursos } from '../../../ts/Admin/GetCursos';
+import { getYears } from '../../../ts/Generales/GetYears';
+import { getEstudiantes } from '../../../ts/Admin/GetEstudiantes';
 
 interface Estudiante {
   id: number;
-  nombre: string;
+  userName: string;
   carnet: string;
   curso: string;
   año: number;
   fotoPerfil: string;
 }
 
+interface Curso {
+  course_id: number;
+  courseName: string;
+}
+
 const ListarEstudiantes: React.FC = () => {
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
-  const [filteredEstudiantes, setFilteredEstudiantes] = useState<Estudiante[]>([]);
-  const [searchCarnet, setSearchCarnet] = useState('');
   const [selectedAño, setSelectedAño] = useState<string>('');
-  const [selectedCurso, setSelectedCurso] = useState<string>('');
-
+  const [selectedCurso, setSelectedCurso] = useState<number>(0);
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [years, setYears] = useState<number[]>([]);
+  const [searchCarnet, setSearchCarnet] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const estudiantesPerPage = 5;
+  const estudiantesPerPage = 4;
   const [maxPageButtons] = useState(10);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const datosEstudiantes: Estudiante[] = [
-      { id: 1, nombre: 'Luis Alvarado', carnet: '1234-12-1234', curso: 'Matemáticas', año: 2023, fotoPerfil: 'https://randomuser.me/api/portraits/men/1.jpg' },
-      { id: 2, nombre: 'María García', carnet: '2345-12-2345', curso: 'Ciencias', año: 2022, fotoPerfil: 'https://randomuser.me/api/portraits/women/1.jpg' },
-      { id: 3, nombre: 'Carlos Sánchez', carnet: '3456-12-3456', curso: 'Historia', año: 2021, fotoPerfil: 'https://randomuser.me/api/portraits/men/2.jpg' },
-      { id: 4, nombre: 'Ana López', carnet: '4567-12-4567', curso: 'Matemáticas', año: 2023, fotoPerfil: 'https://randomuser.me/api/portraits/women/2.jpg' },
-      { id: 5, nombre: 'Pedro Gómez', carnet: '5678-12-5678', curso: 'Historia', año: 2022, fotoPerfil: 'https://randomuser.me/api/portraits/men/3.jpg' },
-      { id: 6, nombre: 'Claudia Hernández', carnet: '6789-12-6789', curso: 'Ciencias', año: 2021, fotoPerfil: 'https://randomuser.me/api/portraits/women/3.jpg' },
-    ];
-    setEstudiantes(datosEstudiantes);
-    setFilteredEstudiantes(datosEstudiantes);
-  }, []);
+    const fetchInitialData = async () => {
+      try {
+        const perfil = await getDatosPerfil();
+        const sedeId = perfil.sede;
+
+        const cursosRecuperados: any = await getCursos(sedeId);
+        setCursos(cursosRecuperados);
+
+        const yearsRecuperados = await getYears();
+        setYears(yearsRecuperados.map(yearObj => yearObj.year));
+
+        if (sedeId && selectedCurso && selectedAño) {
+          const estudiantesRecuperados = await getEstudiantes(sedeId, selectedCurso, parseInt(selectedAño));
+          setEstudiantes(estudiantesRecuperados);
+          setShowSearch(true);
+        }
+
+        const currentYear = new Date().getFullYear().toString();
+        if (yearsRecuperados.map(yearObj => yearObj.year.toString()).includes(currentYear)) {
+          setSelectedAño(currentYear);
+        }
+
+        const currentMonth = new Date().getMonth() + 1;
+        const selectedCourse = currentMonth <= 6 ? 1 : 2;
+        setSelectedCurso(selectedCourse);
+
+      } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+      }
+    };
+
+    fetchInitialData();
+  }, [selectedCurso, selectedAño]);
 
   const handleSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCarnet(e.target.value);
@@ -46,34 +78,30 @@ const ListarEstudiantes: React.FC = () => {
   };
 
   const handleCursoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCurso(e.target.value);
+    setSelectedCurso(Number(e.target.value));
   };
 
-  useEffect(() => {
-    let estudiantesFiltrados = estudiantes;
-
-    if (searchCarnet) {
-      estudiantesFiltrados = estudiantesFiltrados.filter(est =>
+  const handleSearchClick = async () => {
+    if (searchCarnet.trim() === '') {
+      const perfil = await getDatosPerfil();
+      const sedeId = perfil.sede;
+      if (sedeId && selectedCurso && selectedAño) {
+        const estudiantesRecuperados = await getEstudiantes(sedeId, selectedCurso, parseInt(selectedAño));
+        setEstudiantes(estudiantesRecuperados);
+      }
+    } else {
+      const estudiantesFiltrados = estudiantes.filter(est =>
         est.carnet.toLowerCase().includes(searchCarnet.toLowerCase())
       );
+      setEstudiantes(estudiantesFiltrados);
     }
-
-    if (selectedAño) {
-      estudiantesFiltrados = estudiantesFiltrados.filter(est => est.año === parseInt(selectedAño));
-    }
-
-    if (selectedCurso) {
-      estudiantesFiltrados = estudiantesFiltrados.filter(est => est.curso === selectedCurso);
-    }
-
-    setFilteredEstudiantes(estudiantesFiltrados);
-  }, [searchCarnet, selectedAño, selectedCurso, estudiantes]);
+  };
 
   const indexOfLastEstudiante = currentPage * estudiantesPerPage;
   const indexOfFirstEstudiante = indexOfLastEstudiante - estudiantesPerPage;
-  const currentEstudiantes = filteredEstudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante);
+  const currentEstudiantes = estudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante);
 
-  const totalPages = Math.ceil(filteredEstudiantes.length / estudiantesPerPage);
+  const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage);
 
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -86,6 +114,19 @@ const ListarEstudiantes: React.FC = () => {
     const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
+    // Flecha de retroceder
+    buttons.push(
+      <button
+        key="prev"
+        onClick={() => paginate(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+      >
+        &#8592;
+      </button>
+    );
+
+    // Botones de páginas numéricas
     for (let i = startPage; i <= endPage; i++) {
       buttons.push(
         <button
@@ -97,6 +138,19 @@ const ListarEstudiantes: React.FC = () => {
         </button>
       );
     }
+
+    // Flecha de avanzar
+    buttons.push(
+      <button
+        key="next"
+        onClick={() => paginate(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+      >
+        &#8594;
+      </button>
+    );
+
     return buttons;
   };
 
@@ -104,20 +158,42 @@ const ListarEstudiantes: React.FC = () => {
     navigate(`/admin/time-line`, { state: { estudiante } });
   };
 
+  const renderFotoPerfil = (fotoPerfil: string, userName: string) => {
+    if (fotoPerfil) {
+      return <img src={fotoPerfil} alt={userName} className="w-10 h-10 rounded-full mx-auto" />;
+    } else {
+      const initial = userName.charAt(0).toUpperCase();
+      return (
+        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white">
+          {initial}
+        </div>
+      );
+    }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Listar Estudiantes" />
       <div className="mx-auto max-w-5xl px-1 py-1">
-
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Buscar por carnet"
-            value={searchCarnet}
-            onChange={handleSearchCarnet}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
-          />
-        </div>
+        {showSearch && (
+          <div className="mb-4 flex flex-wrap items-center justify-between space-x-2">
+            <div className="flex items-center w-full sm:w-auto">
+              <input
+                type="text"
+                placeholder="Buscar por carnet"
+                value={searchCarnet}
+                onChange={handleSearchCarnet}
+                className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+              />
+              <button
+                onClick={handleSearchClick}
+                className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+              >
+                Buscar
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="mb-4 flex gap-4">
           <select
@@ -126,9 +202,11 @@ const ListarEstudiantes: React.FC = () => {
             className="w-1/2 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           >
             <option value="">Seleccionar año</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
+            {years.map((year) => (
+              <option key={year} value={year.toString()}>
+                {year}
+              </option>
+            ))}
           </select>
 
           <select
@@ -136,10 +214,12 @@ const ListarEstudiantes: React.FC = () => {
             onChange={handleCursoChange}
             className="w-1/2 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           >
-            <option value="">Seleccionar curso</option>
-            <option value="Matemáticas">Matemáticas</option>
-            <option value="Ciencias">Ciencias</option>
-            <option value="Historia">Historia</option>
+            <option value={0}>Seleccionar curso</option>
+            {cursos.map(curso => (
+              <option key={curso.course_id} value={curso.course_id}>
+                {curso.courseName}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -161,46 +241,24 @@ const ListarEstudiantes: React.FC = () => {
                     onClick={() => handleStudentClick(estudiante)}
                   >
                     <td className="py-2 px-4 text-center">
-                      <img src={estudiante.fotoPerfil} alt={estudiante.nombre} className="w-10 h-10 rounded-full mx-auto" />
+                      {renderFotoPerfil(estudiante.fotoPerfil, estudiante.userName)}
                     </td>
-                    <td className="py-2 px-4 text-center relative group">
-                      {estudiante.nombre}
-                      <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
-                        Ir Hacia TimeLine Estudiante
-                      </div>
-                    </td>
+                    <td className="py-2 px-4 text-center">{estudiante.userName}</td>
                     <td className="py-2 px-4 text-center">{estudiante.carnet}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
-                    No se encontraron estudiantes.
-                  </td>
+                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500">No se encontraron estudiantes</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
 
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-            disabled={currentPage === 1}
-          >
-            &#8592;
-          </button>
-
+        {/* Paginación */}
+        <div className="mt-4 flex justify-center">
           {renderPaginationButtons()}
-
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-            disabled={currentPage === totalPages}
-          >
-            &#8594;
-          </button>
         </div>
       </div>
     </>

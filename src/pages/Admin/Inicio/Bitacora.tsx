@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; // Importa la API de perfil
-import { getBitacora } from '../../../ts/Admin/GetBitacora'; // Importa la API de bitácora
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
+import { getBitacora } from '../../../ts/Admin/GetBitacora';
 
 interface LogEntry {
-  uniqueKey: number; // Clave única para React
+  uniqueKey: number;
   user: string;
   role: string;
   action: string;
@@ -17,10 +17,17 @@ const Bitacora: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const logsPerPage = 8;
+  const [maxPageButtons, setMaxPageButtons] = useState(10);
+
+  const updateMaxButtons = () => {
+    if (window.innerWidth < 640) {
+      setMaxPageButtons(4); // Mostrar solo 4 botones en pantallas pequeñas
+    } else {
+      setMaxPageButtons(10); // Mostrar 10 botones en pantallas más grandes
+    }
+  };
 
   useEffect(() => {
-    let keyCounter = 0; // Contador inicial
-
     const fetchBitacora = async () => {
       try {
         setLoading(true);
@@ -29,8 +36,9 @@ const Bitacora: React.FC = () => {
 
         const logsData = Array.isArray(bitacoraResponse?.logs) ? bitacoraResponse.logs : [];
 
+        let keyCounter = 0;
         const mappedLogs = logsData.map((log: any) => ({
-          uniqueKey: ++keyCounter, // Incrementar el contador
+          uniqueKey: ++keyCounter,
           user: log.username || 'Desconocido',
           role: log.role || 'Sin rol',
           action: log.action || 'Sin acción',
@@ -46,6 +54,12 @@ const Bitacora: React.FC = () => {
     };
 
     fetchBitacora();
+
+    // Actualizar la cantidad de botones cuando cambia el tamaño de la pantalla
+    updateMaxButtons();
+    window.addEventListener('resize', updateMaxButtons);
+
+    return () => window.removeEventListener('resize', updateMaxButtons);
   }, []);
 
   const indexOfLastLog = currentPage * logsPerPage;
@@ -57,6 +71,29 @@ const Bitacora: React.FC = () => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
+  };
+
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => paginate(i)}
+          className={`mx-1 px-3 py-1 rounded-md border ${
+            currentPage === i
+              ? 'bg-blue-500 text-white'
+              : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return buttons;
   };
 
   return (
@@ -73,7 +110,7 @@ const Bitacora: React.FC = () => {
               ) : (
                 currentLogs.map((log) => (
                   <div
-                    key={log.uniqueKey} // Usar el contador como clave única
+                    key={log.uniqueKey}
                     className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg dark:bg-boxdark dark:border-strokedark"
                   >
                     <p className="text-lg font-bold text-black dark:text-white">{log.user}</p>
@@ -106,7 +143,7 @@ const Bitacora: React.FC = () => {
                   ) : (
                     currentLogs.map((log) => (
                       <tr
-                        key={log.uniqueKey} // Usar el contador como clave única
+                        key={log.uniqueKey}
                         className="border-t border-gray-200 dark:border-strokedark"
                       >
                         <td className="py-2 px-4 text-black dark:text-white">{log.user}</td>
@@ -120,40 +157,28 @@ const Bitacora: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+                disabled={currentPage === 1}
+              >
+                &#8592;
+              </button>
+
+              {renderPaginationButtons()}
+
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+                disabled={currentPage === totalPages}
+              >
+                &#8594;
+              </button>
+            </div>
           </>
         )}
-
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-            disabled={currentPage === 1}
-          >
-            &#8592;
-          </button>
-
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => paginate(index + 1)}
-              className={`mx-1 px-3 py-1 rounded-md border ${
-                currentPage === index + 1
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-            disabled={currentPage === totalPages}
-          >
-            &#8594;
-          </button>
-        </div>
       </div>
     </>
   );
