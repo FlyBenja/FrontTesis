@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import pdfFile from './Formato_Propuesta_Tesis.pdf'; // Importa el PDF
 
 interface Propuesta {
   id: number;
@@ -20,6 +19,8 @@ const Propuestas: React.FC = () => {
   const handleSelectPropuesta = (id: number) => {
     setSelectedPropuesta(id);
   };
+
+  const pdfFile = '/Formato_Propuesta_Tesis.pdf'; // Ruta del archivo en public
 
   return (
     <>
@@ -69,7 +70,7 @@ const Propuestas: React.FC = () => {
             Visualización de Documento PDF
           </h3>
           <iframe
-            src={pdfFile} // Usando el PDF importado
+            src={pdfFile} // Usando el PDF desde la carpeta public
             title="Vista PDF"
             className="w-full h-[600px] rounded-md shadow-sm" // Cambié h-96 por h-[600px]
           ></iframe>

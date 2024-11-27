@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
-import Calendar from './pages/Admin/Calendar';
+import Calendar from './pages/Generales/Calendar';
 
 import CrearTareas from './pages/Admin/CrearTareas';
 import Graficas from './pages/Admin/Inicio/Graficas';

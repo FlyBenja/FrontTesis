@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import { getDatosPerfil } from '../../../ts/Admin/GetDatsPerfil'; // Importa la API de perfil
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; // Importa la API de perfil
 import { getBitacora } from '../../../ts/Admin/GetBitacora'; // Importa la API de bitácora
 
 interface LogEntry {
@@ -16,7 +16,7 @@ const Bitacora: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const logsPerPage = 9;
+  const logsPerPage = 8;
 
   useEffect(() => {
     let keyCounter = 0; // Contador inicial

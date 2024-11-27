@@ -1,16 +1,75 @@
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import React, { useState } from 'react';
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; // Llamada a la API para obtener el sede_id
+import { cargaMasiva } from '../../../ts/Admin/CargaMasiva';
 
 const SubirCatedraticos = () => {
   const [fileSelected, setFileSelected] = useState<File | null>(null);
+  const [apiLoading, setApiLoading] = useState<boolean>(false); // Estado para controlar el indicador de carga
+  const [sedeId, setSedeId] = useState<number | null>(null); // Almacenará el sede_id
   const fileInputRef = React.createRef<HTMLInputElement>();
+
+  // Obtiene el sede_id desde la API
+  useEffect(() => {
+    const fetchSedeId = async () => {
+      try {
+        const { sede } = await getDatosPerfil();
+        setSedeId(sede); // Almacena el sede_id
+      } catch (error) {
+        console.error('Error al obtener el perfil:', error);
+        showAlert('error', '¡Error!', 'No se pudo obtener la información del perfil.');
+      }
+    };
+
+    fetchSedeId();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setFileSelected(file);
   };
 
-  const handleConfirm = () => {
+  const showAlert = (type: 'success' | 'error', title: string, text: string) => {
+    const confirmButtonColor = type === 'success' ? '#28a745' : '#dc3545'; // Verde para éxito, Rojo para error
+    Swal.fire({
+      icon: type,
+      title,
+      text,
+      confirmButtonColor,
+      confirmButtonText: 'OK',
+    });
+  };
+
+  const handleUpload = async () => {
+    if (!fileSelected || !sedeId) {
+      showAlert('error', '¡Error!', 'Archivo o sede no seleccionada.');
+      return;
+    }
+
+    setApiLoading(true); // Mostrar el loading
+
+    try {
+      // Datos fijos para el course_id y rol_id
+      const response = await cargaMasiva({
+        archivo: fileSelected,
+        sede_id: sedeId, // Usamos el sede_id obtenido desde la API
+        rol_id: 2,  // Rol fijo 2 para Catedráticos
+        course_id: undefined, // Course_id fijo en 0
+      });
+
+      showAlert('success', 'Carga masiva completada', response.message || 'Los catedráticos se han cargado exitosamente.');
+      handleReset();
+    } catch (error) {
+      if (error instanceof Error) {
+        showAlert('error', '¡Error!', error.message);
+      }
+    } finally {
+      setApiLoading(false); // Ocultar el loading
+    }
+  };
+
+  const handleReset = () => {
     setFileSelected(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -19,14 +78,14 @@ const SubirCatedraticos = () => {
 
   const handleDownloadTemplate = () => {
     const link = document.createElement('a');
-    link.href = '/path/to/template.xlsx'; // Aquí pones el enlace correcto al archivo de la plantilla
+    link.href = '/Plantilla.xlsx';
     link.download = 'Plantilla_Catedraticos.xlsx';
     link.click();
   };
 
   return (
     <>
-      <Breadcrumb pageName="Subir Catedráticos" /> {/* Añadido el Breadcrumb */}
+      <Breadcrumb pageName="Subir Catedráticos" />
       <div className="flex justify-center mt-18">
         <div className="w-full max-w-md">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -36,7 +95,6 @@ const SubirCatedraticos = () => {
               </h3>
             </div>
             <div className="p-6.5">
-
               {/* Mensaje de favor seleccionar archivo */}
               <p className="text-center text-sm font-medium text-black dark:text-white mb-4">
                 Favor de seleccionar un archivo Excel (.xls, .xlsx)
@@ -51,10 +109,9 @@ const SubirCatedraticos = () => {
               />
 
               <button
-                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${fileSelected ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'
-                  }`}
-                onClick={handleConfirm}
-                disabled={!fileSelected}
+                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${fileSelected ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
+                onClick={handleUpload}
+                disabled={!fileSelected || !sedeId} // Deshabilitar el botón si no hay archivo o sede
               >
                 Confirmar Subida
               </button>
@@ -75,6 +132,13 @@ const SubirCatedraticos = () => {
           </div>
         </div>
       </div>
+
+      {/* Indicador de carga */}
+      {apiLoading && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="text-white text-xl">Cargando...</div>
+        </div>
+      )}
     </>
   );
 };
