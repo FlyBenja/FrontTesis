@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
-import { getCursos } from '../../../ts/Admin/GetCursos';
 import { getYears } from '../../../ts/Generales/GetYears';
 import { getEstudiantes } from '../../../ts/Admin/GetEstudiantes';
+import { getCursos } from '../../../ts/Admin/GetCursos';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 
 interface Estudiante {
   id: number;
@@ -22,78 +21,110 @@ interface Curso {
 
 const ListarEstudiantes: React.FC = () => {
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
-  const [selectedAño, setSelectedAño] = useState<string>('');
-  const [selectedCurso, setSelectedCurso] = useState<number>(0);
-  const [cursos, setCursos] = useState<Curso[]>([]);
   const [years, setYears] = useState<number[]>([]);
+  const [selectedAño, setSelectedAño] = useState<string>('');
   const [searchCarnet, setSearchCarnet] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [selectedCurso, setSelectedCurso] = useState<string>('');
   const estudiantesPerPage = 4;
   const [maxPageButtons] = useState(10);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const perfil = await getDatosPerfil();
-        const sedeId = perfil.sede;
-
-        const cursosRecuperados: any = await getCursos(sedeId);
-        setCursos(cursosRecuperados);
-
         const yearsRecuperados = await getYears();
-        setYears(yearsRecuperados.map(yearObj => yearObj.year));
 
-        if (sedeId && selectedCurso && selectedAño) {
-          const estudiantesRecuperados = await getEstudiantes(sedeId, selectedCurso, parseInt(selectedAño));
-          setEstudiantes(estudiantesRecuperados);
-          setShowSearch(true);
-        }
+        setYears(yearsRecuperados.map((yearObj) => yearObj.year));
 
         const currentYear = new Date().getFullYear().toString();
-        if (yearsRecuperados.map(yearObj => yearObj.year.toString()).includes(currentYear)) {
+        if (yearsRecuperados.map((yearObj) => yearObj.year.toString()).includes(currentYear)) {
           setSelectedAño(currentYear);
         }
 
-        const currentMonth = new Date().getMonth() + 1;
-        const selectedCourse = currentMonth <= 6 ? 1 : 2;
-        setSelectedCurso(selectedCourse);
+        const currentMonth = new Date().getMonth(); // 0 to 11, where 0 is January and 11 is December
+        let initialCourseId = '1'; // Default course_id for the first half of the year
+        if (currentMonth >= 6) {
+          initialCourseId = '2'; // Set course_id to 2 for the second half of the year
+        }
+        setSelectedCurso(initialCourseId); // Set the initial value based on the month
 
+        if (perfil.sede && currentYear) {
+          fetchEstudiantes(perfil.sede, initialCourseId, currentYear);
+          fetchCursos(perfil.sede);
+        }
       } catch (error) {
-        console.error('Error al cargar datos iniciales:', error);
+        console.error('Error al cargar los datos iniciales:', error);
       }
     };
 
     fetchInitialData();
-  }, [selectedCurso, selectedAño]);
+  }, []);
+
+  const fetchEstudiantes = async (sedeId: number, courseId: string, nameYear: string) => {
+    try {
+      const estudiantesRecuperados = await getEstudiantes(sedeId, parseInt(courseId), parseInt(nameYear));
+      if (Array.isArray(estudiantesRecuperados)) {
+        setEstudiantes(estudiantesRecuperados);
+      } else {
+        console.error('Los datos recibidos no son válidos:', estudiantesRecuperados);
+        setEstudiantes([]);
+      }
+    } catch (error) {
+      console.error('Error al cargar estudiantes:', error);
+      setEstudiantes([]);
+    }
+  };
+
+  const fetchCursos = async (sedeId: number) => {
+    try {
+      const cursosRecuperados = await getCursos(sedeId);
+      if (Array.isArray(cursosRecuperados)) {
+        setCursos(cursosRecuperados);
+      } else {
+        console.error('Los datos de cursos no son válidos:', cursosRecuperados);
+        setCursos([]);
+      }
+    } catch (error) {
+      console.error('Error al cargar cursos:', error);
+      setCursos([]);
+    }
+  };
 
   const handleSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCarnet(e.target.value);
   };
 
-  const handleAñoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedAño(e.target.value);
+  const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const añoSeleccionado = e.target.value;
+    setSelectedAño(añoSeleccionado);
+
+    const perfil = await getDatosPerfil();
+    if (perfil.sede && añoSeleccionado && selectedCurso) {
+      fetchEstudiantes(perfil.sede, selectedCurso, añoSeleccionado);
+    }
   };
 
-  const handleCursoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCurso(Number(e.target.value));
+  const handleCursoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCurso(e.target.value);
+    const perfil = await getDatosPerfil();
+    if (perfil.sede && selectedAño && e.target.value) {
+      fetchEstudiantes(perfil.sede, e.target.value, selectedAño);
+    }
   };
 
   const handleSearchClick = async () => {
-    if (searchCarnet.trim() === '') {
-      const perfil = await getDatosPerfil();
-      const sedeId = perfil.sede;
-      if (sedeId && selectedCurso && selectedAño) {
-        const estudiantesRecuperados = await getEstudiantes(sedeId, selectedCurso, parseInt(selectedAño));
-        setEstudiantes(estudiantesRecuperados);
-      }
-    } else {
-      const estudiantesFiltrados = estudiantes.filter(est =>
+    if (searchCarnet.trim() !== '') {
+      const filtrados = estudiantes.filter((est) =>
         est.carnet.toLowerCase().includes(searchCarnet.toLowerCase())
       );
-      setEstudiantes(estudiantesFiltrados);
+      setEstudiantes(filtrados);
+    } else {
+      const perfil = await getDatosPerfil();
+      if (perfil.sede && selectedAño && selectedCurso) {
+        fetchEstudiantes(perfil.sede, selectedCurso, selectedAño);
+      }
     }
   };
 
@@ -114,38 +145,36 @@ const ListarEstudiantes: React.FC = () => {
     const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
-    // Flecha de retroceder
     buttons.push(
       <button
         key="prev"
         onClick={() => paginate(currentPage - 1)}
         disabled={currentPage === 1}
-        className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+        className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
       >
         &#8592;
       </button>
     );
 
-    // Botones de páginas numéricas
     for (let i = startPage; i <= endPage; i++) {
       buttons.push(
         <button
           key={i}
           onClick={() => paginate(i)}
-          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'}`}
+          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
+            }`}
         >
           {i}
         </button>
       );
     }
 
-    // Flecha de avanzar
     buttons.push(
       <button
         key="next"
         onClick={() => paginate(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
+        className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
       >
         &#8594;
       </button>
@@ -154,13 +183,9 @@ const ListarEstudiantes: React.FC = () => {
     return buttons;
   };
 
-  const handleStudentClick = (estudiante: Estudiante) => {
-    navigate(`/admin/time-line`, { state: { estudiante } });
-  };
-
-  const renderFotoPerfil = (fotoPerfil: string, userName: string) => {
-    if (fotoPerfil) {
-      return <img src={fotoPerfil} alt={userName} className="w-10 h-10 rounded-full mx-auto" />;
+  const renderProfilePhoto = (profilePhoto: string, userName: string) => {
+    if (profilePhoto) {
+      return <img src={profilePhoto} alt={userName} className="w-10 h-10 rounded-full mx-auto" />;
     } else {
       const initial = userName.charAt(0).toUpperCase();
       return (
@@ -175,31 +200,29 @@ const ListarEstudiantes: React.FC = () => {
     <>
       <Breadcrumb pageName="Listar Estudiantes" />
       <div className="mx-auto max-w-5xl px-1 py-1">
-        {showSearch && (
-          <div className="mb-4 flex flex-wrap items-center justify-between space-x-2">
-            <div className="flex items-center w-full sm:w-auto">
-              <input
-                type="text"
-                placeholder="Buscar por carnet"
-                value={searchCarnet}
-                onChange={handleSearchCarnet}
-                className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
-              />
-              <button
-                onClick={handleSearchClick}
-                className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
-              >
-                Buscar
-              </button>
-            </div>
+        <div className="mb-4 flex flex-wrap items-center justify-between space-x-2">
+          <div className="flex items-center w-full sm:w-auto">
+            <input
+              type="text"
+              placeholder="Buscar por Carnet de Estudiante"
+              value={searchCarnet}
+              onChange={handleSearchCarnet}
+              className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+            />
+            <button
+              onClick={handleSearchClick}
+              className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+            >
+              Buscar
+            </button>
           </div>
-        )}
+        </div>
 
         <div className="mb-4 flex gap-4">
           <select
             value={selectedAño}
             onChange={handleAñoChange}
-            className="w-1/2 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           >
             <option value="">Seleccionar año</option>
             {years.map((year) => (
@@ -208,55 +231,49 @@ const ListarEstudiantes: React.FC = () => {
               </option>
             ))}
           </select>
-
           <select
             value={selectedCurso}
             onChange={handleCursoChange}
-            className="w-1/2 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           >
-            <option value={0}>Seleccionar curso</option>
-            {cursos.map(curso => (
-              <option key={curso.course_id} value={curso.course_id}>
+            <option value="">Seleccionar curso</option>
+            {cursos.map((curso) => (
+              <option key={curso.course_id} value={curso.course_id.toString()}>
                 {curso.courseName}
               </option>
             ))}
           </select>
         </div>
 
-        <div className="max-w-full overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
-            <thead>
-              <tr className="bg-gray-100 text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
-                <th className="py-2 px-4 text-center">Foto</th>
-                <th className="py-2 px-4 text-center">Nombre</th>
-                <th className="py-2 px-4 text-center">Carnet</th>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead className="bg-gray-100 text-sm text-gray-600">
+              <tr>
+                <th className="py-2 px-4 text-left">Foto</th> {/* Alineación centrada para la foto */}
+                <th className="py-2 px-4 text-center">Nombre Estudiante</th> {/* Alineación centrada para el nombre */}
+                <th className="py-2 px-4 text-center">Carnet</th> {/* Alineación centrada para el carnet */}
               </tr>
             </thead>
             <tbody>
               {currentEstudiantes.length > 0 ? (
-                currentEstudiantes.map(estudiante => (
-                  <tr
-                    key={estudiante.id}
-                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
-                    onClick={() => handleStudentClick(estudiante)}
-                  >
+                currentEstudiantes.map((est) => (
+                  <tr key={est.id}>
                     <td className="py-2 px-4 text-center">
-                      {renderFotoPerfil(estudiante.fotoPerfil, estudiante.userName)}
+                      {renderProfilePhoto(est.fotoPerfil, est.userName)} {/* Foto centrada */}
                     </td>
-                    <td className="py-2 px-4 text-center">{estudiante.userName}</td>
-                    <td className="py-2 px-4 text-center">{estudiante.carnet}</td>
+                    <td className="py-2 px-4 text-center">{est.userName}</td> {/* Nombre centrado */}
+                    <td className="py-2 px-4 text-center">{est.carnet}</td> {/* Carnet centrado */}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500">No se encontraron estudiantes</td>
+                  <td colSpan={6} className="py-2 px-4 text-center">No se encontraron estudiantes</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
 
-        {/* Paginación */}
         <div className="mt-4 flex justify-center">
           {renderPaginationButtons()}
         </div>

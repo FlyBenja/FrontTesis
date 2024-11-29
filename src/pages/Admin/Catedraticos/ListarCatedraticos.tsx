@@ -77,13 +77,11 @@ const ListarCatedraticos: React.FC = () => {
 
   const handleSearchClick = async () => {
     if (searchUsername.trim() !== '') {
-      // Si hay texto en la búsqueda, filtra los catedráticos
       const filtrados = catedraticos.filter((cat) =>
         cat.userName.toLowerCase().includes(searchUsername.toLowerCase())
       );
       setCatedraticos(filtrados);
     } else {
-      // Si el campo de búsqueda está vacío, vuelve a cargar los catedráticos desde la API
       const perfil = await getDatosPerfil();
       if (perfil.sede && selectedAño) {
         fetchCatedraticos(perfil.sede, selectedAño);
@@ -146,16 +144,28 @@ const ListarCatedraticos: React.FC = () => {
     return buttons;
   };
 
+  const renderProfilePhoto = (profilePhoto: string | null, userName: string) => {
+    if (profilePhoto) {
+      return <img src={profilePhoto} alt={userName} className="w-10 h-10 rounded-full mx-auto" />;
+    } else {
+      const initial = userName.charAt(0).toUpperCase();
+      return (
+        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white">
+          {initial}
+        </div>
+      );
+    }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Listar Catedráticos" />
       <div className="mx-auto max-w-5xl px-1 py-1">
-
         <div className="mb-4 flex flex-wrap items-center justify-between space-x-2">
           <div className="flex items-center w-full sm:w-auto">
             <input
               type="text"
-              placeholder="Buscar por nombre de usuario"
+              placeholder="Buscar por Nombre de Catedratico"
               value={searchUsername}
               onChange={handleSearchUsername}
               className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
@@ -188,7 +198,8 @@ const ListarCatedraticos: React.FC = () => {
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead className="bg-gray-100 text-sm text-gray-600">
               <tr>
-                <th className="py-2 px-4 text-center">Nombre</th>
+                <th className="py-2 px-4 text-left">Foto</th> {/* Alineación al lado izquierdo */}
+                <th className="py-2 px-4 text-center">Nombre Catedratico</th>
                 <th className="py-2 px-4 text-center">Correo</th>
                 <th className="py-2 px-4 text-center">Activo</th>
               </tr>
@@ -197,6 +208,9 @@ const ListarCatedraticos: React.FC = () => {
               {currentCatedraticos.length > 0 ? (
                 currentCatedraticos.map((catedratico) => (
                   <tr key={catedratico.user_id}>
+                    <td className="py-2 px-4 text-center">
+                      {renderProfilePhoto(catedratico.profilePhoto, catedratico.userName)}
+                    </td>
                     <td className="py-2 px-4 text-center">{catedratico.userName}</td>
                     <td className="py-2 px-4 text-center">{catedratico.email}</td>
                     <td className="py-2 px-4 text-center">{catedratico.active ? 'Sí' : 'No'}</td>
@@ -204,7 +218,7 @@ const ListarCatedraticos: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-2 px-4 text-center">No se encontraron catedráticos</td>
+                  <td colSpan={4} className="py-2 px-4 text-center">No se encontraron catedráticos</td>
                 </tr>
               )}
             </tbody>
