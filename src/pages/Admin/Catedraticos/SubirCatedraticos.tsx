@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; // Llamada a la API para obtener el sede_id
-import { cargaMasiva } from '../../../ts/Admin/CargaMasiva';
+import { cargarCatedraticos } from '../../../ts/Admin/CargaCatedraticos';
+
 
 const SubirCatedraticos = () => {
   const [fileSelected, setFileSelected] = useState<File | null>(null);
@@ -46,28 +47,25 @@ const SubirCatedraticos = () => {
       showAlert('error', '¡Error!', 'Archivo o sede no seleccionada.');
       return;
     }
-
-    setApiLoading(true); // Mostrar el loading
-
+  
+    setApiLoading(true);
+  
     try {
-      // Datos fijos para el course_id y rol_id
-      const response = await cargaMasiva({
+      const response = await cargarCatedraticos({
         archivo: fileSelected,
-        sede_id: sedeId, // Usamos el sede_id obtenido desde la API
-        rol_id: 2,  // Rol fijo 2 para Catedráticos
-        course_id: undefined, // Course_id fijo en 0
+        sede_id: sedeId, // Solo se envía el ID de la sede
       });
-
-      showAlert('success', 'Carga masiva completada', response.message || 'Los catedráticos se han cargado exitosamente.');
+  
+      showAlert('success', 'Carga completada', response.message || 'Los catedráticos se han cargado exitosamente.');
       handleReset();
     } catch (error) {
       if (error instanceof Error) {
         showAlert('error', '¡Error!', error.message);
       }
     } finally {
-      setApiLoading(false); // Ocultar el loading
+      setApiLoading(false);
     }
-  };
+  };  
 
   const handleReset = () => {
     setFileSelected(null);
@@ -136,7 +134,7 @@ const SubirCatedraticos = () => {
       {/* Indicador de carga */}
       {apiLoading && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="text-white text-xl">Cargando...</div>
+          <div className="text-white text-xl">Espere un momento en lo que se suben los Catedraticos...</div>
         </div>
       )}
     </>

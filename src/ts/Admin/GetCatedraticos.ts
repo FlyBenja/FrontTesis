@@ -1,25 +1,40 @@
 import axios from 'axios';
 
-export const getCatedraticos = async (): Promise<{ professor_id: number; name: string }[]> => {
-  try {
-    // Recuperar el token desde localStorage
-    const token = localStorage.getItem('authToken');
+interface Catedratico {
+  user_id: number;
+  email: string;
+  userName: string;
+  profilePhoto: string | null;
+  active: boolean;
+}
 
+export const getCatedraticos = async (sede_id: number, year: number): Promise<Catedratico[]> => {
+  try {
+    const token = localStorage.getItem('authToken');
     if (!token) {
       throw new Error('Token de autenticación no encontrado');
     }
 
-    // Hacer la solicitud GET a la URL especificada
-    const response = await axios.get('http://localhost:3000/api/professors?sede_id=1&year=2024', {
+    const url = `http://localhost:3000/api/professors?sede_id=${sede_id}&year=${year}`;
+    const response = await axios.get(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
 
-    return response.data; // Retornar los datos de la respuesta
+    if (response.data && Array.isArray(response.data)) {
+      return response.data.map((professor: any) => ({
+        user_id: professor.user_id,
+        email: professor.email,
+        userName: professor.userName,
+        profilePhoto: professor.profilePhoto,
+        active: professor.active,
+      }));
+    }
+
+    throw new Error('La respuesta no contiene datos válidos de catedráticos');
   } catch (error) {
-    // Manejo de errores
     if (axios.isAxiosError(error)) {
       const errorMessage = error.response?.data
         ? JSON.stringify(error.response?.data)
@@ -27,7 +42,6 @@ export const getCatedraticos = async (): Promise<{ professor_id: number; name: s
       console.error('Error de Axios:', errorMessage);
       throw new Error(errorMessage);
     }
-
     throw new Error('Error desconocido');
   }
 };
