@@ -3,6 +3,7 @@ import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getYears } from '../../../ts/Generales/GetYears';
 import { getCatedraticos } from '../../../ts/Admin/GetCatedraticos';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import SwitcherFour from '../../../components/Switchers/SwitcherFour'; // Importar SwitcherFour
 
 interface Catedratico {
   user_id: number;
@@ -87,6 +88,15 @@ const ListarCatedraticos: React.FC = () => {
         fetchCatedraticos(perfil.sede, selectedAño);
       }
     }
+  };
+
+  const handleActiveChange = async (userId: number, newStatus: boolean) => {
+    const updatedCatedraticos = catedraticos.map((cat) =>
+      cat.user_id === userId ? { ...cat, active: newStatus } : cat
+    );
+    setCatedraticos(updatedCatedraticos);
+
+    // Aquí puedes agregar código para actualizar el estado de "active" en el backend si es necesario
   };
 
   const indexOfLastCatedratico = currentPage * catedraticosPerPage;
@@ -201,7 +211,7 @@ const ListarCatedraticos: React.FC = () => {
                 <th className="py-2 px-4 text-left">Foto</th> {/* Alineación al lado izquierdo */}
                 <th className="py-2 px-4 text-center">Nombre Catedratico</th>
                 <th className="py-2 px-4 text-center">Correo</th>
-                <th className="py-2 px-4 text-center">Activo</th>
+                <th className="py-2 px-4 text-right">Activo</th> {/* Título alineado a la derecha */}
               </tr>
             </thead>
             <tbody>
@@ -213,7 +223,13 @@ const ListarCatedraticos: React.FC = () => {
                     </td>
                     <td className="py-2 px-4 text-center">{catedratico.userName}</td>
                     <td className="py-2 px-4 text-center">{catedratico.email}</td>
-                    <td className="py-2 px-4 text-center">{catedratico.active ? 'Sí' : 'No'}</td>
+                    <td className="py-2 px-4 flex justify-end"> {/* Usamos flex para alinear el switch a la derecha */}
+                      <SwitcherFour
+                        enabled={catedratico.active}
+                        onChange={() => handleActiveChange(catedratico.user_id, !catedratico.active)}
+                        uniqueId={catedratico.user_id.toString()}
+                      />
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -224,7 +240,7 @@ const ListarCatedraticos: React.FC = () => {
             </tbody>
           </table>
         </div>
-
+        
         <div className="mt-4 flex justify-center">{renderPaginationButtons()}</div>
       </div>
     </>

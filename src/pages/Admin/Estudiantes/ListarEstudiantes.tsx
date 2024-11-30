@@ -3,6 +3,7 @@ import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getYears } from '../../../ts/Generales/GetYears';
 import { getEstudiantes } from '../../../ts/Admin/GetEstudiantes';
 import { getCursos } from '../../../ts/Admin/GetCursos';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 
 interface Estudiante {
@@ -29,6 +30,8 @@ const ListarEstudiantes: React.FC = () => {
   const [selectedCurso, setSelectedCurso] = useState<string>('');
   const estudiantesPerPage = 4;
   const [maxPageButtons] = useState(10);
+
+  const navigate = useNavigate(); // Inicializa el hook de navegación
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -126,6 +129,10 @@ const ListarEstudiantes: React.FC = () => {
         fetchEstudiantes(perfil.sede, selectedCurso, selectedAño);
       }
     }
+  };
+
+  const handleStudentClick = (estudiante: Estudiante) => {
+    navigate(`/admin/time-line`, { state: { estudiante } });
   };
 
   const indexOfLastEstudiante = currentPage * estudiantesPerPage;
@@ -249,25 +256,36 @@ const ListarEstudiantes: React.FC = () => {
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead className="bg-gray-100 text-sm text-gray-600">
               <tr>
-                <th className="py-2 px-4 text-left">Foto</th> {/* Alineación centrada para la foto */}
-                <th className="py-2 px-4 text-center">Nombre Estudiante</th> {/* Alineación centrada para el nombre */}
-                <th className="py-2 px-4 text-center">Carnet</th> {/* Alineación centrada para el carnet */}
+                <th className="py-2 px-4 text-left">Foto</th>
+                <th className="py-2 px-4 text-center">Nombre Estudiante</th>
+                <th className="py-2 px-4 text-center">Carnet</th>
               </tr>
             </thead>
             <tbody>
               {currentEstudiantes.length > 0 ? (
                 currentEstudiantes.map((est) => (
-                  <tr key={est.id}>
+                  <tr
+                    key={est.id}
+                    onClick={() => handleStudentClick(est)}
+                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
+                  >
                     <td className="py-2 px-4 text-center">
-                      {renderProfilePhoto(est.fotoPerfil, est.userName)} {/* Foto centrada */}
+                      {renderProfilePhoto(est.fotoPerfil, est.userName)}
                     </td>
-                    <td className="py-2 px-4 text-center">{est.userName}</td> {/* Nombre centrado */}
-                    <td className="py-2 px-4 text-center">{est.carnet}</td> {/* Carnet centrado */}
+                    <td className="py-2 px-4 text-center relative group">
+                      {est.userName}
+                      <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
+                        Ir Hacia TimeLine Estudiante
+                      </div>
+                    </td>
+                    <td className="py-2 px-4 text-center">{est.carnet}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="py-2 px-4 text-center">No se encontraron estudiantes</td>
+                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
+                    No se encontraron estudiantes.
+                  </td>
                 </tr>
               )}
             </tbody>
