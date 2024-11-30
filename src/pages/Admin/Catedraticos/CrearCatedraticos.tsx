@@ -9,7 +9,7 @@ const CrearCatedraticos = () => {
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [carnet, setCarnet] = useState('');
-  const [sedeId, setSedeId] = useState<number | null>(null);
+  const [sedeId, setSedeId] = useState<number | null>(null); // Inicializamos como null
   const [year, setYear] = useState<number>(new Date().getFullYear()); // Año actual
 
   // Estado para manejo de carga
@@ -19,8 +19,8 @@ const CrearCatedraticos = () => {
     // Obtener los datos de perfil (incluida la sede)
     const fetchDatosPerfil = async () => {
       try {
-        const perfil = await getDatosPerfil();
-        setSedeId(perfil.sede_id); // Suponiendo que getDatosPerfil devuelve un objeto con sede_id
+        const { sede } = await getDatosPerfil(); // Asegúrate de que getDatosPerfil devuelva la sede correctamente
+        setSedeId(sede); // Establece el sedeId desde la respuesta
       } catch (err) {
         Swal.fire({
           icon: 'error',
@@ -31,7 +31,7 @@ const CrearCatedraticos = () => {
     };
 
     fetchDatosPerfil();
-  }, []);
+  }, []); // Solo se ejecuta una vez al cargar el componente
 
   const validateForm = () => {
     if (!nombre || !correo || !carnet || sedeId === null) {

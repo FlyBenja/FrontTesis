@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getYears } from '../../../ts/Generales/GetYears';
 import { getCatedraticos } from '../../../ts/Admin/GetCatedraticos';
+import { activaCatedratico } from '../../../ts/Admin/ActivarCatedraticos'; // Ruta de la API
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SwitcherFour from '../../../components/Switchers/SwitcherFour'; // Importar SwitcherFour
 
@@ -91,12 +92,26 @@ const ListarCatedraticos: React.FC = () => {
   };
 
   const handleActiveChange = async (userId: number, newStatus: boolean) => {
-    const updatedCatedraticos = catedraticos.map((cat) =>
-      cat.user_id === userId ? { ...cat, active: newStatus } : cat
-    );
-    setCatedraticos(updatedCatedraticos);
+    try {
+      // Actualizar el estado local antes de hacer la llamada a la API para evitar retrasos visuales
+      const updatedCatedraticos = catedraticos.map((cat) =>
+        cat.user_id === userId ? { ...cat, active: newStatus } : cat
+      );
+      setCatedraticos(updatedCatedraticos);
 
-    // Aquí puedes agregar código para actualizar el estado de "active" en el backend si es necesario
+      // Llamar a la API para actualizar el estado de "active" en el backend
+      await activaCatedratico(userId, newStatus);
+
+      console.log(`Estado de catedrático con ID ${userId} actualizado a ${newStatus}`);
+    } catch (error) {
+      console.error('Error al actualizar el estado de catedrático:', error);
+
+      // Si hay un error, revertimos el cambio en el estado local
+      const updatedCatedraticos = catedraticos.map((cat) =>
+        cat.user_id === userId ? { ...cat, active: !newStatus } : cat
+      );
+      setCatedraticos(updatedCatedraticos);
+    }
   };
 
   const indexOfLastCatedratico = currentPage * catedraticosPerPage;
@@ -240,7 +255,7 @@ const ListarCatedraticos: React.FC = () => {
             </tbody>
           </table>
         </div>
-        
+
         <div className="mt-4 flex justify-center">{renderPaginationButtons()}</div>
       </div>
     </>

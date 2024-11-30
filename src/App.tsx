@@ -18,8 +18,8 @@ import Capitulos from './pages/Admin/Estudiantes/Capitulos';
 import SubirCatedraticos from './pages/Admin/Catedraticos/SubirCatedraticos';
 import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
-import CrearComisiones from './pages/Admin/Ternas/CrearComision';
-import ListarComision from './pages/Admin/Ternas/ListarComision';
+import CrearComisiones from './pages/Admin/Comisiones/CrearComision';
+import ListarComision from './pages/Admin/Comisiones/ListarComision';
 
 //Links Generales
 

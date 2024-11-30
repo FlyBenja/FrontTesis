@@ -1,110 +1,126 @@
 import React, { useState, useEffect } from 'react';
 import CreaTarea from '../../components/Modals/CreaTareas/CreaTarea';
+import { getCursos } from '../../ts/Admin/GetCursos';
+import { getYears } from '../../ts/Generales/GetYears';
+import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
+import { getTareas } from '../../ts/Admin/GetTareas'; // Suponiendo que esta función existe y obtiene las tareas desde la API
 
 interface Tarea {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  fechaEntrega: string;
-  tipo: 'Capítulo' | 'Propuesta de Tesis';
+  task_id: number;
+  title: string;
+  description: string;
+  taskStart: string;
+  endTask: string;
+  note: string;
+  year_id: number;
+  course_id: number | null;
 }
 
 const CrearTareas: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCurso, setSelectedCurso] = useState('');
+  const [selectedAño, setSelectedAño] = useState('');
+  const [years, setYears] = useState<number[]>([]);
+  const [cursos, setCursos] = useState<any[]>([]);
+  const [tareas, setTareas] = useState<Tarea[]>([]); // Estado para almacenar las tareas
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   // Configuración de paginación
   const [currentPage, setCurrentPage] = useState(1);
   const tareasPorPagina = 3;
 
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-  };
-
   useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        // Obtener los años disponibles
+        const yearsRecuperados = await getYears();
+        setYears(yearsRecuperados.map((yearObj) => yearObj.year));
+
+        // Obtener datos del perfil y cargar los cursos según la sede
+        const perfil = await getDatosPerfil();
+        if (perfil.sede) {
+          fetchCursos(perfil.sede);
+        }
+
+        // Establecer el año actual si está en la lista de años
+        const currentYear = new Date().getFullYear();
+        if (yearsRecuperados.some((yearObj) => yearObj.year === currentYear)) {
+          setSelectedAño(currentYear.toString());
+        }
+      } catch (error) {
+        console.error('Error al cargar los datos iniciales:', error);
+      }
+    };
+
+    fetchInitialData();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  const fetchCursos = async (sedeId: number) => {
+    try {
+      const cursosRecuperados = await getCursos(sedeId);
+      if (Array.isArray(cursosRecuperados)) {
+        setCursos(cursosRecuperados);
+      } else {
+        console.error('Los datos de cursos no son válidos:', cursosRecuperados);
+        setCursos([]);
+      }
+    } catch (error) {
+      console.error('Error al cargar cursos:', error);
+      setCursos([]);
+    }
+  };
+
   const handleCourseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCurso(e.target.value);
   };
 
-  const tareas: Tarea[] = [
-    {
-      id: 1,
-      titulo: 'Propuesta de Tesis',
-      descripcion: 'Propuesta inicial para el proyecto de tesis.',
-      fechaEntrega: '2024-01-10',
-      tipo: 'Propuesta de Tesis',
-    },
-    {
-      id: 2,
-      titulo: 'Capítulo 1: Introducción',
-      descripcion: 'Redactar la introducción del proyecto de tesis.',
-      fechaEntrega: '2024-02-15',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 3,
-      titulo: 'Capítulo 2: Marco Teórico',
-      descripcion: 'Desarrollar el marco teórico del proyecto.',
-      fechaEntrega: '2024-03-01',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 4,
-      titulo: 'Capítulo 3: Metodología',
-      descripcion: 'Escribir la metodología utilizada en el proyecto.',
-      fechaEntrega: '2024-04-10',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 5,
-      titulo: 'Capítulo 4: Resultados',
-      descripcion: 'Presentar los resultados obtenidos del proyecto.',
-      fechaEntrega: '2024-05-05',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 6,
-      titulo: 'Capítulo 5: Conclusiones',
-      descripcion: 'Redactar las conclusiones y recomendaciones.',
-      fechaEntrega: '2024-06-15',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 7,
-      titulo: 'Capítulo 6: Revisión de Literatura',
-      descripcion: 'Revisar la literatura y estudios previos.',
-      fechaEntrega: '2024-07-01',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 8,
-      titulo: 'Capítulo 7: Análisis de Datos',
-      descripcion: 'Realizar el análisis de los datos obtenidos.',
-      fechaEntrega: '2024-08-10',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 9,
-      titulo: 'Capítulo 8: Discusión',
-      descripcion: 'Discutir los resultados del análisis.',
-      fechaEntrega: '2024-09-05',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 10,
-      titulo: 'Capítulo 9: Conclusiones Finales',
-      descripcion: 'Escribir las conclusiones finales y recomendaciones.',
-      fechaEntrega: '2024-10-20',
-      tipo: 'Capítulo',
-    },
-  ];
+  const handleAñoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedAño(e.target.value);
+  };
+
+  // Establecer el valor inicial para el curso según la fecha actual
+  const setInitialCurso = () => {
+    const currentMonth = new Date().getMonth() + 1; // Los meses van de 0 a 11
+    const courseId = currentMonth > 6 ? '2' : '1';
+    setSelectedCurso(courseId);
+  };
+
+  useEffect(() => {
+    setInitialCurso();
+  }, []);
+
+  useEffect(() => {
+    const fetchTareas = async () => {
+      try {
+        if (selectedCurso && selectedAño) {
+          const perfil = await getDatosPerfil();
+          const sedeId = perfil.sede; // Obtener la sede actual, si no está disponible, usamos 1 por defecto
+          const tareasRecuperadas = await getTareas(Number(sedeId), Number(selectedCurso), Number(selectedAño));
+          console.log('Tareas recuperadas:', tareasRecuperadas);
+          // Verificar si la respuesta es un array
+          if (Array.isArray(tareasRecuperadas)) {
+            setTareas(tareasRecuperadas);
+          } else {
+            console.error('Las tareas no están en el formato esperado:', tareasRecuperadas);
+            setTareas([]); // Si no es un array, establecer un arreglo vacío
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar las tareas:', error);
+        setTareas([]); // Si ocurre un error, establecer un arreglo vacío
+      }
+    };
+
+    fetchTareas();
+  }, [selectedCurso, selectedAño]);
 
   // Obtener tareas para la página actual
   const indexOfLastTask = currentPage * tareasPorPagina;
@@ -146,18 +162,36 @@ const CrearTareas: React.FC = () => {
         marginBottom: '20px'
       }}>
         <select
+          value={selectedAño}
+          onChange={handleAñoChange}
+          style={{
+            width: windowWidth < 768 ? '100%' : '45%',
+            marginBottom: windowWidth < 768 ? '10px' : '0'
+          }}
+          className="px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+        >
+          <option value="">Seleccionar año</option>
+          {years.map((year) => (
+            <option key={year} value={year.toString()}>
+              {year}
+            </option>
+          ))}
+        </select>
+        <select
           value={selectedCurso}
           onChange={handleCourseChange}
           style={{
-            width: windowWidth < 768 ? '100%' : '70%',
+            width: windowWidth < 768 ? '100%' : '45%',
             marginBottom: windowWidth < 768 ? '10px' : '0'
           }}
           className="px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
         >
           <option value="">Seleccionar curso</option>
-          <option value="Matemáticas">Matemáticas</option>
-          <option value="Ciencias">Ciencias</option>
-          <option value="Historia">Historia</option>
+          {cursos.map((curso) => (
+            <option key={curso.course_id} value={curso.course_id.toString()}>
+              {curso.courseName}
+            </option>
+          ))}
         </select>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -171,44 +205,46 @@ const CrearTareas: React.FC = () => {
         </button>
       </div>
 
-      {/* Listado de Tareas */}
-      <div className="mb-4">
-        <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos y Propuestas</h3>
-        <ul className="space-y-4">
-          {currentTareas.map((tarea) => (
-            <li key={tarea.id} className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md">
-              <h4 className="text-lg font-semibold text-black dark:text-white">{tarea.titulo}</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{tarea.descripcion}</p>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
-                Fecha de entrega: {tarea.fechaEntrega}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {tareas.length > 0 ? (
+        <div className="overflow-hidden shadow border-b border-gray-200 sm:rounded-lg">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-strokedark">
+            <thead>
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Título
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Descripción
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Fecha de inicio
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Fecha de fin
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-strokedark">
+              {currentTareas.map((tarea) => (
+                <tr key={tarea.task_id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{tarea.title}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.description}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.taskStart}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.endTask}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="py-3 px-6 bg-gray-50 dark:bg-boxdark">
+            <div className="flex justify-center">
+              {renderPaginationButtons()}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-4 text-center">No se encontraron tareas</div>
+      )}
 
-      {/* Paginación */}
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
-          disabled={currentPage === 1}
-        >
-          &#8592;
-        </button>
-
-        {renderPaginationButtons()}
-
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
-          disabled={currentPage === totalPages}
-        >
-          &#8594;
-        </button>
-      </div>
-
-      {/* Modal para crear nueva tarea */}
       {isModalOpen && <CreaTarea onClose={() => setIsModalOpen(false)} />}
     </div>
   );

@@ -4,8 +4,8 @@
     justify-content: center;
     align-items: center;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 13%; /* Mover hacia abajo (puedes ajustar este valor) */
+    left: 20%; /* Mover hacia la derecha (puedes ajustar este valor) */
     width: 100%;
     height: 100%;
     overflow-y: auto;
@@ -30,6 +30,7 @@
     z-index: 51;
     overflow-y: auto;
     max-height: 90vh;
+    transform: translate(-20%, -10%); /* Ajuste adicional para desplazar más a la derecha y abajo */
 }
 
 /* Modo oscuro */

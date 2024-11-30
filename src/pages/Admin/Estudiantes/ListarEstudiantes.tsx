@@ -132,9 +132,15 @@ const ListarEstudiantes: React.FC = () => {
   };
 
   const handleStudentClick = (estudiante: Estudiante) => {
-    navigate(`/admin/time-line`, { state: { estudiante } });
+    navigate(`/admin/time-line`, {
+      state: {
+        estudiante,
+        selectedCurso,  // Incluye el curso seleccionado
+        selectedAño,    // Incluye el año seleccionado
+      },
+    });
   };
-
+  
   const indexOfLastEstudiante = currentPage * estudiantesPerPage;
   const indexOfFirstEstudiante = indexOfLastEstudiante - estudiantesPerPage;
   const currentEstudiantes = estudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante);
