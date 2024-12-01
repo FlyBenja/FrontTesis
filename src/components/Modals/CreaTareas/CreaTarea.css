@@ -1,14 +1,13 @@
 .CreaTarea .modal-container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Centrado horizontal */
+    align-items: center; /* Centrado vertical */
     position: fixed;
-    top: 13%; /* Mover hacia abajo (puedes ajustar este valor) */
-    left: 20%; /* Mover hacia la derecha (puedes ajustar este valor) */
+    top: 0; /* Ajuste a la parte superior */
+    left: 0; /* Ajuste a la parte izquierda */
     width: 100%;
     height: 100%;
-    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro con transparencia */
     z-index: 50;
 }
 
@@ -25,12 +24,11 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 500px;
+    width: 90%; /* Ancho ajustable */
+    max-width: 500px; /* Máximo tamaño */
     z-index: 51;
     overflow-y: auto;
     max-height: 90vh;
-    transform: translate(-20%, -10%); /* Ajuste adicional para desplazar más a la derecha y abajo */
 }
 
 /* Modo oscuro */
@@ -68,7 +66,14 @@
 /* Ajustes específicos para dispositivos móviles */
 @media (max-width: 767px) {
     .CreaTarea .modal-content {
-        width: 100%; 
-        margin-top: 80px; /* Espacio superior adicional */
+        width: 100%;
+        margin-top: 80px; /* Espacio superior adicional para móviles */
+    }
+}
+
+/* Ajustes para pantallas más grandes (modo computadora) */
+@media (min-width: 768px) {
+    .CreaTarea .modal-container {
+        top: 40px; /* Desplazar hacia abajo 20px en pantallas grandes */
     }
 }

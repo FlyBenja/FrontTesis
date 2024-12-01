@@ -10,11 +10,11 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose }) => {
         <div className="CreaTarea">
             <div className="modal-container">
                 <div className="modal-background" onClick={onClose}></div>
-                <div className="modal-content relative"> {/* El color fuerte se controla con clases */}
+                <div className="modal-content relative">
                     {/* Botón "X" para cerrar */}
                     <button
                         onClick={onClose}
-                        className="absolute top-2 right-2 text-gray-800 dark:text-gray-100 text-2xl leading-none"
+                        className="absolute top-5.3 right-2 text-gray-800 dark:text-gray-100 text-2xl leading-none"
                         aria-label="close"
                     >
                         &#10005;
@@ -22,8 +22,8 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose }) => {
 
                     <h3 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100">Crear Nueva Tarea</h3>
                     <form className="space-y-4">
-                        {/* Seleccionadores */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* Seleccionadores Tipo de Tarea y Curso */}
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Tipo de Tarea</label>
                                 <select className="form-field">
@@ -38,14 +38,6 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose }) => {
                                     <option value="Ciencias">Ciencias</option>
                                     <option value="Historia">Historia</option>
                                 </select>
-                            </div>
-                            <div>
-                                <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Punteo</label>
-                                <input
-                                    type="number"
-                                    className="form-field"
-                                    placeholder="Punteo de la tarea"
-                                />
                             </div>
                         </div>
 
@@ -104,7 +96,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose }) => {
                         <div className="flex justify-between items-center">
                             <button
                                 type="button"
-                                className="px-4 py-2 border border-gray-400 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium bg-gray-600 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 text-white" // Texto blanco y fondo más gris
+                                className="px-4 py-2 border border-gray-400 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium bg-gray-600 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 text-white"
                                 onClick={onClose}
                             >
                                 Cancelar

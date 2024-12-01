@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
-import { getYears } from '../../../ts/Generales/GetYears';
 import { getCatedraticos } from '../../../ts/Admin/GetCatedraticos';
 import { activaCatedratico } from '../../../ts/Admin/ActivarCatedraticos'; // Ruta de la API
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
@@ -16,8 +15,6 @@ interface Catedratico {
 
 const ListarCatedraticos: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
-  const [years, setYears] = useState<number[]>([]);
-  const [selectedAño, setSelectedAño] = useState<string>('');
   const [searchUsername, setSearchUsername] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const catedraticosPerPage = 4;
@@ -27,17 +24,9 @@ const ListarCatedraticos: React.FC = () => {
     const fetchInitialData = async () => {
       try {
         const perfil = await getDatosPerfil();
-        const yearsRecuperados = await getYears();
 
-        setYears(yearsRecuperados.map((yearObj) => yearObj.year));
-
-        const currentYear = new Date().getFullYear().toString();
-        if (yearsRecuperados.map((yearObj) => yearObj.year.toString()).includes(currentYear)) {
-          setSelectedAño(currentYear);
-        }
-
-        if (perfil.sede && currentYear) {
-          fetchCatedraticos(perfil.sede, currentYear);
+        if (perfil.sede) {
+          fetchCatedraticos(perfil.sede); // Usar el año actual
         }
       } catch (error) {
         console.error('Error al cargar los datos iniciales:', error);
@@ -47,9 +36,9 @@ const ListarCatedraticos: React.FC = () => {
     fetchInitialData();
   }, []);
 
-  const fetchCatedraticos = async (sedeId: number, year: string) => {
+  const fetchCatedraticos = async (sedeId: number) => {
     try {
-      const catedraticosRecuperados = await getCatedraticos(sedeId, parseInt(year));
+      const catedraticosRecuperados = await getCatedraticos(sedeId);
 
       if (Array.isArray(catedraticosRecuperados)) {
         setCatedraticos(catedraticosRecuperados);
@@ -67,16 +56,6 @@ const ListarCatedraticos: React.FC = () => {
     setSearchUsername(e.target.value);
   };
 
-  const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const añoSeleccionado = e.target.value;
-    setSelectedAño(añoSeleccionado);
-
-    const perfil = await getDatosPerfil();
-    if (perfil.sede && añoSeleccionado) {
-      fetchCatedraticos(perfil.sede, añoSeleccionado);
-    }
-  };
-
   const handleSearchClick = async () => {
     if (searchUsername.trim() !== '') {
       const filtrados = catedraticos.filter((cat) =>
@@ -85,8 +64,9 @@ const ListarCatedraticos: React.FC = () => {
       setCatedraticos(filtrados);
     } else {
       const perfil = await getDatosPerfil();
-      if (perfil.sede && selectedAño) {
-        fetchCatedraticos(perfil.sede, selectedAño);
+
+      if (perfil.sede) {
+        fetchCatedraticos(perfil.sede); // Usar el año actual
       }
     }
   };
@@ -204,21 +184,6 @@ const ListarCatedraticos: React.FC = () => {
           </div>
         </div>
 
-        <div className="mb-4 flex gap-4">
-          <select
-            value={selectedAño}
-            onChange={handleAñoChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
-          >
-            <option value="">Seleccionar año</option>
-            {years.map((year) => (
-              <option key={year} value={year.toString()}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
-
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead className="bg-gray-100 text-sm text-gray-600">
@@ -238,8 +203,8 @@ const ListarCatedraticos: React.FC = () => {
                     </td>
                     <td className="py-2 px-4 text-center">{catedratico.userName}</td>
                     <td className="py-2 px-4 text-center">{catedratico.email}</td>
-                    <td className="py-2 px-4 flex justify-end"> {/* Usamos flex para alinear el switch a la derecha */}
-                      <SwitcherFour
+                    <td className="py-2 px-4 flex justify-end"> {/* Usamos flex para alinear correctamente */}
+                    <SwitcherFour
                         enabled={catedratico.active}
                         onChange={() => handleActiveChange(catedratico.user_id, !catedratico.active)}
                         uniqueId={catedratico.user_id.toString()}
@@ -249,7 +214,9 @@ const ListarCatedraticos: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="py-2 px-4 text-center">No se encontraron catedráticos</td>
+                  <td colSpan={4} className="py-4 px-4 text-center text-gray-500">
+                    No se encontraron catedráticos.
+                  </td>
                 </tr>
               )}
             </tbody>

@@ -8,14 +8,14 @@ interface Catedratico {
   active: boolean;
 }
 
-export const getCatedraticos = async (sede_id: number, year: number): Promise<Catedratico[]> => {
+export const getCatedraticos = async (sede_id: number): Promise<Catedratico[]> => {
   try {
     const token = localStorage.getItem('authToken');
     if (!token) {
       throw new Error('Token de autenticación no encontrado');
     }
 
-    const url = `http://localhost:3000/api/professors?sede_id=${sede_id}&year=${year}`;
+    const url = `http://localhost:3000/api/professors?sede_id=${sede_id}`;
     const response = await axios.get(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
