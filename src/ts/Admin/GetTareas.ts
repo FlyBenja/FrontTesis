@@ -2,14 +2,17 @@ import axios from 'axios';
 
 export interface Tarea {
   task_id: number;
+  asigCourse_id: number;
+  typeTask_id: number;
   title: string;
   description: string;
   taskStart: string;
   endTask: string;
-  note: string;
+  startTime: string;
+  endTime: string;
   year_id: number;
-  course_id: number | null;
 }
+
 
 export const getTareas = async (sedeId: number, courseId: number, yearId: number): Promise<Tarea[]> => {
   try {
@@ -28,16 +31,12 @@ export const getTareas = async (sedeId: number, courseId: number, yearId: number
       },
     });
 
-    // Verificar que la respuesta contiene el array 'tareas' y devolverlo
-    return Array.isArray(response.data.tareas) ? response.data.tareas : [];
+    // Imprimir la respuesta completa para depurar
+    console.log('Datos recuperados de la API:', response.data);
+
+    return response.data; // Retornar los datos de la API
   } catch (error) {
-    // Manejo de errores más detallado
-    if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data ? JSON.stringify(error.response?.data) : 'Error desconocido';
-      console.error('Error de Axios:', errorMessage);
-      throw new Error(errorMessage);
-    }
-    console.error('Error en getTareas:', error);
-    throw new Error(`Error desconocido: ${error}`);
+    console.error('Error al recuperar las tareas:', error);
+    return [];
   }
 };

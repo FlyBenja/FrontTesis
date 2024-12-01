@@ -5,15 +5,17 @@ import { getYears } from '../../ts/Generales/GetYears';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 import { getTareas } from '../../ts/Admin/GetTareas';
 
-interface Tarea {
+export interface Tarea {
   task_id: number;
+  asigCourse_id: number;
+  typeTask_id: number;
   title: string;
   description: string;
   taskStart: string;
   endTask: string;
-  note: string;
+  startTime: string;
+  endTime: string;
   year_id: number;
-  course_id: number | null;
 }
 
 const CrearTareas: React.FC = () => {
@@ -74,22 +76,28 @@ const CrearTareas: React.FC = () => {
     fetchTareas();
   }, [selectedCurso, selectedAño]);
 
+  // Paginación
   const indexOfLastTask = currentPage * tareasPorPagina;
   const currentTareas = tareas.slice(indexOfLastTask - tareasPorPagina, indexOfLastTask);
-
   const totalPages = Math.ceil(tareas.length / tareasPorPagina);
+
   const renderPaginationButtons = () =>
     Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
       <button
         key={pageNumber}
         onClick={() => setCurrentPage(pageNumber)}
-        className={`mx-1 px-3 py-1 rounded-md border ${
-          currentPage === pageNumber ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
-        }`}
+        className={`mx-1 px-3 py-1 rounded-md border ${currentPage === pageNumber ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
+          }`}
       >
         {pageNumber}
       </button>
     ));
+
+  // Función para formatear fechas
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+  };
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-4">
@@ -120,52 +128,79 @@ const CrearTareas: React.FC = () => {
         </select>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition w-full md:w-auto"
+          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:bg-gradient-to-l transition duration-300 w-full md:w-auto flex items-center justify-center"
         >
-          Crear Tarea
+          <span className="mr-2">+</span> Crear Tarea
         </button>
       </div>
 
+      {/* Listado de tareas con tarjetas */}
       {tareas.length > 0 ? (
-        <div className="overflow-hidden shadow border-b border-gray-200 sm:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-strokedark">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Título
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Descripción
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Fecha de inicio
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Fecha de fin
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-strokedark">
-              {currentTareas.map((tarea) => (
-                <tr key={tarea.task_id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {tarea.title}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {tarea.description}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {tarea.taskStart}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {tarea.endTask}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="py-3 px-6 bg-gray-50 dark:bg-boxdark flex justify-center">
+        <div className="space-y-4">
+          {currentTareas.map((tarea) => (
+            <div
+              key={tarea.task_id}
+              className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md flex items-center justify-between"
+            >
+              <div className="flex-1">
+                <h4 className="text-lg font-semibold text-black dark:text-white">{tarea.title}</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{tarea.description}</p>
+                <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
+                  <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {tarea.startTime}</p>
+                  <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {tarea.endTime}</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="ml-4 px-3 py-2 bg-yellow-500 rounded-full flex items-center justify-center hover:bg-yellow-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M17.707 6.293l-2.414-2.414a1 1 0 0 0-1.414 0l-9 9a1 1 0 0 0-.293.707v3.586a1 1 0 0 0 1 1h3.586a1 1 0 0 0 .707-.293l9-9a1 1 0 0 0 0-1.414z"
+                      stroke="white"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M9 19l-3 3h6l-3-3z"
+                      stroke="white"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                </button>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-4">Editar</p>
+              </div>
+            </div>
+          ))}
+
+          {/* Paginación */}
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => setCurrentPage(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
+              disabled={currentPage === 1}
+            >
+              &#8592;
+            </button>
+
             {renderPaginationButtons()}
+
+            <button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
+              disabled={currentPage === totalPages}
+            >
+              &#8594;
+            </button>
           </div>
         </div>
       ) : (
