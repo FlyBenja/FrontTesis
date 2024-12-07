@@ -25,18 +25,18 @@ export const createComision = async (comisionData: {
         }
 
         // Realizar la solicitud POST
-        await axios.post('http://localhost:3000/api/comisiones/grupo', comisionData, {
+        const response = await axios.post('http://localhost:3000/api/comisiones/grupo', comisionData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
         });
 
-        // Mostrar un mensaje de éxito
+        // Si la solicitud es exitosa
         Swal.fire({
             icon: 'success',
             title: 'Comisión creada exitosamente',
-            text: 'La comisión fue creada correctamente.',
+            text: response.data.message || 'La comisión fue creada correctamente.',
             customClass: { confirmButton: 'bg-green-500 text-white' },
         });
     } catch (error) {

@@ -4,6 +4,7 @@ interface Catedratico {
   user_id: number;
   email: string;
   userName: string;
+  professorCode: string;
   profilePhoto: string | null;
   active: boolean;
 }
@@ -28,6 +29,7 @@ export const getCatedraticos = async (sede_id: number): Promise<Catedratico[]> =
         user_id: professor.user_id,
         email: professor.email,
         userName: professor.userName,
+        professorCode: professor.professorCode, // Cambiado de 'professorCode'
         profilePhoto: professor.profilePhoto,
         active: professor.active,
       }));

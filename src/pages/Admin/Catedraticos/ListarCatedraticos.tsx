@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getCatedraticos } from '../../../ts/Admin/GetCatedraticos';
+import { getCatedraticoPorCarnet } from '../../../ts/Admin/GetCatedraticosCarnet'; // Importar la nueva API
 import { activaCatedratico } from '../../../ts/Admin/ActivarCatedraticos'; // Ruta de la API
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SwitcherFour from '../../../components/Switchers/SwitcherFour'; // Importar SwitcherFour
@@ -9,15 +10,16 @@ interface Catedratico {
   user_id: number;
   email: string;
   userName: string;
+  professorCode: string;
   profilePhoto: string | null;
   active: boolean;
 }
 
 const ListarCatedraticos: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
-  const [searchUsername, setSearchUsername] = useState('');
+  const [searchCarnet, setSearchCarnet] = useState(''); // Cambié 'searchUsername' a 'searchCarnet'
   const [currentPage, setCurrentPage] = useState(1);
-  const catedraticosPerPage = 4;
+  const catedraticosPerPage = 6;
   const [maxPageButtons] = useState(10);
 
   useEffect(() => {
@@ -52,24 +54,31 @@ const ListarCatedraticos: React.FC = () => {
     }
   };
 
-  const handleSearchUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchUsername(e.target.value);
-  };
-
   const handleSearchClick = async () => {
-    if (searchUsername.trim() !== '') {
-      const filtrados = catedraticos.filter((cat) =>
-        cat.userName.toLowerCase().includes(searchUsername.toLowerCase())
-      );
-      setCatedraticos(filtrados);
-    } else {
-      const perfil = await getDatosPerfil();
-
-      if (perfil.sede) {
-        fetchCatedraticos(perfil.sede); // Usar el año actual
+    setCatedraticos([]); // Limpiar la lista de catedráticos antes de buscar
+    try {
+      if (searchCarnet.trim() === '') {
+        // Si el campo de búsqueda está vacío, cargar todos los catedráticos de nuevo
+        const perfil = await getDatosPerfil();
+        if (perfil.sede) {
+          fetchCatedraticos(perfil.sede); // Llamar a la API de getCatedraticos
+        }
+      } else {
+        // Buscar catedrático por carnet
+        const catedraticoEncontrado = await getCatedraticoPorCarnet(searchCarnet);
+        if (catedraticoEncontrado) {
+          // Si se encuentra el catedrático, actualizar la lista con el catedrático encontrado
+          setCatedraticos([catedraticoEncontrado]);
+        } else {
+          // Si no se encuentra el catedrático, limpiar la lista
+          setCatedraticos([]);
+        }
       }
+    } catch (error) {
+      console.error('Error al buscar catedrático:', error);
     }
   };
+  
 
   const handleActiveChange = async (userId: number, newStatus: boolean) => {
     try {
@@ -170,13 +179,13 @@ const ListarCatedraticos: React.FC = () => {
           <div className="flex items-center w-full sm:w-auto">
             <input
               type="text"
-              placeholder="Buscar por Nombre de Catedratico"
-              value={searchUsername}
-              onChange={handleSearchUsername}
+              placeholder="Buscar por Código de Catedrático"
+              value={searchCarnet}
+              onChange={(e) => setSearchCarnet(e.target.value)} // Actualizamos el estado
               className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
             />
             <button
-              onClick={handleSearchClick}
+              onClick={handleSearchClick} // Llamar la función de búsqueda al hacer clic
               className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
             >
               Buscar
@@ -188,10 +197,10 @@ const ListarCatedraticos: React.FC = () => {
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead className="bg-gray-100 text-sm text-gray-600">
               <tr>
-                <th className="py-2 px-4 text-left">Foto</th> {/* Alineación al lado izquierdo */}
-                <th className="py-2 px-4 text-center">Nombre Catedratico</th>
-                <th className="py-2 px-4 text-center">Correo</th>
-                <th className="py-2 px-4 text-right">Activo</th> {/* Título alineado a la derecha */}
+                <th className="py-2 px-4 text-left">Foto</th>
+                <th className="py-2 px-4 text-center">Nombre Catedrático</th>
+                <th className="py-2 px-4 text-center">Código</th>
+                <th className="py-2 px-4 text-right">Activo</th>
               </tr>
             </thead>
             <tbody>
@@ -202,9 +211,9 @@ const ListarCatedraticos: React.FC = () => {
                       {renderProfilePhoto(catedratico.profilePhoto, catedratico.userName)}
                     </td>
                     <td className="py-2 px-4 text-center">{catedratico.userName}</td>
-                    <td className="py-2 px-4 text-center">{catedratico.email}</td>
-                    <td className="py-2 px-4 flex justify-end"> {/* Usamos flex para alinear correctamente */}
-                    <SwitcherFour
+                    <td className="py-2 px-4 text-center">{catedratico.professorCode}</td>
+                    <td className="py-2 px-4 flex justify-end">
+                      <SwitcherFour
                         enabled={catedratico.active}
                         onChange={() => handleActiveChange(catedratico.user_id, !catedratico.active)}
                         uniqueId={catedratico.user_id.toString()}

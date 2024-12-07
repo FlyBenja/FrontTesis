@@ -5,6 +5,7 @@ import { getEstudiantes } from '../../../ts/Admin/GetEstudiantes';
 import { getCursos } from '../../../ts/Admin/GetCursos';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import { getEstudiantePorCarnet } from '../../../ts/Admin/GetEstudianteCarnet'; // Importar la API
 
 interface Estudiante {
   id: number;
@@ -24,12 +25,12 @@ const ListarEstudiantes: React.FC = () => {
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
   const [years, setYears] = useState<number[]>([]);
   const [selectedAño, setSelectedAño] = useState<string>('');
-  const [searchCarnet, setSearchCarnet] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [selectedCurso, setSelectedCurso] = useState<string>('');
-  const estudiantesPerPage = 4;
+  const estudiantesPerPage = 5;
   const [maxPageButtons] = useState(10);
+  const [searchCarnet, setSearchCarnet] = useState<string>(''); // Estado para el carnet a buscar
 
   const navigate = useNavigate(); // Inicializa el hook de navegación
 
@@ -95,10 +96,6 @@ const ListarEstudiantes: React.FC = () => {
     }
   };
 
-  const handleSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchCarnet(e.target.value);
-  };
-
   const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const añoSeleccionado = e.target.value;
     setSelectedAño(añoSeleccionado);
@@ -117,30 +114,43 @@ const ListarEstudiantes: React.FC = () => {
     }
   };
 
-  const handleSearchClick = async () => {
-    if (searchCarnet.trim() !== '') {
-      const filtrados = estudiantes.filter((est) =>
-        est.carnet.toLowerCase().includes(searchCarnet.toLowerCase())
-      );
-      setEstudiantes(filtrados);
-    } else {
-      const perfil = await getDatosPerfil();
-      if (perfil.sede && selectedAño && selectedCurso) {
-        fetchEstudiantes(perfil.sede, selectedCurso, selectedAño);
-      }
-    }
-  };
-
   const handleStudentClick = (estudiante: Estudiante) => {
     navigate(`/admin/time-line`, {
       state: {
         estudiante,
-        selectedCurso,  // Incluye el curso seleccionado
-        selectedAño,    // Incluye el año seleccionado
+        selectedCurso, // Incluye el curso seleccionado
+        selectedAño,   // Incluye el año seleccionado
       },
     });
   };
-  
+
+  const handleSearchClick = async () => {
+
+    // Limpiar la lista de estudiantes y mostrar un estado "cargando" o vacío
+    setEstudiantes([]);
+
+    if (searchCarnet === '') {
+      // Si el campo de búsqueda está vacío, volvemos a ejecutar la API para cargar todos los estudiantes
+      const perfil = await getDatosPerfil();
+      if (perfil.sede && selectedCurso && selectedAño) {
+        fetchEstudiantes(perfil.sede, selectedCurso, selectedAño);
+      }
+      return;
+    }
+
+    try {
+      const estudianteEncontrado = await getEstudiantePorCarnet(searchCarnet);
+      console.log('Estudiante encontrado:', estudianteEncontrado);
+      if (estudianteEncontrado) {
+        setEstudiantes([estudianteEncontrado]); // Mostrar solo el estudiante encontrado
+      } else {
+        setEstudiantes([]); // Si no se encuentra, mostramos una lista vacía
+      }
+    } catch (error) {
+      console.error('Error al buscar el estudiante:', error);
+    }
+  };
+
   const indexOfLastEstudiante = currentPage * estudiantesPerPage;
   const indexOfFirstEstudiante = indexOfLastEstudiante - estudiantesPerPage;
   const currentEstudiantes = estudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante);
@@ -218,13 +228,13 @@ const ListarEstudiantes: React.FC = () => {
             <input
               type="text"
               placeholder="Buscar por Carnet de Estudiante"
-              value={searchCarnet}
-              onChange={handleSearchCarnet}
+              value={searchCarnet} // Establecemos el valor del input
+              onChange={(e) => setSearchCarnet(e.target.value)} // Actualizamos el estado
               className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
             />
             <button
-              onClick={handleSearchClick}
               className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+              onClick={handleSearchClick} // Ejecutamos la búsqueda
             >
               Buscar
             </button>
