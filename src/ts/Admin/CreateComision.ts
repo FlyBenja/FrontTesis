@@ -6,22 +6,26 @@ interface GroupMember {
     rol_comision_id: number;
 }
 
-export const createComision = async (comisionData: {
+interface CreateComisionParams {
     year: number;
     sede_id: number;
     groupData: GroupMember[];
-}): Promise<void> => {
+    successMessage?: string;
+    errorMessage?: string;
+}
+
+export const createComision = async (comisionData: CreateComisionParams): Promise<void> => {
     try {
         // Validar que el número de miembros del grupo esté dentro del rango permitido
         const groupSize = comisionData.groupData.length;
         if (groupSize < 3 || groupSize > 5) {
-            throw new Error('El número de miembros debe estar entre 3 y 5.');
+            throw new Error(comisionData.errorMessage || 'El número de miembros debe estar entre 3 y 5.');
         }
 
         // Recuperar el token desde localStorage
         const token = localStorage.getItem('authToken');
         if (!token) {
-            throw new Error('Token de autenticación no encontrado');
+            throw new Error(comisionData.errorMessage || 'Token de autenticación no encontrado');
         }
 
         // Realizar la solicitud POST
@@ -33,30 +37,25 @@ export const createComision = async (comisionData: {
         });
 
         // Si la solicitud es exitosa
+        const successMessage = comisionData.successMessage || response.data.message || 'La comisión fue creada correctamente.';
+
         Swal.fire({
             icon: 'success',
             title: 'Comisión creada exitosamente',
-            text: response.data.message || 'La comisión fue creada correctamente.',
+            text: successMessage,
             customClass: { confirmButton: 'bg-green-500 text-white' },
         });
     } catch (error) {
         // Manejo de errores
-        if (axios.isAxiosError(error)) {
-            const errorMessage = error.response?.data?.message || 'Error desconocido';
+        const errorMessage = comisionData.errorMessage || (axios.isAxiosError(error)
+            ? error.response?.data?.message || 'Error desconocido'
+            : (error as Error)?.message || 'Error inesperado');
 
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: errorMessage,
-                customClass: { confirmButton: 'bg-red-500 text-white' },
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: (error as Error)?.message || 'Error inesperado',
-                customClass: { confirmButton: 'bg-red-500 text-white' },
-            });
-        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+            customClass: { confirmButton: 'bg-red-500 text-white' },
+        });
     }
 };

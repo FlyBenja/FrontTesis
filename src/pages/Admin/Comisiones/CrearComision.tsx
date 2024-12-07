@@ -3,7 +3,6 @@ import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getCatedraticosActivos } from '../../../ts/Admin/GetCatedraticoActive';
-import { createComision } from '../../../ts/Admin/CreateComision';
 
 interface Catedratico {
   user_id: number;
@@ -56,54 +55,6 @@ const CrearComision: React.FC = () => {
       confirmButtonColor,
       confirmButtonText: 'OK',
     });
-  };
-
-  const handleCrearComision = async () => {
-    if (terna.length < 3 || terna.length > 5) {
-      showAlert('error', '¡Error!', 'El número de integrantes debe estar entre 3 y 5.');
-      return;
-    }
-  
-    const year = new Date().getFullYear();
-    const perfil = await getDatosPerfil();
-  
-    if (!perfil?.sede) {
-      showAlert('error', '¡Error!', 'No se pudo determinar la sede.');
-      return;
-    }
-  
-    setApiLoading(true);
-  
-    try {
-      const groupData = terna.map((catedratico, index) => ({
-        user_id: catedratico.user_id,
-        rol_comision_id: index + 1,
-      }));
-  
-      // Llamar a la API para crear la comisión
-      await createComision({
-        year,
-        sede_id: perfil.sede,
-        groupData,
-      });
-
-      // Si la creación es exitosa, mostrar la alerta de éxito
-      showAlert('success', '¡Éxito!', 'La comisión se ha creado exitosamente.');
-      setTerna([]); // Reinicia la terna seleccionada
-  
-      // Vuelve a cargar los catedráticos activos
-      const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year);
-      setCatedraticos(catedraticosRecuperados); // Actualiza el listado de catedráticos activos
-    } catch (error) {
-      // Si hay error, mostrar el mensaje de error correspondiente
-      if (error instanceof Error) {
-        showAlert('error', '¡Error!', error.message);  // Utiliza el mensaje de error proporcionado por la API
-      } else {
-        showAlert('error', '¡Error!', 'Ocurrió un error inesperado.');
-      }
-    } finally {
-      setApiLoading(false);
-    }
   };
 
   const getRoleForIndex = (index: number) => {
@@ -179,7 +130,7 @@ const CrearComision: React.FC = () => {
 
         <div className="mt-6 text-center">
           <button
-            onClick={handleCrearComision}
+            onClick={handleRemoveLast}
             className={`px-4 py-2 bg-primary text-white rounded-lg ${terna.length < 3 || terna.length > 5 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
             disabled={terna.length < 3 || terna.length > 5}
           >

@@ -1,69 +1,83 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-
-interface Tarea {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  fechaEntrega: string;
-  tipo: 'Capítulo' | 'Propuesta de Tesis';
-}
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; // Recuperar la sede
+import { getTareasSede, Tarea } from '../../../ts/Admin/GetTareasSede'; // Obtener tareas
 
 const TareasEstudiante: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const tareas: Tarea[] = [
-    {
-      id: 1,
-      titulo: 'Propuesta de Tesis',
-      descripcion: 'Propuesta inicial para el proyecto de tesis.',
-      fechaEntrega: '2024-01-10',
-      tipo: 'Propuesta de Tesis',
-    },
-    {
-      id: 2,
-      titulo: 'Capítulo 1: Introducción',
-      descripcion: 'Redactar la introducción del proyecto de tesis.',
-      fechaEntrega: '2024-02-15',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 3,
-      titulo: 'Capítulo 2: Marco Teórico',
-      descripcion: 'Desarrollar el marco teórico del proyecto.',
-      fechaEntrega: '2024-03-01',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 4,
-      titulo: 'Capítulo 3: Metodología',
-      descripcion: 'Escribir la metodología utilizada en el proyecto.',
-      fechaEntrega: '2024-04-10',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 5,
-      titulo: 'Capítulo 4: Resultados',
-      descripcion: 'Presentar los resultados obtenidos del proyecto.',
-      fechaEntrega: '2024-05-05',
-      tipo: 'Capítulo',
-    },
-    {
-      id: 6,
-      titulo: 'Capítulo 5: Conclusiones',
-      descripcion: 'Redactar las conclusiones y recomendaciones.',
-      fechaEntrega: '2024-06-15',
-      tipo: 'Capítulo',
-    },
-  ];
+  // Estados para manejar los datos
+  const [tareas, setTareas] = useState<Tarea[]>([]);
+  const [sedeId, setSedeId] = useState<number | null>(null);
+
+  // Recuperar los datos enviados desde la página anterior
+  const { estudiante, selectedCurso, selectedAño } = location.state || {};
+
+  useEffect(() => {
+    const fetchDatosPerfil = async () => {
+      try {
+        // Obtener la sede del perfil
+        const { sede } = await getDatosPerfil();
+        setSedeId(sede); // Establecer la sede
+      } catch (err) {
+
+      }
+    };
+
+    fetchDatosPerfil();
+  }, []);
+
+  // Ejecutar fetchTareas cuando se obtienen los valores de sedeId y selectedAño
+  useEffect(() => {
+    const fetchTareas = async () => {
+      if (sedeId !== null && selectedAño) {
+        try {
+          const tareasRecuperadas = await getTareasSede(sedeId, selectedAño);
+          setTareas(tareasRecuperadas); // Establecer las tareas
+        } catch (err) {
+
+        }
+      }
+    };
+
+    fetchTareas();
+  }, [sedeId, selectedAño]); // Se vuelve a ejecutar cada vez que cambian estos valores
+
+  // Ordenar tareas para que las de typeTask_id === 1 aparezcan primero
+  const tareasOrdenadas = tareas.sort((a, b) => {
+    if (a.typeTask_id === 1 && b.typeTask_id !== 1) {
+      return -1; // 'a' va primero
+    }
+    if (a.typeTask_id !== 1 && b.typeTask_id === 1) {
+      return 1; // 'b' va primero
+    }
+    return 0; // Mismos tipos de tarea, mantener el orden
+  });
 
   const handleNavigate = (tarea: Tarea) => {
-    if (tarea.tipo === 'Propuesta de Tesis') {
+    if (tarea.typeTask_id === 1) {
       navigate('/admin/propuestas');
     } else {
       navigate('/admin/capitulo', { state: { tarea } });
     }
+  };
+
+  // Función para formatear fechas en formato dd/mm/yyyy
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return `${date.getUTCDate().toString().padStart(2, '0')}/${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
+  };
+
+  // Función para formatear hora en formato 24 horas
+  const formatTime24Hour = (timeStr: string) => {
+    const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+
+    // Determinar si es AM o PM en formato 24 horas
+    const amPm = hours < 12 ? 'AM' : 'PM';
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${amPm}`;
   };
 
   return (
@@ -80,39 +94,52 @@ const TareasEstudiante: React.FC = () => {
       </div>
 
       <div className="mx-auto max-w-5xl px-4 py-4">
-        <div
-          className="mb-6 p-4 bg-blue-100 dark:bg-boxdark rounded-lg shadow-md cursor-pointer"
-          onClick={() => handleNavigate(tareas[0])}
-        >
-          <h3 className="text-lg font-bold text-primary">Propuesta de Tesis</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {tareas[0].descripcion}
-          </p>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
-            Fecha de entrega: {tareas[0].fechaEntrega}
-          </p>
-        </div>
+        {/* Renderizar las tareas con typeTask_id === 1 */}
+        {tareasOrdenadas
+          .filter((tarea) => tarea.typeTask_id === 1)
+          .map((tarea) => (
+            <div
+              key={tarea.task_id}
+              className={`mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-blue-100 dark:bg-boxdark`}
+              onClick={() => handleNavigate(tarea)}
+            >
+              <h3 className="text-lg font-bold text-primary">{tarea.title}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {tarea.description}
+              </p>
+              <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
+                <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {formatTime24Hour(tarea.startTime)}</p>
+                <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
+              </div>
+            </div>
+          ))}
 
-        <div>
-          <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos</h3>
-          <ul className="space-y-4">
-            {tareas.slice(1).map((tarea) => (
-              <li
-                key={tarea.id}
-                className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md cursor-pointer"
-                onClick={() => handleNavigate(tarea)}
+        {/* Encabezado de Capítulos */}
+        <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos</h3>
+
+        {/* Renderizar las demás tareas (typeTask_id !== 1) */}
+        {tareasOrdenadas
+          .filter((tarea) => tarea.typeTask_id !== 1)
+          .map((tarea) => (
+            <div
+              key={tarea.task_id}
+              className={`mb-6 p-4 rounded-lg shadow-md cursor-pointer ${tarea.typeTask_id === 1 ? 'bg-blue-100 dark:bg-boxdark' : 'bg-white dark:bg-boxdark'}`}
+              onClick={() => handleNavigate(tarea)}
+            >
+              <h3
+                className={`text-lg font-bold ${tarea.typeTask_id === 2 ? 'text-black' : 'text-primary'}`}
               >
-                <h4 className="text-lg font-semibold text-black dark:text-white">{tarea.titulo}</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {tarea.descripcion}
-                </p>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
-                  Fecha de entrega: {tarea.fechaEntrega}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
+                {tarea.title}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {tarea.description}
+              </p>
+              <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
+                <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {formatTime24Hour(tarea.startTime)}</p>
+                <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
+              </div>
+            </div>
+          ))}
       </div>
     </>
   );

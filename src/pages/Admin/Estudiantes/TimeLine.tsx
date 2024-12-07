@@ -80,7 +80,10 @@ const TimeLine: React.FC = () => {
             Línea de Tiempo - {studentName} (Curso: {selectedCurso}, Año: {selectedAño})
           </h2>
           <button
-            onClick={() => navigate('/admin/tareas-estudiante')}
+            onClick={() => {
+              console.log({ estudiante, selectedCurso, selectedAño });
+              navigate('/admin/tareas-estudiante', { state: { estudiante, selectedCurso, selectedAño } });
+            }}
             className="rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity"
           >
             Ver Tareas
