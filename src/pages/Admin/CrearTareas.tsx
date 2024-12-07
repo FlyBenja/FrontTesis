@@ -25,6 +25,8 @@ const CrearTareas: React.FC = () => {
   const [years, setYears] = useState<number[]>([]);
   const [cursos, setCursos] = useState<any[]>([]);
   const [tareas, setTareas] = useState<Tarea[]>([]);
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const tareasPorPagina = 3;
@@ -46,7 +48,7 @@ const CrearTareas: React.FC = () => {
           setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
         }
       } catch (error) {
-        console.error('Error al cargar los datos iniciales:', error);
+        console.error(error);
       }
     };
 
@@ -56,25 +58,41 @@ const CrearTareas: React.FC = () => {
     setSelectedCurso(currentMonth > 6 ? '2' : '1');
   }, []);
 
-  useEffect(() => {
-    const fetchTareas = async () => {
-      if (selectedCurso && selectedAño) {
-        try {
-          const perfil = await getDatosPerfil();
-          const tareasRecuperadas = await getTareas(
-            perfil.sede || 1,
-            Number(selectedCurso),
-            Number(selectedAño)
-          );
-          setTareas(Array.isArray(tareasRecuperadas) ? tareasRecuperadas : []);
-        } catch (error) {
-          console.error('Error al cargar las tareas:', error);
-        }
+  // Definir fetchTareas fuera del useEffect
+  const fetchTareas = async () => {
+    if (selectedCurso && selectedAño) {
+      try {
+        const perfil = await getDatosPerfil();
+        const tareasRecuperadas = await getTareas(
+          perfil.sede || 1,
+          Number(selectedCurso),
+          Number(selectedAño)
+        );
+        setTareas(Array.isArray(tareasRecuperadas) ? tareasRecuperadas : []);
+      } catch (error) {
+        console.error(error);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchTareas();
   }, [selectedCurso, selectedAño]);
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    // Ejecutar nuevamente la API para cargar las tareas
+    fetchTareas();
+  };
+
+  const formatTime24Hour = (timeStr: string) => {
+    const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+
+    // Determinar si es AM o PM en formato 24 horas
+    const amPm = hours < 12 ? 'AM' : 'PM';
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${amPm}`;
+  };
 
   // Paginación
   const indexOfLastTask = currentPage * tareasPorPagina;
@@ -93,10 +111,10 @@ const CrearTareas: React.FC = () => {
       </button>
     ));
 
-  // Función para formatear fechas
+  // Función para formatear fechas en formato dd/mm/yyyy
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    return `${date.getUTCDate().toString().padStart(2, '0')}/${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
   };
 
   return (
@@ -127,14 +145,16 @@ const CrearTareas: React.FC = () => {
           ))}
         </select>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setIsModalOpen(true);
+            setModalMode("create");
+          }}
           className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:bg-gradient-to-l transition duration-300 w-full md:w-auto flex items-center justify-center"
         >
           <span className="mr-2">+</span> Crear Tarea
         </button>
       </div>
 
-      {/* Listado de tareas con tarjetas */}
       {tareas.length > 0 ? (
         <div className="space-y-4">
           {currentTareas.map((tarea) => (
@@ -146,44 +166,29 @@ const CrearTareas: React.FC = () => {
                 <h4 className="text-lg font-semibold text-black dark:text-white">{tarea.title}</h4>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{tarea.description}</p>
                 <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
-                  <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {tarea.startTime}</p>
-                  <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {tarea.endTime}</p>
+                  <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {formatTime24Hour(tarea.startTime)}</p>
+                  <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
                 </div>
               </div>
               <div className="flex flex-col items-center">
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setModalMode("edit");
+                    setSelectedTaskId(tarea.task_id);
+                  }}
                   className="ml-4 px-3 py-2 bg-yellow-500 rounded-full flex items-center justify-center hover:bg-yellow-600"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M17.707 6.293l-2.414-2.414a1 1 0 0 0-1.414 0l-9 9a1 1 0 0 0-.293.707v3.586a1 1 0 0 0 1 1h3.586a1 1 0 0 0 .707-.293l9-9a1 1 0 0 0 0-1.414z"
-                      stroke="white"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                    />
-                    <path
-                      d="M9 19l-3 3h6l-3-3z"
-                      stroke="white"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                    />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                    <path d="M17.707 6.293l-2.414-2.414a1 1 0 0 0-1.414 0l-9 9a1 1 0 0 0-.293.707v3.586a1 1 0 0 0 1 1h3.586a1 1 0 0 0 .707-.293l9-9a1 1 0 0 0 0-1.414z" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                    <path d="M15 3h6v6" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
                   </svg>
                 </button>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-4">Editar</p>
               </div>
             </div>
           ))}
-
-          {/* Paginación */}
-          <div className="flex justify-center mt-4">
+        {/* Paginación */}
+        <div className="flex justify-center mt-4">
             <button
               onClick={() => setCurrentPage(currentPage - 1)}
               className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
@@ -207,7 +212,14 @@ const CrearTareas: React.FC = () => {
         <div className="mt-4 text-center">No se encontraron tareas</div>
       )}
 
-      {isModalOpen && <CreaTarea onClose={() => setIsModalOpen(false)} />}
+      {/* Modal dinámico */}
+      {isModalOpen && (
+        <CreaTarea
+          onClose={handleModalClose} // Pasamos la función que maneja el cierre y la recarga
+          mode={modalMode} // Modo dinámico (create/edit)
+          taskId={selectedTaskId}
+        />
+      )}
     </div>
   );
 };

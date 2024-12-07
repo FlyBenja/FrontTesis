@@ -25,7 +25,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 90%; /* Ancho ajustable */
-    max-width: 500px; /* Máximo tamaño */
+    max-width: 520px; /* Máximo tamaño */
     z-index: 51;
     overflow-y: auto;
     max-height: 90vh;
