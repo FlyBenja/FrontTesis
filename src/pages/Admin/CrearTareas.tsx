@@ -68,12 +68,21 @@ const CrearTareas: React.FC = () => {
           Number(selectedCurso),
           Number(selectedAño)
         );
-        setTareas(Array.isArray(tareasRecuperadas) ? tareasRecuperadas : []);
+  
+        // Ordenar las tareas, colocando las de `typeTask_id = 1` primero
+        const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
+          if (a.typeTask_id === 1 && b.typeTask_id !== 1) return -1;
+          if (a.typeTask_id !== 1 && b.typeTask_id === 1) return 1;
+          return 0;
+        });
+  
+        setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
       } catch (error) {
         console.error(error);
       }
     }
   };
+  
 
   useEffect(() => {
     fetchTareas();

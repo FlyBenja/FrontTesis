@@ -28,7 +28,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
     const [cursos, setCursos] = useState<any[]>([]);
     const [form, setForm] = useState<FormState>({
         selectedCurso: '',
-        selectedTipoTarea: '1',
+        selectedTipoTarea: ' ',
         title: '',
         description: '',
         taskStart: '',
@@ -109,7 +109,8 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const { selectedCurso, selectedTipoTarea, title, description, taskStart, endTask, startTime, endTime } = form;
-
+    
+        // Validaciones de campos vacíos
         if (!selectedCurso || !title || !description || !taskStart || !endTask || !startTime || !endTime) {
             Swal.fire({
                 icon: 'error',
@@ -119,12 +120,34 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
             });
             return;
         }
-
+    
+        // Validación de fecha final mayor que fecha inicial
+        if (new Date(endTask) <= new Date(taskStart)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'La Fecha Final debe ser mayor a la Fecha Inicial.',
+                confirmButtonColor: '#dc3545', // Rojo para error
+            });
+            return;
+        }
+    
+        // Validación de hora final mayor que hora inicial
+        if (startTime >= endTime) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'La Hora Final debe ser mayor a la Fecha Inicial.',
+                confirmButtonColor: '#dc3545', // Rojo para error
+            });
+            return;
+        }
+    
         try {
             setLoading(true);
             const { sede } = await getDatosPerfil();
             const selectedCourse = cursos.find((curso) => curso.course_id.toString() === selectedCurso);
-
+    
             if (!selectedCourse) {
                 Swal.fire({
                     icon: 'error',
@@ -134,7 +157,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                 });
                 return;
             }
-
+    
             if (mode === 'create') {
                 const tareaData = {
                     course_id: selectedCourse.course_id,
@@ -159,7 +182,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                 };
                 await updateTarea(taskId, tareaDataUpdate);
             }
-
+    
             Swal.fire({
                 icon: 'success',
                 title: 'Éxito',
@@ -177,7 +200,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
         } finally {
             setLoading(false);
         }
-    };
+    };    
 
     if (loading) return <div>Cargando...</div>;
     return (
@@ -210,7 +233,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                                     onChange={handleChange}
                                     disabled={mode === 'edit'}
                                 >
-                                    <option value="1">Seleccionar curso</option>
+                                    <option value="">Seleccionar curso</option>
                                     <option value="1">Propuesta de Tesis</option>
                                     <option value="2">Entrega de Capítulos</option>
                                 </select>
