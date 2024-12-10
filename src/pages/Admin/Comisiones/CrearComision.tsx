@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getCatedraticosActivos } from '../../../ts/Admin/GetCatedraticoActive';
+import { createComision } from '../../../ts/Admin/CreateComision';
 
 interface Catedratico {
   user_id: number;
@@ -14,7 +15,7 @@ interface Catedratico {
 const CrearComision: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [terna, setTerna] = useState<Catedratico[]>([]);
-  const [apiLoading, setApiLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true); // Estado de carga
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,7 +29,8 @@ const CrearComision: React.FC = () => {
         }
       } catch (error) {
         console.error('Error al cargar los datos:', error);
-        showAlert('error', '¡Error!', 'No se pudieron cargar los catedráticos.');
+      } finally {
+        setLoading(false); // Terminar carga
       }
     };
 
@@ -42,8 +44,43 @@ const CrearComision: React.FC = () => {
   };
 
   const handleRemoveLast = () => {
-    // Elimina el último catedrático de la terna
     setTerna(terna.slice(0, -1));
+  };
+
+  const handleCreateComision = async () => {
+    try {
+      const perfil = await getDatosPerfil();
+      const year = new Date().getFullYear();
+
+      if (!perfil.sede) {
+        showAlert('error', '¡Error!', 'No se pudo recuperar la sede.');
+        return;
+      }
+
+      const groupData = terna.map((catedratico, index) => ({
+        user_id: catedratico.user_id,
+        rol_comision_id: index + 1,
+      }));
+
+      const comisionData = {
+        year,
+        sede_id: perfil.sede,
+        groupData,
+      };
+
+      // Intentar crear la comisión
+      await createComision(comisionData);
+
+      showAlert('success', '¡Éxito!', 'La comisión fue creada exitosamente.');
+
+      // Recargar catedráticos activos
+      const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year);
+      setCatedraticos(catedraticosRecuperados);
+      setTerna([]);
+    } catch (error: any) {
+      console.error('Error al crear la comisión:', error.message);
+      showAlert('error', '¡Error!', error.message);
+    }
   };
 
   const showAlert = (type: 'success' | 'error', title: string, text: string) => {
@@ -67,6 +104,22 @@ const CrearComision: React.FC = () => {
       default: return '';
     }
   };
+
+  if (loading) {
+    return <div className="text-center">Cargando...</div>;
+  }
+
+  if (catedraticos.length === 0) {
+    return (
+      <div className="relative bg-gray-100 dark:bg-boxdark">
+        <div className="absolute top-40 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
+          <p className="text-xl text-black dark:text-white font-semibold">
+            No Hay Catedráticos Activos En Esta Sede.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -102,6 +155,7 @@ const CrearComision: React.FC = () => {
             </div>
           ))}
         </div>
+
         <div className="mt-8">
           <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Comisión:</h2>
           <div className="p-6 border border-gray-300 rounded-lg shadow-lg bg-white dark:bg-boxdark dark:text-white">
@@ -130,7 +184,7 @@ const CrearComision: React.FC = () => {
 
         <div className="mt-6 text-center">
           <button
-            onClick={handleRemoveLast}
+            onClick={handleCreateComision}
             className={`px-4 py-2 bg-primary text-white rounded-lg ${terna.length < 3 || terna.length > 5 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
             disabled={terna.length < 3 || terna.length > 5}
           >
@@ -138,12 +192,6 @@ const CrearComision: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {apiLoading && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="text-white text-xl">Creando la comisión, espere un momento...</div>
-        </div>
-      )}
     </>
   );
 };
