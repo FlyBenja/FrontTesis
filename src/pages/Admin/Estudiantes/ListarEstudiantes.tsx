@@ -5,7 +5,7 @@ import { getEstudiantes } from '../../../ts/Admin/GetEstudiantes';
 import { getCursos } from '../../../ts/Admin/GetCursos';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import { getEstudiantePorCarnet } from '../../../ts/Admin/GetEstudianteCarnet'; // Importar la API
+import { getEstudiantePorCarnet } from '../../../ts/Admin/GetEstudianteCarnet';
 
 interface Estudiante {
   id: number;
@@ -30,9 +30,8 @@ const ListarEstudiantes: React.FC = () => {
   const [selectedCurso, setSelectedCurso] = useState<string>('');
   const estudiantesPerPage = 5;
   const [maxPageButtons] = useState(10);
-  const [searchCarnet, setSearchCarnet] = useState<string>(''); // Estado para el carnet a buscar
-
-  const navigate = useNavigate(); // Inicializa el hook de navegación
+  const [searchCarnet, setSearchCarnet] = useState<string>('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -47,12 +46,9 @@ const ListarEstudiantes: React.FC = () => {
           setSelectedAño(currentYear);
         }
 
-        const currentMonth = new Date().getMonth(); // 0 to 11, where 0 is January and 11 is December
-        let initialCourseId = '1'; // Default course_id for the first half of the year
-        if (currentMonth >= 6) {
-          initialCourseId = '2'; // Set course_id to 2 for the second half of the year
-        }
-        setSelectedCurso(initialCourseId); // Set the initial value based on the month
+        const currentMonth = new Date().getMonth();
+        const initialCourseId = currentMonth >= 6 ? '2' : '1';
+        setSelectedCurso(initialCourseId);
 
         if (perfil.sede && currentYear) {
           fetchEstudiantes(perfil.sede, initialCourseId, currentYear);
@@ -72,11 +68,9 @@ const ListarEstudiantes: React.FC = () => {
       if (Array.isArray(estudiantesRecuperados)) {
         setEstudiantes(estudiantesRecuperados);
       } else {
-        console.error('Los datos recibidos no son válidos:', estudiantesRecuperados);
         setEstudiantes([]);
       }
     } catch (error) {
-      console.error('Error al cargar estudiantes:', error);
       setEstudiantes([]);
     }
   };
@@ -87,11 +81,9 @@ const ListarEstudiantes: React.FC = () => {
       if (Array.isArray(cursosRecuperados)) {
         setCursos(cursosRecuperados);
       } else {
-        console.error('Los datos de cursos no son válidos:', cursosRecuperados);
         setCursos([]);
       }
     } catch (error) {
-      console.error('Error al cargar cursos:', error);
       setCursos([]);
     }
   };
@@ -99,7 +91,6 @@ const ListarEstudiantes: React.FC = () => {
   const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const añoSeleccionado = e.target.value;
     setSelectedAño(añoSeleccionado);
-
     const perfil = await getDatosPerfil();
     if (perfil.sede && añoSeleccionado && selectedCurso) {
       fetchEstudiantes(perfil.sede, selectedCurso, añoSeleccionado);
@@ -118,34 +109,25 @@ const ListarEstudiantes: React.FC = () => {
     navigate(`/admin/time-line`, {
       state: {
         estudiante,
-        selectedCurso, // Incluye el curso seleccionado
-        selectedAño,   // Incluye el año seleccionado
+        selectedCurso,
+        selectedAño,
       },
     });
   };
 
   const handleSearchClick = async () => {
-
-    // Limpiar la lista de estudiantes y mostrar un estado "cargando" o vacío
     setEstudiantes([]);
-
-    if (searchCarnet === '') {
-      // Si el campo de búsqueda está vacío, volvemos a ejecutar la API para cargar todos los estudiantes
+    if (!searchCarnet) {
       const perfil = await getDatosPerfil();
       if (perfil.sede && selectedCurso && selectedAño) {
         fetchEstudiantes(perfil.sede, selectedCurso, selectedAño);
       }
       return;
     }
-
     try {
-      const estudianteEncontrado = await getEstudiantePorCarnet(searchCarnet);
-      console.log('Estudiante encontrado:', estudianteEncontrado);
-      if (estudianteEncontrado) {
-        setEstudiantes([estudianteEncontrado]); // Mostrar solo el estudiante encontrado
-      } else {
-        setEstudiantes([]); // Si no se encuentra, mostramos una lista vacía
-      }
+      const perfil = await getDatosPerfil();
+      const estudianteEncontrado = await getEstudiantePorCarnet(perfil.sede, parseInt(selectedAño), searchCarnet);
+      setEstudiantes(estudianteEncontrado ? [estudianteEncontrado] : []);
     } catch (error) {
       console.error('Error al buscar el estudiante:', error);
     }
@@ -154,7 +136,6 @@ const ListarEstudiantes: React.FC = () => {
   const indexOfLastEstudiante = currentPage * estudiantesPerPage;
   const indexOfFirstEstudiante = indexOfLastEstudiante - estudiantesPerPage;
   const currentEstudiantes = estudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante);
-
   const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage);
 
   const paginate = (pageNumber: number) => {
@@ -184,8 +165,7 @@ const ListarEstudiantes: React.FC = () => {
         <button
           key={i}
           onClick={() => paginate(i)}
-          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
-            }`}
+          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'}`}
         >
           {i}
         </button>
@@ -228,13 +208,13 @@ const ListarEstudiantes: React.FC = () => {
             <input
               type="text"
               placeholder="Buscar por Carnet de Estudiante"
-              value={searchCarnet} // Establecemos el valor del input
-              onChange={(e) => setSearchCarnet(e.target.value)} // Actualizamos el estado
+              value={searchCarnet}
+              onChange={(e) => setSearchCarnet(e.target.value)}
               className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
             />
             <button
               className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
-              onClick={handleSearchClick} // Ejecutamos la búsqueda
+              onClick={handleSearchClick}
             >
               Buscar
             </button>

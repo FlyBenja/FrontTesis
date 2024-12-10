@@ -40,7 +40,7 @@ export const getCatedraticoPorCarnet = async (
         userName: professor.userName,
         professorCode: professor.carnet, // Se usa el 'carnet' como 'professorCode'
         profilePhoto: professor.profilePhoto || '', // Si no tiene foto de perfil, asignamos una cadena vacía
-        active: true, // Puedes ajustar esto si hay un campo que indique si está activo
+        active: professor.active, // Puedes ajustar esto si hay un campo que indique si está activo
       };
     }
 

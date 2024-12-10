@@ -10,6 +10,8 @@ interface Estudiante {
 }
 
 export const getEstudiantePorCarnet = async (
+  sedeId: number,
+  year: number,
   carnet: string
 ): Promise<Estudiante | null> => {
   try {
@@ -19,9 +21,9 @@ export const getEstudiantePorCarnet = async (
       throw new Error('Token de autenticación no encontrado');
     }
 
-    // Hacer la solicitud GET a la URL para obtener el estudiante por su carnet
+    // Hacer la solicitud GET a la URL para obtener el estudiante por su carnet, sede_id y year
     const response = await axios.get(
-      `http://localhost:3000/api/users/search?carnet=${carnet}`,
+      `http://localhost:3000/api/users/search?sede_id=${sedeId}&year=${year}&carnet=${carnet}`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -39,7 +41,7 @@ export const getEstudiantePorCarnet = async (
         userName: user.userName,
         carnet: user.carnet,
         curso: '',  // Aquí asumimos que no hay un campo explícito de 'curso' en la respuesta, por lo que lo dejamos vacío
-        año: 0,    // Asignamos un valor por defecto si no existe el campo 'año'
+        año: user.year || 0, // Asignamos el valor de 'year' de la respuesta si está disponible
         fotoPerfil: user.profilePhoto || '', // Si no tiene foto de perfil, asignamos una cadena vacía
       };
     }
