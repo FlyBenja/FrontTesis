@@ -28,7 +28,7 @@ const ListarEstudiantes: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [selectedCurso, setSelectedCurso] = useState<string>('');
-  const estudiantesPerPage = 5;
+  const estudiantesPerPage = 4;
   const [maxPageButtons] = useState(10);
   const [searchCarnet, setSearchCarnet] = useState<string>('');
   const navigate = useNavigate();
@@ -154,7 +154,7 @@ const ListarEstudiantes: React.FC = () => {
         key="prev"
         onClick={() => paginate(currentPage - 1)}
         disabled={currentPage === 1}
-        className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
+        className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:border-strokedark dark:text-white"
       >
         &#8592;
       </button>
@@ -165,7 +165,7 @@ const ListarEstudiantes: React.FC = () => {
         <button
           key={i}
           onClick={() => paginate(i)}
-          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'}`}
+          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-boxdark dark:text-white'}`}
         >
           {i}
         </button>
@@ -177,7 +177,7 @@ const ListarEstudiantes: React.FC = () => {
         key="next"
         onClick={() => paginate(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
+        className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:border-strokedark dark:text-white"
       >
         &#8594;
       </button>
@@ -213,7 +213,7 @@ const ListarEstudiantes: React.FC = () => {
               className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
             />
             <button
-              className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+              className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
               onClick={handleSearchClick}
             >
               Buscar
@@ -249,8 +249,8 @@ const ListarEstudiantes: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-            <thead className="bg-gray-100 text-sm text-gray-600">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
+            <thead className="bg-gray-100 text-sm text-gray-600 dark:bg-boxdark dark:text-white">
               <tr>
                 <th className="py-2 px-4 text-left">Foto</th>
                 <th className="py-2 px-4 text-center">Nombre Estudiante</th>

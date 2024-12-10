@@ -93,7 +93,7 @@ const ListarCatedraticos: React.FC = () => {
             placeholder="Buscar por Código de Catedrático"
             value={searchCarnet}
             onChange={(e) => setSearchCarnet(e.target.value)}
-            className="w-72 px-4 py-2 border rounded-md"
+            className="w-72 px-4 py-2 border rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           />
           <button onClick={handleSearchClick} className="px-4 py-2 bg-blue-500 text-white rounded-md">
             Buscar
@@ -101,8 +101,8 @@ const ListarCatedraticos: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border rounded-lg">
-            <thead className="bg-gray-100 text-sm">
+          <table className="min-w-full bg-white border rounded-lg dark:bg-boxdark dark:border-strokedark">
+            <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
               <tr>
                 <th className="py-2 px-4 text-left">Foto</th>
                 <th className="py-2 px-4 text-center">Nombre</th>
@@ -113,12 +113,12 @@ const ListarCatedraticos: React.FC = () => {
             <tbody>
               {currentCatedraticos.length > 0 ? (
                 currentCatedraticos.map((cat) => (
-                  <tr key={cat.user_id}>
+                  <tr key={cat.user_id} className="border-t border-gray-200 dark:border-strokedark">
                     <td className="py-2 px-4 text-center">
                       {renderProfilePhoto(cat.profilePhoto, cat.userName)}
                     </td>
-                    <td className="py-2 px-4 text-center">{cat.userName}</td>
-                    <td className="py-2 px-4 text-center">{cat.professorCode}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{cat.userName}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{cat.professorCode}</td>
                     <td className="py-2 px-4 flex justify-end">
                       <SwitcherFour
                         enabled={cat.active}
@@ -130,7 +130,7 @@ const ListarCatedraticos: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="py-4 text-center text-gray-500">
+                  <td colSpan={4} className="py-4 text-center text-gray-500 dark:text-gray-400">
                     No se encontraron catedráticos.
                   </td>
                 </tr>
@@ -143,7 +143,7 @@ const ListarCatedraticos: React.FC = () => {
           <button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:text-white"
           >
             &#8592;
           </button>
@@ -152,7 +152,9 @@ const ListarCatedraticos: React.FC = () => {
               key={page}
               onClick={() => paginate(page)}
               className={`mx-1 px-3 py-1 rounded-md border ${
-                currentPage === page ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
+                currentPage === page
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white text-blue-500 dark:bg-boxdark dark:text-white'
               }`}
             >
               {page}
@@ -161,7 +163,7 @@ const ListarCatedraticos: React.FC = () => {
           <button
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:text-white"
           >
             &#8594;
           </button>
