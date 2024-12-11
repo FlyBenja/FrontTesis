@@ -1,70 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
-import { getBitacora } from '../../../ts/Admin/GetBitacora';
+import { useEffect, useState } from "react";
+import "./Bitacora.css";
+import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb";  // Importa el componente Breadcrumb
 
-interface LogEntry {
-  uniqueKey: number;
-  user: string;
-  role: string;
-  action: string;
+type Log = {
   date: string;
-  time: string;
-}
+  username: string;
+  id_user: number;
+  action: string;
+  description: string;
+};
 
-const Bitacora: React.FC = () => {
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+const Bitacora = () => {
+  const [logs, setLogs] = useState<Log[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const logsPerPage = 8;
-  const [maxPageButtons, setMaxPageButtons] = useState(10);
-
-  const updateMaxButtons = () => {
-    if (window.innerWidth < 640) {
-      setMaxPageButtons(4); // Mostrar solo 4 botones en pantallas pequeñas
-    } else {
-      setMaxPageButtons(10); // Mostrar 10 botones en pantallas más grandes
-    }
-  };
+  const logsPerPage = 3; // Cambié a 3 registros por página
+  const [maxPageButtons] = useState(10); // Limitar los botones de página
 
   useEffect(() => {
-    const fetchBitacora = async () => {
-      try {
-        setLoading(true);
-        const perfil = await getDatosPerfil();
-        const bitacoraResponse = await getBitacora(perfil?.sede || '');
+    const simulatedLogs: Log[] = [
+      {
+        date: "2024-12-10T10:00:00Z",
+        username: "Usuario1",
+        id_user: 1,
+        action: "Acceso al sistema",
+        description: "El usuario accedió al sistema desde IP 192.168.0.1.",
+      },
+      {
+        date: "2024-12-09T14:00:00Z",
+        username: "Usuario2",
+        id_user: 2,
+        action: "Edición de registro",
+        description: "El usuario editó el registro con ID 123.",
+      },
+      {
+        date: "2024-12-08T09:30:00Z",
+        username: "Usuario3",
+        id_user: 3,
+        action: "Creación de archivo",
+        description: "El usuario creó un nuevo archivo de reporte.",
+      },
+      {
+        date: "2024-12-07T16:45:00Z",
+        username: "Usuario4",
+        id_user: 4,
+        action: "Acceso al sistema",
+        description: "El usuario accedió al sistema desde IP 192.168.0.2.",
+      },
+      {
+        date: "2024-12-06T11:20:00Z",
+        username: "Usuario5",
+        id_user: 5,
+        action: "Eliminación de archivo",
+        description: "El usuario eliminó un archivo de registros antiguos.",
+      },
+      {
+        date: "2024-12-05T13:15:00Z",
+        username: "Usuario6",
+        id_user: 6,
+        action: "Cambio de contraseña",
+        description: "El usuario cambió su contraseña de acceso.",
+      },
+      {
+        date: "2024-12-04T08:00:00Z",
+        username: "Usuario7",
+        id_user: 7,
+        action: "Acceso al sistema",
+        description: "El usuario accedió al sistema desde IP 192.168.0.3.",
+      },
+      {
+        date: "2024-12-03T10:10:00Z",
+        username: "Usuario8",
+        id_user: 8,
+        action: "Edición de registro",
+        description: "El usuario editó el registro con ID 124.",
+      },
+      {
+        date: "2024-12-02T09:00:00Z",
+        username: "Usuario9",
+        id_user: 9,
+        action: "Acceso al sistema",
+        description: "El usuario accedió al sistema desde IP 192.168.0.4.",
+      },
+      {
+        date: "2024-12-01T14:30:00Z",
+        username: "Usuario10",
+        id_user: 10,
+        action: "Acceso al sistema",
+        description: "El usuario accedió al sistema desde IP 192.168.0.5.",
+      },
+      {
+        date: "2024-11-30T17:50:00Z",
+        username: "Usuario11",
+        id_user: 11,
+        action: "Cambio de configuración",
+        description: "El usuario cambió la configuración de la cuenta.",
+      },
+      {
+        date: "2024-11-29T12:40:00Z",
+        username: "Usuario12",
+        id_user: 12,
+        action: "Acceso al sistema",
+        description: "El usuario accedió al sistema desde IP 192.168.0.6.",
+      },
+    ];
 
-        const logsData = Array.isArray(bitacoraResponse?.logs) ? bitacoraResponse.logs : [];
-
-        let keyCounter = 0;
-        const mappedLogs = logsData.map((log: any) => ({
-          uniqueKey: ++keyCounter,
-          user: log.username || 'Desconocido',
-          role: log.role || 'Sin rol',
-          action: log.action || 'Sin acción',
-          date: log.date?.split('T')[0] || 'Fecha no disponible',
-          time: log.date?.split('T')[1]?.slice(0, 8) || 'Hora no disponible',
-        }));
-        setLogs(mappedLogs);
-      } catch (error) {
-        console.error('Error al recuperar los datos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBitacora();
-
-    // Actualizar la cantidad de botones cuando cambia el tamaño de la pantalla
-    updateMaxButtons();
-    window.addEventListener('resize', updateMaxButtons);
-
-    return () => window.removeEventListener('resize', updateMaxButtons);
+    setLogs(simulatedLogs);
   }, []);
 
+  // Paginación
   const indexOfLastLog = currentPage * logsPerPage;
   const indexOfFirstLog = indexOfLastLog - logsPerPage;
   const currentLogs = logs.slice(indexOfFirstLog, indexOfLastLog);
+
   const totalPages = Math.ceil(logs.length / logsPerPage);
 
   const paginate = (pageNumber: number) => {
@@ -73,114 +120,63 @@ const Bitacora: React.FC = () => {
     }
   };
 
-  const renderPaginationButtons = () => {
-    const buttons = [];
-    const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-
-    for (let i = startPage; i <= endPage; i++) {
-      buttons.push(
-        <button
-          key={i}
-          onClick={() => paginate(i)}
-          className={`mx-1 px-3 py-1 rounded-md border ${
-            currentPage === i
-              ? 'bg-blue-500 text-white'
-              : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'
-          }`}
-        >
-          {i}
-        </button>
-      );
-    }
-    return buttons;
-  };
-
   return (
-    <>
-      <Breadcrumb pageName="Bitácora" />
-      <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        {loading ? (
-          <p>Cargando datos...</p>
-        ) : (
-          <>
-            <div className="block sm:hidden">
-              {currentLogs.length === 0 ? (
-                <p>No hay registros para mostrar</p>
-              ) : (
-                currentLogs.map((log) => (
-                  <div
-                    key={log.uniqueKey}
-                    className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg dark:bg-boxdark dark:border-strokedark"
-                  >
-                    <p className="text-lg font-bold text-black dark:text-white">{log.user}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{log.role}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{log.action}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {log.date} - {log.time}
-                    </p>
-                  </div>
-                ))
-              )}
+    <div className="bitacora-admin mt-5">
+      <Breadcrumb pageName="Bitácora de Actividades" />  {/* Aquí agregas el Breadcrumb */}
+      <div className="bitacora-container">
+        {currentLogs.map((log, index) => (
+          <div key={index} className="bitacora-item">
+            <div className="bitacora-label">
+              {new Date(log.date).toLocaleDateString("en-CA")}
             </div>
-
-            <div className="hidden sm:block max-w-full overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
-                <thead>
-                  <tr className="bg-gray-100 text-left text-sm text-gray-600 dark:bg-meta-4 dark:text-white">
-                    <th className="py-2 px-4">Usuario</th>
-                    <th className="py-2 px-4">Rol</th>
-                    <th className="py-2 px-4">Acción</th>
-                    <th className="py-2 px-4">Fecha</th>
-                    <th className="py-2 px-4">Hora</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentLogs.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="text-center py-4">No hay registros para mostrar</td>
-                    </tr>
-                  ) : (
-                    currentLogs.map((log) => (
-                      <tr
-                        key={log.uniqueKey}
-                        className="border-t border-gray-200 dark:border-strokedark"
-                      >
-                        <td className="py-2 px-4 text-black dark:text-white">{log.user}</td>
-                        <td className="py-2 px-4 text-black dark:text-white">{log.role}</td>
-                        <td className="py-2 px-4 text-black dark:text-white">{log.action}</td>
-                        <td className="py-2 px-4 text-black dark:text-white">{log.date}</td>
-                        <td className="py-2 px-4 text-black dark:text-white">{log.time}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+            <div className="bitacora-content">
+              <span className="bitacora-time">
+                {new Date(log.date).toLocaleTimeString()}
+              </span>
+              <div className="bitacora-header">
+                <h3 className="bitacora-title">{log.username}</h3>
+                <span>ID: {log.id_user}</span>
+              </div>
+              <div className="bitacora-body">
+                <p><strong>Acción:</strong> {log.action}</p>
+                <p><strong>Detalles:</strong> {log.description}</p>
+              </div>
             </div>
-
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-                disabled={currentPage === 1}
-              >
-                &#8592;
-              </button>
-
-              {renderPaginationButtons()}
-
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-                disabled={currentPage === totalPages}
-              >
-                &#8594;
-              </button>
-            </div>
-          </>
-        )}
+          </div>
+        ))}
       </div>
-    </>
+
+      {/* Paginación */}
+      <div className="pagination mt-4 flex justify-center">
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:text-white"
+        >
+          &#8592;
+        </button>
+        {Array.from({ length: Math.min(totalPages, maxPageButtons) }, (_, i) => i + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => paginate(page)}
+            className={`mx-1 px-3 py-1 rounded-md border ${
+              currentPage === page
+                ? 'bg-blue-500 text-white'
+                : 'bg-white text-blue-500 dark:bg-boxdark dark:text-white'
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:text-white"
+        >
+          &#8594;
+        </button>
+      </div>
+    </div>
   );
 };
 
