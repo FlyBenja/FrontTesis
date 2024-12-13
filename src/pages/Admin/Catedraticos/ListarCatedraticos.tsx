@@ -20,10 +20,21 @@ const ListarCatedraticos: React.FC = () => {
   const [searchCarnet, setSearchCarnet] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const catedraticosPerPage = 5;
-  const [maxPageButtons] = useState(10);
+  const [maxPageButtons] = useState(10); // Máximo de botones para paginación
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     getDatosPerfil().then((perfil) => perfil.sede && fetchCatedraticos(perfil.sede));
+
+    // Detectar el tamaño de la pantalla
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 640); // Definir como móvil si el ancho es menor o igual a 640px
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const fetchCatedraticos = async (sedeId: number) => {
@@ -62,12 +73,13 @@ const ListarCatedraticos: React.FC = () => {
     }
   };
 
-  const indexOfLastCatedratico = currentPage * catedraticosPerPage;
-  const indexOfFirstCatedratico = indexOfLastCatedratico - catedraticosPerPage;
+  const indexOfLastCatedratico = currentPage * (isMobile ? 8 : catedraticosPerPage);
+  const indexOfFirstCatedratico = indexOfLastCatedratico - (isMobile ? 8 : catedraticosPerPage);
   const currentCatedraticos = catedraticos.slice(indexOfFirstCatedratico, indexOfLastCatedratico);
 
-  const totalPages = Math.ceil(catedraticos.length / catedraticosPerPage);
+  const totalPages = Math.ceil(catedraticos.length / (isMobile ? 8 : catedraticosPerPage));
 
+  // Paginación
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
@@ -139,22 +151,23 @@ const ListarCatedraticos: React.FC = () => {
           </table>
         </div>
 
+        {/* Paginación */}
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:text-white"
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
           >
             &#8592;
           </button>
-          {Array.from({ length: Math.min(totalPages, maxPageButtons) }, (_, i) => i + 1).map((page) => (
+          {Array.from({ length: isMobile ? Math.min(totalPages, 4) : Math.min(totalPages, maxPageButtons) }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
               onClick={() => paginate(page)}
               className={`mx-1 px-3 py-1 rounded-md border ${
                 currentPage === page
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-blue-500 dark:bg-boxdark dark:text-white'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
               }`}
             >
               {page}
@@ -163,7 +176,7 @@ const ListarCatedraticos: React.FC = () => {
           <button
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:text-white"
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
           >
             &#8594;
           </button>

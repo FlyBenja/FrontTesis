@@ -28,9 +28,9 @@ const ListarEstudiantes: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [selectedCurso, setSelectedCurso] = useState<string>('');
-  const estudiantesPerPage = 4;
-  const [maxPageButtons] = useState(10);
   const [searchCarnet, setSearchCarnet] = useState<string>('');
+  const [estudiantesPerPage, setEstudiantesPerPage] = useState(4); // Default to 4 for desktop
+  const [maxPageButtons, setMaxPageButtons] = useState(10); // Default to 10 for desktop
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +38,6 @@ const ListarEstudiantes: React.FC = () => {
       try {
         const perfil = await getDatosPerfil();
         const yearsRecuperados = await getYears();
-
         setYears(yearsRecuperados.map((yearObj) => yearObj.year));
 
         const currentYear = new Date().getFullYear().toString();
@@ -199,6 +198,28 @@ const ListarEstudiantes: React.FC = () => {
     }
   };
 
+  // Adjust estudiantesPerPage and maxPageButtons for mobile view
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setEstudiantesPerPage(8); // Show 8 students in mobile view
+        setMaxPageButtons(4); // Show 4 pagination buttons in mobile view
+      } else {
+        setEstudiantesPerPage(4); // Default to 4 students on desktop
+        setMaxPageButtons(10); // Default to 10 pagination buttons on desktop
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener on resize
+    window.addEventListener('resize', handleResize);
+
+    // Clean up the event listener on component unmount
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <>
       <Breadcrumb pageName="Listar Estudiantes" />
@@ -268,13 +289,13 @@ const ListarEstudiantes: React.FC = () => {
                     <td className="py-2 px-4 text-center">
                       {renderProfilePhoto(est.fotoPerfil, est.userName)}
                     </td>
-                    <td className="py-2 px-4 text-center relative group">
+                    <td className="py-2 px-4 text-center text-black dark:text-white relative group">
                       {est.userName}
                       <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
                         Ir Hacia TimeLine Estudiante
                       </div>
                     </td>
-                    <td className="py-2 px-4 text-center">{est.carnet}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{est.carnet}</td>
                   </tr>
                 ))
               ) : (
