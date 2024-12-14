@@ -29,8 +29,8 @@ const ListarEstudiantes: React.FC = () => {
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [selectedCurso, setSelectedCurso] = useState<string>('');
   const [searchCarnet, setSearchCarnet] = useState<string>('');
-  const [estudiantesPerPage, setEstudiantesPerPage] = useState(4); // Default to 4 for desktop
-  const [maxPageButtons, setMaxPageButtons] = useState(10); // Default to 10 for desktop
+  const [estudiantesPerPage, setEstudiantesPerPage] = useState(4);
+  const [maxPageButtons, setMaxPageButtons] = useState(10);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -198,25 +198,19 @@ const ListarEstudiantes: React.FC = () => {
     }
   };
 
-  // Adjust estudiantesPerPage and maxPageButtons for mobile view
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setEstudiantesPerPage(8); // Show 8 students in mobile view
-        setMaxPageButtons(4); // Show 4 pagination buttons in mobile view
+        setEstudiantesPerPage(8);
+        setMaxPageButtons(4);
       } else {
-        setEstudiantesPerPage(4); // Default to 4 students on desktop
-        setMaxPageButtons(10); // Default to 10 pagination buttons on desktop
+        setEstudiantesPerPage(4);
+        setMaxPageButtons(10);
       }
     };
 
-    // Initial check
     handleResize();
-
-    // Add event listener on resize
     window.addEventListener('resize', handleResize);
-
-    // Clean up the event listener on component unmount
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -284,16 +278,13 @@ const ListarEstudiantes: React.FC = () => {
                   <tr
                     key={est.id}
                     onClick={() => handleStudentClick(est)}
-                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
+                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4"
                   >
                     <td className="py-2 px-4 text-center">
                       {renderProfilePhoto(est.fotoPerfil, est.userName)}
                     </td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white relative group">
+                    <td className="py-2 px-4 text-center text-black dark:text-white">
                       {est.userName}
-                      <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
-                        Ir Hacia TimeLine Estudiante
-                      </div>
                     </td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{est.carnet}</td>
                   </tr>
