@@ -173,7 +173,7 @@ const ListarEstudiantes: React.FC = () => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setEstudiantesPerPage(8);
-        setMaxPageButtons(4);
+        setMaxPageButtons(5);
       } else {
         setEstudiantesPerPage(4);
         setMaxPageButtons(10);

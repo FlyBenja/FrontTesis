@@ -19,22 +19,28 @@ const ListarCatedraticos: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [searchCarnet, setSearchCarnet] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const catedraticosPerPage = 5;
-  const [maxPageButtons] = useState(10); // Máximo de botones para paginación
-  const [isMobile, setIsMobile] = useState(false);
+  const [catedraticosPerPage, setCatedraticosPerPage] = useState(5); // Valor por defecto
+  const [maxPageButtons, setMaxPageButtons] = useState(10); // Máximo de botones para paginación
 
   useEffect(() => {
-    getDatosPerfil().then((perfil) => perfil.sede && fetchCatedraticos(perfil.sede));
-
-    // Detectar el tamaño de la pantalla
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 640); // Definir como móvil si el ancho es menor o igual a 640px
+      if (window.innerWidth < 768) {
+        setCatedraticosPerPage(8);
+        setMaxPageButtons(5);
+      } else {
+        setCatedraticosPerPage(5);
+        setMaxPageButtons(10);
+      }
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    getDatosPerfil().then((perfil) => perfil.sede && fetchCatedraticos(perfil.sede));
   }, []);
 
   const fetchCatedraticos = async (sedeId: number) => {
@@ -73,11 +79,11 @@ const ListarCatedraticos: React.FC = () => {
     }
   };
 
-  const indexOfLastCatedratico = currentPage * (isMobile ? 8 : catedraticosPerPage);
-  const indexOfFirstCatedratico = indexOfLastCatedratico - (isMobile ? 8 : catedraticosPerPage);
+  const indexOfLastCatedratico = currentPage * catedraticosPerPage;
+  const indexOfFirstCatedratico = indexOfLastCatedratico - catedraticosPerPage;
   const currentCatedraticos = catedraticos.slice(indexOfFirstCatedratico, indexOfLastCatedratico);
 
-  const totalPages = Math.ceil(catedraticos.length / (isMobile ? 8 : catedraticosPerPage));
+  const totalPages = Math.ceil(catedraticos.length / catedraticosPerPage);
 
   // Paginación
   const paginate = (pageNumber: number) => {

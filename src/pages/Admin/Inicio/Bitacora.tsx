@@ -14,9 +14,9 @@ type Log = {
 const Bitacora = () => {
   const [logs, setLogs] = useState<Log[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isMobile, setIsMobile] = useState(false);
   const [sedeId, setSedeId] = useState<number | null>(null);
-  const logsPerPage = 3;
+  const [logsPerPage, setLogsPerPage] = useState(3); // Valor por defecto
+  const [maxPageButtons, setMaxPageButtons] = useState(10); // Máximo de botones de paginación
 
   useEffect(() => {
     const fetchSedeId = async () => {
@@ -30,10 +30,19 @@ const Bitacora = () => {
 
     fetchSedeId();
 
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setLogsPerPage(4); // Más registros por página en móviles
+        setMaxPageButtons(5); // Menos botones de paginación en móviles
+      } else {
+        setLogsPerPage(3); // Valor por defecto en pantallas grandes
+        setMaxPageButtons(10); // Más botones en pantallas grandes
+      }
+    };
+
+    handleResize(); // Llamar la función para verificar el tamaño inicial
+    window.addEventListener("resize", handleResize); // Agregar el listener para el cambio de tamaño
+    return () => window.removeEventListener("resize", handleResize); // Limpiar al desmontar
   }, []);
 
   useEffect(() => {
@@ -41,7 +50,6 @@ const Bitacora = () => {
       const fetchLogs = async () => {
         try {
           const response = await getBitacora(sedeId); // Llamar a la API con el sedeId
-          console.log(response.logs); // Acceder al campo logs
           setLogs(response.logs.map((log: any) => ({
             date: log.date,
             username: log.username,
@@ -53,18 +61,15 @@ const Bitacora = () => {
           console.error("Error al obtener los registros de la bitácora:", error);
         }
       };
-  
+
       fetchLogs();
     }
-  }, [sedeId]);  
+  }, [sedeId]);
 
   const indexOfLastLog = currentPage * logsPerPage;
   const indexOfFirstLog = indexOfLastLog - logsPerPage;
   const currentLogs = logs.slice(indexOfFirstLog, indexOfLastLog);
   const totalPages = Math.ceil(logs.length / logsPerPage);
-
-  // Número máximo de botones a mostrar
-  const pagesToShow = isMobile ? 4 : 10;
 
   // Función para actualizar la página
   const paginate = (pageNumber: number) => {
@@ -75,11 +80,11 @@ const Bitacora = () => {
 
   // Crear el rango de botones a mostrar (paginación dinámica)
   const getPageRange = () => {
-    let start = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
-    let end = Math.min(totalPages, start + pagesToShow - 1);
+    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let end = Math.min(totalPages, start + maxPageButtons - 1);
 
-    if (end - start + 1 < pagesToShow) {
-      start = Math.max(1, end - pagesToShow + 1);
+    if (end - start + 1 < maxPageButtons) {
+      start = Math.max(1, end - maxPageButtons + 1);
     }
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
