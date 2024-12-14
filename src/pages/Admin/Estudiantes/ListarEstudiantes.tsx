@@ -143,46 +143,17 @@ const ListarEstudiantes: React.FC = () => {
     }
   };
 
-  const renderPaginationButtons = () => {
-    const buttons = [];
+  const getPageRange = () => {
+    const range: number[] = [];
+    const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage);
     const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
-    buttons.push(
-      <button
-        key="prev"
-        onClick={() => paginate(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:border-strokedark dark:text-white"
-      >
-        &#8592;
-      </button>
-    );
-
     for (let i = startPage; i <= endPage; i++) {
-      buttons.push(
-        <button
-          key={i}
-          onClick={() => paginate(i)}
-          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-boxdark dark:text-white'}`}
-        >
-          {i}
-        </button>
-      );
+      range.push(i);
     }
 
-    buttons.push(
-      <button
-        key="next"
-        onClick={() => paginate(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500 dark:bg-boxdark dark:border-strokedark dark:text-white"
-      >
-        &#8594;
-      </button>
-    );
-
-    return buttons;
+    return range;
   };
 
   const renderProfilePhoto = (profilePhoto: string, userName: string) => {
@@ -278,13 +249,16 @@ const ListarEstudiantes: React.FC = () => {
                   <tr
                     key={est.id}
                     onClick={() => handleStudentClick(est)}
-                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4"
+                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
                   >
                     <td className="py-2 px-4 text-center">
                       {renderProfilePhoto(est.fotoPerfil, est.userName)}
                     </td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white">
+                    <td className="py-2 px-4 text-center text-black dark:text-white relative group">
                       {est.userName}
+                      <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
+                        Ir Hacia TimeLine Estudiante
+                      </div>
                     </td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{est.carnet}</td>
                   </tr>
@@ -300,8 +274,34 @@ const ListarEstudiantes: React.FC = () => {
           </table>
         </div>
 
+        {/* Paginación */}
         <div className="mt-4 flex justify-center">
-          {renderPaginationButtons()}
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+          >
+            &#8592;
+          </button>
+          {getPageRange().map((page) => (
+            <button
+              key={page}
+              onClick={() => paginate(page)}
+              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
+                }`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+          >
+            &#8594;
+          </button>
         </div>
       </div>
     </>

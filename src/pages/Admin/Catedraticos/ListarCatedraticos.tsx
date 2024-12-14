@@ -95,6 +95,18 @@ const ListarCatedraticos: React.FC = () => {
       </div>
     );
 
+  // Función para calcular el rango de páginas a mostrar
+  const getPageRange = () => {
+    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let end = Math.min(totalPages, start + maxPageButtons - 1);
+
+    if (end - start + 1 < maxPageButtons) {
+      start = Math.max(1, end - maxPageButtons + 1);
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
+
   return (
     <>
       <Breadcrumb pageName="Listar Catedráticos" />
@@ -160,15 +172,14 @@ const ListarCatedraticos: React.FC = () => {
           >
             &#8592;
           </button>
-          {Array.from({ length: isMobile ? Math.min(totalPages, 4) : Math.min(totalPages, maxPageButtons) }, (_, i) => i + 1).map((page) => (
+          {getPageRange().map((page) => (
             <button
               key={page}
               onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${
-                currentPage === page
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
-              }`}
+              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
+                }`}
             >
               {page}
             </button>
