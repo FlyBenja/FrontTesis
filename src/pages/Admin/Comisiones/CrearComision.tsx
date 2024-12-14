@@ -114,7 +114,7 @@ const CrearComision: React.FC = () => {
       <div className="relative bg-gray-100 dark:bg-boxdark">
         <div className="absolute top-40 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
           <p className="text-xl text-black dark:text-white font-semibold">
-            No Hay Catedráticos Activos En Esta Sede.
+            No Hay Catedráticos Activos.
           </p>
         </div>
       </div>
