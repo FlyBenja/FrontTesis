@@ -15,9 +15,19 @@ const Propuestas: React.FC = () => {
     { id: 3, titulo: 'Propuesta 3' },
   ]);
   const [selectedPropuesta, setSelectedPropuesta] = useState<number | null>(null);
+  const [aprobadaPropuesta, setAprobadaPropuesta] = useState<number | null>(null);
 
   const handleSelectPropuesta = (id: number) => {
-    setSelectedPropuesta(id);
+    if (aprobadaPropuesta === null) {
+      setSelectedPropuesta(id); // Solo permite seleccionar si no hay propuesta aprobada
+    }
+  };
+
+  const handleAprobarPropuesta = () => {
+    if (selectedPropuesta !== null) {
+      setAprobadaPropuesta(selectedPropuesta); // Establece la propuesta aprobada
+      setSelectedPropuesta(null); // Limpia la selección
+    }
   };
 
   const pdfFile = '/Formato_Propuesta_Tesis.pdf'; // Ruta del archivo en public
@@ -46,8 +56,10 @@ const Propuestas: React.FC = () => {
               <div
                 key={propuesta.id}
                 className={`flex items-center p-3 rounded-lg cursor-pointer transition ${
-                  selectedPropuesta === propuesta.id
-                    ? 'bg-green-500 text-white'
+                  aprobadaPropuesta === propuesta.id
+                    ? 'bg-green-500 text-white' // Color verde para aprobada
+                    : selectedPropuesta === propuesta.id
+                    ? 'bg-blue-500 text-white' // Color azul para seleccionada
                     : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
                 }`}
                 onClick={() => handleSelectPropuesta(propuesta.id)}
@@ -57,10 +69,26 @@ const Propuestas: React.FC = () => {
                   checked={selectedPropuesta === propuesta.id}
                   onChange={() => handleSelectPropuesta(propuesta.id)}
                   className="mr-2 cursor-pointer"
+                  disabled={aprobadaPropuesta !== null} // Deshabilita si ya hay una propuesta aprobada
                 />
                 <label className="cursor-pointer">{propuesta.titulo}</label>
               </div>
             ))}
+          </div>
+
+          {/* Botón Aprobar Propuesta - Ocupa todo el ancho */}
+          <div className="mt-4">
+            <button
+              className={`w-full px-4 py-3 rounded-md text-white transition ${
+                selectedPropuesta === null
+                  ? 'bg-blue-400 cursor-not-allowed' // Azul claro para deshabilitado
+                  : 'bg-blue-500 hover:bg-blue-600' // Azul más oscuro para habilitado
+              }`}
+              onClick={handleAprobarPropuesta}
+              disabled={selectedPropuesta === null} // Deshabilita si no hay selección
+            >
+              Aprobar Propuesta
+            </button>
           </div>
         </div>
 

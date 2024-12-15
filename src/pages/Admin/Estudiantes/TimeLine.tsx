@@ -5,9 +5,10 @@ import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getTimeLineEstudiante } from '../../../ts/Admin/GetTimeLineEstudiante';
 
 interface TimeLineEvent {
-  username: string;
-  action: string;
+  user_id: number;
+  typeEvent: string;
   description: string;
+  task_id: number;
   date: string;
 }
 
@@ -37,9 +38,10 @@ const TimeLine: React.FC = () => {
         const logs = await getTimeLineEstudiante(userId);
         setEvents(
           logs.map((log) => ({
-            username: log.username,
-            action: log.action,
+            user_id: log.user_id,
+            typeEvent: log.typeEvent,
             description: log.description,
+            task_id: log.task_id,
             date: new Date(log.date).toLocaleDateString(),
           }))
         );
@@ -122,7 +124,7 @@ const TimeLine: React.FC = () => {
       <div className="mx-auto max-w-6xl px-6 -my-3">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-black dark:text-white">
-            Línea de Tiempo - {studentName} (Curso: {selectedCurso}, Año: {selectedAño})
+            Línea de Tiempo - {studentName}
           </h2>
           <button
             onClick={() => {
@@ -141,7 +143,7 @@ const TimeLine: React.FC = () => {
                 <span>📝</span>
               </div>
               <div className={`p-4 rounded-lg shadow-md bg-white dark:bg-boxdark dark:text-white`}>
-                <h3 className="text-lg font-semibold">{event.action}</h3>
+                <h3 className="text-lg font-semibold">{event.typeEvent}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{event.description}</p>
                 <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">{event.date}</p>
               </div>

@@ -103,7 +103,7 @@ const TareasEstudiante: React.FC = () => {
               className={`mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-blue-100 dark:bg-boxdark`}
               onClick={() => handleNavigate(tarea)}
             >
-              <h3 className="text-lg font-bold text-primary">{tarea.title}</h3>
+              <h3 className="text-lg font-bold text-black dark:text-white">{tarea.title}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 {tarea.description}
               </p>
@@ -123,12 +123,10 @@ const TareasEstudiante: React.FC = () => {
           .map((tarea) => (
             <div
               key={tarea.task_id}
-              className={`mb-6 p-4 rounded-lg shadow-md cursor-pointer ${tarea.typeTask_id === 1 ? 'bg-blue-100 dark:bg-boxdark' : 'bg-white dark:bg-boxdark'}`}
+              className={`mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-white dark:bg-boxdark`}
               onClick={() => handleNavigate(tarea)}
             >
-              <h3
-                className={`text-lg font-bold ${tarea.typeTask_id === 2 ? 'text-black' : 'text-primary'}`}
-              >
+              <h3 className="text-lg font-bold text-black dark:text-white">
                 {tarea.title}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
