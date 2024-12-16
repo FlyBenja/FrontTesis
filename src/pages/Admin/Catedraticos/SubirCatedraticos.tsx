@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; // Llamada a la API para obtener el sede_id
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { cargarCatedraticos } from '../../../ts/Admin/CargaCatedraticos';
-
 
 const SubirCatedraticos = () => {
   const [fileSelected, setFileSelected] = useState<File | null>(null);
-  const [apiLoading, setApiLoading] = useState<boolean>(false); // Estado para controlar el indicador de carga
-  const [sedeId, setSedeId] = useState<number | null>(null); // Almacenará el sede_id
+  const [apiLoading, setApiLoading] = useState<boolean>(false);
+  const [sedeId, setSedeId] = useState<number | null>(null);
   const fileInputRef = React.createRef<HTMLInputElement>();
 
-  // Obtiene el sede_id desde la API
   useEffect(() => {
     const fetchSedeId = async () => {
       try {
         const { sede } = await getDatosPerfil();
-        setSedeId(sede); // Almacena el sede_id
+        setSedeId(sede);
       } catch (error) {
-        console.error('Error al obtener el perfil:', error);
-        showAlert('error', '¡Error!', 'No se pudo obtener la información del perfil.');
+        Swal.fire({
+          icon: 'error',
+          title: '¡Error!',
+          text: 'No se pudo obtener la información del perfil.',
+          confirmButtonColor: '#dc3545',
+          confirmButtonText: 'OK',
+        });
       }
     };
 
@@ -31,41 +34,48 @@ const SubirCatedraticos = () => {
     setFileSelected(file);
   };
 
-  const showAlert = (type: 'success' | 'error', title: string, text: string) => {
-    const confirmButtonColor = type === 'success' ? '#28a745' : '#dc3545'; // Verde para éxito, Rojo para error
-    Swal.fire({
-      icon: type,
-      title,
-      text,
-      confirmButtonColor,
-      confirmButtonText: 'OK',
-    });
-  };
-
   const handleUpload = async () => {
     if (!fileSelected || !sedeId) {
-      showAlert('error', '¡Error!', 'Archivo o sede no seleccionada.');
+      Swal.fire({
+        icon: 'error',
+        title: '¡Error!',
+        text: 'Archivo o sede no seleccionada.',
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'OK',
+      });
       return;
     }
-  
+
     setApiLoading(true);
-  
+
     try {
       const response = await cargarCatedraticos({
         archivo: fileSelected,
-        sede_id: sedeId, // Solo se envía el ID de la sede
+        sede_id: sedeId,
       });
-  
-      showAlert('success', 'Carga completada', response.message || 'Los catedráticos se han cargado exitosamente.');
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Carga completada',
+        text: response.message || 'Los catedráticos se han cargado exitosamente.',
+        confirmButtonColor: '#28a745',
+        confirmButtonText: 'OK',
+      });
       handleReset();
     } catch (error) {
       if (error instanceof Error) {
-        showAlert('error', '¡Error!', error.message);
+        Swal.fire({
+          icon: 'error',
+          title: '¡Error!',
+          text: error.message,
+          confirmButtonColor: '#dc3545',
+          confirmButtonText: 'OK',
+        });
       }
     } finally {
       setApiLoading(false);
     }
-  };  
+  };
 
   const handleReset = () => {
     setFileSelected(null);
@@ -93,7 +103,6 @@ const SubirCatedraticos = () => {
               </h3>
             </div>
             <div className="p-6.5">
-              {/* Mensaje de favor seleccionar archivo */}
               <p className="text-center text-sm font-medium text-black dark:text-white mb-4">
                 Favor de seleccionar un archivo Excel (.xls, .xlsx)
               </p>
@@ -109,12 +118,11 @@ const SubirCatedraticos = () => {
               <button
                 className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${fileSelected ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
                 onClick={handleUpload}
-                disabled={!fileSelected || !sedeId} // Deshabilitar el botón si no hay archivo o sede
+                disabled={!fileSelected || !sedeId}
               >
                 Confirmar Subida
               </button>
 
-              {/* Apartado de Plantilla */}
               <div className="mt-6 text-center">
                 <p className="text-black dark:text-white">
                   ¿Necesitas una plantilla? Descarga la plantilla de Excel.
@@ -131,7 +139,6 @@ const SubirCatedraticos = () => {
         </div>
       </div>
 
-      {/* Indicador de carga */}
       {apiLoading && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="text-white text-xl">Espere un momento en lo que se suben los Catedraticos...</div>

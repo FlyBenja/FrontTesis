@@ -1,26 +1,22 @@
 import { useState, useEffect } from 'react';
-import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; // Recuperar la sede
-import { createCatedratico } from '../../../ts/Admin/CreateCatedratico'; // Crear catedrático
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
+import { createCatedratico } from '../../../ts/Admin/CreateCatedratico';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import Swal from 'sweetalert2';
 
 const CrearCatedraticos = () => {
-  // Estados para los campos del formulario
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [carnet, setCarnet] = useState('');
-  const [sedeId, setSedeId] = useState<number | null>(null); // Inicializamos como null
-  const [year, setYear] = useState<number>(new Date().getFullYear()); // Año actual
-
-  // Estado para manejo de carga
+  const [sedeId, setSedeId] = useState<number | null>(null);
+  const [year, setYear] = useState<number>(new Date().getFullYear());
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Obtener los datos de perfil (incluida la sede)
     const fetchDatosPerfil = async () => {
       try {
-        const { sede } = await getDatosPerfil(); // Asegúrate de que getDatosPerfil devuelva la sede correctamente
-        setSedeId(sede); // Establece el sedeId desde la respuesta
+        const { sede } = await getDatosPerfil();
+        setSedeId(sede);
       } catch (err) {
         Swal.fire({
           icon: 'error',
@@ -31,7 +27,7 @@ const CrearCatedraticos = () => {
     };
 
     fetchDatosPerfil();
-  }, []); // Solo se ejecuta una vez al cargar el componente
+  }, []);
 
   const validateForm = () => {
     if (!nombre || !correo || !carnet || sedeId === null) {
@@ -49,7 +45,7 @@ const CrearCatedraticos = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      return; // No continuar si hay errores en la validación
+      return;
     }
 
     if (sedeId === null) {
@@ -58,31 +54,20 @@ const CrearCatedraticos = () => {
         title: 'Error',
         text: 'La sede no puede estar vacía',
       });
-      return; // Detener el envío si la sede es null
+      return;
     }
 
-    setLoading(true); // Activar el estado de carga
+    setLoading(true);
 
     try {
-      // Console log de los datos antes de hacer la llamada a la API
-      console.log('Datos enviados a la API:', {
-        email: correo,
-        name: nombre,
-        carnet: carnet,
-        sede_id: sedeId, // Ahora sabemos que sedeId no es null
-        year: year,
-      });
-
-      // Llamada a la API para crear el catedrático
       await createCatedratico({
         email: correo,
         name: nombre,
         carnet: carnet,
-        sede_id: sedeId, // Enviar como número, ya que validamos que no es null
+        sede_id: sedeId,
         year: year,
       });
 
-      // Limpiar campos después de la creación
       setNombre('');
       setCorreo('');
       setCarnet('');
@@ -101,7 +86,7 @@ const CrearCatedraticos = () => {
         text: 'Hubo un error al crear el catedrático',
       });
     } finally {
-      setLoading(false); // Desactivar el estado de carga
+      setLoading(false);
     }
   };
 
@@ -128,7 +113,7 @@ const CrearCatedraticos = () => {
                     onChange={(e) => setNombre(e.target.value)}
                     placeholder="Ingresa el nombre completo"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    disabled={loading} // Deshabilitar campos durante la carga
+                    disabled={loading}
                   />
                 </div>
 
@@ -173,7 +158,6 @@ const CrearCatedraticos = () => {
         </div>
       </div>
 
-      {/* Indicador de carga */}
       {loading && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="text-white text-xl">Espere un momento en lo que se crea el Catedrático...</div>

@@ -25,10 +25,8 @@ const Capitulos: React.FC = () => {
 
   const totalPages = Math.ceil(historial.length / versionsPerPage);
 
-  // Ordenar las versiones de más reciente a más antigua
   const sortedHistorial = [...historial].sort((a, b) => b.id - a.id);
 
-  // Obtener las versiones para la página actual
   const currentVersions = sortedHistorial.slice(
     (currentPage - 1) * versionsPerPage,
     currentPage * versionsPerPage
@@ -161,7 +159,6 @@ const Capitulos: React.FC = () => {
             ))}
           </div>
 
-          {/* Paginación */}
           <div className="flex justify-center mt-4">
             <button
               onClick={handlePreviousPage}

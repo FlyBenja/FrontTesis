@@ -29,26 +29,23 @@ const CrearTareas: React.FC = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const tareasPorPagina = 3;
+  const [tareasPorPagina, setTareasPorPagina] = useState(3);
+  const [maxPageButtons, setMaxPageButtons] = useState(5);
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      try {
-        const yearsRecuperados = await getYears();
-        setYears(yearsRecuperados.map((yearObj) => yearObj.year));
+      const yearsRecuperados = await getYears();
+      setYears(yearsRecuperados.map((yearObj) => yearObj.year));
 
-        const currentYear = new Date().getFullYear();
-        if (yearsRecuperados.some((yearObj) => yearObj.year === currentYear)) {
-          setSelectedAño(currentYear.toString());
-        }
+      const currentYear = new Date().getFullYear();
+      if (yearsRecuperados.some((yearObj) => yearObj.year === currentYear)) {
+        setSelectedAño(currentYear.toString());
+      }
 
-        const perfil = await getDatosPerfil();
-        if (perfil.sede) {
-          const cursosRecuperados = await getCursos(perfil.sede);
-          setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
-        }
-      } catch (error) {
-        console.error(error);
+      const perfil = await getDatosPerfil();
+      if (perfil.sede) {
+        const cursosRecuperados = await getCursos(perfil.sede);
+        setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
       }
     };
 
@@ -58,31 +55,24 @@ const CrearTareas: React.FC = () => {
     setSelectedCurso(currentMonth > 6 ? '2' : '1');
   }, []);
 
-  // Definir fetchTareas fuera del useEffect
   const fetchTareas = async () => {
     if (selectedCurso && selectedAño) {
-      try {
-        const perfil = await getDatosPerfil();
-        const tareasRecuperadas = await getTareas(
-          perfil.sede || 1,
-          Number(selectedCurso),
-          Number(selectedAño)
-        );
+      const perfil = await getDatosPerfil();
+      const tareasRecuperadas = await getTareas(
+        perfil.sede || 1,
+        Number(selectedCurso),
+        Number(selectedAño)
+      );
   
-        // Ordenar las tareas, colocando las de `typeTask_id = 1` primero
-        const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
-          if (a.typeTask_id === 1 && b.typeTask_id !== 1) return -1;
-          if (a.typeTask_id !== 1 && b.typeTask_id === 1) return 1;
-          return 0;
-        });
+      const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
+        if (a.typeTask_id === 1 && b.typeTask_id !== 1) return -1;
+        if (a.typeTask_id !== 1 && b.typeTask_id === 1) return 1;
+        return 0;
+      });
   
-        setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
-      } catch (error) {
-        console.error(error);
-      }
+      setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
     }
   };
-  
 
   useEffect(() => {
     fetchTareas();
@@ -90,41 +80,59 @@ const CrearTareas: React.FC = () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    // Ejecutar nuevamente la API para cargar las tareas
     fetchTareas();
   };
 
   const formatTime24Hour = (timeStr: string) => {
     const [hours, minutes, seconds] = timeStr.split(':').map(Number);
-
-    // Determinar si es AM o PM en formato 24 horas
     const amPm = hours < 12 ? 'AM' : 'PM';
-
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${amPm}`;
   };
 
-  // Paginación
   const indexOfLastTask = currentPage * tareasPorPagina;
   const currentTareas = tareas.slice(indexOfLastTask - tareasPorPagina, indexOfLastTask);
   const totalPages = Math.ceil(tareas.length / tareasPorPagina);
 
-  const renderPaginationButtons = () =>
-    Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-      <button
-        key={pageNumber}
-        onClick={() => setCurrentPage(pageNumber)}
-        className={`mx-1 px-3 py-1 rounded-md border ${currentPage === pageNumber ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
-          }`}
-      >
-        {pageNumber}
-      </button>
-    ));
+  const paginate = (page: number) => {
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
+    setCurrentPage(page);
+  };
 
-  // Función para formatear fechas en formato dd/mm/yyyy
+  const getPageRange = () => {
+    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let end = Math.min(totalPages, start + maxPageButtons - 1);
+
+    if (end - start + 1 < maxPageButtons) {
+      start = Math.max(1, end - maxPageButtons + 1);
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getUTCDate().toString().padStart(2, '0')}/${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setTareasPorPagina(8);
+        setMaxPageButtons(5);
+      } else {
+        setTareasPorPagina(5);
+        setMaxPageButtons(10);
+      }
+    };
+
+    handleResize(); // For initial load
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-4">
@@ -190,45 +198,47 @@ const CrearTareas: React.FC = () => {
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="none">
                     <path d="M17.707 6.293l-2.414-2.414a1 1 0 0 0-1.414 0l-9 9a1 1 0 0 0-.293.707v3.586a1 1 0 0 0 1 1h3.586a1 1 0 0 0 .707-.293l9-9a1 1 0 0 0 0-1.414z" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                    <path d="M15 3h6v6" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
                   </svg>
                 </button>
               </div>
             </div>
           ))}
-        {/* Paginación */}
-        <div className="flex justify-center mt-4">
+          <div className="mt-4 flex justify-center">
             <button
-              onClick={() => setCurrentPage(currentPage - 1)}
-              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
+              onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
+              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
             >
               &#8592;
             </button>
-
-            {renderPaginationButtons()}
-
+            {getPageRange().map((page) => (
+              <button
+                key={page}
+                onClick={() => paginate(page)}
+                className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
+                  }`}
+              >
+                {page}
+              </button>
+            ))}
             <button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-500"
+              onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
+              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
             >
               &#8594;
             </button>
           </div>
         </div>
       ) : (
-        <div className="mt-4 text-center">No se encontraron tareas</div>
+        <div className="text-center text-gray-500 dark:text-gray-300">
+          No hay tareas para mostrar.
+        </div>
       )}
 
-      {/* Modal dinámico */}
-      {isModalOpen && (
-        <CreaTarea
-          onClose={handleModalClose} // Pasamos la función que maneja el cierre y la recarga
-          mode={modalMode} // Modo dinámico (create/edit)
-          taskId={selectedTaskId}
-        />
-      )}
+      {isModalOpen && <CreaTarea onClose={handleModalClose} mode={modalMode} taskId={selectedTaskId} />}
     </div>
   );
 };

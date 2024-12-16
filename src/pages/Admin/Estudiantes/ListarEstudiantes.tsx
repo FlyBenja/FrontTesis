@@ -35,26 +35,22 @@ const ListarEstudiantes: React.FC = () => {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      try {
-        const perfil = await getDatosPerfil();
-        const yearsRecuperados = await getYears();
-        setYears(yearsRecuperados.map((yearObj) => yearObj.year));
+      const perfil = await getDatosPerfil();
+      const yearsRecuperados = await getYears();
+      setYears(yearsRecuperados.map((yearObj) => yearObj.year));
 
-        const currentYear = new Date().getFullYear().toString();
-        if (yearsRecuperados.map((yearObj) => yearObj.year.toString()).includes(currentYear)) {
-          setSelectedAño(currentYear);
-        }
+      const currentYear = new Date().getFullYear().toString();
+      if (yearsRecuperados.map((yearObj) => yearObj.year.toString()).includes(currentYear)) {
+        setSelectedAño(currentYear);
+      }
 
-        const currentMonth = new Date().getMonth();
-        const initialCourseId = currentMonth >= 6 ? '2' : '1';
-        setSelectedCurso(initialCourseId);
+      const currentMonth = new Date().getMonth();
+      const initialCourseId = currentMonth >= 6 ? '2' : '1';
+      setSelectedCurso(initialCourseId);
 
-        if (perfil.sede && currentYear) {
-          fetchEstudiantes(perfil.sede, initialCourseId, currentYear);
-          fetchCursos(perfil.sede);
-        }
-      } catch (error) {
-        console.error('Error al cargar los datos iniciales:', error);
+      if (perfil.sede && currentYear) {
+        fetchEstudiantes(perfil.sede, initialCourseId, currentYear);
+        fetchCursos(perfil.sede);
       }
     };
 
@@ -64,12 +60,8 @@ const ListarEstudiantes: React.FC = () => {
   const fetchEstudiantes = async (sedeId: number, courseId: string, nameYear: string) => {
     try {
       const estudiantesRecuperados = await getEstudiantes(sedeId, parseInt(courseId), parseInt(nameYear));
-      if (Array.isArray(estudiantesRecuperados)) {
-        setEstudiantes(estudiantesRecuperados);
-      } else {
-        setEstudiantes([]);
-      }
-    } catch (error) {
+      setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : []);
+    } catch {
       setEstudiantes([]);
     }
   };
@@ -77,12 +69,8 @@ const ListarEstudiantes: React.FC = () => {
   const fetchCursos = async (sedeId: number) => {
     try {
       const cursosRecuperados = await getCursos(sedeId);
-      if (Array.isArray(cursosRecuperados)) {
-        setCursos(cursosRecuperados);
-      } else {
-        setCursos([]);
-      }
-    } catch (error) {
+      setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
+    } catch {
       setCursos([]);
     }
   };
@@ -274,7 +262,6 @@ const ListarEstudiantes: React.FC = () => {
           </table>
         </div>
 
-        {/* Paginación */}
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => paginate(currentPage - 1)}

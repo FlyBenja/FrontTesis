@@ -10,7 +10,7 @@ const SubirEstudiantes = () => {
   const [selectedCurso, setSelectedCurso] = useState<string>('');
   const [cursos, setCursos] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [apiLoading, setApiLoading] = useState<boolean>(false); // Estado para controlar el indicador de carga de la API
+  const [apiLoading, setApiLoading] = useState<boolean>(false);
   const fileInputRef = React.createRef<HTMLInputElement>();
 
   useEffect(() => {
@@ -20,8 +20,6 @@ const SubirEstudiantes = () => {
         const cursosData = await getCursos(sede);
         if (Array.isArray(cursosData) && cursosData.length > 0) {
           setCursos(cursosData);
-        } else {
-          console.warn('No se encontraron cursos asignados a esta sede.');
         }
       } catch (error) {
         console.error('Error al obtener los cursos:', error);
@@ -34,7 +32,7 @@ const SubirEstudiantes = () => {
   }, []);
 
   const showAlert = (type: 'success' | 'error', title: string, text: string) => {
-    const confirmButtonColor = type === 'success' ? '#28a745' : '#dc3545'; // Verde para éxito, Rojo para error
+    const confirmButtonColor = type === 'success' ? '#28a745' : '#dc3545';
     Swal.fire({
       icon: type,
       title,
@@ -60,7 +58,7 @@ const SubirEstudiantes = () => {
       return;
     }
 
-    setApiLoading(true); // Mostrar el loading
+    setApiLoading(true);
 
     try {
       const { sede } = await getDatosPerfil();
@@ -83,7 +81,7 @@ const SubirEstudiantes = () => {
         showAlert('error', '¡Error!', error.message);
       }
     } finally {
-      setApiLoading(false); // Ocultar el loading
+      setApiLoading(false);
     }
   };
 
@@ -181,7 +179,6 @@ const SubirEstudiantes = () => {
         </div>
       </div>
 
-      {/* Indicador de carga */}
       {apiLoading && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="text-white text-xl">Espere un momento en lo que se suben los Estudiantes...</div>

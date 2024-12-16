@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb";
 import { getDatosPerfil } from "../../../ts/Generales/GetDatsPerfil";
-import { getBitacora } from "../../../ts/Admin/GetBitacora"; // Asegúrate de importar la función
+import { getBitacora } from "../../../ts/Admin/GetBitacora";
 
 type Log = {
   date: string;
@@ -15,8 +15,8 @@ const Bitacora = () => {
   const [logs, setLogs] = useState<Log[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sedeId, setSedeId] = useState<number | null>(null);
-  const [logsPerPage, setLogsPerPage] = useState(3); // Valor por defecto
-  const [maxPageButtons, setMaxPageButtons] = useState(10); // Máximo de botones de paginación
+  const [logsPerPage, setLogsPerPage] = useState(3);
+  const [maxPageButtons, setMaxPageButtons] = useState(10);
 
   useEffect(() => {
     const fetchSedeId = async () => {
@@ -32,24 +32,24 @@ const Bitacora = () => {
 
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setLogsPerPage(4); // Más registros por página en móviles
-        setMaxPageButtons(5); // Menos botones de paginación en móviles
+        setLogsPerPage(4);
+        setMaxPageButtons(5);
       } else {
-        setLogsPerPage(3); // Valor por defecto en pantallas grandes
-        setMaxPageButtons(10); // Más botones en pantallas grandes
+        setLogsPerPage(3);
+        setMaxPageButtons(10);
       }
     };
 
-    handleResize(); // Llamar la función para verificar el tamaño inicial
-    window.addEventListener("resize", handleResize); // Agregar el listener para el cambio de tamaño
-    return () => window.removeEventListener("resize", handleResize); // Limpiar al desmontar
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
     if (sedeId !== null) {
       const fetchLogs = async () => {
         try {
-          const response = await getBitacora(sedeId); // Llamar a la API con el sedeId
+          const response = await getBitacora(sedeId);
           setLogs(response.logs.map((log: any) => ({
             date: log.date,
             username: log.username,
@@ -71,14 +71,12 @@ const Bitacora = () => {
   const currentLogs = logs.slice(indexOfFirstLog, indexOfLastLog);
   const totalPages = Math.ceil(logs.length / logsPerPage);
 
-  // Función para actualizar la página
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
   };
 
-  // Crear el rango de botones a mostrar (paginación dinámica)
   const getPageRange = () => {
     let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     let end = Math.min(totalPages, start + maxPageButtons - 1);
@@ -90,6 +88,21 @@ const Bitacora = () => {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
+  const formatDateTime = (dateTime: string) => {
+    const dateObj = new Date(dateTime);
+    const formattedDate = dateObj.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    const formattedTime = dateObj.toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return `${formattedDate} - ${formattedTime}`;
+  };
+
   return (
     <div className="mt-5 px-4">
       <Breadcrumb pageName="Bitácora de Actividades" />
@@ -99,15 +112,13 @@ const Bitacora = () => {
           className="flex flex-col sm:flex-row items-start sm:items-center border border-gray-200 dark:border-gray-700 bg-white dark:bg-boxdark p-4 rounded-lg mb-4"
         >
           <div className="flex-shrink-0 bg-blue-600 text-white font-bold text-center rounded-md px-4 py-2 sm:py-6 sm:h-[70px] sm:text-base mt-[-38px] sm:mt-0 sm:text-left sm:ml-4 absolute sm:static right-12">
-            <span className="text-xl sm:text-base">{new Date(log.date).toLocaleDateString("en-CA")}</span>
+            <span className="text-xl sm:text-base">{log.username}</span>
           </div>
 
           <div className="flex-1 mt-2 sm:mt-0 sm:ml-4">
-            <div className="flex justify-between">
-              <h3 className="font-semibold text-gray-800 dark:text-gray-100">{log.username}</h3>
-              <span className="text-gray-600 dark:text-gray-300">ID: {log.id_user}</span>
-            </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{new Date(log.date).toLocaleTimeString()}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {formatDateTime(log.date)}
+            </p>
             <p className="mt-2 text-gray-700 dark:text-gray-300">
               <strong>Acción:</strong> {log.action}
             </p>
@@ -118,7 +129,6 @@ const Bitacora = () => {
         </div>
       ))}
 
-      {/* Paginación */}
       <div className="mt-4 flex justify-center">
         <button
           onClick={() => paginate(currentPage - 1)}
@@ -132,10 +142,11 @@ const Bitacora = () => {
           <button
             key={page}
             onClick={() => paginate(page)}
-            className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-              ? "bg-blue-600 text-white"
-              : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-              }`}
+            className={`mx-1 px-3 py-1 rounded-md border ${
+              currentPage === page
+                ? "bg-blue-600 text-white"
+                : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+            }`}
           >
             {page}
           </button>

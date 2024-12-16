@@ -5,6 +5,7 @@ import { getCatedraticoPorCarnet } from '../../../ts/Admin/GetCatedraticosCarnet
 import { activaCatedratico } from '../../../ts/Admin/ActivarCatedraticos';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SwitcherFour from '../../../components/Switchers/SwitcherFour';
+import Swal from 'sweetalert2';
 
 interface Catedratico {
   user_id: number;
@@ -19,8 +20,8 @@ const ListarCatedraticos: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [searchCarnet, setSearchCarnet] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [catedraticosPerPage, setCatedraticosPerPage] = useState(5); // Valor por defecto
-  const [maxPageButtons, setMaxPageButtons] = useState(10); // Máximo de botones para paginación
+  const [catedraticosPerPage, setCatedraticosPerPage] = useState(5);
+  const [maxPageButtons, setMaxPageButtons] = useState(10);
 
   useEffect(() => {
     const handleResize = () => {
@@ -66,10 +67,28 @@ const ListarCatedraticos: React.FC = () => {
   };
 
   const handleActiveChange = async (userId: number, newStatus: boolean) => {
+    if (!newStatus) {
+      const result = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Este catedrático no podrá iniciar sesión, ¿aún deseas desactivarlo?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, desactivar',
+        cancelButtonText: 'No, cancelar',
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#d33',
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+    }
+
     const updatedCatedraticos = catedraticos.map((cat) =>
       cat.user_id === userId ? { ...cat, active: newStatus } : cat
     );
     setCatedraticos(updatedCatedraticos);
+
     try {
       await activaCatedratico(userId, newStatus);
     } catch {
@@ -85,7 +104,6 @@ const ListarCatedraticos: React.FC = () => {
 
   const totalPages = Math.ceil(catedraticos.length / catedraticosPerPage);
 
-  // Paginación
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
@@ -101,7 +119,6 @@ const ListarCatedraticos: React.FC = () => {
       </div>
     );
 
-  // Función para calcular el rango de páginas a mostrar
   const getPageRange = () => {
     let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     let end = Math.min(totalPages, start + maxPageButtons - 1);
@@ -169,7 +186,6 @@ const ListarCatedraticos: React.FC = () => {
           </table>
         </div>
 
-        {/* Paginación */}
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => paginate(currentPage - 1)}

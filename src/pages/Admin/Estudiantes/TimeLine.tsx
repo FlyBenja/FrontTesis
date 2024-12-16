@@ -21,7 +21,7 @@ const TimeLine: React.FC = () => {
   const [events, setEvents] = useState<TimeLineEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { estudiante, selectedCurso, selectedAño } = location.state || {};
+  const { estudiante } = location.state || {};
   const studentName = estudiante ? estudiante.userName : "Desconocido";
   const userId = estudiante ? estudiante.id : null;
 
@@ -128,7 +128,7 @@ const TimeLine: React.FC = () => {
           </h2>
           <button
             onClick={() => {
-              navigate('/admin/tareas-estudiante', { state: { estudiante, selectedCurso, selectedAño } });
+              navigate('/admin/tareas-estudiante', { state: { estudiante } });
             }}
             className="rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity"
           >
@@ -151,7 +151,6 @@ const TimeLine: React.FC = () => {
           ))}
         </div>
 
-        {/* Paginación */}
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => paginate(currentPage - 1)}

@@ -15,7 +15,7 @@ interface Catedratico {
 const CrearComision: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [terna, setTerna] = useState<Catedratico[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Estado de carga
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +30,7 @@ const CrearComision: React.FC = () => {
       } catch (error) {
         console.error('Error al cargar los datos:', error);
       } finally {
-        setLoading(false); // Terminar carga
+        setLoading(false);
       }
     };
 
@@ -68,12 +68,10 @@ const CrearComision: React.FC = () => {
         groupData,
       };
 
-      // Intentar crear la comisión
       await createComision(comisionData);
 
       showAlert('success', '¡Éxito!', 'La comisión fue creada exitosamente.');
 
-      // Recargar catedráticos activos
       const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year);
       setCatedraticos(catedraticosRecuperados);
       setTerna([]);

@@ -159,7 +159,7 @@ const CrearAdmin: React.FC = () => {
                       Sede
                     </th>
                     <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-left">
-                      Carnet
+                      Código
                     </th>
                   </tr>
                 </thead>
@@ -257,14 +257,14 @@ const CrearAdmin: React.FC = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-                  Carnet
+                  Código
                 </label>
                 <input
                   type="text"
                   value={adminCarnet}
                   onChange={(e) => setAdminCarnet(e.target.value)}
                   className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
-                  placeholder="Ingrese el número de carnet"
+                  placeholder="Ingrese el número de Código"
                   required
                 />
               </div>
