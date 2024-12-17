@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Swal from 'sweetalert2';
 
 export const createTarea = async (tareaData: {
   course_id: number;
@@ -11,7 +10,7 @@ export const createTarea = async (tareaData: {
   endTask: string;
   startTime: string;
   endTime: string;
-}): Promise<void> => {
+}): Promise<string | null> => {  // Devuelve un mensaje de error o null
   try {
     // Recuperar el token desde localStorage
     const token = localStorage.getItem('authToken');
@@ -28,27 +27,14 @@ export const createTarea = async (tareaData: {
       },
     });
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Tarea creada exitosamente',
-      text: 'La tarea fue creada correctamente.',
-      customClass: { confirmButton: 'bg-green-500 text-white' },
-    });
+    return null; // Si no hubo errores, retorna null
   } catch (error) {
     // Manejo de errores
     if (axios.isAxiosError(error)) {
       // Extraer el mensaje de error de la API
-      const errorMessage = error.response?.data?.message || 'Error desconocido';
-
-      // Usar SweetAlert2 para mostrar el error
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: errorMessage,
-        customClass: { confirmButton: 'bg-red-500 text-white' },
-      });
+      return error.response?.data?.message || 'Error desconocido';
     } else {
-      throw error;
+      return 'Hubo un problema con la solicitud';
     }
   }
 };

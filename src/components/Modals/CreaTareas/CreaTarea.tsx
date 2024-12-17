@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CreaTarea.css';
 import { createTarea } from '../../../ts/Admin/CreateTareas';
-import { updateTarea } from '../../../ts/Admin/UpdateTareas';
+import { updateTarea } from '../../../ts/Admin/UpdateTareas';  // Se vuelve a incluir
 import { getCursos } from '../../../ts/Admin/GetCursos';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getDatosTarea } from '../../../ts/Admin/GetDatosTarea';
@@ -158,6 +158,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                 return;
             }
     
+            let resultMessage: string | null = null;
             if (mode === 'create') {
                 const tareaData = {
                     course_id: selectedCourse.course_id,
@@ -170,7 +171,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                     startTime,
                     endTime,
                 };
-                await createTarea(tareaData);
+                resultMessage = await createTarea(tareaData);
             } else if (mode === 'edit' && taskId) {
                 const tareaDataUpdate = {
                     title,
@@ -180,16 +181,27 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                     startTime,
                     endTime,
                 };
-                await updateTarea(taskId, tareaDataUpdate);
+                resultMessage = await updateTarea(taskId, tareaDataUpdate); // Llamada a updateTarea
             }
     
-            Swal.fire({
-                icon: 'success',
-                title: 'Éxito',
-                text: `Tarea ${mode === 'create' ? 'creada' : 'actualizada'} exitosamente.`,
-                confirmButtonColor: '#28a745', // Verde para éxito
-            });
-            onClose();
+            if (resultMessage) {
+                // Si hay un mensaje de error, mostrar alerta
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: resultMessage,
+                    confirmButtonColor: '#dc3545', // Rojo para error
+                });
+            } else {
+                // Si no hubo error, mostrar éxito
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: `Tarea ${mode === 'create' ? 'creada' : 'actualizada'} exitosamente.`,
+                    confirmButtonColor: '#28a745', // Verde para éxito
+                });
+                onClose();
+            }
         } catch (error) {
             Swal.fire({
                 icon: 'error',
@@ -200,7 +212,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
         } finally {
             setLoading(false);
         }
-    };    
+    };
 
     if (loading) return <div>Cargando...</div>;
     return (
