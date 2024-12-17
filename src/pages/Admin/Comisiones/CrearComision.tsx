@@ -4,6 +4,7 @@ import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getCatedraticosActivos } from '../../../ts/Admin/GetCatedraticoActive';
 import { createComision } from '../../../ts/Admin/CreateComision';
+import { getComisiones } from '../../../ts/Admin/GetComisiones';
 
 interface Catedratico {
   user_id: number;
@@ -16,16 +17,25 @@ const CrearComision: React.FC = () => {
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [terna, setTerna] = useState<Catedratico[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [comisionExistente, setComisionExistente] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const perfil = await getDatosPerfil();
-        const year = new Date().getFullYear().toString();
-
+        const year = new Date().getFullYear();
         if (perfil.sede) {
-          const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, parseInt(year));
+          // Recuperar catedráticos activos
+          const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year);
           setCatedraticos(catedraticosRecuperados);
+
+          // Recuperar comisiones
+          const comisionesRecuperadas = await getComisiones(perfil.sede, year);
+
+          if (comisionesRecuperadas.length > 0) {
+            // Si ya existen comisiones para la sede y el año, se establece el estado
+            setComisionExistente(true);
+          }
         }
       } catch (error) {
         console.error('Error al cargar los datos:', error);
@@ -76,8 +86,6 @@ const CrearComision: React.FC = () => {
       setCatedraticos(catedraticosRecuperados);
       setTerna([]);
     } catch (error: any) {
-      console.error('Error al crear la comisión:', error.message);
-      showAlert('error', '¡Error!', error.message);
     }
   };
 
@@ -113,6 +121,18 @@ const CrearComision: React.FC = () => {
         <div className="absolute top-40 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
           <p className="text-xl text-black dark:text-white font-semibold">
             No Hay Catedráticos Activos.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (comisionExistente) {
+    return (
+      <div className="relative bg-gray-100 dark:bg-boxdark">
+        <div className="absolute top-40 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
+          <p className="text-xl text-black dark:text-white font-semibold">
+            Ya existe una comisión para esta sede y año.
           </p>
         </div>
       </div>
