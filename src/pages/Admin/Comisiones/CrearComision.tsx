@@ -60,31 +60,38 @@ const CrearComision: React.FC = () => {
   const handleCreateComision = async () => {
     try {
       const perfil = await getDatosPerfil();
-      const year = new Date().getFullYear();
-
+      const year = new Date().getFullYear(); // Año actual
+  
       if (!perfil.sede) {
         showAlert('error', '¡Error!', 'No se pudo recuperar la sede.');
         return;
       }
-
+  
       const groupData = terna.map((catedratico, index) => ({
         user_id: catedratico.user_id,
-        rol_comision_id: index + 1,
+        rol_comision_id: index + 1, // Asignar el rol según el índice
       }));
-
+  
       const comisionData = {
-        year,
-        sede_id: perfil.sede,
-        groupData,
+        year, // Año actual
+        sede_id: perfil.sede, // Sede obtenida desde el perfil
+        groupData, // Datos del grupo con los catedráticos
       };
-
+  
+      // Llamada a la API para crear la comisión
       await createComision(comisionData);
-
+  
+      // Recargar las comisiones después de la creación
+      const comisionesRecuperadas = await getComisiones(perfil.sede, year);
+      setComisionExistente(comisionesRecuperadas.length > 0);
+  
+      // Mostrar alerta de éxito
       showAlert('success', '¡Éxito!', 'La comisión fue creada exitosamente.');
-
+  
+      // Recargar los catedráticos activos después de la creación de la comisión
       const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year);
       setCatedraticos(catedraticosRecuperados);
-      setTerna([]);
+      setTerna([]); // Limpiar la terna seleccionada
     } catch (error: any) {
     }
   };
