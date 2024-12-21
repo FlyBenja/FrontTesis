@@ -5,12 +5,14 @@ import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { FaTrashAlt, FaUserPlus } from 'react-icons/fa';
 import { deleteUserComision } from '../../../ts/Admin/DeleteUserComision'; // Asegúrate de que la ruta sea correcta
 import Swal from 'sweetalert2'; // Importar SweetAlert2
+import ListarCatedraticosModal from '../../../components/Modals/ListarCatedraticosModal'; // Asegúrate de que la ruta sea correcta
 
 interface Usuario {
   userId: number;
   nombre: string;
   rol: string;
   carnet: string;
+  groupId: number; // Nuevo campo para el groupId
 }
 
 const ROLES_CODIGOS: { [key: string]: number } = {
@@ -26,6 +28,8 @@ const TOTAL_FILAS = 5;
 const ListarComision: React.FC = () => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [showModal, setShowModal] = useState<boolean>(false); // Estado para mostrar/ocultar el modal
+  const [selectedRow, setSelectedRow] = useState<number | null>(null); // Estado para almacenar el número de fila seleccionado
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +45,7 @@ const ListarComision: React.FC = () => {
               nombre: user.nombre,
               rol: user.rol,
               carnet: user.carnet,
+              groupId: grupo.groupId, // Recuperamos el groupId de cada grupo
             }))
           );
           setUsuarios(listaUsuarios);
@@ -61,6 +66,7 @@ const ListarComision: React.FC = () => {
       nombre: '',
       rol: '',
       carnet: '',
+      groupId: 0, // Campo para el groupId
     });
 
     usuarios.forEach((usuario) => {
@@ -73,9 +79,7 @@ const ListarComision: React.FC = () => {
     return data;
   };
 
-  // Función para eliminar un usuario de la comisión
-  const handleDelete = async (groupId: number, userId: number) => {
-    // Mostrar alerta de confirmación
+  const handleDelete = async (userId: number, groupId: number) => {
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: '¿Quieres eliminar a este usuario de la comisión?',
@@ -89,22 +93,19 @@ const ListarComision: React.FC = () => {
 
     if (result.isConfirmed) {
       try {
-        // Ejecutar la API de eliminar usuario
-        const response = await deleteUserComision(groupId, userId);
+        console.log(userId, groupId);
+        const response = await deleteUserComision(groupId, userId); // Usamos el groupId y el userId
 
-        // Mostrar el mensaje de la API en una alerta
         Swal.fire({
           icon: 'success',
           title: 'Usuario eliminado',
           text: response.message,
           confirmButtonText: 'OK',
-          confirmButtonColor: '#28a745', // Fondo verde
-          customClass: {
-            confirmButton: 'text-white', // Letras blancas
-          },
+          confirmButtonColor: '#28a745',
+          customClass: { confirmButton: 'text-white' },
         });
 
-        // Recargar las comisiones después de eliminar
+        // Actualizar la lista de usuarios
         const perfil = await getDatosPerfil();
         const year = new Date().getFullYear();
         if (perfil.sede) {
@@ -115,25 +116,34 @@ const ListarComision: React.FC = () => {
               nombre: user.nombre,
               rol: user.rol,
               carnet: user.carnet,
+              groupId: grupo.groupId, // Recuperamos el groupId de cada grupo
             }))
           );
-          setUsuarios(listaUsuarios); // Actualizar la lista de usuarios
+          setUsuarios(listaUsuarios);
         }
       } catch (error: any) {
-        // Si el error tiene una propiedad 'message', la mostramos
         Swal.fire({
           icon: 'error',
           title: 'Error al eliminar',
           text: error?.message,
           confirmButtonText: 'OK',
-          confirmButtonColor: '#d33', // Fondo rojo
-          customClass: {
-            confirmButton: 'text-white', // Letras blancas
-          },
+          confirmButtonColor: '#d33',
+          customClass: { confirmButton: 'text-white' },
         });
         console.error('Error al eliminar el usuario:', error);
       }
     }
+  };
+
+  const handleAssign = (rowIndex: number) => {
+    console.log('Asignando a la fila con índice:', rowIndex); // Imprimir el índice de la fila en la consola
+    setSelectedRow(rowIndex); // Guardar el índice de la fila seleccionada
+    setShowModal(true); // Mostrar el modal
+  };
+
+  const closeModal = () => {
+    setShowModal(false); // Ocultar el modal
+    setSelectedRow(null); // Limpiar la fila seleccionada
   };
 
   if (loading) {
@@ -167,7 +177,7 @@ const ListarComision: React.FC = () => {
                       <button
                         className="text-red-500 hover:text-red-700 flex items-center"
                         aria-label="Eliminar usuario"
-                        onClick={() => handleDelete(1, usuario.userId)} // Aquí pasa el groupId y userId
+                        onClick={() => handleDelete(usuario.userId, usuario.groupId)} // Pasar tanto el userId como el groupId
                       >
                         <FaTrashAlt className="mr-1" />
                         Eliminar
@@ -176,6 +186,7 @@ const ListarComision: React.FC = () => {
                       <button
                         className="text-blue-500 hover:text-blue-700 flex items-center"
                         aria-label="Asignar usuario"
+                        onClick={() => handleAssign(index)} // Solo pasar el índice de la fila
                       >
                         <FaUserPlus className="mr-1" />
                         Asignar
@@ -188,6 +199,8 @@ const ListarComision: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {showModal && <ListarCatedraticosModal onClose={closeModal} selectedRow={selectedRow} />}
     </>
   );
 };

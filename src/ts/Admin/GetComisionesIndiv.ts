@@ -36,8 +36,6 @@ export const getComisionesIndiv = async (
       }
     );
 
-    console.log('Respuesta de la API:', response.data);
-
     if (response.data && Array.isArray(response.data.groups)) {
       return response.data.groups.map((group: any) => ({
         groupId: group.group_id,
