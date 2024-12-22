@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './CreaTarea.css';
 import { createTarea } from '../../../ts/Admin/CreateTareas';
-import { updateTarea } from '../../../ts/Admin/UpdateTareas';  // Se vuelve a incluir
+import { updateTarea } from '../../../ts/Admin/UpdateTareas';
 import { getCursos } from '../../../ts/Admin/GetCursos';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getDatosTarea } from '../../../ts/Admin/GetDatosTarea';
@@ -49,7 +48,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                     icon: 'error',
                     title: 'Error',
                     text: 'No se pudieron cargar los cursos.',
-                    confirmButtonColor: '#dc3545', // Rojo para error
+                    confirmButtonColor: '#dc3545',
                 });
             } finally {
                 setLoading(false);
@@ -92,7 +91,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                         icon: 'error',
                         title: 'Error',
                         text: 'No se pudieron cargar los datos de la tarea.',
-                        confirmButtonColor: '#dc3545', // Rojo para error
+                        confirmButtonColor: '#dc3545',
                     });
                 }
             }
@@ -109,55 +108,52 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const { selectedCurso, selectedTipoTarea, title, description, taskStart, endTask, startTime, endTime } = form;
-    
-        // Validaciones de campos vacíos
+
         if (!selectedCurso || !title || !description || !taskStart || !endTask || !startTime || !endTime) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Por favor complete todos los campos.',
-                confirmButtonColor: '#dc3545', // Rojo para error
+                confirmButtonColor: '#dc3545',
             });
             return;
         }
-    
-        // Validación de fecha final mayor que fecha inicial
+
         if (new Date(endTask) <= new Date(taskStart)) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'La Fecha Final debe ser mayor a la Fecha Inicial.',
-                confirmButtonColor: '#dc3545', // Rojo para error
+                confirmButtonColor: '#dc3545',
             });
             return;
         }
-    
-        // Validación de hora final mayor que hora inicial
+
         if (startTime >= endTime) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'La Hora Final debe ser mayor a la Fecha Inicial.',
-                confirmButtonColor: '#dc3545', // Rojo para error
+                confirmButtonColor: '#dc3545',
             });
             return;
         }
-    
+
         try {
             setLoading(true);
             const { sede } = await getDatosPerfil();
             const selectedCourse = cursos.find((curso) => curso.course_id.toString() === selectedCurso);
-    
+
             if (!selectedCourse) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     text: 'Curso seleccionado no encontrado.',
-                    confirmButtonColor: '#dc3545', // Rojo para error
+                    confirmButtonColor: '#dc3545',
                 });
                 return;
             }
-    
+
             let resultMessage: string | null = null;
             if (mode === 'create') {
                 const tareaData = {
@@ -181,24 +177,22 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                     startTime,
                     endTime,
                 };
-                resultMessage = await updateTarea(taskId, tareaDataUpdate); // Llamada a updateTarea
+                resultMessage = await updateTarea(taskId, tareaDataUpdate);
             }
-    
+
             if (resultMessage) {
-                // Si hay un mensaje de error, mostrar alerta
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     text: resultMessage,
-                    confirmButtonColor: '#dc3545', // Rojo para error
+                    confirmButtonColor: '#dc3545',
                 });
             } else {
-                // Si no hubo error, mostrar éxito
                 Swal.fire({
                     icon: 'success',
                     title: 'Éxito',
                     text: `Tarea ${mode === 'create' ? 'creada' : 'actualizada'} exitosamente.`,
-                    confirmButtonColor: '#28a745', // Verde para éxito
+                    confirmButtonColor: '#28a745',
                 });
                 onClose();
             }
@@ -207,7 +201,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                 icon: 'error',
                 title: 'Error',
                 text: `Hubo un error al ${mode === 'create' ? 'crear' : 'actualizar'} la tarea.`,
-                confirmButtonColor: '#dc3545', // Rojo para error
+                confirmButtonColor: '#dc3545',
             });
         } finally {
             setLoading(false);
@@ -215,146 +209,144 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
     };
 
     if (loading) return <div>Cargando...</div>;
+
     return (
-        <div className="CreaTarea">
-            <div className="modal-container">
-                <div className="modal-background" onClick={onClose}></div>
-                <div className="modal-content relative">
-                    <button
-                        onClick={onClose}
-                        className="absolute top-5.3 right-2 text-gray-800 dark:text-gray-100 text-2xl leading-none"
-                        aria-label="close"
-                    >
-                        &#10005;
-                    </button>
+        <div className="fixed top-[40px] left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-lg w-full max-w-lg relative overflow-y-auto max-h-[90vh]">
+                <button
+                    onClick={onClose}
+                    className="absolute top-5 right-2 text-gray-800 dark:text-gray-100 text-2xl"
+                    aria-label="close"
+                >
+                    &#10005;
+                </button>
 
-                    <h3 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100">
-                        {mode === 'create' ? 'Crear Nueva Tarea' : 'Editar Tarea'}
-                    </h3>
+                <h3 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100">
+                    {mode === 'create' ? 'Crear Nueva Tarea' : 'Editar Tarea'}
+                </h3>
 
-                    <form onSubmit={handleSubmit} className="space-y-4 w-full">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="order-1 md:order-1">
-                                <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">
-                                    Tipo de Tarea
-                                </label>
-                                <select
-                                    className="form-field"
-                                    name="selectedTipoTarea"
-                                    value={form.selectedTipoTarea}
-                                    onChange={handleChange}
-                                    disabled={mode === 'edit'}
-                                >
-                                    <option value="">Seleccionar curso</option>
-                                    <option value="1">Propuesta de Tesis</option>
-                                    <option value="2">Entrega de Capítulos</option>
-                                </select>
-                            </div>
-                            <div className="order-2 md:order-2">
-                                <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Curso</label>
-                                <select
-                                    className="form-field"
-                                    name="selectedCurso"
-                                    value={form.selectedCurso}
-                                    onChange={handleChange}
-                                    disabled={mode === 'edit'}
-                                >
-                                    <option value="">Seleccionar curso</option>
-                                    {cursos.map(({ course_id, courseName }) => (
-                                        <option key={course_id} value={course_id}>
-                                            {courseName}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-
+                <form onSubmit={handleSubmit} className="space-y-4 w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Título</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">
+                                Tipo de Tarea
+                            </label>
+                            <select
+                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                name="selectedTipoTarea"
+                                value={form.selectedTipoTarea}
+                                onChange={handleChange}
+                                disabled={mode === 'edit'}
+                            >
+                                <option value="">Seleccionar curso</option>
+                                <option value="1">Propuesta de Tesis</option>
+                                <option value="2">Entrega de Capítulos</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Curso</label>
+                            <select
+                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                name="selectedCurso"
+                                value={form.selectedCurso}
+                                onChange={handleChange}
+                                disabled={mode === 'edit'}
+                            >
+                                <option value="">Seleccionar curso</option>
+                                {cursos.map(({ course_id, courseName }) => (
+                                    <option key={course_id} value={course_id}>
+                                        {courseName}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Título</label>
+                        <input
+                            type="text"
+                            className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                            name="title"
+                            placeholder="Título de la tarea"
+                            value={form.title}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Descripción</label>
+                        <textarea
+                            className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                            name="description"
+                            placeholder="Descripción de la tarea"
+                            value={form.description}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Fecha de Inicio</label>
                             <input
-                                type="text"
-                                className="form-field"
-                                name="title"
-                                placeholder="Título de la tarea"
-                                value={form.title}
+                                type="date"
+                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                name="taskStart"
+                                value={form.taskStart}
                                 onChange={handleChange}
                             />
                         </div>
-
                         <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Descripción</label>
-                            <textarea
-                                className="form-field"
-                                name="description"
-                                placeholder="Descripción de la tarea"
-                                value={form.description}
+                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Fecha de Fin</label>
+                            <input
+                                type="date"
+                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                name="endTask"
+                                value={form.endTask}
                                 onChange={handleChange}
                             />
                         </div>
+                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Fecha de Inicio</label>
-                                <input
-                                    type="date"
-                                    className="form-field"
-                                    name="taskStart"
-                                    value={form.taskStart}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div>
-                                <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Fecha de Fin</label>
-                                <input
-                                    type="date"
-                                    className="form-field"
-                                    name="endTask"
-                                    value={form.endTask}
-                                    onChange={handleChange}
-                                />
-                            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Hora de Inicio</label>
+                            <input
+                                type="time"
+                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                name="startTime"
+                                value={form.startTime}
+                                onChange={handleChange}
+                            />
                         </div>
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Hora de Fin</label>
+                            <input
+                                type="time"
+                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                name="endTime"
+                                value={form.endTime}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Hora de Inicio</label>
-                                <input
-                                    type="time"
-                                    className="form-field"
-                                    name="startTime"
-                                    value={form.startTime}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div>
-                                <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Hora de Fin</label>
-                                <input
-                                    type="time"
-                                    className="form-field"
-                                    name="endTime"
-                                    value={form.endTime}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="py-2 px-4 bg-gray-500 text-white rounded-md"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                type="submit"
-                                className="py-2 px-4 bg-blue-500 text-white rounded-md"
-                            >
-                                {mode === 'create' ? 'Crear Tarea' : 'Actualizar Tarea'}
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <div className="flex justify-between items-center">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="py-2 px-4 bg-gray-500 text-white rounded-md"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="submit"
+                            className="py-2 px-4 bg-blue-500 text-white rounded-md"
+                        >
+                            {mode === 'create' ? 'Crear Tarea' : 'Actualizar Tarea'}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );

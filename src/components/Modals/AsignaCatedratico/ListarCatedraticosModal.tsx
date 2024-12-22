@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getCatedraticosActivos } from '../../ts/Admin/GetCatedraticoActive';
-import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
-import { asignarCatedraticoComision } from '../../ts/Admin/AsignaCatedraticoComision';
+import { getCatedraticosActivos } from '../../../ts/Admin/GetCatedraticoActive';
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
+import { asignarCatedraticoComision } from '../../../ts/Admin/AsignaCatedraticoComision';
 import Swal from 'sweetalert2';
 
 interface Catedratico {
