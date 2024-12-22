@@ -104,9 +104,9 @@ const SubirEstudiantes = () => {
 
   if (cursos.length === 0) {
     return (
-      <div className="relative bg-gray-100">
-        <div className="absolute top-40 left-0 right-0 text-center p-6 bg-white rounded shadow-lg max-w-lg mx-auto">
-          <p className="text-xl text-black font-semibold">
+      <div className="relative bg-gray-100 dark:bg-boxdark">
+        <div className="absolute top-50 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
+          <p className="text-xl text-black dark:text-white font-semibold">
             No existen cursos asignados a esta sede. Por favor, comuníquese con central.
           </p>
         </div>

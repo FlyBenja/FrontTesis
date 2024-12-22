@@ -2,37 +2,27 @@ import axios from 'axios';
 
 export const getCursosPorSede = async (sede_id: number): Promise<{ course_id: number; courseName: string }[]> => {
   try {
-    // Recuperar el token desde localStorage
     const token = localStorage.getItem('authToken');
-    
-    if (!token) {
-      throw new Error('Token de autenticación no encontrado');
-    }
+    if (!token) throw new Error('Token de autenticación no encontrado');
 
-    // Hacer la solicitud GET a la URL especificada
     const response = await axios.get(`http://localhost:3000/api/cursosPorSede/${sede_id}`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
 
-    // Verificar si la respuesta contiene los datos esperados
     if (response.data?.data) {
-      return response.data.data; // Retornar los cursos recuperados
+      return response.data.data;
     } else {
       throw new Error('No se encontraron cursos para esta sede');
     }
-  } catch (error) {
-    // Manejo de errores
+  } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data
-        ? JSON.stringify(error.response?.data)
-        : 'Error desconocido';
-      console.error('Error de Axios:', errorMessage);
+      const errorMessage = error.response?.data?.message || 'Error desconocido al obtener los cursos';
       throw new Error(errorMessage);
+    } else {
+      throw error;
     }
-
-    throw new Error('Error desconocido');
   }
 };

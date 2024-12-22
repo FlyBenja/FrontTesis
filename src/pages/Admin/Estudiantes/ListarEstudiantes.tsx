@@ -224,7 +224,7 @@ const ListarEstudiantes: React.FC = () => {
 
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
-            <thead className="bg-gray-100 text-sm text-gray-600 dark:bg-boxdark dark:text-white">
+          <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
               <tr>
                 <th className="py-2 px-4 text-left">Foto</th>
                 <th className="py-2 px-4 text-center">Nombre Estudiante</th>
@@ -254,7 +254,7 @@ const ListarEstudiantes: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
-                    No se encontraron estudiantes.
+                    No Se Encontrarón Estudiantes.
                   </td>
                 </tr>
               )}

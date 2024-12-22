@@ -46,7 +46,6 @@ const TimeLine: React.FC = () => {
           }))
         );
       } catch (err: any) {
-        showAlert('error', '¡Error!', err.message || 'Error desconocido al cargar la línea de tiempo.');
       } finally {
         setLoading(false);
       }
@@ -137,18 +136,30 @@ const TimeLine: React.FC = () => {
         </div>
 
         <div className="relative border-l-2 border-gray-200 dark:border-strokedark">
-          {currentEvents.map((event, index) => (
-            <div key={index} className="mb-8 pl-8 relative">
-              <div className="absolute left-[-1.25rem] top-0 flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full">
-                <span>📝</span>
+          {currentEvents.length > 0 ? (
+            currentEvents.map((event, index) => (
+              <div key={index} className="mb-8 pl-8 relative">
+                <div className="absolute left-[-1.25rem] top-0 flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full">
+                  <span>📝</span>
+                </div>
+                <div className={`p-4 rounded-lg shadow-md bg-white dark:bg-boxdark dark:text-white`}>
+                  <h3 className="text-lg font-semibold">{event.typeEvent}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{event.description}</p>
+                  <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">{event.date}</p>
+                </div>
               </div>
-              <div className={`p-4 rounded-lg shadow-md bg-white dark:bg-boxdark dark:text-white`}>
-                <h3 className="text-lg font-semibold">{event.typeEvent}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{event.description}</p>
-                <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">{event.date}</p>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <table className="min-w-full">
+              <tbody>
+                <tr>
+                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
+                    No Se Encontrarón Eventos En Este Estudiante.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          )}
         </div>
 
         <div className="mt-4 flex justify-center">

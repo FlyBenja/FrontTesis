@@ -20,10 +20,12 @@ export const crearAsignacionSedeCurso = async (
         'Content-Type': 'application/json',
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data || 'Error desconocido');
+      const errorMessage = error.response?.data?.message || 'Error desconocido al realizar la asignación';
+      throw new Error(errorMessage);
+    } else {
+      throw error;
     }
-    throw new Error('Error desconocido');
   }
 };

@@ -80,47 +80,61 @@ const TareasEstudiante: React.FC = () => {
       </div>
 
       <div className="mx-auto max-w-5xl px-4 py-4">
-        {tareasOrdenadas
-          .filter((tarea) => tarea.typeTask_id === 1)
-          .map((tarea) => (
-            <div
-              key={tarea.task_id}
-              className="mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-blue-100 dark:bg-boxdark"
-              onClick={() => handleNavigate(tarea)}
-            >
-              <h3 className="text-lg font-bold text-black dark:text-white">{tarea.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {tarea.description}
-              </p>
-              <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
-                <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {formatTime24Hour(tarea.startTime)}</p>
-                <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
-              </div>
-            </div>
-          ))}
+        {tareasOrdenadas.length === 0 ? (
+          <table className="min-w-full table-auto">
+            <tbody>
+              <tr>
+                <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
+                  No Se Encontrarón Tareas Creadas.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        ) : (
+          <>
+            {tareasOrdenadas
+              .filter((tarea) => tarea.typeTask_id === 1)
+              .map((tarea) => (
+                <div
+                  key={tarea.task_id}
+                  className="mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-blue-100 dark:bg-boxdark"
+                  onClick={() => handleNavigate(tarea)}
+                >
+                  <h3 className="text-lg font-bold text-black dark:text-white">{tarea.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {tarea.description}
+                  </p>
+                  <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
+                    <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {formatTime24Hour(tarea.startTime)}</p>
+                    <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
+                  </div>
+                </div>
+              ))}
 
-        <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos</h3>
+            <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos</h3>
 
-        {tareasOrdenadas
-          .filter((tarea) => tarea.typeTask_id !== 1)
-          .map((tarea) => (
-            <div
-              key={tarea.task_id}
-              className="mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-white dark:bg-boxdark"
-              onClick={() => handleNavigate(tarea)}
-            >
-              <h3 className="text-lg font-bold text-black dark:text-white">
-                {tarea.title}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {tarea.description}
-              </p>
-              <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
-                <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {formatTime24Hour(tarea.startTime)}</p>
-                <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
-              </div>
-            </div>
-          ))}
+            {tareasOrdenadas
+              .filter((tarea) => tarea.typeTask_id !== 1)
+              .map((tarea) => (
+                <div
+                  key={tarea.task_id}
+                  className="mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-white dark:bg-boxdark"
+                  onClick={() => handleNavigate(tarea)}
+                >
+                  <h3 className="text-lg font-bold text-black dark:text-white">
+                    {tarea.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {tarea.description}
+                  </p>
+                  <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
+                    <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {formatTime24Hour(tarea.startTime)}</p>
+                    <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
+                  </div>
+                </div>
+              ))}
+          </>
+        )}
       </div>
     </>
   );

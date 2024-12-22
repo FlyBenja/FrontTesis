@@ -40,21 +40,24 @@ const ListarComision: React.FC = () => {
         if (perfil.sede) {
           const grupos = await getComisionesIndiv(perfil.sede, year);
 
-          if (grupos.length > 0) {
+          if (grupos.length === 0) {
+            // Si no hay comisiones, mostrar el mensaje de "No hay comisiones"
+            setUsuarios([]);
+          } else {
             setGroupId(grupos[0].groupId);
+            const listaUsuarios = grupos.flatMap((grupo) =>
+              grupo.groupData.users.map((user) => ({
+                userId: user.userId,
+                nombre: user.nombre,
+                rol: user.rol,
+                carnet: user.carnet,
+              }))
+            );
+            setUsuarios(listaUsuarios);
           }
-
-          const listaUsuarios = grupos.flatMap((grupo) =>
-            grupo.groupData.users.map((user) => ({
-              userId: user.userId,
-              nombre: user.nombre,
-              rol: user.rol,
-              carnet: user.carnet,
-            }))
-          );
-          setUsuarios(listaUsuarios);
         }
       } catch (error) {
+        console.error('Error al cargar los datos:', error);
       } finally {
         setLoading(false);
       }
@@ -162,6 +165,18 @@ const ListarComision: React.FC = () => {
 
   if (loading) {
     return <div className="text-center">Cargando...</div>;
+  }
+
+  if (usuarios.length === 0) {
+    return (
+      <div className="relative bg-gray-100 dark:bg-boxdark">
+        <div className="absolute top-50 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
+          <p className="text-xl text-black dark:text-white font-semibold">
+            No Hay Ninguna Comisión Creada Para Este Año.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
