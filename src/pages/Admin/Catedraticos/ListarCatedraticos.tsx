@@ -41,7 +41,18 @@ const ListarCatedraticos: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    getDatosPerfil().then((perfil) => perfil.sede && fetchCatedraticos(perfil.sede));
+    const fetchPerfil = async () => {
+      try {
+        const perfil = await getDatosPerfil();
+        if (perfil.sede) {
+          fetchCatedraticos(perfil.sede);
+        }
+      } catch {
+        setCatedraticos([]);
+      }
+    };
+
+    fetchPerfil();
   }, []);
 
   const fetchCatedraticos = async (sedeId: number) => {
@@ -62,7 +73,10 @@ const ListarCatedraticos: React.FC = () => {
         setCatedraticos([]);
       }
     } else {
-      getDatosPerfil().then((perfil) => perfil.sede && fetchCatedraticos(perfil.sede));
+      const perfil = await getDatosPerfil();
+      if (perfil.sede) {
+        fetchCatedraticos(perfil.sede);
+      }
     }
   };
 

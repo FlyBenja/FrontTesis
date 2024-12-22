@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 export interface PerfilData {
-  id: number;
-  nombre: string;
+  user_id: number;
   email: string;
-  rol: string;
-  [key: string]: any; // Ajusta según los datos que recibas en la respuesta
+  userName: string;
+  profilePhoto: string | null;
+  carnet: string;
+  sede: number;
+  roleName: string;
 }
 
 export const getDatosPerfil = async (): Promise<PerfilData> => {
@@ -25,7 +27,18 @@ export const getDatosPerfil = async (): Promise<PerfilData> => {
       },
     });
 
-    return response.data; // Retornar los datos del perfil
+    // Aquí se ajusta la respuesta para que coincida con el formato esperado
+    const perfilData: PerfilData = {
+      user_id: response.data.user_id,
+      email: response.data.email,
+      userName: response.data.userName,
+      profilePhoto: response.data.profilePhoto,
+      carnet: response.data.carnet,
+      sede: response.data.sede,
+      roleName: response.data.roleName,
+    };
+
+    return perfilData; // Retornar los datos del perfil ajustados
   } catch (error) {
     // Manejo de errores
     if (axios.isAxiosError(error)) {

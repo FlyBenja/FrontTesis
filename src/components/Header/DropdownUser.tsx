@@ -1,17 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
-import UserOne from '../../images/user/user-01.png';
+import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [roleName, setRoleName] = useState('');
+  const [profilePhoto, setprofilePhoto] = useState<string | null>(''); // Aquí almacenamos la URL de la foto de perfil
 
-  // Aquí defines el rol de forma estática; puedes modificarlo según tus necesidades
-  const role: number = 2; // Cambia este valor para probar diferentes rutas: 1, 2, o 3.
 
-  // Definir las rutas dinámicamente según el rol
-  const profileLink = role === 1 ? '/admin/profile' : role === 2 ? '/secretario/profile' : '/estudiantes/profile';
-  const settingsLink = role === 1 ? '/admin/settings' : role === 2 ? '/secretario/settings' : '/estudiantes/settings';
+  // Recupera el rol desde localStorage
+  const role = localStorage.getItem('userRole');
+
+  // Define las rutas dinámicamente basadas en el rol
+  const profileLink = role === '1' ? '/estudiantes/profile' :
+    role === '2' ? '/catedratico/profile' :
+      role === '3' ? '/admin/profile' :
+        role === '4' ? '/secretario/profile' :
+          '/decano/profile';
+
+  const settingsLink = role === '1' ? '/estudiantes/settings' :
+    role === '2' ? '/catedratico/settings' :
+      role === '3' ? '/admin/settings' :
+        role === '4' ? '/secretario/settings' :
+          '/decano/settings';
+
+  useEffect(() => {
+    // Fetch user profile data once and set both userName, roleName, and profilePhoto
+    getDatosPerfil().then((perfil) => {
+      setUserName(perfil.userName);
+      setRoleName(perfil.roleName);
+      setprofilePhoto(perfil.profilePhoto); // Asignamos la URL de la foto de perfil
+    });
+  }, []);
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -19,16 +41,30 @@ const DropdownUser = () => {
         onClick={() => setDropdownOpen(!dropdownOpen)}
         className="flex items-center gap-4"
         to="#"
+        aria-expanded={dropdownOpen ? 'true' : 'false'}
+        aria-haspopup="true"
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {userName}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">
+            {roleName}
+          </span>
         </span>
-
-        <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+        <span className="h-12 w-12 rounded-full flex items-center justify-center bg-blue-500 text-white">
+          {/* Si no hay foto de perfil, muestra la inicial del nombre con fondo azul */}
+          {profilePhoto ? (
+            <img
+              src={profilePhoto}
+              alt="User Profile"
+              className="w-full h-full object-cover rounded-full"
+            />
+          ) : (
+            <span className="text-xl font-bold">
+              {userName ? userName.charAt(0).toUpperCase() : ''}
+            </span>
+          )}
         </span>
 
         <svg
@@ -43,7 +79,6 @@ const DropdownUser = () => {
             fillRule="evenodd"
             clipRule="evenodd"
             d="M0.410765 0.910734C0.736202 0.585297 1.26384 0.585297 1.58928 0.910734L6.00002 5.32148L10.4108 0.910734C10.7362 0.585297 11.2638 0.585297 11.5893 0.910734C11.9147 1.23617 11.9147 1.76381 11.5893 2.08924L6.58928 7.08924C6.26384 7.41468 5.7362 7.41468 5.41077 7.08924L0.410765 2.08924C0.0853277 1.76381 0.0853277 1.23617 0.410765 0.910734Z"
-            fill=""
           />
         </svg>
       </Link>
