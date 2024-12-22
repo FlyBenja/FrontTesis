@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getCatedraticosActivos } from '../../ts/Admin/GetCatedraticoActive';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
-import { asignarCatedraticoComision } from '../../ts/Admin/AsignaCatedraticoComision'; // Asegúrate de que la ruta sea correcta
-import Swal from 'sweetalert2'; // Importar SweetAlert2
+import { asignarCatedraticoComision } from '../../ts/Admin/AsignaCatedraticoComision';
+import Swal from 'sweetalert2';
 
 interface Catedratico {
   user_id: number;
@@ -12,9 +12,9 @@ interface Catedratico {
 }
 
 interface ListarCatedraticosModalProps {
-  onClose: () => void; // Prop para cerrar el modal
+  onClose: () => void;
   selectedRow: number | null;
-  groupId: number | null;  // Prop para recibir el ID del grupo seleccionado
+  groupId: number | null;
 }
 
 const ROLES_CODIGOS: { [key: string]: number } = {
@@ -56,13 +56,11 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
   const handleAssign = async () => {
     if (selectedCatedratico && selectedRow && groupId) {
       try {
-        // Llamamos a la API para asignar el catedrático
         await asignarCatedraticoComision(groupId, {
           user_id: selectedCatedratico.user_id,
           rol_comision_id: selectedRow,
         });
-  
-        // Si la asignación es exitosa, mostramos un mensaje de éxito
+
         Swal.fire({
           icon: 'success',
           title: 'Catedrático asignado',
@@ -71,11 +69,9 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
           confirmButtonColor: '#28a745',
           customClass: { confirmButton: 'text-white' },
         });
-  
-        // Cerramos el modal después de asignar
+
         onClose();
       } catch (error: any) {
-        // Capturamos el error y mostramos el mensaje correspondiente
         Swal.fire({
           icon: 'error',
           title: 'Error al asignar catedrático',
@@ -87,7 +83,7 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
       }
     }
   };
-  
+
   if (loading) {
     return <div className="text-center">Cargando...</div>;
   }
@@ -114,10 +110,7 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div
-        className="relative p-6 bg-white dark:bg-boxdark rounded shadow-lg w-full max-w-lg"
-        style={{ height: '540px', top: '40px' }} // Ajusta la altura manualmente
-      >
+      <div className="relative p-6 bg-white dark:bg-boxdark rounded shadow-lg w-full max-w-lg" style={{ height: '540px', top: '40px' }}>
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-800 dark:text-gray-100 text-2xl leading-none"
@@ -129,38 +122,34 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
         {roleText && (
           <p className="text-center text-black dark:text-white mb-4">Por favor seleccione {roleText}</p>
         )}
-        {catedraticos.length === 0 ? (
-          <p className="text-center text-black dark:text-white font-semibold">No hay catedráticos activos.</p>
-        ) : (
-          <ul className="divide-y divide-gray-200 dark:divide-gray-700 overflow-y-auto" style={{ maxHeight: '300px' }}>
-            {catedraticos.map((catedratico) => (
-              <li
-                key={catedratico.user_id}
-                className={`p-4 flex items-center justify-between ${
-                  selectedCatedratico?.user_id === catedratico.user_id
-                    ? 'bg-blue-100 dark:bg-blue-900'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                }`}
-                onClick={() => handleSelect(catedratico)}
-              >
-                <div className="flex items-center">
-                  {catedratico.profilePhoto ? (
-                    <img
-                      src={catedratico.profilePhoto}
-                      alt={catedratico.userName}
-                      className="w-10 h-10 rounded-full mr-4"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-full mr-4">
-                      {catedratico.userName.charAt(0)}
-                    </div>
-                  )}
-                  <span className="text-black dark:text-white font-semibold">{catedratico.userName}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700 overflow-y-auto" style={{ maxHeight: '300px' }}>
+          {catedraticos.map((catedratico) => (
+            <li
+              key={catedratico.user_id}
+              className={`p-4 flex items-center justify-between ${
+                selectedCatedratico?.user_id === catedratico.user_id
+                  ? 'bg-blue-100 dark:bg-blue-900'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+              onClick={() => handleSelect(catedratico)}
+            >
+              <div className="flex items-center">
+                {catedratico.profilePhoto ? (
+                  <img
+                    src={catedratico.profilePhoto}
+                    alt={catedratico.userName}
+                    className="w-10 h-10 rounded-full mr-4"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-full mr-4">
+                    {catedratico.userName.charAt(0)}
+                  </div>
+                )}
+                <span className="text-black dark:text-white font-semibold">{catedratico.userName}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
         <div className="mt-6 text-center">
           <button
             onClick={handleAssign}

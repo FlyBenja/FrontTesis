@@ -3,23 +3,27 @@ import axios from 'axios';
 interface Usuario {
   userId: number;
   email: string;
-  nombre: string;
+  nombre: string; 
   carnet: string;
   rol: string;
   profilePhoto: string | null;
 }
 
 interface Grupo {
-  groupId: number;
   yearId: number;
   sedeId: number;
   users: Usuario[];
 }
 
+interface GrupoResponse {
+  groupId: number;
+  groupData: Grupo;
+}
+
 export const getComisionesIndiv = async (
   groupId: number,
   year: number
-): Promise<Grupo[]> => {
+): Promise<GrupoResponse[]> => {
   try {
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -39,16 +43,18 @@ export const getComisionesIndiv = async (
     if (response.data && Array.isArray(response.data.groups)) {
       return response.data.groups.map((group: any) => ({
         groupId: group.group_id,
-        yearId: group.year_id,
-        sedeId: group.sede_id,
-        users: group.users.map((user: any) => ({
-          userId: user.user_id,
-          email: user.email,
-          nombre: user.nombre,
-          carnet: user.carnet,
-          rol: user.rol,
-          profilePhoto: user.profilePhoto,
-        })),
+        groupData: {
+          yearId: group.year_id,
+          sedeId: group.sede_id,
+          users: group.users.map((user: any) => ({
+            userId: user.user_id,
+            email: user.email,
+            nombre: user.nombre,
+            carnet: user.carnet,
+            rol: user.rol,
+            profilePhoto: user.profilePhoto,
+          })),
+        },
       }));
     }
 
