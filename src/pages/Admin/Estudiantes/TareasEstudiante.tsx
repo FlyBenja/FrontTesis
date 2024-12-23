@@ -11,8 +11,7 @@ const TareasEstudiante: React.FC = () => {
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [sedeId, setSedeId] = useState<number | null>(null);
 
-  const { estudiante, selectedCurso, selectedAño } = location.state || {};
-
+  const { estudiante, selectedAño } = location.state || {};
   useEffect(() => {
     const fetchDatosPerfil = async () => {
       try {
@@ -49,9 +48,9 @@ const TareasEstudiante: React.FC = () => {
 
   const handleNavigate = (tarea: Tarea) => {
     if (tarea.typeTask_id === 1) {
-      navigate('/admin/propuestas');
+      navigate('/admin/propuestas', { state: { tarea, estudiante, selectedAño } });
     } else {
-      navigate('/admin/capitulo', { state: { tarea } });
+      navigate('/admin/capitulo', { state: { tarea, estudiante, selectedAño } });
     }
   };
 

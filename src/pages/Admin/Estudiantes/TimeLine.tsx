@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import { getTimeLineEstudiante } from '../../../ts/Admin/GetTimeLineEstudiante';
+import { getTimeLineEstudiante } from '../../../ts/Generales/GetTimeLineEstudiante';
 
 interface TimeLineEvent {
   user_id: number;
@@ -21,7 +21,7 @@ const TimeLine: React.FC = () => {
   const [events, setEvents] = useState<TimeLineEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { estudiante } = location.state || {};
+  const { estudiante, selectedAño } = location.state || {};
   const studentName = estudiante ? estudiante.userName : "Desconocido";
   const userId = estudiante ? estudiante.id : null;
 
@@ -127,7 +127,7 @@ const TimeLine: React.FC = () => {
           </h2>
           <button
             onClick={() => {
-              navigate('/admin/tareas-estudiante', { state: { estudiante } });
+              navigate('/admin/tareas-estudiante', { state: { estudiante, selectedAño } });
             }}
             className="rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity"
           >

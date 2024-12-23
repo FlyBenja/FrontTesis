@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createTarea } from '../../../ts/Admin/CreateTareas';
 import { updateTarea } from '../../../ts/Admin/UpdateTareas';
-import { getCursos } from '../../../ts/Admin/GetCursos';
+import { getCursos } from '../../../ts/Generales/GetCursos';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getDatosTarea } from '../../../ts/Admin/GetDatosTarea';
 import Swal from 'sweetalert2';

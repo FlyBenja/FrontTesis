@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import { getCursos } from '../../../ts/Admin/GetCursos';
+import { getCursos } from '../../../ts/Generales/GetCursos';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { cargaMasiva } from '../../../ts/Admin/CargaMasiva';
 

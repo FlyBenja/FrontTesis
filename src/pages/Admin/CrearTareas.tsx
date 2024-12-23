@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CreaTarea from '../../components/Modals/CreaTareas/CreaTarea';
-import { getCursos } from '../../ts/Admin/GetCursos';
+import { getCursos } from '../../ts/Generales/GetCursos';
 import { getYears } from '../../ts/Generales/GetYears';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 import { getTareas } from '../../ts/Admin/GetTareas';

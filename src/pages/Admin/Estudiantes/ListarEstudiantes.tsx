@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getYears } from '../../../ts/Generales/GetYears';
 import { getEstudiantes } from '../../../ts/Admin/GetEstudiantes';
-import { getCursos } from '../../../ts/Admin/GetCursos';
+import { getCursos } from '../../../ts/Generales/GetCursos';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getEstudiantePorCarnet } from '../../../ts/Admin/GetEstudianteCarnet';
@@ -96,7 +96,6 @@ const ListarEstudiantes: React.FC = () => {
     navigate(`/admin/time-line`, {
       state: {
         estudiante,
-        selectedCurso,
         selectedAño,
       },
     });
