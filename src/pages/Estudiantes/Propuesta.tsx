@@ -14,37 +14,40 @@ const Propuesta: React.FC = () => {
   const [checkbox2Checked, setCheckbox2Checked] = useState(false);
   const [checkbox3Checked, setCheckbox3Checked] = useState(false);
   const [approvalMessage, setApprovalMessage] = useState('Pendiente Aprobar');
+  const [approvedProposal, setApprovedProposal] = useState<number>(0);  // Añadido el estado para approved_proposal
 
   const fetchPropuesta = async (user_id: number) => {
     try {
       const propuestaData = await getPropuesta(user_id, 1);
       if (propuestaData) {
         setPdfUrl(propuestaData.file_path);
+        const approvalStatus = propuestaData.approved_proposal;
+        setApprovedProposal(approvalStatus);
 
         // Actualizamos el estado de aprobación según el valor de `approved_proposal`
-        if (propuestaData.approved_proposal === 0) {
+        if (approvalStatus === 0) {
           setApprovalMessage('Pendiente Aprobar');
           setCheckbox1Checked(false);
           setCheckbox2Checked(false);
           setCheckbox3Checked(false);
-        } else if (propuestaData.approved_proposal === 1) {
+        } else if (approvalStatus === 1) {
           setApprovalMessage('Propuesta 1 Aprobada');
           setCheckbox1Checked(true);
           setCheckbox2Checked(false);
           setCheckbox3Checked(false);
-        } else if (propuestaData.approved_proposal === 2) {
+        } else if (approvalStatus === 2) {
           setApprovalMessage('Propuesta 2 Aprobada');
           setCheckbox1Checked(false);
           setCheckbox2Checked(true);
           setCheckbox3Checked(false);
-        } else if (propuestaData.approved_proposal === 3) {
+        } else if (approvalStatus === 3) {
           setApprovalMessage('Propuesta 3 Aprobada');
           setCheckbox1Checked(false);
           setCheckbox2Checked(false);
           setCheckbox3Checked(true);
         }
 
-        setIsButtonsDisabled(true);
+        setIsButtonsDisabled(approvalStatus !== 0);  // Bloquear si la propuesta ya está aprobada (1, 2 o 3)
       }
     } catch (error) {
       Swal.fire({
@@ -203,6 +206,7 @@ const Propuesta: React.FC = () => {
             <button
               onClick={handleDownloadTemplate}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-gray-700"
+              disabled={approvedProposal !== 0} // Bloquear si la propuesta está aprobada
             >
               Descargar Plantilla
             </button>
@@ -233,7 +237,7 @@ const Propuesta: React.FC = () => {
               accept="application/pdf"
               onChange={handleFileChange}
               className="hidden"
-              disabled={isButtonsDisabled}
+              disabled={approvedProposal !== 0} // Bloquear si la propuesta está aprobada
             />
           </label>
 
@@ -249,7 +253,7 @@ const Propuesta: React.FC = () => {
             <button
               onClick={handleUpload}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              disabled={isButtonsDisabled || loading}
+              disabled={isButtonsDisabled || loading || approvedProposal !== 0} // Bloquear si la propuesta está aprobada
             >
               {loading ? 'Subiendo...' : 'Subir Propuesta'}
             </button>
