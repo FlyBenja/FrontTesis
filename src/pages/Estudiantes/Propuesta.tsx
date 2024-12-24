@@ -33,15 +33,7 @@ const Propuesta: React.FC = () => {
           throw new Error('No se pudo obtener el ID del usuario.');
         }
       } catch (error: any) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: error.message || 'Ocurrió un error al obtener los datos iniciales.',
-          confirmButtonText: 'OK',
-          customClass: {
-            confirmButton: 'bg-red-600 text-white',
-          },
-        });
+        throw new Error('No se pudierón obtener los datos iniciales.');
       }
     };
 
@@ -102,15 +94,7 @@ const Propuesta: React.FC = () => {
         setIsButtonsDisabled(approvalStatus !== 0);
       }
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al obtener la propuesta',
-        text: 'No se pudo cargar la propuesta.',
-        confirmButtonText: 'OK',
-        customClass: {
-          confirmButton: 'bg-red-600 text-white',
-        },
-      });
+      throw new Error('No se pudo obtener la propuesta.');
     }
   };
 
@@ -146,19 +130,6 @@ const Propuesta: React.FC = () => {
       return;
     }
   
-    if (!taskId) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No se encontró el task_id para esta tarea.',
-        confirmButtonText: 'OK',
-        customClass: {
-          confirmButton: 'bg-red-600 text-white',
-        },
-      });
-      return;
-    }
-  
     setLoading(true);
   
     try {
@@ -172,7 +143,7 @@ const Propuesta: React.FC = () => {
       await subirPropuesta({
         file: pdfFile,
         user_id,
-        task_id: taskId,
+        task_id: taskId!,
       });
   
       Swal.fire({
@@ -190,14 +161,11 @@ const Propuesta: React.FC = () => {
   
       // Volver a ejecutar la API getPropuesta después de guardar
       fetchPropuesta(user_id);
-  
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Error desconocido al subir la propuesta';
       Swal.fire({
         icon: 'error',
         title: 'Error al subir',
-        text: errorMessage,
+        text: error.response?.data?.message || error.message || 'Error al subir la propuesta',
         confirmButtonText: 'OK',
         customClass: {
           confirmButton: 'bg-red-600 text-white',
