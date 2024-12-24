@@ -9,7 +9,7 @@ export interface Propuesta {
   approved_proposal: number;
 }
 
-export const getPropuesta = async (userId: number, taskId: number): Promise<Propuesta | null> => {
+export const getPropuesta = async (userId: number): Promise<Propuesta | null> => {
   try {
     // Recuperar el token desde localStorage
     const token = localStorage.getItem('authToken');
@@ -19,7 +19,7 @@ export const getPropuesta = async (userId: number, taskId: number): Promise<Prop
     }
 
     // Hacer la solicitud GET a la URL especificada con los parámetros correctos
-    const response = await axios.get(`http://localhost:3000/api/thesis-submission/${userId}/${taskId}`, {
+    const response = await axios.get(`http://localhost:3000/api/thesis-submission/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

@@ -4,7 +4,7 @@ import isBetween from "dayjs/plugin/isBetween";
 import "dayjs/locale/es";
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
-import { getTareasSede, Tarea } from '../../ts/Admin/GetTareasSede';
+import { getTareasSede, Tarea } from '../../ts/Generales/GetTareasSede';
 
 dayjs.extend(isBetween);
 dayjs.locale('es');

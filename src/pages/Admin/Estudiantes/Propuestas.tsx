@@ -33,9 +33,9 @@ const Propuestas: React.FC = () => {
   const [noPropuestas, setNoPropuestas] = useState<boolean>(false);
   const [thesisSubmissionsId, setThesisSubmissionsId] = useState<number | null>(null);
 
-  const fetchPropuesta = async (user_id: number, task_id: number) => {
+  const fetchPropuesta = async (user_id: number) => {
     try {
-      const propuestaData = await getPropuesta(user_id, task_id);
+      const propuestaData = await getPropuesta(user_id);
       if (propuestaData) {
         setPdfUrl(propuestaData.file_path);
         setThesisSubmissionsId(propuestaData.thesisSubmissions_id);
@@ -64,7 +64,7 @@ const Propuestas: React.FC = () => {
 
   useEffect(() => {
     if (userId) {
-      fetchPropuesta(userId, 1);  // task_id siempre es 1
+      fetchPropuesta(userId);  
     } else {
       Swal.fire({
         icon: 'error',

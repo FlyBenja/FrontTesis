@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; 
-import { getTareasSede, Tarea } from '../../../ts/Admin/GetTareasSede';
+import { getTareasSede, Tarea } from '../../../ts/Generales/GetTareasSede';
 
 const TareasEstudiante: React.FC = () => {
   const navigate = useNavigate();

@@ -4,6 +4,7 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 import { subirPropuesta } from '../../ts/Estudiantes/SubirPropuestas';
 import { getPropuesta } from '../../ts/Generales/GetPropuesta';
+import { getTareasSede, Tarea } from '../../ts/Generales/GetTareasSede';
 
 const Propuesta: React.FC = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -14,17 +15,68 @@ const Propuesta: React.FC = () => {
   const [checkbox2Checked, setCheckbox2Checked] = useState(false);
   const [checkbox3Checked, setCheckbox3Checked] = useState(false);
   const [approvalMessage, setApprovalMessage] = useState('Pendiente Aprobar');
-  const [approvedProposal, setApprovedProposal] = useState<number>(0);  // Añadido el estado para approved_proposal
+  const [approvedProposal, setApprovedProposal] = useState<number>(0);
+  const [taskId, setTaskId] = useState<number | null>(null);
+  const [sedeId, setSedeId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const perfilData = await getDatosPerfil();
+        const user_id = perfilData?.user_id;
+        const sede = perfilData?.sede;
+        setSedeId(sede);
+
+        if (user_id) {
+          fetchPropuesta(user_id);
+        } else {
+          throw new Error('No se pudo obtener el ID del usuario.');
+        }
+      } catch (error: any) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.message || 'Ocurrió un error al obtener los datos iniciales.',
+          confirmButtonText: 'OK',
+          customClass: {
+            confirmButton: 'bg-red-600 text-white',
+          },
+        });
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
+  useEffect(() => {
+    const fetchTareas = async () => {
+      if (sedeId !== null) {
+        try {
+          const currentYear = new Date().getFullYear(); // Obtén el año actual aquí
+          const tareas = await getTareasSede(sedeId, currentYear);
+          const tareaPropuesta = tareas.find((tarea: Tarea) => tarea.typeTask_id === 1);
+          if (tareaPropuesta) {
+            setTaskId(tareaPropuesta.task_id);
+          } else {
+            throw new Error('No se encontró una tarea con typeTask_id = 1.');
+          }
+        } catch (error: any) {
+          
+        }
+      }
+    };
+
+    fetchTareas();
+  }, [sedeId]);
 
   const fetchPropuesta = async (user_id: number) => {
     try {
-      const propuestaData = await getPropuesta(user_id, 1);
+      const propuestaData = await getPropuesta(user_id);
       if (propuestaData) {
         setPdfUrl(propuestaData.file_path);
         const approvalStatus = propuestaData.approved_proposal;
         setApprovedProposal(approvalStatus);
 
-        // Actualizamos el estado de aprobación según el valor de `approved_proposal`
         if (approvalStatus === 0) {
           setApprovalMessage('Pendiente Aprobar');
           setCheckbox1Checked(false);
@@ -47,7 +99,7 @@ const Propuesta: React.FC = () => {
           setCheckbox3Checked(true);
         }
 
-        setIsButtonsDisabled(approvalStatus !== 0);  // Bloquear si la propuesta ya está aprobada (1, 2 o 3)
+        setIsButtonsDisabled(approvalStatus !== 0);
       }
     } catch (error) {
       Swal.fire({
@@ -61,33 +113,6 @@ const Propuesta: React.FC = () => {
       });
     }
   };
-
-  useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const perfilData = await getDatosPerfil();
-        const user_id = perfilData?.user_id;
-
-        if (user_id) {
-          fetchPropuesta(user_id);
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo obtener el ID del usuario.',
-            confirmButtonText: 'OK',
-            customClass: {
-              confirmButton: 'bg-red-600 text-white',
-            },
-          });
-        }
-      } catch (error) {
-        console.error('Error al obtener el perfil:', error);
-      }
-    };
-
-    fetchUserId();
-  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -120,35 +145,52 @@ const Propuesta: React.FC = () => {
       });
       return;
     }
-
+  
+    if (!taskId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se encontró el task_id para esta tarea.',
+        confirmButtonText: 'OK',
+        customClass: {
+          confirmButton: 'bg-red-600 text-white',
+        },
+      });
+      return;
+    }
+  
     setLoading(true);
-
+  
     try {
       const perfilData = await getDatosPerfil();
       const user_id = perfilData?.user_id;
-
+  
       if (!user_id) {
         throw new Error('No se pudo recuperar el ID del usuario. Por favor, inténtalo más tarde.');
       }
-
+  
       await subirPropuesta({
         file: pdfFile,
         user_id,
-        task_id: 1,
+        task_id: taskId,
       });
-
+  
       Swal.fire({
         icon: 'success',
-        title: 'Éxito',
-        text: 'Propuesta subida exitosamente.',
+        title: 'Propuesta subida exitosamente',
+        text: 'Tu propuesta ha sido subida correctamente.',
         confirmButtonText: 'OK',
         customClass: {
           confirmButton: 'bg-green-600 text-white',
         },
       });
-
+  
       setPdfFile(null);
       setPdfUrl(null);
+  
+      // Volver a ejecutar la API getPropuesta después de guardar
+      fetchPropuesta(user_id);
+  
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || error.message || 'Error desconocido al subir la propuesta';
@@ -164,7 +206,7 @@ const Propuesta: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   const handleDownloadTemplate = () => {
     const link = document.createElement('a');
