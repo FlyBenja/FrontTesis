@@ -31,29 +31,32 @@ const TimeLine: React.FC = () => {
       setLoading(false);
       return;
     }
-
+  
     const fetchTimeline = async () => {
       try {
         setLoading(true);
         const logs = await getTimeLineEstudiante(userId);
         setEvents(
-          logs.map((log) => ({
-            user_id: log.user_id,
-            typeEvent: log.typeEvent,
-            description: log.description,
-            task_id: log.task_id,
-            date: new Date(log.date).toLocaleDateString(),
-          }))
+          logs
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Orden descendente
+            .map((log) => ({
+              user_id: log.user_id,
+              typeEvent: log.typeEvent,
+              description: log.description,
+              task_id: log.task_id,
+              date: new Date(log.date).toLocaleDateString(),
+            }))
         );
       } catch (err: any) {
+        // Manejo de errores si es necesario
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchTimeline();
   }, [userId]);
-
+  
   const showAlert = (type: 'success' | 'error', title: string, text: string) => {
     const confirmButtonColor = type === 'success' ? '#28a745' : '#dc3545';
     Swal.fire({

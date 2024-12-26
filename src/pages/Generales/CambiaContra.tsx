@@ -20,15 +20,10 @@ const CambiaContra: React.FC = () => {
     return localStorage.getItem('authToken');
   };
 
-  const getUserRole = (): number | null => {
-    const role = localStorage.getItem('userRole');
-    return role ? parseInt(role, 10) : null;
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-  
+
     if (newPassword !== confirmPassword) {
       setLoading(false);
       MySwal.fire({
@@ -39,7 +34,7 @@ const CambiaContra: React.FC = () => {
       });
       return;
     }
-  
+
     const token = getAuthToken();
     if (!token) {
       setLoading(false);
@@ -51,14 +46,14 @@ const CambiaContra: React.FC = () => {
       });
       return;
     }
-  
+
     try {
       // Llamada al servicio para cambiar la contraseña
-      const response: any = await updatePassword(oldPassword, newPassword);  // Asegúrate de que el tipo de respuesta esté claro
-  
-      // Validar si response tiene la propiedad 'message'
+      const response: any = await updatePassword(oldPassword, newPassword);
       const successMessage = response?.message || 'Contraseña cambiada exitosamente.';
-  
+
+      // Eliminar datos del localStorage y redirigir al inicio
+      localStorage.clear();
       setLoading(false);
       MySwal.fire({
         icon: 'success',
@@ -66,21 +61,14 @@ const CambiaContra: React.FC = () => {
         text: successMessage,
         confirmButtonColor: '#3085d6',
       }).then(() => {
-        const rolePaths: { [key: number]: string } = {
-          3: "/admin/graficas",
-          4: "/secretario/crea-sedes",
-          1: "/estudiantes/inicio",
-        };
-  
-        const role = getUserRole();
-        navigate(rolePaths[role!] || "/login");
+        navigate('/');
       });
     } catch (error: any) {
       const errorMessage =
         error?.message ||
         (error.response && error.response.data?.message) ||
         'Ocurrió un error inesperado al intentar cambiar la contraseña.';
-  
+
       setLoading(false);
       MySwal.fire({
         icon: 'error',
@@ -89,7 +77,15 @@ const CambiaContra: React.FC = () => {
         confirmButtonColor: '#d33',
       });
     }
-  };  
+  };
+
+  // Redirección forzada si el usuario intenta regresar
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', () => {
+      navigate('/');
+    });
+  }
 
   return (
     <div
@@ -158,9 +154,7 @@ const CambiaContra: React.FC = () => {
           </div>
           <button
             type="submit"
-            className={`w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 ${
-              loading ? 'cursor-not-allowed opacity-50' : ''
-            }`}
+            className={`w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
             disabled={loading}
           >
             {loading ? 'Cargando...' : 'Cambiar Contraseña'}

@@ -37,7 +37,6 @@
 
       // Verificar si la respuesta contiene los datos
       if (response.data && response.data.data) {
-        console.log('Datos de la tarea:', response.data.data);
         return response.data.data; // Retornar los datos de la tarea
       } else {
         console.error('No se encontraron datos de tarea');

@@ -3,7 +3,7 @@ import CreaTarea from '../../components/Modals/CreaTareas/CreaTarea';
 import { getCursos } from '../../ts/Generales/GetCursos';
 import { getYears } from '../../ts/Generales/GetYears';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
-import { getTareas } from '../../ts/Admin/GetTareas';
+import { getTareas } from '../../ts/Generales/GetTareas';
 
 export interface Tarea {
   task_id: number;
@@ -59,7 +59,7 @@ const CrearTareas: React.FC = () => {
     if (selectedCurso && selectedAño) {
       const perfil = await getDatosPerfil();
       const tareasRecuperadas = await getTareas(
-        perfil.sede || 1,
+        perfil.sede,
         Number(selectedCurso),
         Number(selectedAño)
       );

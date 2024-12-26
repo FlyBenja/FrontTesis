@@ -25,16 +25,18 @@ const TimeLine: React.FC = () => {
         setLoading(true);
         const perfil = await getDatosPerfil();
         setUserName(perfil.userName);
-
+  
         const logs = await getTimeLineEstudiante(perfil.user_id);
         setEvents(
-          logs.map((log) => ({
-            user_id: log.user_id,
-            typeEvent: log.typeEvent,
-            description: log.description,
-            task_id: log.task_id,
-            date: new Date(log.date).toLocaleDateString(),
-          }))
+          logs
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Orden descendente
+            .map((log) => ({
+              user_id: log.user_id,
+              typeEvent: log.typeEvent,
+              description: log.description,
+              task_id: log.task_id,
+              date: new Date(log.date).toLocaleDateString(),
+            }))
         );
       } catch (err: any) {
         // Manejo de errores si es necesario
@@ -42,9 +44,9 @@ const TimeLine: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProfileAndTimeline();
-  }, []);
+  }, []);  
 
   const indexOfLastEvent = currentPage * eventsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;

@@ -22,15 +22,13 @@ export const updatePassword = async (oldPassword: string, newPassword: string): 
     );
 
     return response.data; // Devuelve el mensaje de éxito
-  } catch (error) {
-    // Si es un error de Axios, obtener el mensaje de error y convertirlo en cadena
+  } catch (error: any) {
+    // Si es un error de Axios, obtener el mensaje de error
     if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data ? JSON.stringify(error.response?.data) : 'Error desconocido';
-      console.error('Error de Axios:', errorMessage);  // Imprimir error detallado
+      const errorMessage = error.response?.data?.message || 'Error desconocido al actualizar la contraseña';
       throw new Error(errorMessage);
+    } else {
+      throw error; // Para otros tipos de error
     }
-
-    // Para otros tipos de error
-    throw new Error('Error desconocido');
   }
 };

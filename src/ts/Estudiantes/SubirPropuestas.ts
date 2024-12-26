@@ -19,7 +19,6 @@ export const subirPropuesta = async (propuestaData: { file: File; user_id: numbe
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       const errorMessage = error.response?.data?.message || 'Error desconocido al subir la propuesta';
-      console.error('Error de la API:', errorMessage);
       throw new Error(errorMessage);
     } else {
       console.error('Error inesperado:', error.message);

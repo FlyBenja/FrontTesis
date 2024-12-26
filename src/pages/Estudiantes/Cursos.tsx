@@ -12,8 +12,8 @@ const Cursos: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Función para manejar la redirección con el título del curso
-  const handleNavigate = (courseTitle: string) => {
-    navigate('/estudiantes/info-curso', { state: { courseTitle } });
+  const handleNavigate = (courseTitle: string, courseId: number) => {
+    navigate('/estudiantes/info-curso', { state: { courseTitle, courseId } });
   };
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const Cursos: React.FC = () => {
                 {course.description}
               </p>
               <button
-                onClick={() => handleNavigate(course.courseName)}
+                onClick={() => handleNavigate(course.courseName, course.course_id)}
                 className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               >
                 Ver más detalles

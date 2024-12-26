@@ -33,7 +33,7 @@ const Propuesta: React.FC = () => {
           throw new Error('No se pudo obtener el ID del usuario.');
         }
       } catch (error: any) {
-        throw new Error('No se pudierón obtener los datos iniciales.');
+        throw new Error('No se pudieron obtener los datos iniciales.');
       }
     };
 
@@ -44,16 +44,16 @@ const Propuesta: React.FC = () => {
     const fetchTareas = async () => {
       if (sedeId !== null) {
         try {
-          const currentYear = new Date().getFullYear(); // Obtén el año actual aquí
+          const currentYear = new Date().getFullYear();
           const tareas = await getTareasSede(sedeId, currentYear);
           const tareaPropuesta = tareas.find((tarea: Tarea) => tarea.typeTask_id === 1);
           if (tareaPropuesta) {
             setTaskId(tareaPropuesta.task_id);
           } else {
-            throw new Error('No se encontró una tarea con typeTask_id = 1.');
+            setTaskId(null); // Limpia cualquier valor previo de taskId si no se encuentra.
           }
         } catch (error: any) {
-          
+          setTaskId(null); // Limpia cualquier valor previo de taskId si ocurre un error.
         }
       }
     };
@@ -129,23 +129,23 @@ const Propuesta: React.FC = () => {
       });
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       const perfilData = await getDatosPerfil();
       const user_id = perfilData?.user_id;
-  
+
       if (!user_id) {
         throw new Error('No se pudo recuperar el ID del usuario. Por favor, inténtalo más tarde.');
       }
-  
+
       await subirPropuesta({
         file: pdfFile,
         user_id,
         task_id: taskId!,
       });
-  
+
       Swal.fire({
         icon: 'success',
         title: 'Propuesta subida exitosamente',
@@ -155,11 +155,10 @@ const Propuesta: React.FC = () => {
           confirmButton: 'bg-green-600 text-white',
         },
       });
-  
+
       setPdfFile(null);
       setPdfUrl(null);
-  
-      // Volver a ejecutar la API getPropuesta después de guardar
+
       fetchPropuesta(user_id);
     } catch (error: any) {
       Swal.fire({
@@ -174,7 +173,7 @@ const Propuesta: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   const handleDownloadTemplate = () => {
     const link = document.createElement('a');
@@ -185,106 +184,117 @@ const Propuesta: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Propuesta" />
-
-      <div className="max-w-7xl mx-auto p-0 space-y-8">
-        <div className="flex justify-center items-center space-x-8">
-          <div className="flex space-x-4">
-            <label className="flex items-center space-x-2">
-              <input type="checkbox" className="w-5 h-5 text-blue-600 focus:ring-blue-500" checked={checkbox1Checked} disabled />
-              <span className="text-gray-800 dark:text-white">Propuesta 1</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input type="checkbox" className="w-5 h-5 text-blue-600 focus:ring-blue-500" checked={checkbox2Checked} disabled />
-              <span className="text-gray-800 dark:text-white">Propuesta 2</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input type="checkbox" className="w-5 h-5 text-blue-600 focus:ring-blue-500" checked={checkbox3Checked} disabled />
-              <span className="text-gray-800 dark:text-white">Propuesta 3</span>
-            </label>
+      {taskId === null ? (
+        <div className="relative bg-gray-100 dark:bg-boxdark">
+          <div className="absolute top-50 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
+            <p className="text-xl text-black dark:text-white font-semibold">
+              No Existe Tarea Para Subir Propuestas.
+            </p>
           </div>
-          <span className={approvalMessage.includes('Aprobada') ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}>
-            {approvalMessage}
-          </span>
         </div>
+      ) : (
+        <>
+          <Breadcrumb pageName="Propuesta" />
 
-        <div className="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-              Subir PDF de Propuesta
-            </h2>
-            <button
-              onClick={handleDownloadTemplate}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-gray-700"
-              disabled={approvedProposal !== 0} // Bloquear si la propuesta está aprobada
-            >
-              Descargar Plantilla
-            </button>
+          <div className="max-w-7xl mx-auto p-0 space-y-8">
+            <div className="flex justify-center items-center space-x-8">
+              <div className="flex space-x-4">
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="w-5 h-5 text-blue-600 focus:ring-blue-500" checked={checkbox1Checked} disabled />
+                  <span className="text-gray-800 dark:text-white">Propuesta 1</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="w-5 h-5 text-blue-600 focus:ring-blue-500" checked={checkbox2Checked} disabled />
+                  <span className="text-gray-800 dark:text-white">Propuesta 2</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="w-5 h-5 text-blue-600 focus:ring-blue-500" checked={checkbox3Checked} disabled />
+                  <span className="text-gray-800 dark:text-white">Propuesta 3</span>
+                </label>
+              </div>
+              <span className={approvalMessage.includes('Aprobada') ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}>
+                {approvalMessage}
+              </span>
+            </div>
+
+            <div className="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+                  Subir PDF de Propuesta
+                </h2>
+                <button
+                  onClick={handleDownloadTemplate}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-gray-700"
+                  disabled={approvedProposal !== 0} // Bloquear si la propuesta está aprobada
+                >
+                  Descargar Plantilla
+                </button>
+              </div>
+
+              <label className="flex flex-col items-center justify-center w-full h-32 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
+                <div className="flex flex-col items-center">
+                  <svg
+                    className="w-8 h-8 text-gray-500 dark:text-gray-300 mb-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 16v4h10v-4m-3-8h-4v4H7m6 0v6h3l4-4m-7 4h3M7 4h10v4H7z"
+                    />
+                  </svg>
+                  <p className="text-gray-500 dark:text-gray-300 text-sm">
+                    Haz clic para subir un archivo PDF
+                  </p>
+                </div>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  disabled={approvedProposal !== 0} // Bloquear si la propuesta está aprobada
+                />
+              </label>
+
+              {pdfFile && (
+                <div className="mt-4 flex justify-between items-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <span className="font-medium">Archivo seleccionado:</span> {pdfFile.name}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={handleUpload}
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  disabled={isButtonsDisabled || loading || approvedProposal !== 0} // Bloquear si la propuesta está aprobada
+                >
+                  {loading ? 'Subiendo...' : 'Subir Propuesta'}
+                </button>
+              </div>
+            </div>
           </div>
 
-          <label className="flex flex-col items-center justify-center w-full h-32 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
-            <div className="flex flex-col items-center">
-              <svg
-                className="w-8 h-8 text-gray-500 dark:text-gray-300 mb-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16v4h10v-4m-3-8h-4v4H7m6 0v6h3l4-4m-7 4h3M7 4h10v4H7z"
-                />
-              </svg>
-              <p className="text-gray-500 dark:text-gray-300 text-sm">
-                Haz clic para subir un archivo PDF
-              </p>
-            </div>
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-              className="hidden"
-              disabled={approvedProposal !== 0} // Bloquear si la propuesta está aprobada
-            />
-          </label>
-
-          {pdfFile && (
-            <div className="mt-4 flex justify-between items-center">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                <span className="font-medium">Archivo seleccionado:</span> {pdfFile.name}
-              </p>
+          {pdfUrl && (
+            <div className="p-6 max-w-5xl mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
+              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Vista previa del PDF:
+              </h3>
+              <iframe
+                src={pdfUrl}
+                title="Vista previa del PDF"
+                className="w-full h-[40rem] border-2 border-gray-200 dark:border-gray-600"
+              ></iframe>
             </div>
           )}
-
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={handleUpload}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              disabled={isButtonsDisabled || loading || approvedProposal !== 0} // Bloquear si la propuesta está aprobada
-            >
-              {loading ? 'Subiendo...' : 'Subir Propuesta'}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {pdfUrl && (
-        <div className="p-6 max-w-5xl mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            Vista previa del PDF:
-          </h3>
-          <iframe
-            src={pdfUrl}
-            title="Vista previa del PDF"
-            className="w-full h-[40rem] border-2 border-gray-200 dark:border-gray-600"
-          ></iframe>
-        </div>
+        </>
       )}
     </>
   );
 };
-
 export default Propuesta;
