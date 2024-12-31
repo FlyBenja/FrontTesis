@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil'; 
+import Swal from 'sweetalert2'; 
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getTareasSede, Tarea } from '../../../ts/Generales/GetTareasSede';
+import { getTareasEstudiante, TareaEstudiante } from '../../../ts/Estudiantes/GetTareasEstudiante'; // Asegúrate de importar esta API
 
 const TareasEstudiante: React.FC = () => {
   const navigate = useNavigate();
@@ -10,8 +12,10 @@ const TareasEstudiante: React.FC = () => {
 
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [sedeId, setSedeId] = useState<number | null>(null);
+  const [tareasEstudiante, setTareasEstudiante] = useState<TareaEstudiante[]>([]); // Nuevo estado para las tareas del estudiante
 
   const { estudiante, selectedAño } = location.state || {};
+  
   useEffect(() => {
     const fetchDatosPerfil = async () => {
       try {
@@ -36,6 +40,18 @@ const TareasEstudiante: React.FC = () => {
     fetchTareas();
   }, [sedeId, selectedAño]);
 
+  // Cargar tareas del estudiante
+  useEffect(() => {
+    const fetchTareasEstudiante = async () => {
+      if (estudiante && selectedAño && sedeId !== null) {
+        const tareasEst = await getTareasEstudiante(estudiante.id, selectedAño, sedeId);
+        setTareasEstudiante(tareasEst);
+      }
+    };
+
+    fetchTareasEstudiante();
+  }, [estudiante, selectedAño, sedeId]);
+
   const tareasOrdenadas = tareas.sort((a, b) => {
     if (a.typeTask_id === 1 && b.typeTask_id !== 1) {
       return -1;
@@ -47,6 +63,27 @@ const TareasEstudiante: React.FC = () => {
   });
 
   const handleNavigate = (tarea: Tarea) => {
+    // Buscar la tarea correspondiente en tareasEstudiante
+    const tareaEstudiante = tareasEstudiante.find(
+      (t) => t.task_id === tarea.task_id
+    );
+
+    if (tareaEstudiante && tarea.typeTask_id !== 1) {
+      // Validación antes de navegar al capítulo
+      if (!tareaEstudiante.submission_complete) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Acceso denegado',
+          text: 'No puedes acceder al capítulo porque la tarea no ha sido entregada por el estudiante.',
+          confirmButtonText: 'Entendido',
+          customClass: {
+            confirmButton: 'bg-red-600 text-white',
+          },
+        });
+        return;
+      }
+    }
+
     if (tarea.typeTask_id === 1) {
       navigate('/admin/propuestas', { state: { tarea, estudiante, selectedAño } });
     } else {

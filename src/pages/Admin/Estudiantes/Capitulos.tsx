@@ -1,98 +1,135 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import { enviaComentario } from '../../../ts/Generales/EnviaComentario';
+import { getComentarios, ComentarioData } from '../../../ts/Generales/GetComentario';
 
-interface Version {
+interface Comentario {
   id: number;
-  comentario: string;
-  punteo: number | null;
+  texto: string;
   fecha: string;
+  role: string;
 }
 
 const Capitulos: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const tarea = location.state?.tarea;
-
+  const { tarea, estudiante } = location.state || {};
   const [comentario, setComentario] = useState<string>('');
-  const [punteo, setPunteo] = useState<number | null>(null);
-  const [historial, setHistorial] = useState<Version[]>([
-    { id: 1, comentario: '', punteo: null, fecha: new Date().toLocaleDateString() },
-  ]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const versionsPerPage = 3;
-  const [maxPageButtons] = useState(10);
+  const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]);
 
-  const totalPages = Math.ceil(historial.length / versionsPerPage);
+  // Función para verificar si el botón debe estar deshabilitado
+  const isButtonDisabled = (): boolean => {
+    const currentDate = new Date();
+    const endDate = new Date(tarea.endTask);
+    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
-  const sortedHistorial = [...historial].sort((a, b) => b.id - a.id);
+    const currentHour = currentDate.getHours();
+    const currentMinutes = currentDate.getMinutes();
+    const currentSeconds = currentDate.getSeconds();
 
-  const currentVersions = sortedHistorial.slice(
-    (currentPage - 1) * versionsPerPage,
-    currentPage * versionsPerPage
-  );
+    const formattedCurrentTime = `${currentHour.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
+    const formattedCurrentDateTime = `${currentDateOnly.toISOString().split('T')[0]} ${formattedCurrentTime}`;
+
+    const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()));
+    const formattedEndDateTime = `${endDateOnly.toISOString().split('T')[0]} ${tarea.endTime || ''}`;
+
+    if (isNaN(endDateOnly.getTime())) return true;
+    return formattedCurrentDateTime > formattedEndDateTime;
+  };
+
+  // Función para formatear la fecha en formato día/mes/año
+  const formatearFecha = (fecha: string): string => {
+    const date = new Date(fecha);
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+  };
+
+  // Cargar los comentarios previos al montar el componente
+  useEffect(() => {
+    const cargarComentarios = async () => {
+      if (!tarea || !estudiante) return;
+
+      const taskId = tarea.task_id;
+      const userId = estudiante.id;
+
+      try {
+        const comentarios: ComentarioData = await getComentarios(taskId, userId);
+        const comentariosFormateados = comentarios.comments.map((comment, index) => ({
+          id: index + 1,
+          texto: comment.comment,
+          fecha: formatearFecha(comment.datecomment),
+          role: comment.role,
+        }));
+        setComentariosPrevios(comentariosFormateados);
+      } catch (error) {
+        console.error('Error al cargar comentarios:', error);
+      }
+    };
+
+    cargarComentarios();
+  }, [tarea, estudiante]);
 
   const handleComentarioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComentario(e.target.value);
   };
 
-  const handlePunteoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPunteo(Number(e.target.value));
-  };
-
-  const handleEnviarComentario = (versionId: number) => {
-    setHistorial((prevHistorial) =>
-      prevHistorial.map((version) =>
-        version.id === versionId ? { ...version, comentario, punteo } : version
-      )
-    );
-    setComentario('');
-    setPunteo(null);
-  };
-
-  const handleCrearNuevaVersion = () => {
-    const nuevaVersion: Version = {
-      id: historial.length + 1,
-      comentario: '',
-      punteo: null,
-      fecha: new Date().toLocaleDateString(),
-    };
-    setHistorial((prevHistorial) => [...prevHistorial, nuevaVersion]);
-    setComentario('');
-    setPunteo(null);
-    setCurrentPage(1);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const renderPaginationButtons = () => {
-    const buttons = [];
-    const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-
-    for (let i = startPage; i <= endPage; i++) {
-      buttons.push(
-        <button
-          key={i}
-          onClick={() => setCurrentPage(i)}
-          className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-white dark:bg-boxdark text-blue-500 dark:text-white'}`}
-        >
-          {i}
-        </button>
-      );
+  const handleEnviarComentario = async () => {
+    if (!tarea || !estudiante) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Datos de la tarea o estudiante no disponibles',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        customClass: {
+          confirmButton: 'bg-red-500 text-white px-4 py-2 rounded-md',
+        },
+      });
+      return;
     }
-    return buttons;
+
+    const taskId = tarea.task_id;
+    const user_id = estudiante.id;
+
+    const commentData = {
+      comment: comentario,
+      role: 'teacher',
+      user_id: user_id,
+    };
+
+    try {
+      console.log(commentData);
+      await enviaComentario(taskId, commentData);
+      setComentariosPrevios((prevComentarios) => [
+        { id: prevComentarios.length + 1, texto: comentario, fecha: new Date().toLocaleDateString(), role: 'teacher' },
+        ...prevComentarios,
+      ]);
+      setComentario('');
+      Swal.fire({
+        title: 'Comentario enviado',
+        text: 'El comentario se ha enviado exitosamente',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        customClass: {
+          confirmButton: 'bg-green-500 text-white px-4 py-2 rounded-md',
+        },
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: 'Error',
+        text: error.message || 'Hubo un error al enviar el comentario',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        customClass: {
+          confirmButton: 'bg-red-500 text-white px-4 py-2 rounded-md',
+        },
+      });
+    }
   };
 
   return (
     <>
-      <Breadcrumb pageName="Capítulo Detalles" />
+      <Breadcrumb pageName={`Detalle del ${tarea?.title}`} />
 
       <div className="mb-4 flex justify-between">
         <button
@@ -101,81 +138,49 @@ const Capitulos: React.FC = () => {
         >
           <span className="mr-2">←</span> Regresar
         </button>
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-          onClick={handleCrearNuevaVersion}
-        >
-          Crear Nueva Versión
-        </button>
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 py-4">
-        <div className="bg-white dark:bg-boxdark p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-bold text-black dark:text-white mb-4">{tarea?.titulo}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{tarea?.descripcion}</p>
-
-          <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Historial de Versiones</h4>
-
-          <div className="space-y-6">
-            {currentVersions.map((version) => (
-              <div key={version.id} className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-                <div className="flex justify-between items-center mb-2">
-                  <h5 className="font-semibold text-black dark:text-white">
-                    Versión {version.id} - {version.fecha}
-                  </h5>
-                </div>
-
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Punteo</label>
-                  <input
-                    type="number"
-                    value={version.id === sortedHistorial[0].id ? punteo || '' : version.punteo || ''}
-                    onChange={handlePunteoChange}
-                    disabled={version.id !== sortedHistorial[0].id}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Comentario</label>
-                  <textarea
-                    value={version.id === sortedHistorial[0].id ? comentario : version.comentario}
-                    onChange={handleComentarioChange}
-                    disabled={version.id !== sortedHistorial[0].id}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows={3}
-                  />
-                </div>
-
-                {version.id === sortedHistorial[0].id && (
-                  <button
-                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                    onClick={() => handleEnviarComentario(version.id)}
-                  >
-                    Enviar Comentario
-                  </button>
-                )}
-              </div>
+      <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
+        {/* Comentarios previos */}
+        <div className="w-full md:w-1/2 h-72 bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
+          <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Comentarios Previos</h4>
+          <ul className="space-y-4">
+            {comentariosPrevios.map((comentario) => (
+              <li key={comentario.id} className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md">
+                <p className="text-sm text-gray-700 dark:text-gray-300">{comentario.texto}</p>
+                <span className="block text-xs text-gray-500 dark:text-gray-400">{comentario.role}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{comentario.fecha}</span>
+              </li>
             ))}
-          </div>
+          </ul>
+        </div>
 
-          <div className="flex justify-center mt-4">
+        {/* Enviar comentario */}
+        <div className="w-full md:w-1/2 h-72 p-4 bg-white dark:bg-boxdark rounded-lg">
+          <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Enviar Comentario</h4>
+          <textarea
+            disabled={isButtonDisabled()}
+            value={comentario}
+            onChange={handleComentarioChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={5}
+            placeholder="Escribe tu comentario aquí..."
+          />
+          <div className="flex flex-col md:flex-row justify-between items-center mt-1 md:mt-4">
+            {isButtonDisabled() && (
+              <div className="mb-2 md:mb-0">
+                <p className="text-red-500 text-sm">Tarea llegó a fecha límite.</p>
+              </div>
+            )}
             <button
-              onClick={handlePreviousPage}
-              className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded-md ${isButtonDisabled()
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+                } ${!isButtonDisabled() && 'ml-auto'}`}
+              onClick={handleEnviarComentario}
+              disabled={isButtonDisabled()}
             >
-              &#8592;
-            </button>
-
-            {renderPaginationButtons()}
-
-            <button
-              onClick={handleNextPage}
-              className="mx-1 px-3 py-1 rounded-md border bg-white dark:bg-boxdark text-blue-500 dark:text-white"
-              disabled={currentPage === totalPages}
-            >
-              &#8594;
+              Enviar Comentario
             </button>
           </div>
         </div>

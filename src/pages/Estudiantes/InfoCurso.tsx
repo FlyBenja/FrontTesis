@@ -7,31 +7,14 @@ import { getTareas } from '../../ts/Generales/GetTareas';
 import { getTareasEstudiante } from '../../ts/Estudiantes/GetTareasEstudiante';
 import { entregarTarea } from '../../ts/Estudiantes/EntregarTarea';
 
-interface LocationState {
-  courseTitle: string;
-  courseId: number;
-}
-
-interface Tarea {
-  task_id: number;
-  asigCourse_id: number;
-  typeTask_id: number;
-  title: string;
-  description: string;
-  taskStart: string;
-  endTask: string;
-  startTime: string;
-  endTime: string;
-  year_id: number;
-  submission_complete?: boolean;
-}
-
 const InfoCurso: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { courseTitle, courseId } = location.state as LocationState;
 
-  const [tareas, setTareas] = useState<Tarea[]>([]);
+  // Obtener courseTitle y courseId directamente desde location.state
+  const { courseTitle, courseId } = location.state || {}; // Asumiendo que los valores están en location.state
+
+  const [tareas, setTareas] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -44,14 +27,14 @@ const InfoCurso: React.FC = () => {
         const tareasEstudiante = await getTareasEstudiante(perfil.user_id, currentYear, perfil.sede);
 
         const tareasCombinadas = tareasGenerales
-          .map((tareaGeneral) => {
-            const tareaEstudiante = tareasEstudiante.find((t) => t.task_id === tareaGeneral.task_id);
+          .map((tarea) => {
+            const tareaEstudiante = tareasEstudiante.find((t) => t.task_id === tarea.task_id);
             return {
-              ...tareaGeneral,
+              ...tarea,
               submission_complete: tareaEstudiante?.submission_complete ?? false,
             };
           })
-          .filter((tarea) => tarea.typeTask_id !== 1); // Exclude tasks with typeTask_id = 1
+          .filter((tarea) => tarea.typeTask_id !== 1); // Excluir tareas con typeTask_id = 1
 
         setTareas(tareasCombinadas);
       } catch (error) {
@@ -67,7 +50,9 @@ const InfoCurso: React.FC = () => {
       }
     };
 
-    fetchTareas();
+    if (courseId) {
+      fetchTareas();
+    }
   }, [courseId]);
 
   const formatDate = (dateStr: string) => {
@@ -85,7 +70,7 @@ const InfoCurso: React.FC = () => {
       .padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${amPm}`;
   };
 
-  const handleNavigateToCapitulo = (chapterNumber: number, submissionComplete: boolean) => {
+  const handleNavigateToCapitulo = (task_id: number, submissionComplete: boolean, NameCapitulo: string, endTask: string, endTime: string | undefined) => {
     if (!submissionComplete) {
       Swal.fire({
         icon: 'error',
@@ -99,7 +84,7 @@ const InfoCurso: React.FC = () => {
       return;
     }
     navigate('/estudiantes/info-capitulo', {
-      state: { chapterNumber },
+      state: { task_id, endTask, endTime, NameCapitulo },
     });
   };
 
@@ -145,21 +130,21 @@ const InfoCurso: React.FC = () => {
     const currentDate = new Date();
     const endDate = new Date(endTask);
     const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-  
+
     const currentHour = currentDate.getHours();
     const currentMinutes = currentDate.getMinutes();
     const currentSeconds = currentDate.getSeconds();
-  
+
     const formattedCurrentTime = `${currentHour.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
     const formattedCurrentDateTime = `${currentDateOnly.toISOString().split('T')[0]} ${formattedCurrentTime}`;
-  
+
     const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()));
     const formattedEndDateTime = `${endDateOnly.toISOString().split('T')[0]} ${endTime || ''}`;
-  
+
     if (isNaN(endDateOnly.getTime())) return true;
     return formattedCurrentDateTime > formattedEndDateTime;
   };
-  
+
   const indexOfLastTask = currentPage * 3;
   const currentTareas = tareas.slice(indexOfLastTask - 3, indexOfLastTask);
   const totalPages = Math.ceil(tareas.length / 3);
@@ -190,7 +175,15 @@ const InfoCurso: React.FC = () => {
               <div
                 key={tarea.task_id}
                 className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md flex flex-col sm:flex-row items-center justify-between transform transition-transform hover:scale-105 cursor-pointer"
-                onClick={() => handleNavigateToCapitulo(tarea.task_id, tarea.submission_complete ?? false)}
+                onClick={() =>
+                  handleNavigateToCapitulo(
+                    tarea.task_id,
+                    tarea.submission_complete ?? false,
+                    tarea.title,
+                    tarea.endTask,  
+                    tarea.endTime   
+                  )
+                }
               >
                 <div className="flex-1 mb-4 sm:mb-0">
                   <h4 className="text-lg font-semibold text-black dark:text-white">{tarea.title}</h4>
@@ -207,8 +200,8 @@ const InfoCurso: React.FC = () => {
                   }}
                   disabled={tarea.submission_complete || isButtonDisabled(tarea.endTask, tarea.endTime)}
                   className={`ml-4 sm:ml-0 px-4 py-2 text-white rounded-md ${tarea.submission_complete || isButtonDisabled(tarea.endTask, tarea.endTime)
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-green-600 hover:bg-green-700'
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-green-600 hover:bg-green-700'
                     }`}
                 >
                   {tarea.submission_complete ? 'Entregada' : 'Entregar'}
@@ -230,7 +223,7 @@ const InfoCurso: React.FC = () => {
                   className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
                     ? 'bg-blue-600 text-white'
                     : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
-                  }`}
+                    }`}
                 >
                   {page}
                 </button>

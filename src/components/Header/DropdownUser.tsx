@@ -7,13 +7,10 @@ const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userName, setUserName] = useState('');
   const [roleName, setRoleName] = useState('');
-  const [profilePhoto, setprofilePhoto] = useState<string | null>(''); // Aquí almacenamos la URL de la foto de perfil
+  const [profilePhoto, setProfilePhoto] = useState<string | null>('');
 
-
-  // Recupera el rol desde localStorage
   const role = localStorage.getItem('userRole');
 
-  // Define las rutas dinámicamente basadas en el rol
   const profileLink = role === '1' ? '/estudiantes/profile' :
     role === '2' ? '/catedratico/profile' :
       role === '3' ? '/admin/profile' :
@@ -27,20 +24,17 @@ const DropdownUser = () => {
           '/decano/settings';
 
   useEffect(() => {
-    // Fetch user profile data once and set both userName, roleName, and profilePhoto
     getDatosPerfil().then((perfil) => {
       setUserName(perfil.userName);
       setRoleName(perfil.roleName);
-      setprofilePhoto(perfil.profilePhoto); // Asignamos la URL de la foto de perfil
+      setProfilePhoto(perfil.profilePhoto);
     });
   }, []);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Verificar si localStorage está vacío
     if (localStorage.length === 0) {
-      // Redirección forzada si el usuario intenta regresar
       if (window.history && window.history.pushState) {
         window.history.pushState(null, '', window.location.href);
         window.addEventListener('popstate', () => {
@@ -49,7 +43,6 @@ const DropdownUser = () => {
       }
     }
 
-    // Limpiar el listener cuando el componente se desmonte
     return () => {
       window.removeEventListener('popstate', () => {
         navigate('/');
@@ -58,17 +51,30 @@ const DropdownUser = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    // Eliminar datos del localStorage y redirigir al inicio
     localStorage.clear();
-
-    // Redirección forzada
     navigate('/');
+  
+    let reloadCount = 0;
+    const reloadPage = () => {
+      if (reloadCount < 3) {
+        reloadCount++;
+        setTimeout(() => {
+          window.location.reload();
+          reloadPage();
+        }, 500); // Agregamos un retraso de 500ms entre recargas
+      }
+    };
+  
+    reloadPage();
   };
-
+    
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
-        onClick={() => setDropdownOpen(!dropdownOpen)}
+        onClick={(e) => {
+          e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+          setDropdownOpen(!dropdownOpen);
+        }}
         className="flex items-center gap-4"
         to="#"
         aria-expanded={dropdownOpen ? 'true' : 'false'}
@@ -83,7 +89,6 @@ const DropdownUser = () => {
           </span>
         </span>
         <span className="h-12 w-12 rounded-full flex items-center justify-center bg-blue-500 text-white">
-          {/* Si no hay foto de perfil, muestra la inicial del nombre con fondo azul */}
           {profilePhoto ? (
             <img
               src={profilePhoto}
@@ -113,7 +118,6 @@ const DropdownUser = () => {
         </svg>
       </Link>
 
-      {/* <!-- Dropdown Start --> */}
       {dropdownOpen && (
         <div
           className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark`}
@@ -141,7 +145,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                My Profile
+                Mi Perfil
               </Link>
             </li>
             <li>
@@ -166,13 +170,13 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                Account Settings
+                Configuración
               </Link>
             </li>
           </ul>
           <button
-            className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             onClick={handleLogout}
+            className="flex items-center gap-3.5 px-6 py-7.5 text-sm font-medium text-red-500 hover:text-red-700 duration-300 ease-in-out lg:text-base"
           >
             <svg
               className="fill-current"
@@ -189,13 +193,13 @@ const DropdownUser = () => {
                 d="M6.05001 11.7563H12.2031C12.6156 11.7563 12.9594 11.4125 12.9594 11C12.9594 10.5875 12.6156 10.2438 12.2031 10.2438H6.08439L8.21564 8.07813C8.52501 7.76875 8.52501 7.2875 8.21564 6.97812C7.90626 6.66875 7.42501 6.66875 7.11564 6.97812L3.67814 10.4844C3.36876 10.7938 3.36876 11.275 3.67814 11.5844L7.11564 15.0906C7.25314 15.2281 7.45939 15.3312 7.66564 15.3312C7.87189 15.3312 8.04376 15.2625 8.21564 15.125C8.52501 14.8156 8.52501 14.3344 8.21564 14.025L6.05001 11.7563Z"
               />
             </svg>
-            Log Out
+            Cerrar Sesión
           </button>
         </div>
       )}
-      {/* <!-- Dropdown End --> */}
     </ClickOutside>
   );
 };
 
 export default DropdownUser;
+
