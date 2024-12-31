@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getTimeLineEstudiante } from '../../../ts/Generales/GetTimeLineEstudiante';
+import generatePDF from '../../../components/Pdfs/EstudianteIndivi';  
 
 interface TimeLineEvent {
   user_id: number;
@@ -21,7 +22,7 @@ const TimeLine: React.FC = () => {
   const [events, setEvents] = useState<TimeLineEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { estudiante, selectedAño } = location.state || {};
+  const { estudiante, selectedAño, selectedCurso } = location.state || {};
   const studentName = estudiante ? estudiante.userName : "Desconocido";
   const userId = estudiante ? estudiante.id : null;
 
@@ -31,7 +32,7 @@ const TimeLine: React.FC = () => {
       setLoading(false);
       return;
     }
-  
+
     const fetchTimeline = async () => {
       try {
         setLoading(true);
@@ -53,10 +54,10 @@ const TimeLine: React.FC = () => {
         setLoading(false);
       }
     };
-  
+
     fetchTimeline();
   }, [userId]);
-  
+
   const showAlert = (type: 'success' | 'error', title: string, text: string) => {
     const confirmButtonColor = type === 'success' ? '#28a745' : '#dc3545';
     Swal.fire({
@@ -66,6 +67,12 @@ const TimeLine: React.FC = () => {
       confirmButtonColor,
       confirmButtonText: 'OK',
     });
+  };
+
+  const handlePrintPDF = () => {
+    if (estudiante && selectedAño) {
+      generatePDF(estudiante, selectedAño, selectedCurso);  // Llamamos a la función que genera el PDF
+    }
   };
 
   const indexOfLastEvent = currentPage * eventsPerPage;
@@ -128,14 +135,22 @@ const TimeLine: React.FC = () => {
           <h2 className="text-2xl font-bold text-black dark:text-white">
             Línea de Tiempo - {studentName}
           </h2>
-          <button
-            onClick={() => {
-              navigate('/admin/tareas-estudiante', { state: { estudiante, selectedAño } });
-            }}
-            className="rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity"
-          >
-            Ver Tareas
-          </button>
+          <div className="flex gap-4">
+            <button
+              onClick={() => {
+                navigate('/admin/tareas-estudiante', { state: { estudiante, selectedAño } });
+              }}
+              className="rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity"
+            >
+              Ver Tareas
+            </button>
+            <button
+              onClick={handlePrintPDF}
+              className="rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity"
+            >
+              Imprimir PDF
+            </button>
+          </div>
         </div>
 
         <div className="relative border-l-2 border-gray-200 dark:border-strokedark">
@@ -157,7 +172,7 @@ const TimeLine: React.FC = () => {
               <tbody>
                 <tr>
                   <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
-                    No Se Encontrarón Eventos En Este Estudiante.
+                    No Se Encontraron Eventos En Este Estudiante.
                   </td>
                 </tr>
               </tbody>

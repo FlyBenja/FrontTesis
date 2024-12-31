@@ -97,6 +97,7 @@ const ListarEstudiantes: React.FC = () => {
       state: {
         estudiante,
         selectedAño,
+        selectedCurso,
       },
     });
   };
