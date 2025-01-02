@@ -180,7 +180,7 @@ const generaPDFIndividual = async (
   doc.setTextColor(150, 150, 150); // Gris para el pie de página
   doc.text(
     `Generado por ${Usergenerate}`,
-    (doc.internal.pageSize.width - doc.getTextWidth('Generado por')) / 2,
+    (doc.internal.pageSize.width - doc.getTextWidth('Generado por')) / 2.2,
     280
   );
 

@@ -6,6 +6,7 @@ import { getCursos } from '../../../ts/Generales/GetCursos';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getEstudiantePorCarnet } from '../../../ts/Admin/GetEstudianteCarnet';
+import generaPDFGeneral from '../../../components/Pdfs/generaPDFGeneral';
 
 interface Estudiante {
   id: number;
@@ -102,6 +103,10 @@ const ListarEstudiantes: React.FC = () => {
     });
   };
 
+  const handlePrintPDF = () => {
+    generaPDFGeneral(selectedAño, selectedCurso);
+  };
+
   const handleSearchClick = async () => {
     setEstudiantes([]);
     if (!searchCarnet) {
@@ -193,6 +198,14 @@ const ListarEstudiantes: React.FC = () => {
               Buscar
             </button>
           </div>
+          <div className="flex">
+            <button
+              className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+              onClick={handlePrintPDF}
+            >
+              Imprimir PDF
+            </button>
+          </div>
         </div>
 
         <div className="mb-4 flex gap-4">
@@ -224,7 +237,7 @@ const ListarEstudiantes: React.FC = () => {
 
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark">
-          <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
+            <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
               <tr>
                 <th className="py-2 px-4 text-left">Foto</th>
                 <th className="py-2 px-4 text-center">Nombre Estudiante</th>
