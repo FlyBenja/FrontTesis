@@ -103,7 +103,7 @@ const ListarEstudiantes: React.FC = () => {
     });
   };
 
-  const handlePrintPDF = () => {
+  const handlePrintPDF = (selectedAño: number, selectedCurso: number) => {
     generaPDFGeneral(selectedAño, selectedCurso);
   };
 
@@ -201,7 +201,7 @@ const ListarEstudiantes: React.FC = () => {
           <div className="flex">
             <button
               className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
-              onClick={handlePrintPDF}
+              onClick={() => handlePrintPDF(Number(selectedAño), Number(selectedCurso))}
             >
               Imprimir PDF
             </button>

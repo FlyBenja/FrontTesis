@@ -136,19 +136,19 @@ const TimeLine: React.FC = () => {
             Línea de Tiempo - {studentName}
           </h2>
           <div className="flex gap-4">
+          <button
+              onClick={handlePrintPDF}
+              className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+            >
+              Imprimir PDF
+            </button>
             <button
               onClick={() => {
                 navigate('/admin/tareas-estudiante', { state: { estudiante, selectedAño } });
               }}
-              className="rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity"
+              className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
             >
               Ver Tareas
-            </button>
-            <button
-              onClick={handlePrintPDF}
-              className="rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity"
-            >
-              Imprimir PDF
             </button>
           </div>
         </div>
