@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getTimeLineEstudiante } from '../../../ts/Generales/GetTimeLineEstudiante';
-import generatePDF from '../../../components/Pdfs/EstudianteIndivi';  
+import generaPDFIndividual from '../../../components/Pdfs/generaPDFIndividual';  
 
 interface TimeLineEvent {
   user_id: number;
@@ -71,7 +71,7 @@ const TimeLine: React.FC = () => {
 
   const handlePrintPDF = () => {
     if (estudiante && selectedAño) {
-      generatePDF(estudiante, selectedAño, selectedCurso);  // Llamamos a la función que genera el PDF
+      generaPDFIndividual(estudiante, selectedAño, selectedCurso);  // Llamamos a la función que genera el PDF
     }
   };
 

@@ -1,30 +1,23 @@
 import axios from 'axios';
 
-// Definir la interfaz de los datos según la estructura del JSON proporcionado
+// Definir la interfaz actualizada de los datos según la nueva estructura del JSON
 export interface Submission {
-  task_id: number;
+  title: string;
   submission_complete: boolean;
   date: string;
 }
 
-export interface Course {
-  course_id: number;
-  sede_id: number;
-  year_id: number;
-  courseActive: boolean;
-}
-
 export interface Student {
-  user_id: number;
   name: string;
   email: string;
   carnet: string;
+  sede: string;
+  course: string;
 }
 
 export interface CourseDetails {
   student: Student;
-  course: Course;
-  submissions: Submission[];
+  formattedSubmissions: Submission[];
 }
 
 // Función para obtener los detalles de tareas para un estudiante en un curso específico
@@ -52,7 +45,28 @@ export const getDetalleTareas = async (
 
     // Verificar si la respuesta contiene los datos
     if (response.data) {
-      return response.data; // Retornar los detalles del estudiante y las tareas
+      const { student, formattedSubmissions } = response.data;
+
+      // Validar estructura del JSON antes de devolverlo
+      if (!student || !formattedSubmissions) {
+        console.error('Estructura del JSON inesperada');
+        return null;
+      }
+
+      return {
+        student: {
+          name: student.name,
+          email: student.email,
+          carnet: student.carnet,
+          sede: student.sede,
+          course: student.course,
+        },
+        formattedSubmissions: formattedSubmissions.map((submission: any) => ({
+          title: submission.title,
+          submission_complete: submission.submission_complete,
+          date: submission.date,
+        })),
+      };
     } else {
       console.error('No se encontraron detalles de tareas');
       return null;

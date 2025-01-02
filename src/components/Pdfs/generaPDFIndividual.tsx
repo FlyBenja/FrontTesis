@@ -14,7 +14,11 @@ interface EstudianteIndiviProps {
   selectedCurso: number;
 }
 
-const generatePDF = async (estudiante: EstudianteIndiviProps['estudiante'], selectedAño: number, selectedCurso: number) => {
+const generaPDFIndividual = async (
+  estudiante: EstudianteIndiviProps['estudiante'],
+  selectedAño: number,
+  selectedCurso: number
+) => {
   const doc = new jsPDF();
 
   // Colores más suaves para el fondo y encabezados
@@ -48,7 +52,7 @@ const generatePDF = async (estudiante: EstudianteIndiviProps['estudiante'], sele
     return;
   }
 
-  const { student, course, submissions } = courseDetails;
+  const { student, formattedSubmissions } = courseDetails;
 
   // Establecer fondo con color suave
   doc.setFillColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
@@ -66,7 +70,11 @@ const generatePDF = async (estudiante: EstudianteIndiviProps['estudiante'], sele
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(200, 200, 200); // Gris claro
-  doc.text('UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)', (doc.internal.pageSize.width - doc.getTextWidth('UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)')) / 2, 15);
+  doc.text(
+    'UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)',
+    (doc.internal.pageSize.width - doc.getTextWidth('UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)')) / 2,
+    15
+  );
 
   // Título del PDF con el nombre del estudiante, centrado
   doc.setFontSize(22);
@@ -105,27 +113,14 @@ const generatePDF = async (estudiante: EstudianteIndiviProps['estudiante'], sele
   doc.text('Información del Curso', 31 + sectionWidth + 60, 40, { align: 'center' });
 
   doc.setFontSize(12);
-  doc.text('Curso:', 15 + sectionWidth + 60, 50, { align: 'center' });
-  doc.text('Sede ID:', 17 + sectionWidth + 60, 60, { align: 'center' });
-  doc.text('Año:', 13.5 + sectionWidth + 60, 70, { align: 'center' });
-  doc.text('Curso Activo:', 22 + sectionWidth + 60, 80, { align: 'center' });
+  doc.text('Curso:', 14.5 + sectionWidth + 60, 50, { align: 'center' });
+  doc.text('Sede:', 13.5 + sectionWidth + 60, 60, { align: 'center' });
+  doc.text('Año:', 13 + sectionWidth + 60, 70, { align: 'center' });
 
   doc.setFont('helvetica', 'normal'); // Regresa a texto normal
-
-  // Modificar según el course_id
-  let courseName = '';
-  if (course.course_id === 1) {
-    courseName = 'Proyecto de Graduación I';
-  } else if (course.course_id === 2) {
-    courseName = 'Proyecto de Graduación II';
-  } else {
-    courseName = `Curso ID: ${course.course_id}`; // En caso de que haya otros valores
-  }
-
-  doc.text(courseName, 7 + sectionWidth + 100, 50, { align: 'center' });
-  doc.text(String(course.sede_id), (-12 + sectionWidth) + 100, 60, { align: 'center' });
-  doc.text(String(selectedAño), (-16 + sectionWidth) + 100, 70, { align: 'center' });
-  doc.text(course.courseActive ? 'Sí' : 'No', (-2 + sectionWidth) + 100, 80, { align: 'center' });
+  doc.text(student.course, 6 + sectionWidth + 100, 50, { align: 'center' });
+  doc.text(student.sede, -9 + sectionWidth + 100, 60, { align: 'center' });
+  doc.text(String(selectedAño), -16 + sectionWidth + 100, 70, { align: 'center' });
 
   // Tabla de tareas entregadas
   const startY = 90; // Modificado para bajar los campos
@@ -145,12 +140,12 @@ const generatePDF = async (estudiante: EstudianteIndiviProps['estudiante'], sele
   doc.rect(44, tableStartY, columnWidths[1], rowHeight, 'F'); // Columna 2
   doc.rect(104, tableStartY, columnWidths[2], rowHeight, 'F'); // Columna 3
   doc.setTextColor(255, 255, 255); // Blanco para el texto de los encabezados
-  doc.text('Tarea ID', 23, tableStartY + 5);
+  doc.text('Titulo', 23, tableStartY + 5);
   doc.text('Fecha de Entrega', 87, tableStartY + 5);
   doc.text('Completada', 165, tableStartY + 5);
 
   // Dibujar contenido de la tabla, centrado
-  submissions.forEach((submission, index) => {
+  formattedSubmissions.forEach((submission, index) => {
     const yPosition = tableStartY + (index + 1) * rowHeight;
     const completionStatus = submission.submission_complete ? 'Sí' : 'No';
 
@@ -161,11 +156,21 @@ const generatePDF = async (estudiante: EstudianteIndiviProps['estudiante'], sele
 
     // Formatear la fecha de entrega
     const deliveryDate = new Date(submission.date);
-    const formattedDate = `${deliveryDate.getDate().toString().padStart(2, '0')}/${(deliveryDate.getMonth() + 1).toString().padStart(2, '0')}/${deliveryDate.getFullYear()}`;
-    const formattedTime = `${deliveryDate.getHours().toString().padStart(2, '0')}:${deliveryDate.getMinutes().toString().padStart(2, '0')}:${deliveryDate.getSeconds().toString().padStart(2, '0')}`;
+    const formattedDate = `${deliveryDate.getDate().toString().padStart(2, '0')}/${(
+      deliveryDate.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}/${deliveryDate.getFullYear()}`;
+    const formattedTime = `${deliveryDate.getHours().toString().padStart(2, '0')}:${deliveryDate
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}:${deliveryDate
+      .getSeconds()
+      .toString()
+      .padStart(2, '0')}`;
 
     doc.setTextColor(textColor.r, textColor.g, textColor.b);
-    doc.text(String(submission.task_id), 16 + columnWidths[0] / 2, yPosition + 5, { align: 'center' });
+    doc.text(String(submission.title), 16 + columnWidths[0] / 2, yPosition + 5, { align: 'center' });
     doc.text(`${formattedDate} ${formattedTime}`, 74 + columnWidths[1] / 2, yPosition + 5, { align: 'center' });
     doc.text(completionStatus, 134 + columnWidths[2] / 2, yPosition + 5, { align: 'center' });
   });
@@ -173,10 +178,14 @@ const generatePDF = async (estudiante: EstudianteIndiviProps['estudiante'], sele
   // Pie de página
   doc.setFontSize(10);
   doc.setTextColor(150, 150, 150); // Gris para el pie de página
-  doc.text(`Generado por ${Usergenerate}`, (doc.internal.pageSize.width - doc.getTextWidth('Generado automáticamente')) / 2, 280);
+  doc.text(
+    `Generado por ${Usergenerate}`,
+    (doc.internal.pageSize.width - doc.getTextWidth('Generado por')) / 2,
+    280
+  );
 
   // Guardar el PDF
   doc.save(`Reporte_${student.name}.pdf`);
 };
 
-export default generatePDF;
+export default generaPDFIndividual;
