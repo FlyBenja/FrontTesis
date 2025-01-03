@@ -41,13 +41,6 @@ const CrearTareas: React.FC = () => {
       if (yearsRecuperados.some((yearObj) => yearObj.year === currentYear)) {
         setSelectedAño(currentYear.toString());
       }
-
-      const perfil = await getDatosPerfil();
-      if (perfil.sede) {
-        const añoSeleccionado = selectedAño ? parseInt(selectedAño) : new Date().getFullYear();
-        const cursosRecuperados = await getCursos(perfil.sede, añoSeleccionado);
-        setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
-      }
     };
 
     fetchInitialData();
@@ -56,31 +49,64 @@ const CrearTareas: React.FC = () => {
     setSelectedCurso(currentMonth > 6 ? '2' : '1');
   }, []);
 
-  const fetchTareas = async () => {
-    if (selectedCurso && selectedAño) {
-      const perfil = await getDatosPerfil();
-      const tareasRecuperadas = await getTareas(
-        perfil.sede,
-        Number(selectedCurso),
-        Number(selectedAño)
-      );
-  
-      const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
-        if (a.typeTask_id === 1 && b.typeTask_id !== 1) return -1;
-        if (a.typeTask_id !== 1 && b.typeTask_id === 1) return 1;
-        return 0;
-      });
-  
-      setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
-    }
-  };
+  useEffect(() => {
+    const fetchCursosYActualizarTareas = async () => {
+      if (selectedAño) {
+        const perfil = await getDatosPerfil();
+        const cursosRecuperados = await getCursos(perfil.sede, Number(selectedAño));
+        setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
+
+        const currentMonth = new Date().getMonth() + 1;
+        setSelectedCurso(currentMonth > 6 ? '2' : '1');
+      }
+    };
+
+    fetchCursosYActualizarTareas();
+  }, [selectedAño]);
 
   useEffect(() => {
+    const fetchTareas = async () => {
+      if (selectedCurso && selectedAño) {
+        const perfil = await getDatosPerfil();
+        const tareasRecuperadas = await getTareas(
+          perfil.sede,
+          Number(selectedCurso),
+          Number(selectedAño)
+        );
+
+        const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
+          if (a.typeTask_id === 1 && b.typeTask_id !== 1) return -1;
+          if (a.typeTask_id !== 1 && b.typeTask_id === 1) return 1;
+          return 0;
+        });
+
+        setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
+      }
+    };
+
     fetchTareas();
   }, [selectedCurso, selectedAño]);
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+    const fetchTareas = async () => {
+      if (selectedCurso && selectedAño) {
+        const perfil = await getDatosPerfil();
+        const tareasRecuperadas = await getTareas(
+          perfil.sede,
+          Number(selectedCurso),
+          Number(selectedAño)
+        );
+
+        const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
+          if (a.typeTask_id === 1 && b.typeTask_id !== 1) return -1;
+          if (a.typeTask_id !== 1 && b.typeTask_id === 1) return 1;
+          return 0;
+        });
+
+        setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
+      }
+    };
     fetchTareas();
   };
 
@@ -234,9 +260,7 @@ const CrearTareas: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="text-center text-gray-500 dark:text-gray-300">
-          No hay tareas para mostrar.
-        </div>
+        <p className="text-center text-gray-500 dark:text-gray-400">No hay tareas para mostrar.</p>
       )}
 
       {isModalOpen && <CreaTarea onClose={handleModalClose} mode={modalMode} taskId={selectedTaskId} />}
