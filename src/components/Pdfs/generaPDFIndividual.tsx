@@ -140,8 +140,9 @@ const generaPDFIndividual = async (
   doc.rect(44, tableStartY, columnWidths[1], rowHeight, 'F'); // Columna 2
   doc.rect(104, tableStartY, columnWidths[2], rowHeight, 'F'); // Columna 3
   doc.setTextColor(255, 255, 255); // Blanco para el texto de los encabezados
-  doc.text('Titulo', 23, tableStartY + 5);
-  doc.text('Fecha de Entrega', 87, tableStartY + 5);
+  doc.text('No.', 20, tableStartY + 5);
+  doc.text('Titulo', 63, tableStartY + 5);
+  doc.text('Fecha de Entrega', 107, tableStartY + 5);
   doc.text('Completada', 165, tableStartY + 5);
 
   // Dibujar contenido de la tabla, centrado
@@ -165,13 +166,14 @@ const generaPDFIndividual = async (
       .getMinutes()
       .toString()
       .padStart(2, '0')}:${deliveryDate
-      .getSeconds()
-      .toString()
-      .padStart(2, '0')}`;
+        .getSeconds()
+        .toString()
+        .padStart(2, '0')}`;
 
     doc.setTextColor(textColor.r, textColor.g, textColor.b);
-    doc.text(String(submission.title), 16 + columnWidths[0] / 2, yPosition + 5, { align: 'center' });
-    doc.text(`${formattedDate} ${formattedTime}`, 74 + columnWidths[1] / 2, yPosition + 5, { align: 'center' });
+    doc.text((index + 1).toString(), 6 + columnWidths[0] / 2, yPosition + 5, { align: 'center' }); // Corregido
+    doc.text(submission.title, 54 + columnWidths[0] / 2, yPosition + 5, { align: 'center' });
+    doc.text(`${formattedDate} ${formattedTime}`, 93 + columnWidths[1] / 2, yPosition + 5, { align: 'center' });
     doc.text(completionStatus, 134 + columnWidths[2] / 2, yPosition + 5, { align: 'center' });
   });
 

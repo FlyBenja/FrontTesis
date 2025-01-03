@@ -88,7 +88,7 @@ const generaPDFGeneral = async (
   const columnWidths = [30, 60, 90];
 
   let startY = 60; // Comienza a partir de la siguiente línea disponible
-  let studentCount = 0;
+  let studentCount = 1; // Mantener el contador global de estudiantes
 
   students.forEach((studentDetail) => {
     const { student, submissions } = studentDetail;
@@ -96,24 +96,30 @@ const generaPDFGeneral = async (
     // Determinar el número de estudiantes por página dependiendo de las entregas
     const studentsPerPage = submissions.length > 3 ? 3 : submissions.length === 1 ? 5 : 4;
 
-    if (studentCount >= studentsPerPage) {
+    if (studentCount > 1 && studentCount % studentsPerPage === 1) {
       // Crear nueva página cuando se llega al límite de estudiantes por página
       doc.addPage();
       startY = 20; // Resetear la posición Y para la nueva página
-      studentCount = 0;
     }
 
-    // Título del Estudiante
+    // Línea separadora para cada nuevo estudiante
+    if (studentCount > 1) {
+      doc.setLineWidth(0.5);
+      doc.setDrawColor(titleColor.r, titleColor.g, titleColor.b);
+      doc.line(10, startY - 7, doc.internal.pageSize.width - 10, startY - 7);
+    }
+
+    // Título del Estudiante con el contador
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(textColor.r, textColor.g, textColor.b);
-    doc.text('Información del Estudiante', 70, startY);
+    doc.text(`No. ${studentCount} - Información del Estudiante`, 70, startY);
 
     // Información del Estudiante en una sola línea
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(textColor.r, textColor.g, textColor.b);
-    doc.text(`Nombre: ${student.name} | Carnet: ${student.carnet} | Email: ${student.email}`, 30, startY + 10);
+    doc.text(`Nombre: ${student.name} | Carnet: ${student.carnet} | Correo: ${student.email}`, 30, startY + 10);
 
     // Tabla de tareas entregadas
     const tableStartY = startY + 20;
@@ -125,9 +131,10 @@ const generaPDFGeneral = async (
     doc.rect(14, tableStartY, columnWidths[0], rowHeight, 'F');
     doc.rect(44, tableStartY, columnWidths[1], rowHeight, 'F');
     doc.rect(104, tableStartY, columnWidths[2], rowHeight, 'F');
-    doc.setTextColor(255, 255, 255); // Blanco para los encabezados
-    doc.text('Titulo', 23, tableStartY + 5);
-    doc.text('Fecha de Entrega', 87, tableStartY + 5);
+    doc.setTextColor(255, 255, 255);
+    doc.text('No.', 20, tableStartY + 5);
+    doc.text('Titulo', 63, tableStartY + 5);
+    doc.text('Fecha de Entrega', 107, tableStartY + 5);
     doc.text('Completada', 165, tableStartY + 5);
 
     // Dibujar contenido de la tabla
@@ -156,13 +163,14 @@ const generaPDFGeneral = async (
           .padStart(2, '0')}`;
 
       doc.setTextColor(textColor.r, textColor.g, textColor.b);
-      doc.text(submission.title, 16 + columnWidths[0] / 2, yPosition + 5, { align: 'center' });
-      doc.text(`${formattedDate} ${formattedTime}`, 74 + columnWidths[1] / 2, yPosition + 5, { align: 'center' });
+      doc.text((idx + 1).toString(), 6 + columnWidths[0] / 2, yPosition + 5, { align: 'center' });
+      doc.text(submission.title, 54 + columnWidths[0] / 2, yPosition + 5, { align: 'center' });
+      doc.text(`${formattedDate} ${formattedTime}`, 93 + columnWidths[1] / 2, yPosition + 5, { align: 'center' });
       doc.text(completionStatus, 134 + columnWidths[2] / 2, yPosition + 5, { align: 'center' });
     });
 
     startY = tableStartY + (submissions.length + 1) * rowHeight + 10; // Ajustar el Y para el siguiente estudiante
-    studentCount++;
+    studentCount++; // Incrementar el contador de estudiantes
   });
 
   // Pie de página

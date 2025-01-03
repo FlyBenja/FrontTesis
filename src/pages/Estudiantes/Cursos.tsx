@@ -24,7 +24,8 @@ const Cursos: React.FC = () => {
         const sedeId = perfilData.sede;
 
         // Obtener cursos para la sede obtenida
-        const cursos = await getCursos(sedeId);
+        const currentYear = new Date().getFullYear();
+        const cursos = await getCursos(sedeId, currentYear);
 
         // Mapeamos los cursos y los dejamos con las descripciones originales
         const updatedCourses = cursos.map((course) => {

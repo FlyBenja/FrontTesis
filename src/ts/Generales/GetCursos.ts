@@ -38,12 +38,12 @@ export const getCursos = async (sedeId: number, year: number): Promise<Curso[]> 
   } catch (error) {
     // Manejo de errores mejorado
     if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data
-        ? JSON.stringify(error.response?.data)
-        : 'Error desconocido';
+      const errorMessage =
+        error.response?.data?.message || 'Error desconocido en la solicitud';
       throw new Error(`Error de la API: ${errorMessage}`);
     }
 
+    // En caso de un error no relacionado con axios
     throw new Error('Error desconocido');
   }
 };

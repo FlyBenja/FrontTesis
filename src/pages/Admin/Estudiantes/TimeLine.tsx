@@ -140,7 +140,7 @@ const TimeLine: React.FC = () => {
               onClick={handlePrintPDF}
               className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
             >
-              Imprimir PDF
+              Imprimir Reporte
             </button>
             <button
               onClick={() => {

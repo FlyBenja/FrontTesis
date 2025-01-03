@@ -208,7 +208,7 @@ const ListarEstudiantes: React.FC = () => {
               className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
               onClick={() => handlePrintPDF(Number(selectedAño), Number(selectedCurso))}
             >
-              Imprimir PDF
+              Imprimir Reporte
             </button>
           </div>
         </div>

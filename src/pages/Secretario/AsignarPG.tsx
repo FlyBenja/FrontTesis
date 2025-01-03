@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getSedes } from "../../ts/Secretario/GetSedes";
 import { crearAsignacionSedeCurso } from "../../ts/Secretario/CreatePG";
-import { getCursosPorSede } from "../../ts/Secretario/GetPgCurso";
+import { getCursos } from "../../ts/Generales/GetCursos";
 
 interface Sede {
   sede_id: number;
@@ -60,7 +60,8 @@ const AsignarPG: React.FC = () => {
         setPg2(false);
         setPg1Disabled(false);
         setPg2Disabled(false);
-        const cursos = await getCursosPorSede(sedeObj.sede_id);
+        const currentYear = new Date().getFullYear();
+        const cursos = await getCursos(sedeObj.sede_id, currentYear);
 
         setPg1(false);
         setPg2(false);

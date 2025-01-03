@@ -5,8 +5,6 @@ import Swal from 'sweetalert2'; // Importa SweetAlert2
 import Calendar from './pages/Generales/Calendar';
 import CrearTareas from './pages/Admin/CrearTareas';
 import Graficas from './pages/Admin/Inicio/Graficas';
-import Profile from './pages/Generales/Profile';
-import Settings from './pages/Generales/Settings';
 import DefaultLayout from './layout/DefaultLayout';
 import Bitacora from './pages/Admin/Inicio/Bitacora';
 import SubirEstudiantes from './pages/Admin/Estudiantes/SubirEstudiantes';
@@ -22,6 +20,9 @@ import CrearComisiones from './pages/Admin/Comisiones/CrearComision';
 import ListarComision from './pages/Admin/Comisiones/ListarComision';
 
 //Links Generales
+import Profile from './pages/Generales/Profile';
+import Settings from './pages/Generales/Settings';
+
 //Links de Estudiante
 import Inicio from './pages/Estudiantes/Inicio';
 import Propuesta from './pages/Estudiantes/Propuesta';
