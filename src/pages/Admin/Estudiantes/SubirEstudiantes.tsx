@@ -17,7 +17,8 @@ const SubirEstudiantes = () => {
     const fetchCursos = async () => {
       try {
         const { sede } = await getDatosPerfil();
-        const cursosData = await getCursos(sede);
+        const currentYear = new Date().getFullYear();
+        const cursosData = await getCursos(sede, currentYear);
         if (Array.isArray(cursosData) && cursosData.length > 0) {
           setCursos(cursosData);
         }

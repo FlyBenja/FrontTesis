@@ -44,7 +44,8 @@ const CrearTareas: React.FC = () => {
 
       const perfil = await getDatosPerfil();
       if (perfil.sede) {
-        const cursosRecuperados = await getCursos(perfil.sede);
+        const añoSeleccionado = selectedAño ? parseInt(selectedAño) : new Date().getFullYear();
+        const cursosRecuperados = await getCursos(perfil.sede, añoSeleccionado);
         setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
       }
     };

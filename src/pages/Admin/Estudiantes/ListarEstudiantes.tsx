@@ -69,13 +69,15 @@ const ListarEstudiantes: React.FC = () => {
 
   const fetchCursos = async (sedeId: number) => {
     try {
-      const cursosRecuperados = await getCursos(sedeId);
+      const añoSeleccionado = selectedAño ? parseInt(selectedAño) : new Date().getFullYear();
+      const cursosRecuperados = await getCursos(sedeId, añoSeleccionado);
       setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
-    } catch {
+    } catch (error) {
+      console.error('Error al obtener los cursos:', error);
       setCursos([]);
     }
   };
-
+  
   const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const añoSeleccionado = e.target.value;
     setSelectedAño(añoSeleccionado);

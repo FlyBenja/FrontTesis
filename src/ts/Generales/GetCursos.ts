@@ -5,7 +5,7 @@ interface Curso {
   courseName: string;
 }
 
-export const getCursos = async (sedeId: number): Promise<Curso[]> => {
+export const getCursos = async (sedeId: number, year: number): Promise<Curso[]> => {
   try {
     // Recuperar el token desde localStorage
     const token = localStorage.getItem('authToken');
@@ -16,7 +16,7 @@ export const getCursos = async (sedeId: number): Promise<Curso[]> => {
 
     // Hacer la solicitud GET a la URL para obtener los cursos de la sede
     const response = await axios.get(
-      `http://localhost:3000/api/cursosPorSede/${sedeId}`,
+      `http://localhost:3000/api/cursosPorSede/${sedeId}/${year}`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,
