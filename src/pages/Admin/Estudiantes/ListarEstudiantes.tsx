@@ -73,16 +73,24 @@ const ListarEstudiantes: React.FC = () => {
       const cursosRecuperados = await getCursos(sedeId, añoSeleccionado);
       setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
     } catch (error) {
-      console.error('Error al obtener los cursos:', error);
       setCursos([]);
     }
   };
-  
+
   const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const añoSeleccionado = e.target.value;
-    setSelectedAño(añoSeleccionado);
-    const perfil = await getDatosPerfil();
+    setSelectedAño(añoSeleccionado); // Actualiza el estado del año seleccionado
+
+    const perfil = await getDatosPerfil(); // Obtiene el perfil del usuario
+
+    if (perfil.sede && añoSeleccionado) {
+      // Llama a getCursos con el año seleccionado y la sede del perfil
+      const cursosRecuperados = await getCursos(perfil.sede, parseInt(añoSeleccionado));
+      setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []); // Actualiza los cursos
+    }
+
     if (perfil.sede && añoSeleccionado && selectedCurso) {
+      // Llama a fetchEstudiantes con los parámetros actuales
       fetchEstudiantes(perfil.sede, selectedCurso, añoSeleccionado);
     }
   };
