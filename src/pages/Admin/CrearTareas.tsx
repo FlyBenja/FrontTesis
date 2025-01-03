@@ -161,6 +161,8 @@ const CrearTareas: React.FC = () => {
     };
   }, []);
 
+  const isCurrentYear = selectedAño === new Date().getFullYear().toString();
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-4">
       <div className="flex flex-col md:flex-row items-center justify-between mb-5 gap-3">
@@ -193,7 +195,8 @@ const CrearTareas: React.FC = () => {
             setIsModalOpen(true);
             setModalMode("create");
           }}
-          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:bg-gradient-to-l transition duration-300 w-full md:w-auto flex items-center justify-center"
+          className={`px-6 py-3 rounded-md hover:bg-gradient-to-l transition duration-300 w-full md:w-auto flex items-center justify-center ${isCurrentYear ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' : 'bg-gray-400 text-gray-700 cursor-not-allowed'}`}
+          disabled={!isCurrentYear}
         >
           <span className="mr-2">+</span> Crear Tarea
         </button>
@@ -221,7 +224,8 @@ const CrearTareas: React.FC = () => {
                     setModalMode("edit");
                     setSelectedTaskId(tarea.task_id);
                   }}
-                  className="ml-4 px-3 py-2 bg-yellow-500 rounded-full flex items-center justify-center hover:bg-yellow-600"
+                  className={`ml-4 px-3 py-2 rounded-full flex items-center justify-center ${isCurrentYear ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-400 cursor-not-allowed'}`}
+                  disabled={!isCurrentYear}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="none">
                     <path d="M17.707 6.293l-2.414-2.414a1 1 0 0 0-1.414 0l-9 9a1 1 0 0 0-.293.707v3.586a1 1 0 0 0 1 1h3.586a1 1 0 0 0 .707-.293l9-9a1 1 0 0 0 0-1.414z" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />

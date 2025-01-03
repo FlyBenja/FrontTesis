@@ -41,7 +41,8 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
         const fetchCursos = async () => {
             try {
                 const { sede } = await getDatosPerfil();
-                const cursosData = await getCursos(sede);
+                const currentYear = new Date().getFullYear();
+                const cursosData = await getCursos(sede, currentYear);
                 setCursos(cursosData || []);
             } catch (error) {
                 Swal.fire({
@@ -71,12 +72,12 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                             endTask,
                             startTime,
                             endTime,
-                            asigCourse_id,
+                            course_id,
                             typeTask_id,
                         } = taskData;
 
                         setForm({
-                            selectedCurso: asigCourse_id.toString(),
+                            selectedCurso: course_id.toString(),
                             selectedTipoTarea: typeTask_id.toString(),
                             title,
                             description,

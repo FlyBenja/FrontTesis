@@ -15,6 +15,7 @@
     CourseSedeAssignment: {
       sede_id: number;
     };
+    course_id: number;
   }
 
   // Función para obtener los datos de la tarea por task_id
