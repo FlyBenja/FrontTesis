@@ -147,7 +147,7 @@ const CrearSedes: React.FC = () => {
                   <tr className="bg-gray-200 dark:bg-gray-700">
                     <th className="border border-gray-300 dark:border-strokedark px-1 py-2 text-center" style={{ width: '10px' }}>No.</th>
                     <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center" style={{ width: '400px' }}>Nombre de la Sede</th>
-                    <th className="border border-gray-300 dark:border-strokedark px-1 py-2 text-center" style={{ width: '10px' }}>Acciones</th>
+                    <th className="border border-gray-300 dark:border-strokedark px-1 py-2 text-center" style={{ width: '10px' }}>Acción</th>
                   </tr>
                 </thead>
                 <tbody>

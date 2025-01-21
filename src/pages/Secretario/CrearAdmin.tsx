@@ -3,6 +3,7 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getSedes } from '../../ts/Secretario/GetSedes'; // Importa la API para obtener las sedes
 import { createAdmin } from '../../ts/Secretario/CreateAdmin'; // Importa la API para crear administradores
 import { getAdmins } from '../../ts/Secretario/GetAdmins'; // Importa la API para obtener los administradores
+import { deleteAdmin } from '../../ts/Secretario/DeleteAdmin'; // Importa la API para eliminar administradores
 import Swal from 'sweetalert2';
 
 interface Admin {
@@ -71,7 +72,7 @@ const CrearAdmin: React.FC = () => {
 
   const handleCreateAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     try {
       await createAdmin({
         email: adminEmail,
@@ -79,7 +80,7 @@ const CrearAdmin: React.FC = () => {
         carnet: adminCarnet,
         sede_id: parseInt(adminSede),
       });
-  
+
       Swal.fire({
         icon: 'success',
         title: 'Administrador creado',
@@ -87,7 +88,7 @@ const CrearAdmin: React.FC = () => {
         confirmButtonColor: '#28a745',
         confirmButtonText: 'Aceptar',
       });
-  
+
       // Volver a cargar los administradores
       const updatedAdmins = await getAdmins();
       const transformedAdmins: Admin[] = updatedAdmins.map((admin) => ({
@@ -99,7 +100,7 @@ const CrearAdmin: React.FC = () => {
       }));
       const sortedAdmins = transformedAdmins.sort((a, b) => a.id - b.id);
       setAdmins(sortedAdmins);
-  
+
       handleCloseModal();
     } catch (error: any) {
       Swal.fire({
@@ -110,7 +111,53 @@ const CrearAdmin: React.FC = () => {
         confirmButtonText: 'Aceptar',
       });
     }
-  };  
+  };
+
+  const handleDeleteClick = (adminId: number, sedeId: number) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡Al eliminar el administrador se volvera un catedratico en la sede Asignada!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'No, cancelar',
+      confirmButtonColor: '#28a745',
+      cancelButtonColor: '#d33',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteAdmin(adminId, sedeId);
+          Swal.fire({
+            icon: 'success',
+            title: 'Administrador eliminado',
+            text: `El administrador ha sido eliminado exitosamente.`,
+            confirmButtonColor: '#28a745',
+            confirmButtonText: 'OK',
+          });
+
+          // Volver a cargar los administradores después de eliminar
+          const updatedAdmins = await getAdmins();
+          const transformedAdmins: Admin[] = updatedAdmins.map((admin) => ({
+            id: admin.user_id,
+            nombre: admin.name,
+            email: admin.email,
+            sede: admin.sede.nombre,
+            carnet: admin.carnet,
+          }));
+          const sortedAdmins = transformedAdmins.sort((a, b) => a.id - b.id);
+          setAdmins(sortedAdmins);
+        } catch (error: any) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al eliminar administrador',
+            text: error.message,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'OK',
+          });
+        }
+      }
+    });
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -127,59 +174,66 @@ const CrearAdmin: React.FC = () => {
       <Breadcrumb pageName="Crear Admin a Sede" />
 
       <div className="mx-auto max-w-6xl px-6 py-3">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-black dark:text-white">Crear Administrador</h2>
-          <button
-            onClick={handleOpenModal}
-            className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          >
-            Crear Admin
-          </button>
-        </div>
-
-        <div className="bg-white dark:bg-boxdark rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+        <div className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5">
+          <h3 className="text-lg font-semibold text-black dark:text-white mb-4 flex justify-between items-center">
             Administradores Registrados
+            <button
+              onClick={handleOpenModal}
+              className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 ml-auto"
+            >
+              Crear Admin
+            </button>
           </h3>
           {admins.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-200 dark:border-strokedark">
                 <thead>
                   <tr className="bg-gray-200 dark:bg-gray-700">
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-left">
-                      #
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
+                      No.
                     </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-left">
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                       UserName
                     </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-left">
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                       Correo
                     </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-left">
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                       Sede
                     </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-left">
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                       Código
+                    </th>
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
+                      Acción
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentAdmins.map((admin) => (
                     <tr key={admin.id} className="hover:bg-gray-100 dark:hover:bg-gray-800">
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                         {admin.id}
                       </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                         {admin.nombre}
                       </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                         {admin.email}
                       </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                         {admin.sede}
                       </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                         {admin.carnet}
+                      </td>
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
+                        <button
+                          onClick={() => handleDeleteClick(admin.id, sedes.find(sede => sede.nameSede === admin.sede)?.sede_id || 0)}
+                          className="ml-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                        >
+                          Eliminar
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -195,90 +249,81 @@ const CrearAdmin: React.FC = () => {
           <div className="flex justify-center mt-6">
             <button
               onClick={() => paginate(currentPage - 1)}
-              className="mx-1 px-3 py-1 rounded-md border bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
               disabled={currentPage === 1}
+              className="px-3 py-1 bg-gray-200 text-black rounded-l-md hover:bg-gray-300 disabled:opacity-50"
             >
-              &#8592;
+              Anterior
             </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => paginate(page)}
-                className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
-                  }`}
-              >
-                {page}
-              </button>
-            ))}
+            <span className="px-4 py-2 text-black">
+              Página {currentPage} de {totalPages}
+            </span>
             <button
               onClick={() => paginate(currentPage + 1)}
-              className="mx-1 px-3 py-1 rounded-md border bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
               disabled={currentPage === totalPages}
+              className="px-3 py-1 bg-gray-200 text-black rounded-r-md hover:bg-gray-300 disabled:opacity-50"
             >
-              &#8594;
+              Siguiente
             </button>
           </div>
         )}
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-boxdark rounded-lg shadow-lg p-6 w-96">
-            <h3 className="text-xl font-semibold text-black dark:text-white mb-4">Nuevo Administrador</h3>
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
+          <div className="bg-white dark:bg-boxdark p-6 rounded-lg w-full max-w-sm">
+            <h3 className="text-lg font-semibold mb-4">Crear Administrador</h3>
             <form onSubmit={handleCreateAdmin}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
+                <label className="block text-gray-700 dark:text-white" htmlFor="adminUserName">
                   Nombre
                 </label>
                 <input
                   type="text"
+                  id="adminUserName"
+                  className="w-full p-2 border rounded"
                   value={adminUserName}
                   onChange={(e) => setAdminUserName(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
-                  placeholder="Ingrese el nombre del administrador"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-                  Correo
+                <label className="block text-gray-700 dark:text-white" htmlFor="adminEmail">
+                  Correo Electrónico
                 </label>
                 <input
                   type="email"
+                  id="adminEmail"
+                  className="w-full p-2 border rounded"
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
-                  placeholder="Ingrese el correo electrónico"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
-                  Código
+                <label className="block text-gray-700 dark:text-white" htmlFor="adminCarnet">
+                  Carnet
                 </label>
                 <input
                   type="text"
+                  id="adminCarnet"
+                  className="w-full p-2 border rounded"
                   value={adminCarnet}
                   onChange={(e) => setAdminCarnet(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
-                  placeholder="Ingrese el número de Código"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
+                <label className="block text-gray-700 dark:text-white" htmlFor="adminSede">
                   Sede
                 </label>
                 <select
+                  id="adminSede"
+                  className="w-full p-2 border rounded"
                   value={adminSede}
                   onChange={(e) => setAdminSede(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md dark:bg-boxdark dark:text-white"
                   required
                 >
-                  <option value="">Seleccione una sede</option>
+                  <option value="">Selecciona una sede</option>
                   {sedes.map((sede) => (
                     <option key={sede.sede_id} value={sede.sede_id}>
                       {sede.nameSede}
@@ -286,19 +331,19 @@ const CrearAdmin: React.FC = () => {
                   ))}
                 </select>
               </div>
-              <div className="flex justify-end gap-4">
+              <div className="flex justify-between">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                >
+                  Crear
+                </button>
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded-md hover:bg-gray-400"
+                  className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
                 >
                   Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                >
-                  Guardar
                 </button>
               </div>
             </form>
