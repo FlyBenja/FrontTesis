@@ -73,19 +73,18 @@ const CrearTareas: React.FC = () => {
           Number(selectedCurso),
           Number(selectedAño)
         );
-
+  
+        // Ordenar las tareas de forma descendente según task_id
         const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
-          if (a.typeTask_id === 1 && b.typeTask_id !== 1) return -1;
-          if (a.typeTask_id !== 1 && b.typeTask_id === 1) return 1;
-          return 0;
+          return b.task_id - a.task_id; // Orden descendente
         });
-
+  
         setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
       }
     };
-
+  
     fetchTareas();
-  }, [selectedCurso, selectedAño]);
+  }, [selectedCurso, selectedAño]);  
 
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -98,10 +97,9 @@ const CrearTareas: React.FC = () => {
           Number(selectedAño)
         );
 
+        // Ordenar las tareas de forma descendente según task_id
         const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
-          if (a.typeTask_id === 1 && b.typeTask_id !== 1) return -1;
-          if (a.typeTask_id !== 1 && b.typeTask_id === 1) return 1;
-          return 0;
+          return b.task_id - a.task_id; // Orden descendente
         });
 
         setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);

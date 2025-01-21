@@ -88,7 +88,7 @@ const Calendar: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="Calendario" />
-      <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col items-center justify-center px-4 sm:min-h-screen sm:py-6 py-3">
+      <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col items-center justify-center px-2 sm:min-h-screen sm:py-6 py-3 mt-[-60px]">
         <div className="w-full max-w-5xl bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
           <header className="flex justify-between items-center mb-6">
             <button
