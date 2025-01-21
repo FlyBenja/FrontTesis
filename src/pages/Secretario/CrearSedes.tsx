@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getSedes } from '../../ts/Secretario/GetSedes'; // Importar la función para obtener sedes
-import { createSede } from '../../ts/Secretario/createSede'; // Importar la función para crear sede
+import { getSedes } from '../../ts/Secretario/GetSedes';
+import { createSede } from '../../ts/Secretario/createSede'; // Importar la función para actualizar sede
 import Swal from 'sweetalert2';
+import { updateSede } from '../../ts/Secretario/UpdateSede'; // Importar la función para actualizar sede
 
 const CrearSedes: React.FC = () => {
   const [sedeNombre, setSedeNombre] = useState('');
   const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string }[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sedeIdEdit, setSedeIdEdit] = useState<number | null>(null); // Usamos sede_id en lugar de editingSedeId
+  const [editingSedeNombre, setEditingSedeNombre] = useState(''); // Estado para el nuevo nombre de la sede
   const itemsPerPage = 5;
 
-  // Llamar a la API al cargar el componente
   useEffect(() => {
     const fetchSedes = async () => {
       try {
@@ -21,36 +23,85 @@ const CrearSedes: React.FC = () => {
         console.error('Error al obtener las sedes:', error);
       }
     };
-
     fetchSedes();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (sedeNombre.trim()) {
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Verifica que el nombre ingresado sea correcto antes de continuar.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, crear',
+        cancelButtonText: 'No, cancelar',
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#d33',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await createSede(sedeNombre);
+            const maxId = sedes.length > 0 ? Math.max(...sedes.map((sede) => sede.sede_id)) : 0;
+            const newSede = { sede_id: maxId + 1, nameSede: sedeNombre };
+            const updatedSedes = [...sedes, newSede].sort((a, b) => a.sede_id - b.sede_id);
+            setSedes(updatedSedes);
+            setSedeNombre('');
+            Swal.fire({
+              icon: 'success',
+              title: 'Sede creada',
+              text: `La sede "${sedeNombre}" se ha creado exitosamente.`,
+              confirmButtonColor: '#28a745',
+            });
+          } catch (error: any) {
+            console.error('Error al crear la sede:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.message || 'Ocurrió un error al crear la sede.',
+              confirmButtonColor: '#dc3545',
+            });
+          }
+        }
+      });
+    }
+  };
+
+  const handleEditClick = (sedeId: number, sedeNombre: string) => {
+    setSedeIdEdit(sedeId); // Establecer el sede_id que estamos editando
+    setEditingSedeNombre(sedeNombre);
+  };
+
+  const handleCancelEdit = () => {
+    setSedeIdEdit(null);
+    setEditingSedeNombre('');
+  };
+
+  const handleSaveEdit = async () => {
+    if (editingSedeNombre.trim()) {
       try {
-        await createSede(sedeNombre); // Crear la sede en el backend
-        const maxId = sedes.length > 0 ? Math.max(...sedes.map((sede) => sede.sede_id)) : 0;
-        const newSede = { sede_id: maxId + 1, nameSede: sedeNombre };
-
-        const updatedSedes = [...sedes, newSede].sort((a, b) => a.sede_id - b.sede_id);
+        await updateSede(sedeIdEdit!, editingSedeNombre); // Actualizar la sede
+        const updatedSedes = sedes.map((sede) =>
+          sede.sede_id === sedeIdEdit
+            ? { ...sede, nameSede: editingSedeNombre }
+            : sede
+        );
         setSedes(updatedSedes);
-        setSedeNombre('');
-
-        // Mostrar alerta de éxito
+        setSedeIdEdit(null);
+        setEditingSedeNombre('');
         Swal.fire({
           icon: 'success',
-          title: 'Sede creada',
-          text: `La sede "${sedeNombre}" se ha creado exitosamente.`,
+          title: 'Sede actualizada',
+          text: `La sede "${editingSedeNombre}" se ha actualizado exitosamente.`,
+          confirmButtonColor: '#28a745',
         });
       } catch (error: any) {
-        console.error('Error al crear la sede:', error);
-
-        // Mostrar alerta con el mensaje específico devuelto por el backend
+        console.error('Error al actualizar la sede:', error);
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: error.message || 'Ocurrió un error al crear la sede.',
+          text: error.message || 'Ocurrió un error al actualizar la sede.',
+          confirmButtonColor: '#dc3545',
         });
       }
     }
@@ -71,11 +122,7 @@ const CrearSedes: React.FC = () => {
       <Breadcrumb pageName="Crear Sedes" />
 
       <div className="mx-auto max-w-6xl px-6 py-0">
-        {/* Formulario para crear sedes */}
-        <form
-          onSubmit={handleSubmit}
-          className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md mb-8"
-        >
+        <form onSubmit={handleSubmit} className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md mb-8">
           <div className="flex flex-col md:flex-row items-center gap-4">
             <input
               type="text"
@@ -85,44 +132,65 @@ const CrearSedes: React.FC = () => {
               placeholder="Nombre de la nueva sede"
               required
             />
-            <button
-              type="submit"
-              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            >
+            <button type="submit" className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
               Crear
             </button>
           </div>
         </form>
 
-        {/* Tabla para mostrar sedes */}
         <div className="bg-white dark:bg-boxdark rounded-lg shadow-md p-4">
-          <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
-            Sedes Registradas
-          </h3>
+          <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Sedes Registradas</h3>
           {sedes.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-200 dark:border-strokedark">
                 <thead>
                   <tr className="bg-gray-200 dark:bg-gray-700">
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-left">
-                      #
-                    </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-left">
-                      Nombre de la Sede
-                    </th>
+                    <th className="border border-gray-300 dark:border-strokedark px-1 py-2 text-center" style={{ width: '10px' }}>No.</th>
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center" style={{ width: '400px' }}>Nombre de la Sede</th>
+                    <th className="border border-gray-300 dark:border-strokedark px-1 py-2 text-center" style={{ width: '10px' }}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentSedes.map((sede) => (
-                    <tr
-                      key={sede.sede_id}
-                      className="hover:bg-gray-100 dark:hover:bg-gray-800"
-                    >
+                    <tr key={sede.sede_id} className="hover:bg-gray-100 dark:hover:bg-gray-800">
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">{sede.sede_id}</td>
                       <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
-                        {sede.sede_id}
+                        {sedeIdEdit === sede.sede_id ? (
+                          <input
+                            type="text"
+                            value={editingSedeNombre}
+                            onChange={(e) => setEditingSedeNombre(e.target.value)}
+                            className="px-6 py-2 w-full border rounded-md dark:bg-boxdark dark:text-white"
+                            placeholder="Nombre de la sede"
+                          />
+                        ) : (
+                          sede.nameSede
+                        )}
                       </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2">
-                        {sede.nameSede}
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
+                        {sedeIdEdit === sede.sede_id ? (
+                          <>
+                            <button
+                              onClick={handleSaveEdit}
+                              className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
+                            >
+                              Guardar
+                            </button>
+                            <button
+                              onClick={handleCancelEdit}
+                              className="ml-2 px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                            >
+                              Cancelar
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => handleEditClick(sede.sede_id, sede.nameSede)}
+                            className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                          >
+                            Editar
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -148,11 +216,10 @@ const CrearSedes: React.FC = () => {
               <button
                 key={page}
                 onClick={() => paginate(page)}
-                className={`mx-1 px-3 py-1 rounded-md border ${
-                  currentPage === page
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
-                }`}
+                className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
+                  }`}
               >
                 {page}
               </button>
@@ -169,6 +236,7 @@ const CrearSedes: React.FC = () => {
       </div>
     </>
   );
+
 };
 
 export default CrearSedes;
