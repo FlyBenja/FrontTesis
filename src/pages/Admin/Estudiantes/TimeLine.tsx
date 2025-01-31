@@ -5,6 +5,7 @@ import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getTimeLineEstudiante } from '../../../ts/Generales/GetTimeLineEstudiante';
 import generaPDFIndividual from '../../../components/Pdfs/generaPDFIndividual';  
 
+// Defining the structure of a single event in the timeline
 interface TimeLineEvent {
   user_id: number;
   typeEvent: string;
@@ -14,29 +15,38 @@ interface TimeLineEvent {
 }
 
 const TimeLine: React.FC = () => {
+  // Retrieving current location and navigation from React Router
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Setting state for pagination, events, and loading indicator
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage, setEventsPerPage] = useState(3);
   const [maxPageButtons, setMaxPageButtons] = useState(10);
   const [events, setEvents] = useState<TimeLineEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Extracting student data and selected year/course from the location state
   const { estudiante, selectedAño, selectedCurso } = location.state || {};
   const studentName = estudiante ? estudiante.userName : "Desconocido";
   const userId = estudiante ? estudiante.id : null;
 
+  // Fetching the timeline events when the component mounts or userId changes
   useEffect(() => {
+    // If no valid userId is provided, display an error alert
     if (!userId) {
       showAlert('error', '¡Error!', 'No se proporcionó un user_id válido.');
       setLoading(false);
       return;
     }
 
+    // Function to fetch the timeline events
     const fetchTimeline = async () => {
       try {
         setLoading(true);
+        // Fetching events for the student based on userId
         const logs = await getTimeLineEstudiante(userId);
+        // Sorting events by date in descending order and formatting the date
         setEvents(
           logs
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Orden descendente
@@ -49,7 +59,7 @@ const TimeLine: React.FC = () => {
             }))
         );
       } catch (err: any) {
-        // Manejo de errores si es necesario
+        // Handling errors if needed
       } finally {
         setLoading(false);
       }
@@ -58,6 +68,7 @@ const TimeLine: React.FC = () => {
     fetchTimeline();
   }, [userId]);
 
+  // Function to show SweetAlert messages
   const showAlert = (type: 'success' | 'error', title: string, text: string) => {
     const confirmButtonColor = type === 'success' ? '#28a745' : '#dc3545';
     Swal.fire({
@@ -69,23 +80,27 @@ const TimeLine: React.FC = () => {
     });
   };
 
+  // Function to handle PDF generation when the "Imprimir Reporte" button is clicked
   const handlePrintPDF = () => {
     if (estudiante && selectedAño) {
       generaPDFIndividual(estudiante, selectedAño, selectedCurso);  // Llamamos a la función que genera el PDF
     }
   };
 
+  // Pagination logic: calculate the indices of the current page's events
   const indexOfLastEvent = currentPage * eventsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
   const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
   const totalPages = Math.ceil(events.length / eventsPerPage);
 
+  // Function to handle page change on pagination
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
   };
 
+  // Function to determine the range of page buttons to display
   const getPageRange = () => {
     const range: number[] = [];
     const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
@@ -98,6 +113,7 @@ const TimeLine: React.FC = () => {
     return range;
   };
 
+  // Responsive design: adjust the number of events per page and max page buttons on window resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -114,6 +130,7 @@ const TimeLine: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Loading state: if still loading, display loading text
   if (loading) {
     return <div>Cargando línea de tiempo...</div>;
   }

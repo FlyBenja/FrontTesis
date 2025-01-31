@@ -1,34 +1,37 @@
 import axios from 'axios';
 
+// Asynchronous function to update the password
 export const updatePassword = async (oldPassword: string, newPassword: string): Promise<string> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // If token is not found, throw an error
     }
 
-    // Hacer la solicitud de actualización de la contraseña
+    // Make the PUT request to update the password
     const response = await axios.put(
       'http://localhost:3000/auth/updatePassword',
-      JSON.stringify({ currentPassword: oldPassword, newPassword }), // Asegúrate de usar 'currentPassword' en lugar de 'oldPassword'
+      JSON.stringify({ currentPassword: oldPassword, newPassword }), // Ensure to use 'currentPassword' instead of 'oldPassword'
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
+          'Content-Type': 'application/json',   // Set content type to JSON
         }
       }
     );
 
-    return response.data; // Devuelve el mensaje de éxito
+    // Return the success message from the response
+    return response.data;
   } catch (error: any) {
-    // Si es un error de Axios, obtener el mensaje de error
+    // If it's an Axios error, retrieve the error message
     if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.message || 'Error desconocido al actualizar la contraseña';
+      const errorMessage = error.response?.data?.message || 'Error desconocido al actualizar la contraseña';  // Default error message if no message in response
       throw new Error(errorMessage);
     } else {
-      throw error; // Para otros tipos de error
+      // For other types of errors, rethrow the error
+      throw error;
     }
   }
 };

@@ -1,34 +1,36 @@
 import axios from 'axios';
 
+// Interface representing the structure of a thesis proposal submission
 export interface Propuesta {
-  thesisSubmissions_id: number;
-  user_id: number;
-  task_id: number;
-  file_path: string;
-  date: string;
-  approved_proposal: number;
+  thesisSubmissions_id: number; // Unique identifier for the thesis submission
+  user_id: number; // Identifier of the user who submitted the proposal
+  task_id: number; // Identifier of the associated task
+  file_path: string; // Path of the uploaded file
+  date: string; // Submission date of the proposal
+  approved_proposal: number; // Status indicator (approved or not)
 }
 
+// Function to retrieve a user's thesis proposal submission
 export const getPropuesta = async (userId: number): Promise<Propuesta | null> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
 
+    // If no token is found, throw an error
     if (!token) {
       throw new Error('Token de autenticación no encontrado');
     }
 
-    // Hacer la solicitud GET a la URL especificada con los parámetros correctos
+    // Make a GET request to the specified URL with the correct parameters
     const response = await axios.get(`http://localhost:3000/api/thesis-submission/${userId}`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Include authentication token in the request headers
+        'Content-Type': 'application/json', // Specify the content type as JSON
       },
     });
 
-    return response.data; // Retornar los datos de la API
+    return response.data; // Return the data received from the API
   } catch (error) {
-    console.error('Error al obtener la propuesta:', error);
-    return null; // Retornar null si ocurre un error
+    return null; // Return null if an error occurs
   }
 };

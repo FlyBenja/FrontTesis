@@ -1,33 +1,37 @@
 import axios from 'axios';
 
+// Asynchronous function to fetch the list of 'sedes' (locations or departments)
 export const getSedes = async (): Promise<{ sede_id: number; nameSede: string }[]> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     
+    // Check if the token is not found
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // If token is missing, throw an error
     }
 
-    // Hacer la solicitud GET a la URL especificada
+    // Make the GET request to the specified URL to get the list of 'sedes'
     const response = await axios.get('http://localhost:3000/api/sedes', {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,  // Include the token in the Authorization header
+        'Content-Type': 'application/json',   // Set Content-Type to JSON
       },
     });
 
-    return response.data; // Retornar los datos de la respuesta
+    // Return the data received in the response
+    return response.data; 
   } catch (error) {
-    // Manejo de errores
+    // Error handling
     if (axios.isAxiosError(error)) {
+      // If the error is an Axios error, extract the error message from the response or use a default message
       const errorMessage = error.response?.data
         ? JSON.stringify(error.response?.data)
         : 'Error desconocido';
-      console.error('Error de Axios:', errorMessage);
-      throw new Error(errorMessage);
+      throw new Error(errorMessage); // Throw the specific error message
     }
 
+    // If it's not an Axios error, throw a generic error message
     throw new Error('Error desconocido');
   }
 };

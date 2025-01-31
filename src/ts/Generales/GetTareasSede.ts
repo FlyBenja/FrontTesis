@@ -1,43 +1,46 @@
 import axios from 'axios';
 
+// Define the structure of the task object
 export interface Tarea {
-  task_id: number;
-  asigCourse_id: number;
-  typeTask_id: number;
-  title: string;
-  description: string;
-  taskStart: string;
-  endTask: string;
-  startTime: string;
-  endTime: string;
-  year_id: number;
+  task_id: number;        // Unique identifier for the task
+  asigCourse_id: number;  // ID of the assigned course
+  typeTask_id: number;    // Type of the task
+  title: string;          // Title of the task
+  description: string;    // Description of the task
+  taskStart: string;      // Start date of the task
+  endTask: string;        // End date of the task
+  startTime: string;      // Start time of the task
+  endTime: string;        // End time of the task
+  year_id: number;        // Year ID associated with the task
 }
 
+// Asynchronous function to get tasks by `sedeId` and `year`
 export const getTareasSede = async (
-  sedeId: number, 
-  year: number
+  sedeId: number,        // The `sedeId` parameter to filter the tasks
+  year: number           // The `year` parameter to filter the tasks
 ): Promise<Tarea[]> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // If token is not found, throw an error
     }
 
-    // Hacer la solicitud GET a la URL con los parámetros sede y año
+    // Make the GET request to the API URL with the `sedeId` and `year` parameters
     const response = await axios.get(
       `http://localhost:3000/api/tareas/${sedeId}/${year}`,
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,  // Add the token in the authorization header
+          'Content-Type': 'application/json',  // Specify the content type as JSON
         },
       }
     );
 
-    // Retornar las tareas obtenidas
+    // Return the tasks data obtained from the response
     return response.data;
   } catch (error) {
+    // If an error occurs, return an empty array
     return [];
   }
 };

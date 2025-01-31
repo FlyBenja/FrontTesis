@@ -1,33 +1,36 @@
 import axios from 'axios';
 
+// Asynchronous function to get the years data from the API
 export const getYears = async (): Promise<{ year_id: number; year: number }[]> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // If token is not found, throw an error
     }
 
-    // Hacer la solicitud GET a la URL especificada
+    // Make the GET request to the specified URL to get the years data
     const response = await axios.get('http://localhost:3000/api/years', {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
+        'Content-Type': 'application/json',  // Set the content type as JSON
       },
     });
 
-    return response.data; // Retornar los datos de la respuesta
+    // Return the data from the response
+    return response.data;
   } catch (error) {
-    // Manejo de errores
+    // Handle errors
     if (axios.isAxiosError(error)) {
+      // If it's an Axios error, extract and throw the error message
       const errorMessage = error.response?.data
-        ? JSON.stringify(error.response?.data)
-        : 'Error desconocido';
-      console.error('Error de Axios:', errorMessage);
+        ? JSON.stringify(error.response?.data)  // If response contains data, stringify it
+        : 'Error desconocido';  // Otherwise, use a default error message
       throw new Error(errorMessage);
     }
 
+    // If it's a general error, throw a generic error message
     throw new Error('Error desconocido');
   }
 };

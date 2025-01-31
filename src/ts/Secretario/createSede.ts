@@ -1,32 +1,35 @@
 import axios from 'axios';
 
+// Asynchronous function to create a 'sede' (location or department)
 export const createSede = async (nameSede: string): Promise<void> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
 
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // If token is not found, throw an error
     }
 
-    // Hacer la solicitud POST a la URL especificada
+    // Make the POST request to the specified URL to create the 'sede'
     await axios.post(
-      'http://localhost:3000/api/sedes',
-      { nameSede },
+      'http://localhost:3000/api/sedes',  // API endpoint for creating a 'sede'
+      { nameSede },  // The payload containing the name of the 'sede'
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
+          'Content-Type': 'application/json',   // Set content type to JSON
         },
       }
     );
   } catch (error) {
+    // Error handling
     if (axios.isAxiosError(error)) {
+      // If it's an Axios error, extract the error message from the API response or use a default message
       const errorMessage = error.response?.data?.message || 'Error desconocido';
-      console.error('Error de Axios:', errorMessage);
-      throw new Error(errorMessage); // Propaga el mensaje de error específico
+      throw new Error(errorMessage);  // Propagate the specific error message
     }
 
+    // If it's not an Axios error, throw a generic error message
     throw new Error('Error desconocido');
   }
 };

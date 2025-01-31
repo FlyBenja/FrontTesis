@@ -1,39 +1,42 @@
 import axios from 'axios';
 
+// Asynchronous function to create an admin user
 export const createAdmin = async (adminData: { 
-  email: string; 
-  name: string; 
-  carnet: string; 
-  sede_id: number; 
+  email: string;        // Email of the admin
+  name: string;         // Name of the admin
+  carnet: string;       // Carnet or ID of the admin
+  sede_id: number;      // ID of the 'sede' (location or department) the admin belongs to
 }): Promise<void> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // If token is not found, throw an error
     }
 
-    // Hacer la solicitud POST a la URL especificada
+    // Make the POST request to the specified URL to create the admin
     await axios.post('http://localhost:3000/api/admin/create', adminData, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
+        'Content-Type': 'application/json',  // Set content type to JSON
       },
     });
 
-    console.log('Administrador creado exitosamente');
+    // Log success message (removed as requested)
+    // console.log('Administrador creado exitosamente');
   } catch (error) {
-    // Manejo de errores
+    // Error handling
     if (axios.isAxiosError(error)) {
-      // Extraer únicamente el mensaje de error de la API
+      // Extract the error message from the API response
       const errorMessage = error.response?.data?.message;
 
       if (errorMessage) {
-        throw new Error(errorMessage); // Lanzar el mensaje específico
+        throw new Error(errorMessage);  // Throw the specific error message
       }
     }
 
-    throw error; // Si no es un error de Axios, relanzarlo
+    // If it's not an Axios error, rethrow it
+    throw error;
   }
 };

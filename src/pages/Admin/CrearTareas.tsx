@@ -5,6 +5,7 @@ import { getYears } from '../../ts/Generales/GetYears';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 import { getTareas } from '../../ts/Generales/GetTareas';
 
+// Define the type for a "Tarea" (task) object
 export interface Tarea {
   task_id: number;
   asigCourse_id: number;
@@ -19,146 +20,158 @@ export interface Tarea {
 }
 
 const CrearTareas: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCurso, setSelectedCurso] = useState('');
-  const [selectedAño, setSelectedAño] = useState('');
-  const [years, setYears] = useState<number[]>([]);
-  const [cursos, setCursos] = useState<any[]>([]);
-  const [tareas, setTareas] = useState<Tarea[]>([]);
-  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
-  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  // State hooks for managing component data
+  const [isModalOpen, setIsModalOpen] = useState(false);  // Controls the modal visibility
+  const [selectedCurso, setSelectedCurso] = useState('');  // Stores selected course
+  const [selectedAño, setSelectedAño] = useState('');  // Stores selected year
+  const [years, setYears] = useState<number[]>([]);  // List of years
+  const [cursos, setCursos] = useState<any[]>([]);  // List of courses
+  const [tareas, setTareas] = useState<Tarea[]>([]);  // List of tasks
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");  // Determines if modal is in "create" or "edit" mode
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);  // Stores selected task ID for editing
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [tareasPorPagina, setTareasPorPagina] = useState(3);
-  const [maxPageButtons, setMaxPageButtons] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);  // Current page number for pagination
+  const [tareasPorPagina, setTareasPorPagina] = useState(3);  // Number of tasks per page
+  const [maxPageButtons, setMaxPageButtons] = useState(5);  // Maximum number of page buttons to display
 
+  // Effect hook to fetch initial data for years and set the current year if available
   useEffect(() => {
     const fetchInitialData = async () => {
-      const yearsRecuperados = await getYears();
-      setYears(yearsRecuperados.map((yearObj) => yearObj.year));
+      const yearsRecuperados = await getYears();  // Fetch available years
+      setYears(yearsRecuperados.map((yearObj) => yearObj.year));  // Set years to state
 
-      const currentYear = new Date().getFullYear();
+      const currentYear = new Date().getFullYear();  // Get current year
       if (yearsRecuperados.some((yearObj) => yearObj.year === currentYear)) {
-        setSelectedAño(currentYear.toString());
+        setSelectedAño(currentYear.toString());  // Set current year as selected year
       }
     };
 
-    fetchInitialData();
+    fetchInitialData();  // Call the fetch function to load initial data
 
-    const currentMonth = new Date().getMonth() + 1;
-    setSelectedCurso(currentMonth > 6 ? '2' : '1');
+    const currentMonth = new Date().getMonth() + 1;  // Get current month
+    setSelectedCurso(currentMonth > 6 ? '2' : '1');  // Set the selected course based on the current month
   }, []);
 
+  // Effect hook to fetch courses when the selected year changes
   useEffect(() => {
     const fetchCursosYActualizarTareas = async () => {
       if (selectedAño) {
-        const perfil = await getDatosPerfil();
-        const cursosRecuperados = await getCursos(perfil.sede, Number(selectedAño));
-        setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
+        const perfil = await getDatosPerfil();  // Fetch user profile
+        const cursosRecuperados = await getCursos(perfil.sede, Number(selectedAño));  // Fetch courses based on selected year and profile data
+        setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);  // Set courses to state
 
-        const currentMonth = new Date().getMonth() + 1;
-        setSelectedCurso(currentMonth > 6 ? '2' : '1');
+        const currentMonth = new Date().getMonth() + 1;  // Get current month
+        setSelectedCurso(currentMonth > 6 ? '2' : '1');  // Set selected course based on the current month
       }
     };
 
-    fetchCursosYActualizarTareas();
+    fetchCursosYActualizarTareas();  // Call the fetch function when selected year changes
   }, [selectedAño]);
 
+  // Effect hook to fetch tasks when the selected course or year changes
   useEffect(() => {
     const fetchTareas = async () => {
       if (selectedCurso && selectedAño) {
-        const perfil = await getDatosPerfil();
+        const perfil = await getDatosPerfil();  // Fetch user profile
         const tareasRecuperadas = await getTareas(
           perfil.sede,
           Number(selectedCurso),
           Number(selectedAño)
         );
-  
-        // Ordenar las tareas de forma descendente según task_id
+
+        // Sort tasks in descending order by task_id
         const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
-          return b.task_id - a.task_id; // Orden descendente
+          return b.task_id - a.task_id;  // Sort in descending order
         });
-  
-        setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
+
+        setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);  // Set tasks to state
       }
     };
-  
-    fetchTareas();
-  }, [selectedCurso, selectedAño]);  
 
+    fetchTareas();  // Call the fetch function when selected course or year changes
+  }, [selectedCurso, selectedAño]);
+
+  // Handle closing the modal and fetching tasks again
   const handleModalClose = () => {
-    setIsModalOpen(false);
+    setIsModalOpen(false);  // Close the modal
     const fetchTareas = async () => {
       if (selectedCurso && selectedAño) {
-        const perfil = await getDatosPerfil();
+        const perfil = await getDatosPerfil();  // Fetch user profile
         const tareasRecuperadas = await getTareas(
           perfil.sede,
           Number(selectedCurso),
           Number(selectedAño)
         );
 
-        // Ordenar las tareas de forma descendente según task_id
+        // Sort tasks in descending order by task_id
         const tareasOrdenadas = tareasRecuperadas.sort((a: Tarea, b: Tarea) => {
-          return b.task_id - a.task_id; // Orden descendente
+          return b.task_id - a.task_id;  // Sort in descending order
         });
 
-        setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);
+        setTareas(Array.isArray(tareasOrdenadas) ? tareasOrdenadas : []);  // Set tasks to state
       }
     };
-    fetchTareas();
+    fetchTareas();  // Call the fetch function when modal is closed
   };
 
+  // Format time from 24-hour format to 12-hour format
   const formatTime24Hour = (timeStr: string) => {
-    const [hours, minutes, seconds] = timeStr.split(':').map(Number);
-    const amPm = hours < 12 ? 'AM' : 'PM';
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${amPm}`;
+    const [hours, minutes, seconds] = timeStr.split(':').map(Number);  // Split time string into hours, minutes, and seconds
+    const amPm = hours < 12 ? 'AM' : 'PM';  // Determine AM or PM
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${amPm}`;  // Return formatted time
   };
 
-  const indexOfLastTask = currentPage * tareasPorPagina;
-  const currentTareas = tareas.slice(indexOfLastTask - tareasPorPagina, indexOfLastTask);
-  const totalPages = Math.ceil(tareas.length / tareasPorPagina);
+  // Pagination logic
+  const indexOfLastTask = currentPage * tareasPorPagina;  // Index of the last task on the current page
+  const currentTareas = tareas.slice(indexOfLastTask - tareasPorPagina, indexOfLastTask);  // Get tasks for the current page
+  const totalPages = Math.ceil(tareas.length / tareasPorPagina);  // Calculate total number of pages
 
+  // Function to change the current page
   const paginate = (page: number) => {
-    if (page < 1) page = 1;
-    if (page > totalPages) page = totalPages;
-    setCurrentPage(page);
+    if (page < 1) page = 1;  // Ensure page is not less than 1
+    if (page > totalPages) page = totalPages;  // Ensure page is not greater than total pages
+    setCurrentPage(page);  // Update the current page
   };
 
+  // Function to get the range of page numbers for pagination buttons
   const getPageRange = () => {
-    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    let end = Math.min(totalPages, start + maxPageButtons - 1);
+    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));  // Calculate start page number
+    let end = Math.min(totalPages, start + maxPageButtons - 1);  // Calculate end page number
 
     if (end - start + 1 < maxPageButtons) {
-      start = Math.max(1, end - maxPageButtons + 1);
+      start = Math.max(1, end - maxPageButtons + 1);  // Adjust start page number if necessary
     }
 
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);  // Return an array of page numbers
   };
 
+  // Function to format a date string to a readable format
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return `${date.getUTCDate().toString().padStart(2, '0')}/${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
+    const date = new Date(dateStr);  // Create a Date object from the string
+    return `${date.getUTCDate().toString().padStart(2, '0')}/${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCFullYear()}`;  // Return formatted date
   };
 
+  // Effect hook to adjust the number of tasks per page and the number of page buttons based on window size
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setTareasPorPagina(8);
-        setMaxPageButtons(5);
+        setTareasPorPagina(8);  // Set tasks per page to 8 for small screens
+        setMaxPageButtons(5);  // Set maximum page buttons to 5 for small screens
       } else {
-        setTareasPorPagina(5);
-        setMaxPageButtons(10);
+        setTareasPorPagina(5);  // Set tasks per page to 5 for large screens
+        setMaxPageButtons(10);  // Set maximum page buttons to 10 for large screens
       }
     };
 
-    handleResize(); // For initial load
-    window.addEventListener('resize', handleResize);
+    handleResize();  // Call the resize function on initial load
+    window.addEventListener('resize', handleResize);  // Add event listener for window resize
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);  // Cleanup event listener on unmount
     };
   }, []);
 
+  // Check if the selected year is the current year
   const isCurrentYear = selectedAño === new Date().getFullYear().toString();
 
   return (
@@ -262,10 +275,9 @@ const CrearTareas: React.FC = () => {
           </div>
         </div>
       ) : (
-        <p className="text-center text-gray-500 dark:text-gray-400">No hay tareas para mostrar.</p>
+        <p className="text-center text-gray-500 dark:text-gray-400">No hay tareas disponibles</p>
       )}
-
-      {isModalOpen && <CreaTarea onClose={handleModalClose} mode={modalMode} taskId={selectedTaskId} />}
+       {isModalOpen && <CreaTarea onClose={handleModalClose} mode={modalMode} taskId={selectedTaskId} />}
     </div>
   );
 };

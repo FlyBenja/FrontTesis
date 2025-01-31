@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
-import { subirPropuesta } from '../../ts/Estudiantes/SubirPropuestas';
-import { getPropuesta } from '../../ts/Generales/GetPropuesta';
-import { getTareasSede, Tarea } from '../../ts/Generales/GetTareasSede';
+import React, { useState, useEffect } from 'react'; 
+import Swal from 'sweetalert2'; 
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; 
+import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil'; 
+import { subirPropuesta } from '../../ts/Estudiantes/SubirPropuestas'; 
+import { getPropuesta } from '../../ts/Generales/GetPropuesta'; 
+import { getTareasSede, Tarea } from '../../ts/Generales/GetTareasSede'; 
 
 const Propuesta: React.FC = () => {
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [isButtonsDisabled, setIsButtonsDisabled] = useState(false);
-  const [checkbox1Checked, setCheckbox1Checked] = useState(false);
-  const [checkbox2Checked, setCheckbox2Checked] = useState(false);
-  const [checkbox3Checked, setCheckbox3Checked] = useState(false);
-  const [approvalMessage, setApprovalMessage] = useState('Pendiente Aprobar');
-  const [approvedProposal, setApprovedProposal] = useState<number>(0);
-  const [taskId, setTaskId] = useState<number | null>(null);
-  const [sedeId, setSedeId] = useState<number | null>(null);
+  // State declarations
+  const [pdfFile, setPdfFile] = useState<File | null>(null); // State for storing the selected PDF file
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null); // State for storing the PDF URL (for preview)
+  const [loading, setLoading] = useState(false); // State for managing the loading state during file upload
+  const [isButtonsDisabled, setIsButtonsDisabled] = useState(false); // State for disabling buttons when a proposal is approved
+  const [checkbox1Checked, setCheckbox1Checked] = useState(false); // State for controlling the first checkbox (Propuesta 1)
+  const [checkbox2Checked, setCheckbox2Checked] = useState(false); // State for controlling the second checkbox (Propuesta 2)
+  const [checkbox3Checked, setCheckbox3Checked] = useState(false); // State for controlling the third checkbox (Propuesta 3)
+  const [approvalMessage, setApprovalMessage] = useState('Pendiente Aprobar'); // State for the approval status message
+  const [approvedProposal, setApprovedProposal] = useState<number>(0); // State for tracking the approval status of the proposal
+  const [taskId, setTaskId] = useState<number | null>(null); // State for storing the task ID
+  const [sedeId, setSedeId] = useState<number | null>(null); // State for storing the site ID (Sede)
 
+  // useEffect hook to fetch initial data when the component mounts
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const perfilData = await getDatosPerfil();
-        const user_id = perfilData?.user_id;
-        const sede = perfilData?.sede;
-        setSedeId(sede);
+        const perfilData = await getDatosPerfil(); // Fetch profile data
+        const user_id = perfilData?.user_id; // Extract user_id from profile data
+        const sede = perfilData?.sede; // Extract sede (site) from profile data
+        setSedeId(sede); // Set the site ID state
 
         if (user_id) {
-          fetchPropuesta(user_id);
+          fetchPropuesta(user_id); // Fetch proposal data if user_id exists
         } else {
           throw new Error('No se pudo obtener el ID del usuario.');
         }
@@ -38,37 +40,40 @@ const Propuesta: React.FC = () => {
     };
 
     fetchInitialData();
-  }, []);
+  }, []); // Empty dependency array ensures this effect runs once when the component mounts
 
+  // useEffect hook to fetch tasks when the site ID (sedeId) changes
   useEffect(() => {
     const fetchTareas = async () => {
       if (sedeId !== null) {
         try {
-          const currentYear = new Date().getFullYear();
-          const tareas = await getTareasSede(sedeId, currentYear);
-          const tareaPropuesta = tareas.find((tarea: Tarea) => tarea.typeTask_id === 1);
+          const currentYear = new Date().getFullYear(); // Get the current year
+          const tareas = await getTareasSede(sedeId, currentYear); // Fetch tasks for the given site and current year
+          const tareaPropuesta = tareas.find((tarea: Tarea) => tarea.typeTask_id === 1); // Find the task for proposal
           if (tareaPropuesta) {
-            setTaskId(tareaPropuesta.task_id);
+            setTaskId(tareaPropuesta.task_id); // Set the task ID if found
           } else {
-            setTaskId(null); // Limpia cualquier valor previo de taskId si no se encuentra.
+            setTaskId(null); // Clear task ID if no task for proposal is found
           }
         } catch (error: any) {
-          setTaskId(null); // Limpia cualquier valor previo de taskId si ocurre un error.
+          setTaskId(null); // Clear task ID if an error occurs
         }
       }
     };
 
     fetchTareas();
-  }, [sedeId]);
+  }, [sedeId]); // The effect depends on the sedeId, so it runs when sedeId changes
 
+  // Function to fetch proposal data for a given user_id
   const fetchPropuesta = async (user_id: number) => {
     try {
-      const propuestaData = await getPropuesta(user_id);
+      const propuestaData = await getPropuesta(user_id); // Fetch the proposal data
       if (propuestaData) {
-        setPdfUrl(propuestaData.file_path);
-        const approvalStatus = propuestaData.approved_proposal;
-        setApprovedProposal(approvalStatus);
+        setPdfUrl(propuestaData.file_path); // Set the PDF URL for preview
+        const approvalStatus = propuestaData.approved_proposal; // Get the approval status of the proposal
+        setApprovedProposal(approvalStatus); // Set the approval status
 
+        // Set checkbox states and approval message based on the approval status
         if (approvalStatus === 0) {
           setApprovalMessage('Pendiente Aprobar');
           setCheckbox1Checked(false);
@@ -91,18 +96,19 @@ const Propuesta: React.FC = () => {
           setCheckbox3Checked(true);
         }
 
-        setIsButtonsDisabled(approvalStatus !== 0);
+        setIsButtonsDisabled(approvalStatus !== 0); // Disable buttons if the proposal is already approved
       }
     } catch (error) {
       throw new Error('No se pudo obtener la propuesta.');
     }
   };
 
+  // Function to handle file selection for PDF upload
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0]; // Get the selected file
     if (file && file.type === 'application/pdf') {
-      setPdfFile(file);
-      setPdfUrl(URL.createObjectURL(file));
+      setPdfFile(file); // Set the selected file
+      setPdfUrl(URL.createObjectURL(file)); // Set the file URL for preview
     } else {
       Swal.fire({
         icon: 'error',
@@ -116,6 +122,7 @@ const Propuesta: React.FC = () => {
     }
   };
 
+  // Function to handle file upload
   const handleUpload = async () => {
     if (!pdfFile) {
       Swal.fire({
@@ -130,10 +137,10 @@ const Propuesta: React.FC = () => {
       return;
     }
 
-    setLoading(true);
+    setLoading(true); // Set loading state to true while uploading
 
     try {
-      const perfilData = await getDatosPerfil();
+      const perfilData = await getDatosPerfil(); // Fetch profile data again to get the user_id
       const user_id = perfilData?.user_id;
 
       if (!user_id) {
@@ -141,9 +148,9 @@ const Propuesta: React.FC = () => {
       }
 
       await subirPropuesta({
-        file: pdfFile,
-        user_id,
-        task_id: taskId!,
+        file: pdfFile, // File to be uploaded
+        user_id, // User ID for the proposal submission
+        task_id: taskId!, // Task ID for the proposal
       });
 
       Swal.fire({
@@ -156,10 +163,10 @@ const Propuesta: React.FC = () => {
         },
       });
 
-      setPdfFile(null);
-      setPdfUrl(null);
+      setPdfFile(null); // Reset file state after successful upload
+      setPdfUrl(null); // Reset file URL state after successful upload
 
-      fetchPropuesta(user_id);
+      fetchPropuesta(user_id); // Re-fetch proposal data after uploading
     } catch (error: any) {
       Swal.fire({
         icon: 'error',
@@ -171,20 +178,21 @@ const Propuesta: React.FC = () => {
         },
       });
     } finally {
-      setLoading(false);
+      setLoading(false); // Reset loading state after upload attempt
     }
   };
 
+  // Function to handle the download of the proposal template
   const handleDownloadTemplate = () => {
-    const link = document.createElement('a');
-    link.href = '/FormatoPropuestaTesis.docx';
-    link.download = 'Formato_Propuesta_Tesis.docx';
-    link.click();
+    const link = document.createElement('a'); // Create a download link element
+    link.href = '/FormatoPropuestaTesis.docx'; // Set the template file URL
+    link.download = 'Formato_Propuesta_Tesis.docx'; // Set the download file name
+    link.click(); // Trigger the download
   };
 
   return (
     <>
-      {taskId === null ? (
+      {taskId === null ? ( // Check if taskId is null, meaning there is no task for proposals
         <div className="relative bg-gray-100 dark:bg-boxdark">
           <div className="absolute top-50 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
             <p className="text-xl text-black dark:text-white font-semibold">
@@ -194,7 +202,7 @@ const Propuesta: React.FC = () => {
         </div>
       ) : (
         <>
-          <Breadcrumb pageName="Propuesta" />
+          <Breadcrumb pageName="Propuesta" /> {/* Breadcrumb navigation component */}
 
           <div className="max-w-7xl mx-auto p-0 space-y-8">
             <div className="flex justify-center items-center space-x-8">
@@ -297,4 +305,4 @@ const Propuesta: React.FC = () => {
     </>
   );
 };
-export default Propuesta;
+export default Propuesta; // Exporting the component

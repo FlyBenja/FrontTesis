@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getSedes } from '../../ts/Secretario/GetSedes';
-import { createSede } from '../../ts/Secretario/createSede'; // Importar la función para actualizar sede
+import { createSede } from '../../ts/Secretario/createSede'; 
 import Swal from 'sweetalert2';
-import { updateSede } from '../../ts/Secretario/UpdateSede'; // Importar la función para actualizar sede
+import { updateSede } from '../../ts/Secretario/UpdateSede'; 
 
 const CrearSedes: React.FC = () => {
+  // State to manage the name of the new sede
   const [sedeNombre, setSedeNombre] = useState('');
+  // State to store the list of sedes fetched from the API
   const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string }[]>([]);
+  // State to manage pagination, current page
   const [currentPage, setCurrentPage] = useState(1);
-  const [sedeIdEdit, setSedeIdEdit] = useState<number | null>(null); // Usamos sede_id en lugar de editingSedeId
-  const [editingSedeNombre, setEditingSedeNombre] = useState(''); // Estado para el nuevo nombre de la sede
+  // State to store the ID of the sede being edited
+  const [sedeIdEdit, setSedeIdEdit] = useState<number | null>(null); // Using sede_id instead of editingSedeId
+  // State for the name of the sede being edited
+  const [editingSedeNombre, setEditingSedeNombre] = useState('');
+  // Define the number of items per page for pagination
   const itemsPerPage = 5;
 
+  // Fetch sedes on component mount
   useEffect(() => {
     const fetchSedes = async () => {
       try {
@@ -26,9 +33,11 @@ const CrearSedes: React.FC = () => {
     fetchSedes();
   }, []);
 
+  // Handle form submission for creating a new sede
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (sedeNombre.trim()) {
+      // Display a confirmation modal before proceeding
       Swal.fire({
         title: '¿Estás seguro?',
         text: 'Verifica que el nombre ingresado sea correcto antes de continuar.',
@@ -41,12 +50,14 @@ const CrearSedes: React.FC = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            // Create the new sede via API
             await createSede(sedeNombre);
             const maxId = sedes.length > 0 ? Math.max(...sedes.map((sede) => sede.sede_id)) : 0;
             const newSede = { sede_id: maxId + 1, nameSede: sedeNombre };
+            // Add the new sede to the list and sort the list by sede_id
             const updatedSedes = [...sedes, newSede].sort((a, b) => a.sede_id - b.sede_id);
             setSedes(updatedSedes);
-            setSedeNombre('');
+            setSedeNombre(''); // Clear the input field
             Swal.fire({
               icon: 'success',
               title: 'Sede creada',
@@ -67,27 +78,32 @@ const CrearSedes: React.FC = () => {
     }
   };
 
+  // Handle the click to edit a specific sede
   const handleEditClick = (sedeId: number, sedeNombre: string) => {
-    setSedeIdEdit(sedeId); // Establecer el sede_id que estamos editando
+    setSedeIdEdit(sedeId); // Set the ID of the sede being edited
     setEditingSedeNombre(sedeNombre);
   };
 
+  // Handle the cancel edit action
   const handleCancelEdit = () => {
-    setSedeIdEdit(null);
-    setEditingSedeNombre('');
+    setSedeIdEdit(null); // Reset the ID of the sede being edited
+    setEditingSedeNombre(''); // Clear the editing name
   };
 
+  // Handle saving the edited sede
   const handleSaveEdit = async () => {
     if (editingSedeNombre.trim()) {
       try {
-        await updateSede(sedeIdEdit!, editingSedeNombre); // Actualizar la sede
+        // Update the sede via API
+        await updateSede(sedeIdEdit!, editingSedeNombre);
+        // Update the sedes list with the new name
         const updatedSedes = sedes.map((sede) =>
           sede.sede_id === sedeIdEdit
             ? { ...sede, nameSede: editingSedeNombre }
             : sede
         );
         setSedes(updatedSedes);
-        setSedeIdEdit(null);
+        setSedeIdEdit(null); // Reset edit mode
         setEditingSedeNombre('');
         Swal.fire({
           icon: 'success',
@@ -107,12 +123,14 @@ const CrearSedes: React.FC = () => {
     }
   };
 
+  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentSedes = sedes.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(sedes.length / itemsPerPage);
 
+  // Paginate to a specific page
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) setCurrentPage(pageNumber);
   };
@@ -122,6 +140,7 @@ const CrearSedes: React.FC = () => {
       <Breadcrumb pageName="Crear Sedes" />
 
       <div className="mx-auto max-w-6xl px-6 py-0">
+        {/* Form for creating a new sede */}
         <form onSubmit={handleSubmit} className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md mb-8">
           <div className="flex flex-col md:flex-row items-center gap-4">
             <input
@@ -138,6 +157,7 @@ const CrearSedes: React.FC = () => {
           </div>
         </form>
 
+        {/* Table displaying the list of sedes */}
         <div className="bg-white dark:bg-boxdark rounded-lg shadow-md p-4">
           <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Sedes Registradas</h3>
           {sedes.length > 0 ? (
@@ -202,7 +222,7 @@ const CrearSedes: React.FC = () => {
           )}
         </div>
 
-        {/* Paginación */}
+        {/* Pagination controls */}
         {sedes.length > itemsPerPage && (
           <div className="flex justify-center mt-6">
             <button
@@ -236,7 +256,6 @@ const CrearSedes: React.FC = () => {
       </div>
     </>
   );
-
 };
 
 export default CrearSedes;

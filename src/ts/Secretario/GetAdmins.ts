@@ -1,52 +1,58 @@
 import axios from 'axios';
 
+// Interface for the 'sede' (location or department) object
 interface Sede {
-  sede_id: number;
-  nombre: string;
+  sede_id: number;  // The ID of the 'sede'
+  nombre: string;   // The name of the 'sede'
 }
 
+// Interface for the admin object
 interface Admin {
-  user_id: number;
-  email: string;
-  name: string;
-  carnet: string;
-  sede: Sede;
-  profilePhoto: string | null;
+  user_id: number;       // The ID of the admin user
+  email: string;         // The email of the admin
+  name: string;          // The name of the admin
+  carnet: string;        // The admin's identification number (e.g., student number)
+  sede: Sede;            // The 'sede' (location or department) where the admin belongs
+  profilePhoto: string | null;  // URL or path to the profile photo (nullable)
 }
 
+// Interface for the response data containing a message and an array of admins
 interface AdminsResponse {
-  message: string;
-  admins: Admin[];
+  message: string;  // A message from the API
+  admins: Admin[];  // An array of admin objects
 }
 
+// Asynchronous function to fetch the list of admins
 export const getAdmins = async (): Promise<Admin[]> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // If token is not found, throw an error
     }
 
-    // Hacer la solicitud GET a la URL especificada
+    // Make the GET request to the specified URL to retrieve the list of admins
     const response = await axios.get<AdminsResponse>('http://localhost:3000/api/admins', {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
+        'Content-Type': 'application/json',   // Set content type to JSON
       },
     });
 
-    return response.data.admins; // Retornar la lista de administradores
+    // Return the list of admins from the response data
+    return response.data.admins;
   } catch (error) {
-    // Manejo de errores
+    // Error handling
     if (axios.isAxiosError(error)) {
+      // If it's an Axios error, extract the error message from the API response or use a default message
       const errorMessage = error.response?.data
         ? JSON.stringify(error.response?.data)
         : 'Error desconocido';
-      console.error('Error de Axios:', errorMessage);
       throw new Error(errorMessage);
     }
 
+    // If it's not an Axios error, throw a generic error message
     throw new Error('Error desconocido');
   }
 };

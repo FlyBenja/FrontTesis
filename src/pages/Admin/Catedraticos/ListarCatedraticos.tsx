@@ -7,81 +7,91 @@ import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SwitcherFour from '../../../components/Switchers/SwitcherFour';
 import Swal from 'sweetalert2';
 
+// Interface to define the structure of a professor's data
 interface Catedratico {
-  user_id: number;
-  email: string;
-  userName: string;
-  professorCode: string;
-  profilePhoto: string | null;
-  active: boolean;
+  user_id: number; // Unique identifier for the professor
+  email: string; // Professor's email address
+  userName: string; // Professor's name
+  professorCode: string; // Unique professor code
+  profilePhoto: string | null; // Profile photo URL or null if not available
+  active: boolean; // Status if the professor is active or not
 }
 
 const ListarCatedraticos: React.FC = () => {
-  const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
-  const [searchCarnet, setSearchCarnet] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [catedraticosPerPage, setCatedraticosPerPage] = useState(5);
-  const [maxPageButtons, setMaxPageButtons] = useState(10);
+  // State hooks for managing various aspects of the component
+  const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]); // List of professors
+  const [searchCarnet, setSearchCarnet] = useState(''); // Search input for the professor code
+  const [currentPage, setCurrentPage] = useState(1); // Current page number for pagination
+  const [catedraticosPerPage, setCatedraticosPerPage] = useState(5); // Number of professors per page for pagination
+  const [maxPageButtons, setMaxPageButtons] = useState(10); // Maximum number of page buttons to display in pagination
 
+  // Effect hook to handle window resize and adjust page settings accordingly
   useEffect(() => {
     const handleResize = () => {
+      // If screen width is less than 768px, display 8 items per page and 5 page buttons
       if (window.innerWidth < 768) {
         setCatedraticosPerPage(8);
         setMaxPageButtons(5);
       } else {
+        // Otherwise, display 5 items per page and 10 page buttons
         setCatedraticosPerPage(5);
         setMaxPageButtons(10);
       }
     };
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
+    handleResize(); // Call it once on mount to set the initial values
+    window.addEventListener('resize', handleResize); // Add resize event listener to handle changes
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize); // Clean up the event listener on unmount
   }, []);
 
+  // Effect hook to fetch the profile data and professors data when the component is mounted
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const perfil = await getDatosPerfil();
+        const perfil = await getDatosPerfil(); // Fetch profile data
         if (perfil.sede) {
-          fetchCatedraticos(perfil.sede);
+          fetchCatedraticos(perfil.sede); // If profile has 'sede', fetch the professors for that sede
         }
       } catch {
-        setCatedraticos([]);
+        setCatedraticos([]); // If there's an error, set empty list of professors
       }
     };
 
-    fetchPerfil();
+    fetchPerfil(); // Call the fetchPerfil function
   }, []);
 
+  // Function to fetch the list of professors based on the sede ID
   const fetchCatedraticos = async (sedeId: number) => {
     try {
-      const catedraticosRecuperados = await getCatedraticos(sedeId);
-      setCatedraticos(Array.isArray(catedraticosRecuperados) ? catedraticosRecuperados : []);
+      const catedraticosRecuperados = await getCatedraticos(sedeId); // Fetch professors based on the sede ID
+      setCatedraticos(Array.isArray(catedraticosRecuperados) ? catedraticosRecuperados : []); // Update the state if the response is an array
     } catch {
-      setCatedraticos([]);
+      setCatedraticos([]); // If there's an error, set empty list of professors
     }
   };
 
+  // Function to handle search click (search professors by carnet code)
   const handleSearchClick = async () => {
-    if (searchCarnet.trim()) {
+    if (searchCarnet.trim()) { // If the search input is not empty
       try {
-        const catedraticoEncontrado = await getCatedraticoPorCarnet(searchCarnet);
-        setCatedraticos(catedraticoEncontrado ? [catedraticoEncontrado] : []);
+        const catedraticoEncontrado = await getCatedraticoPorCarnet(searchCarnet); // Search the professor by carnet code
+        setCatedraticos(catedraticoEncontrado ? [catedraticoEncontrado] : []); // Set the result or empty list if no professor is found
       } catch {
-        setCatedraticos([]);
+        setCatedraticos([]); // If there's an error, set empty list of professors
       }
     } else {
-      const perfil = await getDatosPerfil();
+      const perfil = await getDatosPerfil(); // If the search input is empty, fetch the professors for the current sede
       if (perfil.sede) {
         fetchCatedraticos(perfil.sede);
       }
     }
   };
 
+  // Function to handle the activation/deactivation of a professor
   const handleActiveChange = async (userId: number, newStatus: boolean) => {
     if (!newStatus) {
+      // If deactivating a professor, show confirmation alert
       const result = await Swal.fire({
         title: '¿Estás seguro?',
         text: 'Este catedrático no podrá iniciar sesión, ¿aún deseas desactivarlo?',
@@ -94,36 +104,41 @@ const ListarCatedraticos: React.FC = () => {
       });
 
       if (!result.isConfirmed) {
-        return;
+        return; // If user cancels, do nothing
       }
     }
 
+    // Update the professor's active status in the state
     const updatedCatedraticos = catedraticos.map((cat) =>
       cat.user_id === userId ? { ...cat, active: newStatus } : cat
     );
     setCatedraticos(updatedCatedraticos);
 
     try {
-      await activaCatedratico(userId, newStatus);
+      await activaCatedratico(userId, newStatus); // Call the API to update the professor's status
     } catch {
       setCatedraticos((prev) =>
         prev.map((cat) => (cat.user_id === userId ? { ...cat, active: !newStatus } : cat))
-      );
+      ); // If there's an error, revert the professor's status in the state
     }
   };
 
-  const indexOfLastCatedratico = currentPage * catedraticosPerPage;
-  const indexOfFirstCatedratico = indexOfLastCatedratico - catedraticosPerPage;
-  const currentCatedraticos = catedraticos.slice(indexOfFirstCatedratico, indexOfLastCatedratico);
+  // Pagination calculations
+  const indexOfLastCatedratico = currentPage * catedraticosPerPage; // Index of the last professor on the current page
+  const indexOfFirstCatedratico = indexOfLastCatedratico - catedraticosPerPage; // Index of the first professor on the current page
+  const currentCatedraticos = catedraticos.slice(indexOfFirstCatedratico, indexOfLastCatedratico); // Slice the professors list based on the current page and page size
 
+  // Total number of pages required for pagination
   const totalPages = Math.ceil(catedraticos.length / catedraticosPerPage);
 
+  // Function to handle pagination (navigate to a specific page)
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+      setCurrentPage(pageNumber); // Set the current page
     }
   };
 
+  // Function to render the profile photo of the professor
   const renderProfilePhoto = (profilePhoto: string | null, userName: string) =>
     profilePhoto ? (
       <img src={profilePhoto} alt={userName} className="w-10 h-10 rounded-full mx-auto" />
@@ -133,15 +148,16 @@ const ListarCatedraticos: React.FC = () => {
       </div>
     );
 
+  // Function to get the page range for pagination buttons
   const getPageRange = () => {
-    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    let end = Math.min(totalPages, start + maxPageButtons - 1);
+    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2)); // Calculate the start page
+    let end = Math.min(totalPages, start + maxPageButtons - 1); // Calculate the end page
 
     if (end - start + 1 < maxPageButtons) {
-      start = Math.max(1, end - maxPageButtons + 1);
+      start = Math.max(1, end - maxPageButtons + 1); // Adjust start page if the range is less than the max page buttons
     }
 
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i); // Return the page numbers as an array
   };
 
   return (
@@ -176,14 +192,14 @@ const ListarCatedraticos: React.FC = () => {
                 currentCatedraticos.map((cat) => (
                   <tr key={cat.user_id} className="border-t border-gray-200 dark:border-strokedark">
                     <td className="py-2 px-4 text-center">
-                      {renderProfilePhoto(cat.profilePhoto, cat.userName)}
+                      {renderProfilePhoto(cat.profilePhoto, cat.userName)} {/* Render professor's photo */}
                     </td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{cat.userName}</td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{cat.professorCode}</td>
                     <td className="py-2 px-4 flex justify-end">
                       <SwitcherFour
                         enabled={cat.active}
-                        onChange={() => handleActiveChange(cat.user_id, !cat.active)}
+                        onChange={() => handleActiveChange(cat.user_id, !cat.active)} // Toggle professor's active status
                         uniqueId={cat.user_id.toString()}
                       />
                     </td>

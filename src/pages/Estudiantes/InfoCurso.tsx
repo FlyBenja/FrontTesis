@@ -8,24 +8,28 @@ import { getTareasEstudiante } from '../../ts/Estudiantes/GetTareasEstudiante';
 import { entregarTarea } from '../../ts/Estudiantes/EntregarTarea';
 
 const InfoCurso: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation(); // Hook to get the current location (for course info)
+  const navigate = useNavigate(); // Hook to navigate to different pages
 
-  // Obtener courseTitle y courseId directamente desde location.state
-  const { courseTitle, courseId } = location.state || {}; // Asumiendo que los valores están en location.state
+  // Obtain courseTitle and courseId directly from location.state
+  const { courseTitle, courseId } = location.state || {}; // Assuming values are in location.state
 
+  // State variables for tasks and current page
   const [tareas, setTareas] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    // Function to fetch tasks and combine them with student-specific tasks
     const fetchTareas = async () => {
       try {
-        const perfil = await getDatosPerfil();
-        const currentYear = new Date().getFullYear();
+        const perfil = await getDatosPerfil(); // Fetch profile data
+        const currentYear = new Date().getFullYear(); // Get the current year
 
+        // Fetch general tasks and student-specific tasks
         const tareasGenerales = await getTareas(perfil.sede, courseId, currentYear);
         const tareasEstudiante = await getTareasEstudiante(perfil.user_id, currentYear, perfil.sede);
 
+        // Combine tasks and mark submission_complete status
         const tareasCombinadas = tareasGenerales
           .map((tarea) => {
             const tareaEstudiante = tareasEstudiante.find((t) => t.task_id === tarea.task_id);
@@ -34,10 +38,11 @@ const InfoCurso: React.FC = () => {
               submission_complete: tareaEstudiante?.submission_complete ?? false,
             };
           })
-          .filter((tarea) => tarea.typeTask_id !== 1); // Excluir tareas con typeTask_id = 1
+          .filter((tarea) => tarea.typeTask_id !== 1); // Exclude tasks with typeTask_id = 1
 
-        setTareas(tareasCombinadas);
+        setTareas(tareasCombinadas); // Set the combined tasks to state
       } catch (error) {
+        // Display error alert if there is a problem fetching tasks
         Swal.fire({
           icon: 'error',
           title: 'Error al cargar las tareas',
@@ -50,11 +55,13 @@ const InfoCurso: React.FC = () => {
       }
     };
 
+    // Fetch tasks if courseId is available
     if (courseId) {
       fetchTareas();
     }
   }, [courseId]);
 
+  // Function to format date in dd/mm/yyyy format
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getUTCDate().toString().padStart(2, '0')}/${(date.getUTCMonth() + 1)
@@ -62,6 +69,7 @@ const InfoCurso: React.FC = () => {
       .padStart(2, '0')}/${date.getUTCFullYear()}`;
   };
 
+  // Function to format time in 12-hour AM/PM format
   const formatTime24Hour = (timeStr: string) => {
     const [hours, minutes, seconds] = timeStr.split(':').map(Number);
     const amPm = hours < 12 ? 'AM' : 'PM';
@@ -70,8 +78,10 @@ const InfoCurso: React.FC = () => {
       .padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${amPm}`;
   };
 
+  // Function to handle navigation to the chapter page
   const handleNavigateToCapitulo = (task_id: number, submissionComplete: boolean, NameCapitulo: string, endTask: string, endTime: string | undefined) => {
     if (!submissionComplete) {
+      // Display error alert if the task is not submitted yet
       Swal.fire({
         icon: 'error',
         title: 'Acceso denegado',
@@ -83,18 +93,21 @@ const InfoCurso: React.FC = () => {
       });
       return;
     }
+    // Navigate to chapter page with task and chapter info
     navigate('/estudiantes/info-capitulo', {
       state: { task_id, endTask, endTime, NameCapitulo },
     });
   };
 
+  // Function to handle task submission
   const handleEntregarTarea = async (task_id: number) => {
     try {
-      const perfil = await getDatosPerfil();
-      const taskData = { user_id: perfil.user_id, task_id };
-      const tareaEntregada = tareas.find((tarea) => tarea.task_id === task_id);
+      const perfil = await getDatosPerfil(); // Fetch profile data
+      const taskData = { user_id: perfil.user_id, task_id }; // Prepare data for submission
+      const tareaEntregada = tareas.find((tarea) => tarea.task_id === task_id); // Find the selected task
 
       if (tareaEntregada) {
+        // Submit task if found
         await entregarTarea(taskData);
 
         Swal.fire({
@@ -107,6 +120,7 @@ const InfoCurso: React.FC = () => {
           },
         });
 
+        // Update state to mark the task as submitted
         setTareas((prevTareas) =>
           prevTareas.map((tarea) =>
             tarea.task_id === task_id ? { ...tarea, submission_complete: true } : tarea
@@ -114,6 +128,7 @@ const InfoCurso: React.FC = () => {
         );
       }
     } catch (error: any) {
+      // Display error alert if submission fails
       Swal.fire({
         icon: 'error',
         title: 'Error al entregar tarea',
@@ -126,9 +141,10 @@ const InfoCurso: React.FC = () => {
     }
   };
 
+  // Function to determine if the button should be disabled based on date and time
   const isButtonDisabled = (endTask: string, endTime: string | undefined): boolean => {
     const currentDate = new Date();
-    const endDate = new Date(endTask);
+    const endDate = new Date(endTask); // Convert end date to Date object
     const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
     const currentHour = currentDate.getHours();
@@ -141,14 +157,17 @@ const InfoCurso: React.FC = () => {
     const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()));
     const formattedEndDateTime = `${endDateOnly.toISOString().split('T')[0]} ${endTime || ''}`;
 
+    // Return true if current date and time is later than end date and time
     if (isNaN(endDateOnly.getTime())) return true;
     return formattedCurrentDateTime > formattedEndDateTime;
   };
 
+  // Pagination: Determine the tasks to display for the current page
   const indexOfLastTask = currentPage * 3;
   const currentTareas = tareas.slice(indexOfLastTask - 3, indexOfLastTask);
-  const totalPages = Math.ceil(tareas.length / 3);
+  const totalPages = Math.ceil(tareas.length / 3); // Total number of pages
 
+  // Function to handle pagination
   const paginate = (page: number) => {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
@@ -157,12 +176,12 @@ const InfoCurso: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName={courseTitle} />
+      <Breadcrumb pageName={courseTitle} /> {/* Breadcrumb component for navigation */}
 
       <div className="mb-4">
         <button
           className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md transition-all"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(-1)} // Go back to the previous page
         >
           <span className="mr-2">←</span> Regresar
         </button>
@@ -171,6 +190,7 @@ const InfoCurso: React.FC = () => {
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         {tareas.length > 0 ? (
           <div className="space-y-4">
+            {/* Map through tasks and display each one */}
             {currentTareas.map((tarea) => (
               <div
                 key={tarea.task_id}
@@ -180,8 +200,8 @@ const InfoCurso: React.FC = () => {
                     tarea.task_id,
                     tarea.submission_complete ?? false,
                     tarea.title,
-                    tarea.endTask,  
-                    tarea.endTime   
+                    tarea.endTask,
+                    tarea.endTime
                   )
                 }
               >
@@ -193,12 +213,13 @@ const InfoCurso: React.FC = () => {
                     <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
                   </div>
                 </div>
+                {/* Button to submit task */}
                 <button
                   onClick={(e) => {
-                    e.stopPropagation();
+                    e.stopPropagation(); // Prevent triggering the task click event
                     handleEntregarTarea(tarea.task_id);
                   }}
-                  disabled={tarea.submission_complete || isButtonDisabled(tarea.endTask, tarea.endTime)}
+                  disabled={tarea.submission_complete || isButtonDisabled(tarea.endTask, tarea.endTime)} // Disable if task is already submitted or expired
                   className={`ml-4 sm:ml-0 px-4 py-2 text-white rounded-md ${tarea.submission_complete || isButtonDisabled(tarea.endTask, tarea.endTime)
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-green-600 hover:bg-green-700'
@@ -208,6 +229,7 @@ const InfoCurso: React.FC = () => {
                 </button>
               </div>
             ))}
+            {/* Pagination controls */}
             <div className="mt-4 flex justify-center">
               <button
                 onClick={() => paginate(currentPage - 1)}
@@ -216,6 +238,7 @@ const InfoCurso: React.FC = () => {
               >
                 &#8592;
               </button>
+              {/* Display page numbers */}
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
@@ -238,6 +261,7 @@ const InfoCurso: React.FC = () => {
             </div>
           </div>
         ) : (
+          // If no tasks, show this message
           <div className="text-center text-lg text-gray-500 dark:text-gray-300">No hay tareas disponibles.</div>
         )}
       </div>

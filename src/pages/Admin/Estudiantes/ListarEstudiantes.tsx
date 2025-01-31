@@ -23,81 +23,91 @@ interface Curso {
 }
 
 const ListarEstudiantes: React.FC = () => {
-  const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
-  const [years, setYears] = useState<number[]>([]);
-  const [selectedAño, setSelectedAño] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [cursos, setCursos] = useState<Curso[]>([]);
-  const [selectedCurso, setSelectedCurso] = useState<string>('');
-  const [searchCarnet, setSearchCarnet] = useState<string>('');
-  const [estudiantesPerPage, setEstudiantesPerPage] = useState(4);
-  const [maxPageButtons, setMaxPageButtons] = useState(10);
-  const navigate = useNavigate();
+  // State variables for managing students data, years, courses, etc.
+  const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]); // List of students
+  const [years, setYears] = useState<number[]>([]); // List of available years
+  const [selectedAño, setSelectedAño] = useState<string>(''); // Selected year
+  const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
+  const [cursos, setCursos] = useState<Curso[]>([]); // List of available courses
+  const [selectedCurso, setSelectedCurso] = useState<string>(''); // Selected course
+  const [searchCarnet, setSearchCarnet] = useState<string>(''); // Student carnet for search
+  const [estudiantesPerPage, setEstudiantesPerPage] = useState(4); // Number of students per page
+  const [maxPageButtons, setMaxPageButtons] = useState(10); // Maximum number of page buttons to show
+  const navigate = useNavigate(); // To navigate to other pages
 
   useEffect(() => {
+    // Fetch initial data such as profile, years, and courses
     const fetchInitialData = async () => {
-      const perfil = await getDatosPerfil();
-      const yearsRecuperados = await getYears();
-      setYears(yearsRecuperados.map((yearObj) => yearObj.year));
+      const perfil = await getDatosPerfil(); // Fetch profile data
+      const yearsRecuperados = await getYears(); // Fetch available years
+      setYears(yearsRecuperados.map((yearObj) => yearObj.year)); // Set years in state
 
+      // Set the current year if it exists in the list
       const currentYear = new Date().getFullYear().toString();
       if (yearsRecuperados.map((yearObj) => yearObj.year.toString()).includes(currentYear)) {
-        setSelectedAño(currentYear);
+        setSelectedAño(currentYear); // Set current year as selected
       }
 
+      // Set the course based on the current month (June onwards -> course_id = 2, else course_id = 1)
       const currentMonth = new Date().getMonth();
       const initialCourseId = currentMonth >= 6 ? '2' : '1';
       setSelectedCurso(initialCourseId);
 
+      // Fetch students and courses for the selected year and course if profile and year are available
       if (perfil.sede && currentYear) {
-        fetchEstudiantes(perfil.sede, initialCourseId, currentYear);
-        fetchCursos(perfil.sede);
+        fetchEstudiantes(perfil.sede, initialCourseId, currentYear); // Fetch students
+        fetchCursos(perfil.sede); // Fetch courses
       }
     };
 
-    fetchInitialData();
-  }, []);
+    fetchInitialData(); // Call the function to fetch data on initial render
+  }, []); // Empty dependency array ensures it runs only once on mount
 
+  // Fetch students based on selected year, course, and campus
   const fetchEstudiantes = async (sedeId: number, courseId: string, nameYear: string) => {
     try {
       const estudiantesRecuperados = await getEstudiantes(sedeId, parseInt(courseId), parseInt(nameYear));
-      setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : []);
+      setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : []); // Set students in state
     } catch {
-      setEstudiantes([]);
+      setEstudiantes([]); // Set empty list in case of error
     }
   };
 
+  // Fetch courses based on selected year and campus
   const fetchCursos = async (sedeId: number) => {
     try {
-      const añoSeleccionado = selectedAño ? parseInt(selectedAño) : new Date().getFullYear();
-      const cursosRecuperados = await getCursos(sedeId, añoSeleccionado);
-      setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []);
+      const añoSeleccionado = selectedAño ? parseInt(selectedAño) : new Date().getFullYear(); // Set selected year or current year
+      const cursosRecuperados = await getCursos(sedeId, añoSeleccionado); // Fetch courses
+      setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []); // Set courses in state
     } catch (error) {
-      setCursos([]);
+      setCursos([]); // Set empty list in case of error
     }
   };
 
+  // Handle change of selected year from dropdown
   const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const añoSeleccionado = e.target.value;
-    setSelectedAño(añoSeleccionado);
-    const perfil = await getDatosPerfil();
+    const añoSeleccionado = e.target.value; // Get selected year
+    setSelectedAño(añoSeleccionado); // Update state with selected year
+    const perfil = await getDatosPerfil(); // Fetch profile data
     if (perfil.sede && añoSeleccionado) {
-      const cursosRecuperados = await getCursos(perfil.sede, parseInt(añoSeleccionado));
-      setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []); 
+      const cursosRecuperados = await getCursos(perfil.sede, parseInt(añoSeleccionado)); // Fetch courses for selected year
+      setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []); // Set courses in state
     }
     if (perfil.sede && añoSeleccionado && selectedCurso) {
-      fetchEstudiantes(perfil.sede, selectedCurso, añoSeleccionado);
+      fetchEstudiantes(perfil.sede, selectedCurso, añoSeleccionado); // Fetch students for selected year and course
     }
   };
 
+  // Handle change of selected course from dropdown
   const handleCursoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCurso(e.target.value);
-    const perfil = await getDatosPerfil();
+    setSelectedCurso(e.target.value); // Update state with selected course
+    const perfil = await getDatosPerfil(); // Fetch profile data
     if (perfil.sede && selectedAño && e.target.value) {
-      fetchEstudiantes(perfil.sede, e.target.value, selectedAño);
+      fetchEstudiantes(perfil.sede, e.target.value, selectedAño); // Fetch students for selected year and course
     }
   };
 
+  // Handle click on student row to navigate to the student's timeline
   const handleStudentClick = (estudiante: Estudiante) => {
     navigate(`/admin/time-line`, {
       state: {
@@ -108,79 +118,86 @@ const ListarEstudiantes: React.FC = () => {
     });
   };
 
+  // Handle print PDF for the selected year and course
   const handlePrintPDF = (selectedAño: number, selectedCurso: number) => {
-    generaPDFGeneral(selectedAño, selectedCurso);
+    generaPDFGeneral(selectedAño, selectedCurso); // Generate PDF report
   };
 
+  // Handle search button click to find a student by carnet
   const handleSearchClick = async () => {
-    setEstudiantes([]);
+    setEstudiantes([]); // Clear students before searching
     if (!searchCarnet) {
-      const perfil = await getDatosPerfil();
+      const perfil = await getDatosPerfil(); // Fetch profile data
       if (perfil.sede && selectedCurso && selectedAño) {
-        fetchEstudiantes(perfil.sede, selectedCurso, selectedAño);
+        fetchEstudiantes(perfil.sede, selectedCurso, selectedAño); // Fetch students if carnet is empty
       }
       return;
     }
     try {
-      const perfil = await getDatosPerfil();
-      const estudianteEncontrado = await getEstudiantePorCarnet(perfil.sede, parseInt(selectedAño), searchCarnet);
-      setEstudiantes(estudianteEncontrado ? [estudianteEncontrado] : []);
+      const perfil = await getDatosPerfil(); // Fetch profile data
+      const estudianteEncontrado = await getEstudiantePorCarnet(perfil.sede, parseInt(selectedAño), searchCarnet); // Search student by carnet
+      setEstudiantes(estudianteEncontrado ? [estudianteEncontrado] : []); // Set found student or empty array if not found
     } catch (error) {
-      console.error('Error al buscar el estudiante:', error);
+      console.error('Error al buscar el estudiante:', error); // Log error if search fails
     }
   };
 
-  const indexOfLastEstudiante = currentPage * estudiantesPerPage;
-  const indexOfFirstEstudiante = indexOfLastEstudiante - estudiantesPerPage;
-  const currentEstudiantes = estudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante);
-  const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage);
+  // Pagination logic
+  const indexOfLastEstudiante = currentPage * estudiantesPerPage; // Index of last student on current page
+  const indexOfFirstEstudiante = indexOfLastEstudiante - estudiantesPerPage; // Index of first student on current page
+  const currentEstudiantes = estudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante); // Slice students for current page
+  const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage); // Total number of pages
 
+  // Pagination function to set the current page
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+      setCurrentPage(pageNumber); // Update current page
     }
   };
 
+  // Get page range for pagination buttons
   const getPageRange = () => {
     const range: number[] = [];
-    const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage);
-    const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage); // Calculate total pages
+    const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2)); // Calculate start page
+    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1); // Calculate end page
 
     for (let i = startPage; i <= endPage; i++) {
-      range.push(i);
+      range.push(i); // Add pages to range
     }
 
     return range;
   };
 
+  // Render the student's profile photo or an initial if no photo is available
   const renderProfilePhoto = (profilePhoto: string, userName: string) => {
     if (profilePhoto) {
-      return <img src={profilePhoto} alt={userName} className="w-10 h-10 rounded-full mx-auto" />;
+      return <img src={profilePhoto} alt={userName} className="w-10 h-10 rounded-full mx-auto" />; // Render photo if available
     } else {
-      const initial = userName.charAt(0).toUpperCase();
+      const initial = userName.charAt(0).toUpperCase(); // Get first letter of user name
       return (
         <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white">
-          {initial}
+          {initial} {/* Render initial if no photo */}
         </div>
       );
     }
   };
 
+  // Adjust number of students per page and pagination buttons on window resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setEstudiantesPerPage(8);
-        setMaxPageButtons(5);
+        setEstudiantesPerPage(8); // Set more students per page on smaller screens
+        setMaxPageButtons(5); // Set fewer page buttons
       } else {
-        setEstudiantesPerPage(4);
-        setMaxPageButtons(10);
+        setEstudiantesPerPage(4); // Set default students per page
+        setMaxPageButtons(10); // Set default page buttons
       }
     };
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    handleResize(); // Initial check for screen size
+    window.addEventListener('resize', handleResize); // Add resize event listener
+    return () => window.removeEventListener('resize', handleResize); // Cleanup event listener
   }, []);
 
   return (
@@ -258,7 +275,7 @@ const ListarEstudiantes: React.FC = () => {
                     className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
                   >
                     <td className="py-2 px-4 text-center">
-                      {renderProfilePhoto(est.fotoPerfil, est.userName)}
+                      {renderProfilePhoto(est.fotoPerfil, est.userName)} {/* Render profile photo */}
                     </td>
                     <td className="py-2 px-4 text-center text-black dark:text-white relative group">
                       {est.userName}
@@ -266,13 +283,13 @@ const ListarEstudiantes: React.FC = () => {
                         Ir Hacia TimeLine Estudiante
                       </div>
                     </td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{est.carnet}</td>
+                    <td className="py-2 px-4 text-center">{est.carnet}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
-                    No Se Encontrarón Estudiantes.
+                  <td colSpan={3} className="py-2 px-4 text-center">
+                    No se encontraron estudiantes
                   </td>
                 </tr>
               )}
@@ -280,32 +297,34 @@ const ListarEstudiantes: React.FC = () => {
           </table>
         </div>
 
-        <div className="mt-4 flex justify-center">
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-4">
           <button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
           >
-            &#8592;
+            Anterior
           </button>
-          {getPageRange().map((page) => (
-            <button
-              key={page}
-              onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
+          <div className="flex gap-2">
+            {getPageRange().map((pageNumber) => (
+              <button
+                key={pageNumber}
+                onClick={() => paginate(pageNumber)}
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md ${
+                  pageNumber === currentPage ? 'bg-blue-700' : ''
                 }`}
-            >
-              {page}
-            </button>
-          ))}
+              >
+                {pageNumber}
+              </button>
+            ))}
+          </div>
           <button
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
           >
-            &#8594;
+            Siguiente
           </button>
         </div>
       </div>

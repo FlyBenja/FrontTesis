@@ -1,78 +1,77 @@
 import axios from 'axios';
 
-// Definir la interfaz actualizada de los datos según la nueva estructura del JSON
+// Define the updated interface for the data structure based on the new JSON format
 export interface Submission {
-  title: string;
-  submission_complete: boolean;
-  date: string;
+  title: string;               // Title of the submission
+  submission_complete: boolean; // Indicates if the submission is complete
+  date: string;                // Date of the submission
 }
 
 export interface Student {
-  name: string;
-  email: string;
-  carnet: string;
-  sede: string;
-  course: string;
+  name: string;   // Name of the student
+  email: string;  // Email of the student
+  carnet: string; // Unique identification number of the student
+  sede: string;   // Sede (campus) the student is associated with
+  course: string; // Course the student is enrolled in
 }
 
 export interface CourseDetails {
-  student: Student;
-  formattedSubmissions: Submission[];
+  student: Student;           // Student details
+  formattedSubmissions: Submission[]; // List of submissions associated with the student
 }
 
-// Función para obtener los detalles de tareas para un estudiante en un curso específico
+// Function to get task details for a student in a specific course
 export const getDetalleTareas = async (
-  user_id: number,
-  course_id: number,
-  sede_id: number,
-  year: number
+  user_id: number,      // Unique identifier of the student
+  course_id: number,    // ID of the course the student is enrolled in
+  sede_id: number,      // ID of the sede (campus) the student is attending
+  year: number          // Year of the course
 ): Promise<CourseDetails | null> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
 
+    // If no token is found, throw an error indicating authentication failure
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // Error message for missing token
     }
 
-    // Hacer la solicitud GET a la URL especificada con los parámetros
+    // Make a GET request to the specified URL with the parameters
     const response = await axios.get(`http://localhost:3000/api/students/${user_id}/courses/${course_id}/sede/${sede_id}/year/${year}/details`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,  // Include the authorization token in the request headers
+        'Content-Type': 'application/json',  // Specify the content type as JSON
       },
     });
 
-    // Verificar si la respuesta contiene los datos
+    // Check if the response contains data
     if (response.data) {
       const { student, formattedSubmissions } = response.data;
 
-      // Validar estructura del JSON antes de devolverlo
+      // Validate the structure of the JSON before returning it
       if (!student || !formattedSubmissions) {
-        console.error('Estructura del JSON inesperada');
-        return null;
+        return null;  // If the expected data structure is not found, return null
       }
 
+      // Return the student details along with the formatted submissions
       return {
         student: {
-          name: student.name,
-          email: student.email,
-          carnet: student.carnet,
-          sede: student.sede,
-          course: student.course,
+          name: student.name,           // Student's name
+          email: student.email,         // Student's email
+          carnet: student.carnet,       // Student's carnet (ID)
+          sede: student.sede,           // Student's sede (campus)
+          course: student.course,       // Student's course
         },
         formattedSubmissions: formattedSubmissions.map((submission: any) => ({
-          title: submission.title,
-          submission_complete: submission.submission_complete,
-          date: submission.date,
+          title: submission.title,               // Title of the submission
+          submission_complete: submission.submission_complete, // Whether the submission is complete
+          date: submission.date,                 // Date of the submission
         })),
       };
     } else {
-      console.error('No se encontraron detalles de tareas');
-      return null;
+      return null;  // If no details are found, return null
     }
   } catch (error) {
-    console.error('Error al obtener los detalles de las tareas:', error);
-    return null;
+    return null;  // If an error occurs, return null
   }
 };

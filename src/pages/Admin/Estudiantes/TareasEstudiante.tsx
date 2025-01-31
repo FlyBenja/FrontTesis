@@ -4,72 +4,80 @@ import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import Swal from 'sweetalert2'; 
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getTareasSede, Tarea } from '../../../ts/Generales/GetTareasSede';
-import { getTareasEstudiante, TareaEstudiante } from '../../../ts/Estudiantes/GetTareasEstudiante'; // Asegúrate de importar esta API
+import { getTareasEstudiante, TareaEstudiante } from '../../../ts/Estudiantes/GetTareasEstudiante'; 
 
 const TareasEstudiante: React.FC = () => {
+  // React Router hooks to navigate and get the current location
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [tareas, setTareas] = useState<Tarea[]>([]);
-  const [sedeId, setSedeId] = useState<number | null>(null);
-  const [tareasEstudiante, setTareasEstudiante] = useState<TareaEstudiante[]>([]); // Nuevo estado para las tareas del estudiante
+  // State hooks to store tasks data and student data
+  const [tareas, setTareas] = useState<Tarea[]>([]); // Tasks for the current sede
+  const [sedeId, setSedeId] = useState<number | null>(null); // Sede ID for the current session
+  const [tareasEstudiante, setTareasEstudiante] = useState<TareaEstudiante[]>([]); // Tasks for the specific student
 
+  // Destructuring student and year from location state
   const { estudiante, selectedAño } = location.state || {};
-  
+
+  // Fetch profile data to get the current sede ID
   useEffect(() => {
     const fetchDatosPerfil = async () => {
       try {
-        const { sede } = await getDatosPerfil();
-        setSedeId(sede);
+        const { sede } = await getDatosPerfil(); // Fetch the current sede
+        setSedeId(sede); // Set the sede ID in state
       } catch (err) {}
     };
 
     fetchDatosPerfil();
-  }, []);
+  }, []); // This effect runs once when the component mounts
 
+  // Fetch tasks for the specific sede and selected year
   useEffect(() => {
     const fetchTareas = async () => {
       if (sedeId !== null && selectedAño) {
         try {
-          const tareasRecuperadas = await getTareasSede(sedeId, selectedAño);
-          setTareas(tareasRecuperadas);
+          const tareasRecuperadas = await getTareasSede(sedeId, selectedAño); // Fetch tasks for the sede and year
+          setTareas(tareasRecuperadas); // Set tasks in state
         } catch (err) {}
       }
     };
 
     fetchTareas();
-  }, [sedeId, selectedAño]);
+  }, [sedeId, selectedAño]); // This effect runs when either sedeId or selectedAño changes
 
-  // Cargar tareas del estudiante
+  // Fetch tasks specific to the student
   useEffect(() => {
     const fetchTareasEstudiante = async () => {
       if (estudiante && selectedAño && sedeId !== null) {
-        const tareasEst = await getTareasEstudiante(estudiante.id, selectedAño, sedeId);
-        setTareasEstudiante(tareasEst);
+        const tareasEst = await getTareasEstudiante(estudiante.id, selectedAño, sedeId); // Fetch tasks for the student
+        setTareasEstudiante(tareasEst); // Set student tasks in state
       }
     };
 
     fetchTareasEstudiante();
-  }, [estudiante, selectedAño, sedeId]);
+  }, [estudiante, selectedAño, sedeId]); // This effect runs when student, year, or sedeId changes
 
+  // Sort the tasks with typeTask_id of 1 first
   const tareasOrdenadas = tareas.sort((a, b) => {
     if (a.typeTask_id === 1 && b.typeTask_id !== 1) {
-      return -1;
+      return -1; // Place tasks with typeTask_id 1 before others
     }
     if (a.typeTask_id !== 1 && b.typeTask_id === 1) {
-      return 1;
+      return 1; // Place tasks with typeTask_id 1 before others
     }
-    return 0;
+    return 0; // Keep the order the same for tasks with the same typeTask_id
   });
 
+  // Handle task navigation and validation before proceeding
   const handleNavigate = (tarea: Tarea) => {
-    // Buscar la tarea correspondiente en tareasEstudiante
+    // Find the student-specific task from tareasEstudiante
     const tareaEstudiante = tareasEstudiante.find(
       (t) => t.task_id === tarea.task_id
     );
 
+    // If task type is not 1, validate if it is submitted by the student
     if (tareaEstudiante && tarea.typeTask_id !== 1) {
-      // Validación antes de navegar al capítulo
+      // If task is not submitted, show a warning and prevent navigation
       if (!tareaEstudiante.submission_complete) {
         Swal.fire({
           icon: 'error',
@@ -84,18 +92,21 @@ const TareasEstudiante: React.FC = () => {
       }
     }
 
+    // Navigate based on task type
     if (tarea.typeTask_id === 1) {
-      navigate('/admin/propuestas', { state: { tarea, estudiante, selectedAño } });
+      navigate('/admin/propuestas', { state: { tarea, estudiante, selectedAño } }); // Navigate to proposals if task type is 1
     } else {
-      navigate('/admin/capitulo', { state: { tarea, estudiante, selectedAño } });
+      navigate('/admin/capitulo', { state: { tarea, estudiante, selectedAño } }); // Navigate to chapter if task type is not 1
     }
   };
 
+  // Format date to dd/mm/yyyy format
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getUTCDate().toString().padStart(2, '0')}/${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
   };
 
+  // Format time to 12-hour AM/PM format
   const formatTime24Hour = (timeStr: string) => {
     const [hours, minutes, seconds] = timeStr.split(':').map(Number);
     const amPm = hours < 12 ? 'AM' : 'PM';
@@ -109,13 +120,14 @@ const TareasEstudiante: React.FC = () => {
       <div className="mb-4">
         <button
           className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(-1)} // Go back to the previous page
         >
           <span className="mr-2">←</span> Regresar
         </button>
       </div>
 
       <div className="mx-auto max-w-5xl px-4 py-4">
+        {/* If no tasks are found, show a message */}
         {tareasOrdenadas.length === 0 ? (
           <table className="min-w-full table-auto">
             <tbody>
@@ -128,13 +140,14 @@ const TareasEstudiante: React.FC = () => {
           </table>
         ) : (
           <>
+            {/* Display tasks with typeTask_id = 1 (Proposals) */}
             {tareasOrdenadas
               .filter((tarea) => tarea.typeTask_id === 1)
               .map((tarea) => (
                 <div
                   key={tarea.task_id}
                   className="mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-blue-100 dark:bg-boxdark"
-                  onClick={() => handleNavigate(tarea)}
+                  onClick={() => handleNavigate(tarea)} // Navigate when clicked
                 >
                   <h3 className="text-lg font-bold text-black dark:text-white">{tarea.title}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -149,13 +162,14 @@ const TareasEstudiante: React.FC = () => {
 
             <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos</h3>
 
+            {/* Display tasks with typeTask_id !== 1 (Chapters) */}
             {tareasOrdenadas
               .filter((tarea) => tarea.typeTask_id !== 1)
               .map((tarea) => (
                 <div
                   key={tarea.task_id}
                   className="mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-white dark:bg-boxdark"
-                  onClick={() => handleNavigate(tarea)}
+                  onClick={() => handleNavigate(tarea)} // Navigate when clicked
                 >
                   <h3 className="text-lg font-bold text-black dark:text-white">
                     {tarea.title}

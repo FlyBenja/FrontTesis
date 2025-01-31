@@ -5,11 +5,13 @@ import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { cargarCatedraticos } from '../../../ts/Admin/CargaCatedraticos';
 
 const SubirCatedraticos = () => {
+  // State variables to manage selected file, API loading status, and sedeId
   const [fileSelected, setFileSelected] = useState<File | null>(null);
   const [apiLoading, setApiLoading] = useState<boolean>(false);
   const [sedeId, setSedeId] = useState<number | null>(null);
   const fileInputRef = React.createRef<HTMLInputElement>();
 
+  // Fetch sedeId from user profile on component mount
   useEffect(() => {
     const fetchSedeId = async () => {
       try {
@@ -29,11 +31,13 @@ const SubirCatedraticos = () => {
     fetchSedeId();
   }, []);
 
+  // Handle file selection event
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setFileSelected(file);
   };
 
+  // Handle file upload process
   const handleUpload = async () => {
     if (!fileSelected || !sedeId) {
       Swal.fire({
@@ -77,6 +81,7 @@ const SubirCatedraticos = () => {
     }
   };
 
+  // Reset file selection
   const handleReset = () => {
     setFileSelected(null);
     if (fileInputRef.current) {
@@ -84,6 +89,7 @@ const SubirCatedraticos = () => {
     }
   };
 
+  // Download the template file for uploading professors
   const handleDownloadTemplate = () => {
     const link = document.createElement('a');
     link.href = '/Plantilla.xlsx';
@@ -93,6 +99,7 @@ const SubirCatedraticos = () => {
 
   return (
     <>
+      {/* Breadcrumb navigation */}
       <Breadcrumb pageName="Subir Catedráticos" />
       <div className="flex justify-center mt-18">
         <div className="w-full max-w-md">
@@ -139,6 +146,7 @@ const SubirCatedraticos = () => {
         </div>
       </div>
 
+      {/* Loading overlay */}
       {apiLoading && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="text-white text-xl">Espere un momento en lo que se suben los Catedraticos...</div>

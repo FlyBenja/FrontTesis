@@ -1,53 +1,56 @@
 import axios from 'axios';
 
+// Interface representing the structure of profile data
 export interface PerfilData {
-  user_id: number;
-  email: string;
-  userName: string;
-  profilePhoto: string | null;
-  carnet: string;
-  sede: number;
-  roleName: string;
+  user_id: number; // Unique identifier for the user
+  email: string; // User's email address
+  userName: string; // User's name
+  profilePhoto: string | null; // URL of the user's profile photo (nullable)
+  carnet: string; // User's identification number (carnet)
+  sede: number; // ID of the user's location (sede)
+  roleName: string; // Role name assigned to the user
 }
 
+// Function to retrieve the user's profile data
 export const getDatosPerfil = async (): Promise<PerfilData> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     
+    // If no token is found, throw an error
     if (!token) {
       throw new Error('Token de autenticación no encontrado');
     }
 
-    // Hacer la solicitud GET a la URL especificada
+    // Make a GET request to the specified URL to fetch profile data
     const response = await axios.get('http://localhost:3000/api/usuarios/perfil', {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Include authentication token in the request headers
+        'Content-Type': 'application/json', // Specify the content type as JSON
       },
     });
 
-    // Aquí se ajusta la respuesta para que coincida con el formato esperado
+    // Adjust the response data to match the expected format
     const perfilData: PerfilData = {
-      user_id: response.data.user_id,
-      email: response.data.email,
-      userName: response.data.userName,
-      profilePhoto: response.data.profilePhoto,
-      carnet: response.data.carnet,
-      sede: response.data.sede,
-      roleName: response.data.roleName,
+      user_id: response.data.user_id, // Extract user_id from the response
+      email: response.data.email, // Extract email from the response
+      userName: response.data.userName, // Extract userName from the response
+      profilePhoto: response.data.profilePhoto, // Extract profilePhoto from the response
+      carnet: response.data.carnet, // Extract carnet from the response
+      sede: response.data.sede, // Extract sede from the response
+      roleName: response.data.roleName, // Extract roleName from the response
     };
 
-    return perfilData; // Retornar los datos del perfil ajustados
+    return perfilData; // Return the formatted profile data
   } catch (error) {
-    // Manejo de errores
+    // Error handling
     if (axios.isAxiosError(error)) {
       const errorMessage = error.response?.data
-        ? JSON.stringify(error.response?.data)
-        : 'Error desconocido';
+        ? JSON.stringify(error.response?.data) // Convert error response data to a string if available
+        : 'Error desconocido'; // Default unknown error message
       throw new Error(errorMessage);
     }
 
-    throw new Error('Error desconocido');
+    throw new Error('Error desconocido'); // Throw a generic unknown error
   }
 };

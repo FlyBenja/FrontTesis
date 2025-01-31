@@ -1,34 +1,39 @@
 import axios from 'axios';
 
+// Asynchronous function to update the name of a 'sede' (location or department)
 export const updateSede = async (sede_id: number, nameSede: string): Promise<string> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     
+    // Check if the token is missing
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado');  // Throw an error if the token is not found
     }
 
-    // Hacer la solicitud de actualización de la sede
+    // Make the PUT request to update the 'sede' with the new name
     const response = await axios.put(
-      `http://localhost:3000/api/sedes/${sede_id}`,
-      JSON.stringify({ nameSede }), // El nombre de la sede que se desea actualizar
+      `http://localhost:3000/api/sedes/${sede_id}`,  // URL with the 'sede_id' parameter
+      JSON.stringify({ nameSede }),  // The name of the 'sede' to update
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${token}`,  // Include the token in the Authorization header
+          'Content-Type': 'application/json'   // Set Content-Type to JSON
         }
       }
     );
 
-    return response.data; // Devuelve el mensaje de éxito
+    // Return the success message received in the response
+    return response.data; 
   } catch (error: any) {
-    // Si es un error de Axios, obtener el mensaje de error
+    // Error handling
     if (axios.isAxiosError(error)) {
+      // If the error is an Axios error, extract the error message from the response or use a default message
       const errorMessage = error.response?.data?.message || 'Error desconocido al actualizar la sede';
-      throw new Error(errorMessage);
+      throw new Error(errorMessage);  // Throw the specific error message
     } else {
-      throw error; // Para otros tipos de error
+      // If the error is not from Axios, throw it as is
+      throw error;
     }
   }
 };

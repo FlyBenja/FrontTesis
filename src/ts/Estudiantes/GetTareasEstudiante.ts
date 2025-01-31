@@ -1,44 +1,48 @@
 import axios from 'axios';
 
+// Define an interface to represent the structure of a student's task
 export interface TareaEstudiante {
-  task_id: number;
-  title: string;
-  description: string;
-  taskStart: string;
-  endTask: string;
-  startTime: string;
-  endTime: string;
-  submission_complete: boolean;
-  submission_date: string;
+  task_id: number; // Unique identifier for the task
+  title: string; // Title of the task
+  description: string; // Description of the task
+  taskStart: string; // Start date of the task
+  endTask: string; // End date of the task
+  startTime: string; // Start time of the task
+  endTime: string; // End time of the task
+  submission_complete: boolean; // Indicates if the task has been submitted
+  submission_date: string; // Date when the task was submitted
 }
 
+// Function to retrieve a list of tasks assigned to a student
 export const getTareasEstudiante = async (
-  userId: number,
-  year: number,
-  sedeId: number
+  userId: number, // ID of the student
+  year: number, // Academic year
+  sedeId: number // Campus ID
 ): Promise<TareaEstudiante[]> => {
   try {
-    // Recuperar el token desde localStorage
+    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
 
+    // If the token is missing, throw an error
     if (!token) {
-      throw new Error('Token de autenticación no encontrado');
+      throw new Error('Token de autenticación no encontrado'); // Authentication token not found
     }
 
-    // Hacer la solicitud GET a la URL especificada con los parámetros correctos
+    // Make a GET request to retrieve the student's tasks
     const response = await axios.get(
       `http://localhost:3000/api/submissions/student/${userId}/${year}/${sedeId}`,
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Include the authentication token in the request headers
+          'Content-Type': 'application/json', // Specify the content type as JSON
         },
       }
     );
 
-    return response.data.tasks; // Retornar los datos de la API
+    // Return the list of tasks received from the API
+    return response.data.tasks;
   } catch (error) {
-    console.error('Error al obtener las tareas del estudiante:', error);
+    // Error handling: If an error occurs, return an empty array
     return [];
   }
 };
