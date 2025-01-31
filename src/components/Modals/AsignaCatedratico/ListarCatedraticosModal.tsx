@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { getCatedraticosActivos } from '../../../ts/Admin/GetCatedraticoActive';
-import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
-import { asignarCatedraticoComision } from '../../../ts/Admin/AsignaCatedraticoComision';
-import Swal from 'sweetalert2';
+import React, { useState, useEffect } from 'react';  
+import { getCatedraticosActivos } from '../../../ts/Admin/GetCatedraticoActive';  
+import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';  
+import { asignarCatedraticoComision } from '../../../ts/Admin/AsignaCatedraticoComision';  
+import Swal from 'sweetalert2'; 
 
+// Defining the TypeScript interface for the professor (catedrático) data structure
 interface Catedratico {
   user_id: number;
   userName: string;
@@ -11,12 +12,14 @@ interface Catedratico {
   active: boolean;
 }
 
+// Defining the props for the ListarCatedraticosModal component
 interface ListarCatedraticosModalProps {
-  onClose: () => void;
-  selectedRow: number | null;
-  groupId: number | null;
+  onClose: () => void;  // Function to close the modal
+  selectedRow: number | null;  // Selected row (role) for the professor
+  groupId: number | null;  // Group ID where the professor is being assigned
 }
 
+// Mapping role names to role codes for easier reference
 const ROLES_CODIGOS: { [key: string]: number } = {
   Presidente: 1,
   Secretario: 2,
@@ -25,42 +28,49 @@ const ROLES_CODIGOS: { [key: string]: number } = {
   'Vocal 3': 5,
 };
 
+// The ListarCatedraticosModal component renders a modal for listing active professors and assigning them to a role
 const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClose, selectedRow, groupId }) => {
+  // State for managing the list of professors, selected professor, and loading state
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [selectedCatedratico, setSelectedCatedratico] = useState<Catedratico | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // useEffect to fetch active professors when the component mounts
   useEffect(() => {
     const fetchCatedraticos = async () => {
       try {
-        const perfil = await getDatosPerfil();
-        const year = new Date().getFullYear();
+        const perfil = await getDatosPerfil();  // Get profile data
+        const year = new Date().getFullYear();  // Get the current year
         if (perfil.sede) {
-          const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year);
-          setCatedraticos(catedraticosRecuperados);
+          const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year);  // Fetch active professors based on the profile's "sede" and the current year
+          setCatedraticos(catedraticosRecuperados);  // Set the fetched professors to the state
         }
       } catch (error) {
-        console.error('Error al recuperar los catedráticos activos:', error);
+        // If an error occurs, it is handled here but not logged to the console as per request
       } finally {
-        setLoading(false);
+        setLoading(false);  // Set loading state to false after the fetch attempt (either success or failure)
       }
     };
 
-    fetchCatedraticos();
-  }, []);
+    fetchCatedraticos();  // Call the fetch function when the component mounts
+  }, []);  // Empty dependency array means this effect runs only once after the initial render
 
+  // Handler to select a professor when clicked
   const handleSelect = (catedratico: Catedratico) => {
     setSelectedCatedratico(catedratico);
   };
 
+  // Handler to assign the selected professor to the role/committee
   const handleAssign = async () => {
     if (selectedCatedratico && selectedRow && groupId) {
       try {
+        // Assign the selected professor to the group with the corresponding role
         await asignarCatedraticoComision(groupId, {
           user_id: selectedCatedratico.user_id,
           rol_comision_id: selectedRow,
         });
 
+        // Show success alert using SweetAlert2
         Swal.fire({
           icon: 'success',
           title: 'Catedrático asignado',
@@ -70,8 +80,9 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
           customClass: { confirmButton: 'text-white' },
         });
 
-        onClose();
+        onClose();  // Close the modal after assignment
       } catch (error: any) {
+        // If an error occurs during assignment, show an error alert
         Swal.fire({
           icon: 'error',
           title: 'Error al asignar catedrático',
@@ -84,10 +95,12 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
     }
   };
 
+  // If data is still loading, show a loading message
   if (loading) {
     return <div className="text-center">Cargando...</div>;
   }
 
+  // If there are no active professors, show a message
   if (catedraticos.length === 0) {
     return (
       <div className="relative bg-gray-100 dark:bg-boxdark">
@@ -106,6 +119,7 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
     );
   }
 
+  // Determine the role text based on the selected row (role)
   const roleText = selectedRow ? Object.keys(ROLES_CODIGOS).find(key => ROLES_CODIGOS[key] === selectedRow) : '';
 
   return (
