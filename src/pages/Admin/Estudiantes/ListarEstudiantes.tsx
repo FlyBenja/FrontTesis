@@ -298,33 +298,32 @@ const ListarEstudiantes: React.FC = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-between items-center mt-4">
+        <div className="mt-4 flex justify-center">
           <button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
           >
-            Anterior
+            &#8592;
           </button>
-          <div className="flex gap-2">
-            {getPageRange().map((pageNumber) => (
-              <button
-                key={pageNumber}
-                onClick={() => paginate(pageNumber)}
-                className={`px-4 py-2 bg-blue-500 text-white rounded-md ${
-                  pageNumber === currentPage ? 'bg-blue-700' : ''
+          {getPageRange().map((page) => (
+            <button
+              key={page}
+              onClick={() => paginate(page)}
+              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
                 }`}
-              >
-                {pageNumber}
-              </button>
-            ))}
-          </div>
+            >
+              {page}
+            </button>
+          ))}
           <button
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
           >
-            Siguiente
+            &#8594;
           </button>
         </div>
       </div>

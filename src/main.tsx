@@ -41,13 +41,13 @@ const ProtectedRouteCambiaContra = () => {
 // Rendering the application to the DOM
 root.render(
   <React.StrictMode>
-    <Router>  // Set up the router for handling navigation
+    <Router>  
       <Routes>
-        <Route path="/" element={<Login />} />  // Route for the login page
-        <Route path="/admin/*" element={<App />} />  // Route for the admin section
-        <Route path="/estudiantes/*" element={<App />} />  // Route for the student section
-        <Route path="/secretario/*" element={<App />} />  // Route for the secretary section
-        <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />  // Protected route for changing the password
+        <Route path="/" element={<Login />} />  
+        <Route path="/admin/*" element={<App />} />  
+        <Route path="/estudiantes/*" element={<App />} />  
+        <Route path="/secretario/*" element={<App />} />  
+        <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} /> 
       </Routes>
     </Router>
   </React.StrictMode>,

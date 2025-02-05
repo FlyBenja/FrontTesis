@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'; 
-import { useNavigate, useLocation } from 'react-router-dom'; 
-import Swal from 'sweetalert2'; 
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; 
-import { enviaComentario } from '../../ts/Generales/EnviaComentario'; 
-import { getComentarios, ComentarioData } from '../../ts/Generales/GetComentario'; 
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { enviaComentario } from '../../ts/Generales/EnviaComentario';
+import { getComentarios, ComentarioData } from '../../ts/Generales/GetComentario';
 import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
 
 // Interface defining the structure for the comments
@@ -12,20 +12,25 @@ interface Comentario {
   texto: string;
   fecha: string;
   role: string;
+  comment_active: boolean;
 }
 
 const InfoCapitulo: React.FC = () => {
   const navigate = useNavigate();  // Hook for navigating to different routes
   const location = useLocation();  // Hook for accessing location state passed via navigation
-  
+
   // Destructure data passed from the previous page
   const { task_id, endTask, endTime, NameCapitulo } = location.state || {};
-  
+
   // States for managing comment text, previous comments, user ID, and whether the input is blocked
   const [comentario, setComentario] = useState<string>('');  // State for current comment text
   const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]);  // State for storing previous comments
   const [userId, setUserId] = useState<number | null>(null);  // State for storing the user ID
   const [inputBloqueado, setInputBloqueado] = useState<boolean>(true);  // State for disabling the input field
+
+  // Determina si el componente de escritura y botones deben estar deshabilitados.
+  // Si existe al menos un comentario y su propiedad comment_active es false, se deshabilita.
+  const isComentarioBloqueado = comentariosPrevios.length > 0 && comentariosPrevios[0].comment_active === false;
 
   // Function to check whether the button should be disabled based on the task end time
   const isButtonDisabled = (): boolean => {
@@ -63,13 +68,14 @@ const InfoCapitulo: React.FC = () => {
     try {
       // Fetch the comments using the task_id and user_id
       const comentarios: ComentarioData = await getComentarios(task_id, userId);
-      
+
       // Map the fetched comments into the required format
-      const comentariosFormateados = comentarios.comments.map((comment, index) => ({
-        id: index + 1,
+      const comentariosFormateados = comentarios.comments.map((comment) => ({
+        id: comment.comment_id, // ID único del comentario
         texto: comment.comment,
         fecha: formatearFecha(comment.datecomment),
         role: comment.role,
+        comment_active: comment.comment_active,
       }));
 
       // Update state with formatted comments
@@ -215,7 +221,7 @@ const InfoCapitulo: React.FC = () => {
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={5}
             placeholder="Escribe tu comentario aquí..."
-            disabled={inputBloqueado || isButtonDisabled()}  // Disable textarea if input is blocked or button is disabled
+            disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado}  // Disable textarea if input is blocked or button is disabled
           />
           <div className="flex flex-col md:flex-row justify-between items-center mt-1 md:mt-4">
             {/* Show a message if the button is disabled */}
@@ -224,14 +230,19 @@ const InfoCapitulo: React.FC = () => {
                 <p className="text-red-500 text-sm">Tarea llegó a fecha límite.</p>
               </div>
             )}
+            {isComentarioBloqueado && (
+              <div className="mb-2 md:mb-0">
+                <p className="text-red-500 text-sm">Admin ha bloqueado los comentarios.</p>
+              </div>
+            )}
             {/* Submit button to send the comment */}
             <button
-              className={`px-4 py-2 rounded-md ml-auto ${inputBloqueado || isButtonDisabled()
+              className={`px-4 py-2 rounded-md ml-auto ${inputBloqueado || isButtonDisabled() || isComentarioBloqueado
                 ? 'bg-gray-400 text-white cursor-not-allowed'
                 : 'bg-blue-500 text-white hover:bg-blue-600'
                 }`}
               onClick={handleEnviarComentario}
-              disabled={inputBloqueado || isButtonDisabled()}  // Disable the button based on the condition
+              disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado}  // Disable the button based on the condition
             >
               Enviar Comentario
             </button>

@@ -216,6 +216,7 @@ const ListarCatedraticos: React.FC = () => {
           </table>
         </div>
 
+        {/* Pagination */}
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => paginate(currentPage - 1)}
