@@ -6,7 +6,7 @@ import { enviaComentario } from '../../../ts/Generales/EnviaComentario';
 import { getComentarios, ComentarioData } from '../../../ts/Generales/GetComentario';
 import { updateComentStats } from '../../../ts/Admin/UpdateComentStat';
 
-// Se actualiza la definición de la interfaz para incluir comment_active
+// The interface has been updated to include comment_active
 interface Comentario {
   id: number;
   texto: string;
@@ -16,44 +16,44 @@ interface Comentario {
 }
 
 const Capitulos: React.FC = () => {
-  const navigate = useNavigate(); // Hook para navegar entre páginas
-  const location = useLocation(); // Hook para obtener el estado de la URL
-  const { tarea, estudiante } = location.state || {}; // Se extraen tarea y estudiante del estado
-  const [comentario, setComentario] = useState<string>(''); // Estado para almacenar el nuevo comentario
-  const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]); // Estado para almacenar los comentarios previos
+  const navigate = useNavigate(); // Hook for navigating between pages
+  const location = useLocation(); // Hook to get the state from the URL
+  const { tarea, estudiante } = location.state || {}; // Destructure task and student from the location state
+  const [comentario, setComentario] = useState<string>(''); // State to store the new comment
+  const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]); // State to store previous comments
 
-  // Determina si el componente de escritura y botones deben estar deshabilitados.
-  // Si existe al menos un comentario y su propiedad comment_active es false, se deshabilita.
+  // Determines if the comment writing area and buttons should be disabled.
+  // If there is at least one comment and its comment_active property is false, it is disabled.
   const isComentarioBloqueado = comentariosPrevios.length > 0 && comentariosPrevios[0].comment_active === false;
 
-  // Función para verificar si el botón de "Enviar Comentario" debe estar deshabilitado por fecha límite
+  // Function to check if the "Enviar Comentario" button should be disabled due to the deadline
   const isButtonDisabled = (): boolean => {
-    const currentDate = new Date(); // Fecha y hora actual
-    const endDate = new Date(tarea.endTask); // Fecha de término de la tarea
-    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()); // Fecha actual sin tiempo
+    const currentDate = new Date(); // Current date and time
+    const endDate = new Date(tarea.endTask); // Task end date
+    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()); // Current date without time
 
-    // Obtener la hora, minutos y segundos actuales
+    // Get the current hour, minute, and second
     const currentHour = currentDate.getHours();
     const currentMinutes = currentDate.getMinutes();
     const currentSeconds = currentDate.getSeconds();
 
-    // Formatear la hora actual como HH:mm:ss
+    // Format the current time as HH:mm:ss
     const formattedCurrentTime = `${currentHour.toString().padStart(2, '0')}:${currentMinutes
       .toString()
       .padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
-    // Combinar fecha y hora en formato YYYY-MM-DD HH:mm:ss
+    // Combine date and time into a format like YYYY-MM-DD HH:mm:ss
     const formattedCurrentDateTime = `${currentDateOnly.toISOString().split('T')[0]} ${formattedCurrentTime}`;
 
     const endDateOnly = new Date(
       Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate())
-    ); // Quitar tiempo de la fecha de término
+    ); // Remove the time from the end date
     const formattedEndDateTime = `${endDateOnly.toISOString().split('T')[0]} ${tarea.endTime || ''}`;
 
-    if (isNaN(endDateOnly.getTime())) return true; // Si la fecha de término es inválida, se deshabilita
-    return formattedCurrentDateTime > formattedEndDateTime; // Se deshabilita si la fecha actual es posterior a la fecha límite
+    if (isNaN(endDateOnly.getTime())) return true; // If the end date is invalid, disable the button
+    return formattedCurrentDateTime > formattedEndDateTime; // Disable if the current date is later than the deadline
   };
 
-  // Función para formatear la fecha en formato día/mes/año
+  // Function to format the date as day/month/year
   const formatearFecha = (fecha: string): string => {
     const date = new Date(fecha);
     return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1)
@@ -61,26 +61,26 @@ const Capitulos: React.FC = () => {
       .padStart(2, '0')}/${date.getFullYear()}`;
   };
 
-  // Cargar los comentarios previos cuando el componente se monta
+  // Load previous comments when the component mounts
   useEffect(() => {
     const cargarComentarios = async () => {
-      if (!tarea || !estudiante) return; // Si no hay tarea o estudiante, no se cargan comentarios
+      if (!tarea || !estudiante) return; // If there is no task or student, do not load comments
 
-      const taskId = tarea.task_id; // Se obtiene el ID de la tarea
-      const userId = estudiante.id; // Se obtiene el ID del estudiante
+      const taskId = tarea.task_id; // Get the task ID
+      const userId = estudiante.id; // Get the student ID
 
       try {
-        // Se obtienen los comentarios desde la API
+        // Get the comments from the API
         const comentarios: ComentarioData = await getComentarios(taskId, userId);
-        // Se formatean los comentarios en una estructura más usable, incluyendo comment_active
+        // Format the comments into a more usable structure, including comment_active
         const comentariosFormateados = comentarios.comments.map((comment) => ({
-          id: comment.comment_id, // ID único del comentario
+          id: comment.comment_id, // Unique comment ID
           texto: comment.comment,
           fecha: formatearFecha(comment.datecomment),
           role: comment.role,
           comment_active: comment.comment_active,
         }));
-        setComentariosPrevios(comentariosFormateados); // Se actualiza el estado con los comentarios formateados
+        setComentariosPrevios(comentariosFormateados); // Update the state with the formatted comments
       } catch (error) {
         console.error('Error al cargar comentarios:', error);
       }
@@ -89,18 +89,18 @@ const Capitulos: React.FC = () => {
     cargarComentarios();
   }, [tarea, estudiante]);
 
-  // Manejar el cambio en el textarea del comentario
+  // Handle the change in the textarea for the comment
   const handleComentarioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComentario(e.target.value);
   };
 
-  // Manejar la desactivación de un comentario y actualizar la lista de comentarios
+  // Handle disabling a comment and updating the comment list
   const handleDesactivarComentario = async (comentId: number) => {
     try {
-      // Llamada a la API para actualizar el estado del comentario
+      // Call the API to update the comment status
       await updateComentStats(comentId);
 
-      // Después de actualizar el estado, se vuelve a obtener la lista de comentarios
+      // After updating, fetch the comment list again
       if (tarea && estudiante) {
         const updatedComentarios: ComentarioData = await getComentarios(tarea.task_id, estudiante.id);
         const comentariosFormateados = updatedComentarios.comments.map((comment) => ({
@@ -137,7 +137,7 @@ const Capitulos: React.FC = () => {
     }
   };
 
-  // Manejar el envío de un nuevo comentario
+  // Handle submitting a new comment
   const handleEnviarComentario = async () => {
     if (!tarea || !estudiante) {
       Swal.fire({
@@ -162,16 +162,15 @@ const Capitulos: React.FC = () => {
     };
 
     try {
-      console.log(commentData);
       await enviaComentario(taskId, commentData);
-      // Se actualiza la lista de comentarios previos con el nuevo comentario
+      // Update the list of previous comments with the new comment
       setComentariosPrevios((prevComentarios) => [
         {
           id: prevComentarios.length + 1,
           texto: comentario,
           fecha: new Date().toLocaleDateString(),
           role: 'teacher',
-          comment_active: true, // Se asume que el comentario nuevo está activo
+          comment_active: true, // Assume that the new comment is active
         },
         ...prevComentarios,
       ]);
@@ -223,7 +222,7 @@ const Capitulos: React.FC = () => {
       </div>
 
       <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
-        {/* Se muestran los comentarios previos */}
+        {/* Display the previous comments */}
         <div className="w-full md:w-1/2 h-72 bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
           <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Comentarios Previos</h4>
           <ul className="space-y-4">
@@ -237,7 +236,7 @@ const Capitulos: React.FC = () => {
           </ul>
         </div>
 
-        {/* Formulario para enviar un nuevo comentario */}
+        {/* Form to submit a new comment */}
         <div className="w-full md:w-1/2 h-72 p-4 bg-white dark:bg-boxdark rounded-lg">
           <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Enviar Comentario</h4>
           <textarea

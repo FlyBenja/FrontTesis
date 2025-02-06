@@ -1,50 +1,65 @@
 import React, { useEffect, useState } from 'react';
+// Importing necessary components
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import CardDataStats from '../../../components/Cards/CardDataStats.tsx';
 import TareasEstudiantes from '../../../components/Graficas/TareasEstudiantes.tsx';
 import PorcentajeSede from '../../../components/Graficas/PorcentajeSede.tsx';
+// Importing functions to get data
 import { getDatosPerfil, PerfilData } from '../../../ts/Generales/GetDatsPerfil';
 import { getStudentsSede } from '../../../ts/Admin/GetStudentsSede';
 
 const Graficas: React.FC = () => {
+  // State to store the total number of students and total students per sede
   const [totalStudents, setTotalStudents] = useState<number | null>(null);
   const [totalStudentsSede, setTotalStudentsSede] = useState<number | null>(null);
+  // State to handle loading state of data
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Effect hook to fetch data when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetching profile data
         const perfilData: PerfilData = await getDatosPerfil();
-        const sedeId = perfilData.sede;
+        const sedeId = perfilData.sede; // Getting the 'sede' id from the profile data
 
         if (sedeId) {
+          // Fetching students data for the specific 'sede'
           const studentsData = await getStudentsSede(sedeId);
+          // Updating the state with the fetched data
           setTotalStudents(studentsData.totalStudents);
           setTotalStudentsSede(studentsData.totalStudentsSede);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        // In case of an error, we just handle it here, but no console logs
       } finally {
+        // After fetching data or failing, loading state is set to false
         setLoading(false);
       }
     };
 
+    // Invoking the function to fetch data
     fetchData();
   }, []);
 
   return (
     <>
+      {/* Breadcrumb navigation for the "Graficas" page */}
       <Breadcrumb pageName="Graficas" />
+      
+      {/* Main content grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+        {/* Conditionally render loading text or data stats based on loading state */}
         {loading ? (
-          <p>Cargando datos...</p>
+          <p>Cargando datos...</p> // "Loading data..." in Spanish
         ) : (
           <CardDataStats
-            title="Total Estudiantes"
+            title="Total Estudiantes" // "Total Students" in Spanish
             total={totalStudents ? totalStudents.toLocaleString() : 'N/A'}
             rate={`${totalStudentsSede ? ((totalStudentsSede / (totalStudents || 1)) * 100).toFixed(2) : '0'}%`}
             levelDown={false}
           >
+            {/* Icon used in the CardDataStats component */}
             <svg
               className="fill-primary dark:fill-white"
               width="22"
@@ -69,8 +84,10 @@ const Graficas: React.FC = () => {
           </CardDataStats>
         )}
       </div>
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
 
+      {/* Second grid to display other charts */}
+      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+        {/* Displaying PorcentajeSede and TareasEstudiantes components */}
         <PorcentajeSede />
         <TareasEstudiantes />
       </div>
