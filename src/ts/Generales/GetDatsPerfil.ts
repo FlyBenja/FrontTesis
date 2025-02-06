@@ -8,6 +8,7 @@ export interface PerfilData {
   profilePhoto: string | null; // URL of the user's profile photo (nullable)
   carnet: string; // User's identification number (carnet)
   sede: number; // ID of the user's location (sede)
+  NombreSede: string; // New field representing the name of the sede
   roleName: string; // Role name assigned to the user
 }
 
@@ -38,6 +39,7 @@ export const getDatosPerfil = async (): Promise<PerfilData> => {
       profilePhoto: response.data.profilePhoto, // Extract profilePhoto from the response
       carnet: response.data.carnet, // Extract carnet from the response
       sede: response.data.sede, // Extract sede from the response
+      NombreSede: response.data.NombreSede, // Extract NombreSede from the response
       roleName: response.data.roleName, // Extract roleName from the response
     };
 
