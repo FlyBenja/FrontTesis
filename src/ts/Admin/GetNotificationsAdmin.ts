@@ -1,7 +1,15 @@
 import axios from 'axios';
 
+// Define the expected notification type
+interface Notification {
+  notification_text: string;
+  notification_date: string;
+  task_id: number;
+  student_id: number;
+}
+
 // Asynchronous function to get notifications data from the API
-export const getNotificationsAdmin = async (sede_id: number): Promise<{ notification_id: number; message: string }[]> => {
+export const getNotificationsAdmin = async (sede_id: number): Promise<Notification[]> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
@@ -11,14 +19,14 @@ export const getNotificationsAdmin = async (sede_id: number): Promise<{ notifica
     }
 
     // Make the GET request to the specified URL to get the notifications data
-    const response = await axios.get(`http://localhost:3000/api/admin/notifications/${sede_id}`, {
+    const response = await axios.get<Notification[]>(`http://localhost:3000/api/admin/notifications/${sede_id}`, {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
         'Content-Type': 'application/json',  // Set the content type as JSON
       },
     });
 
-    // Return the data from the response
+    // Return the transformed data
     return response.data;
   } catch (error) {
     // Handle errors
