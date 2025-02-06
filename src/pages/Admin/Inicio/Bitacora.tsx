@@ -125,7 +125,7 @@ const Bitacora = () => {
     <div className="mt-5 px-4">
       {/* Breadcrumb component for navigation */}
       <Breadcrumb pageName="Bitácora de Actividades" />
-      
+
       {/* Mapping over current logs and displaying each log */}
       {currentLogs.map((log, index) => (
         <div
@@ -133,7 +133,7 @@ const Bitacora = () => {
           className="flex flex-col sm:flex-row items-start sm:items-center border border-gray-200 dark:border-gray-700 bg-white dark:bg-boxdark p-4 rounded-lg mb-4"
         >
           {/* Username box for the log */}
-          <div className="flex-shrink-0 bg-blue-600 text-white font-bold text-center rounded-md px-4 py-2 sm:py-6 sm:h-[70px] sm:text-base mt-[-38px] sm:mt-0 sm:text-left sm:ml-4 absolute sm:static right-12">
+          <div className="flex-shrink-0 bg-blue-600 text-white font-bold text-center rounded-md px-4 py-2 sm:py-6 sm:h-[70px] sm:text-base mt-[-38px] sm:mt-0 sm:text-left sm:ml-4 absolute sm:static right-12 sm:w-[160px]">
             <span className="text-xl sm:text-base">{log.username}</span>
           </div>
 
@@ -168,11 +168,10 @@ const Bitacora = () => {
           <button
             key={page}
             onClick={() => paginate(page)}
-            className={`mx-1 px-3 py-1 rounded-md border ${
-              currentPage === page
+            className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
                 ? "bg-blue-600 text-white"
                 : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-            }`}
+              }`}
           >
             {page}
           </button>
