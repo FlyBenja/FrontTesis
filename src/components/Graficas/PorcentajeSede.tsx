@@ -49,22 +49,30 @@ const PorcentajeSede: React.FC = () => {
 
     // Configuration for ApexCharts options
     const options: ApexOptions = {
-        colors: ['#3C50E0', '#80CAEE'], // Colors for the chart sections
+        colors: ['#3C50E0', '#80CAEE'], // Colores del gráfico
         chart: {
-            type: 'pie', // Type of chart (pie chart)
-            height: 350, // Height of the chart
-            toolbar: { show: false }, // Hide the toolbar
+            type: 'pie',
+            height: 350,
+            toolbar: { show: false },
         },
-        labels: chartData.labels, // Set labels for the pie chart
+        labels: chartData.labels,
         legend: {
-            position: 'top', // Position of the legend
-            horizontalAlign: 'center', // Align the legend in the center
-            fontFamily: 'Satoshi', // Font for the legend
-            fontWeight: 500, // Font weight for the legend
-            fontSize: '14px', // Font size for the legend
+            position: 'top',
+            horizontalAlign: 'center',
+            fontFamily: 'Satoshi',
+            fontWeight: 500,
+            fontSize: '14px',
         },
-        fill: { opacity: 1 }, // Set fill opacity for the sections
-    };
+        fill: { opacity: 1 },
+        tooltip: {
+            y: {
+                formatter: (val) => `${val}%`, // Agrega el signo de porcentaje en el tooltip
+            },
+        },
+        dataLabels: {
+            formatter: (val) => `${Number(val || 0).toFixed(2)}%`, // Maneja valores nulos o no numéricos
+        },
+    };    
 
     return (
         // Container for the chart component

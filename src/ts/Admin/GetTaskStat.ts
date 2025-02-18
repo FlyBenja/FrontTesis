@@ -13,7 +13,7 @@ export const getTaskStats = async (
   courseId: number,
   year: number,
   sedeId: number
-): Promise<TaskStats> => {
+): Promise<TaskStats[]> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
@@ -34,10 +34,10 @@ export const getTaskStats = async (
       },
     });
 
-    // Extract and merge the response data
-    return Object.assign({}, ...response.data);
+    // Devolver directamente el array en lugar de fusionarlo en un objeto
+    return response.data;
   } catch (error) {
-
-    return {};
+    console.error("Error al obtener estadísticas de tareas:", error);
+    return [];
   }
 };

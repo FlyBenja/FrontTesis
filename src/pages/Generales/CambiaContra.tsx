@@ -65,7 +65,7 @@ const CambiaContra: React.FC = () => {
         icon: 'success',
         title: 'Contraseña actualizada',  // Alert for successful password change
         text: successMessage,
-        confirmButtonColor: '#3085d6',
+        confirmButtonColor: '#28a745',
       }).then(() => {
         navigate('/');  // Redirect to the homepage after success
       });

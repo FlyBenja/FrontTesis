@@ -141,7 +141,7 @@ const ListarCatedraticos: React.FC = () => {
   // Function to render the profile photo of the professor
   const renderProfilePhoto = (profilePhoto: string | null, userName: string) =>
     profilePhoto ? (
-      <img src={profilePhoto} alt={userName} className="w-10 h-10 rounded-full mx-auto" />
+      <img src={profilePhoto} alt={userName} className="w-10 h-10 rounded-full" />
     ) : (
       <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white">
         {userName.charAt(0).toUpperCase()}

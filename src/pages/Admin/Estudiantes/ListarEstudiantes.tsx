@@ -172,7 +172,13 @@ const ListarEstudiantes: React.FC = () => {
   // Render the student's profile photo or an initial if no photo is available
   const renderProfilePhoto = (profilePhoto: string, userName: string) => {
     if (profilePhoto) {
-      return <img src={profilePhoto} alt={userName} className="w-10 h-10 rounded-full mx-auto" />; // Render photo if available
+      return (
+        <img
+          src={profilePhoto}
+          alt={userName}
+          className="w-10 h-10 rounded-full"
+        />
+      ); // Render photo if available
     } else {
       const initial = userName.charAt(0).toUpperCase(); // Get first letter of user name
       return (

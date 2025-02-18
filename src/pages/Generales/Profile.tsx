@@ -1,74 +1,76 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import userSix from '../../images/user/user-06.png'; // Imagen por defecto
+import userSix from '../../images/user/user-06.png';
 import ofiLogo from '../../images/Login/sistemas1_11zon.png';
-import { FaCamera } from 'react-icons/fa'; // Ícono de la cámara
-import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil'; // Asumiendo que la API está en la carpeta api
-import Swal from 'sweetalert2'; // Importar SweetAlert2
-import { updateProfilePhoto } from '../../ts/Generales/PutPhotoProfile'; // Importar la función para actualizar la foto de perfil
+import { FaCamera } from 'react-icons/fa';
+import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
+import Swal from 'sweetalert2';
+import { updateProfilePhoto } from '../../ts/Generales/PutPhotoProfile';
 
 const Profile = () => {
-  const [profileImage, setProfileImage] = useState<string>(userSix); // Estado para la imagen de perfil
-  const [perfilData, setPerfilData] = useState<PerfilData | null>(null); // Estado para los datos del perfil
+  const [profileImage, setProfileImage] = useState<string>(userSix); // State for profile image
+  const [perfilData, setPerfilData] = useState<PerfilData | null>(null); // State for profile data
 
   useEffect(() => {
-    // Función para obtener los datos del perfil
+    // Function to fetch profile data
     const fetchProfileData = async () => {
       try {
-        const data = await getDatosPerfil(); // Llamar a la API para obtener los datos del perfil
-        setPerfilData(data); // Actualizar el estado con los datos obtenidos
+        const data = await getDatosPerfil(); // API call to get profile data
+        setPerfilData(data); // Update state with retrieved data
+
+        // Set profile image if available, otherwise use the first letter of username
         if (data.profilePhoto) {
-          setProfileImage(data.profilePhoto); // Si hay foto de perfil, usarla
+          setProfileImage(data.profilePhoto);
         } else {
-          setProfileImage(`${data.userName.charAt(0).toUpperCase()}`); // Si no tiene foto, usar la primera inicial del nombre
+          setProfileImage(`${data.userName.charAt(0).toUpperCase()}`);
         }
       } catch (error) {
-        console.error('Error al obtener los datos del perfil', error);
+
       }
     };
 
-    fetchProfileData(); // Llamar a la función para obtener los datos cuando se monta el componente
+    fetchProfileData(); // Call function when component mounts
   }, []);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl); // Cambiar la imagen de perfil mientras se sube
-  
+      setProfileImage(imageUrl); // Temporarily update profile image while uploading
+
       try {
-        // Llamar a la API para actualizar la foto de perfil
-        const result = await updateProfilePhoto(file);
-        console.log(result); // Si necesitas hacer algo con la respuesta de la API
-  
-        // Alerta de éxito
+        // API call to update profile picture
+        await updateProfilePhoto(file);
+
+        // Success alert
         Swal.fire({
           title: '¡Éxito!',
           text: 'La foto de perfil se ha actualizado correctamente.',
           icon: 'success',
           confirmButtonText: 'OK',
-          confirmButtonColor: '#28a745', // Fondo verde
+          confirmButtonColor: '#28a745', // Green background
           background: '#f4f4f4',
+        }).then(() => {
+          window.location.reload(); // Reload the page after closing the alert
         });
       } catch (error: any) {
-        // En caso de error, restaurar la foto de perfil original
         const errorMessage = error?.message || 'Hubo un problema al actualizar la foto de perfil.';
-        
-        // Restaurar la imagen original de la API si la actualización falla
+
+        // Restore original profile image if update fails
         setProfileImage(perfilData?.profilePhoto || userSix);
-  
-        // Alerta de error
+
+        // Error alert
         Swal.fire({
           title: 'Error',
           text: errorMessage,
           icon: 'error',
           confirmButtonText: 'OK',
-          confirmButtonColor: '#dc3545', // Fondo rojo
+          confirmButtonColor: '#dc3545', // Red background
           background: '#f4f4f4',
         });
       }
     }
-  };  
+  };
 
   return (
     <>
@@ -90,8 +92,8 @@ const Profile = () => {
                 {perfilData?.userName.charAt(0).toUpperCase()}
               </div>
             )}
-            
-            {/* Botón de la cámara */}
+
+            {/* Camera button */}
             <div className="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 text-white cursor-pointer">
               <label htmlFor="fileInput">
                 <FaCamera className="text-lg" />
@@ -109,29 +111,29 @@ const Profile = () => {
             {perfilData ? (
               <>
                 <h3 className="mb-1 text-xl font-semibold text-black dark:text-white">
-                  {perfilData.userName} {/* Mostrar el nombre del usuario */}
+                  {perfilData.userName} {/* Display username */}
                 </h3>
-                <p className="font-medium">{perfilData.email}</p> {/* Mostrar el correo electrónico */}
+                <p className="font-medium">{perfilData.email}</p> {/* Display email */}
                 <div className="mx-auto mt-2 mb-2 grid max-w-lg grid-cols-3 rounded-md border border-stroke py-2 dark:border-strokedark dark:bg-[#37404F]">
                   <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-2 dark:border-strokedark">
                     <span className="font-semibold text-black dark:text-white">
-                      {perfilData.roleName} {/* Mostrar el nombre del rol */}
+                      {perfilData.roleName} {/* Display role name */}
                     </span>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-2 dark:border-strokedark">
                     <span className="font-semibold text-black dark:text-white">
-                      {perfilData.carnet} {/* Mostrar el carnet */}
+                      {perfilData.carnet} {/* Display ID card */}
                     </span>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-1 px-2">
                     <span className="font-semibold text-black dark:text-white">
-                      {perfilData.NombreSede} {/* Mostrar la sede */}
+                      {perfilData.NombreSede} {/* Display campus name */}
                     </span>
                   </div>
                 </div>
               </>
             ) : (
-              <p>Cargando datos del perfil...</p> // Mensaje mientras se cargan los datos
+              <p>Cargando datos del perfil...</p> // Loading message while fetching data
             )}
           </div>
         </div>

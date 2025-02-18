@@ -48,7 +48,7 @@ const Login: React.FC = () => {
           icon: 'success',
           title: 'Bienvenido', // Message in Spanish
           text: 'Inicio de sesión exitoso.', // Message in Spanish
-          confirmButtonColor: '#3085d6', // Blue color for the button
+          confirmButtonColor: '#28a745', // Blue color for the button
         }).then(() => {
           // Checking if the user's role has a valid route
           const validRoles = [1, 3, 4]; // Valid roles for navigation
