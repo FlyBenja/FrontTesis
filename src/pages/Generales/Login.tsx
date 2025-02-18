@@ -1,10 +1,10 @@
-import { useNavigate } from "react-router-dom"; 
-import { FaEnvelope, FaLock } from "react-icons/fa"; 
-import { useState } from "react"; 
-import Swal from "sweetalert2"; 
+import { useNavigate } from "react-router-dom";
+import { FaEnvelope, FaLock } from "react-icons/fa";
+import { useState } from "react";
+import Swal from "sweetalert2";
 import umgLogo from '../../images/Login/logo3.png';
-import ofiLogo from '../../images/Login/sistemas1_11zon.png'; 
-import axios from 'axios'; 
+import ofiLogo from '../../images/Login/sistemas1_11zon.png';
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const navigate = useNavigate(); // useNavigate hook for routing
@@ -119,6 +119,11 @@ const Login: React.FC = () => {
             Ingresar {/* Submit button text in Spanish */}
           </button>
         </form>
+        <div className="mt-4 text-center">
+          <a href="/recuperar-contraseña" className="text-blue-600 hover:underline">
+            ¿Olvidaste tu contraseña? {/* Link text in Spanish */}
+          </a>
+        </div>
       </div>
     </div>
   );

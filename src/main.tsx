@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react';  
-import ReactDOM from 'react-dom/client';  
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';  
-import App from './App';  
-import Login from './pages/Generales/Login';  
-import CambiaContra from './pages/Generales/CambiaContra';  
-import './css/style.css';  
-import './css/satoshi.css';  
-import 'jsvectormap/dist/css/jsvectormap.css';  
-import 'flatpickr/dist/flatpickr.min.css';  
-import Swal from 'sweetalert2';  
+import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import App from './App';
+import Login from './pages/Generales/Login';
+import CambiaContra from './pages/Generales/CambiaContra';
+import RecuperarContra from './pages/Generales/RecuperarContra';
+import './css/style.css';
+import './css/satoshi.css';
+import 'jsvectormap/dist/css/jsvectormap.css';
+import 'flatpickr/dist/flatpickr.min.css';
+import Swal from 'sweetalert2';
 
 // Creating a root element to render the React app
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -41,13 +42,14 @@ const ProtectedRouteCambiaContra = () => {
 // Rendering the application to the DOM
 root.render(
   <React.StrictMode>
-    <Router>  
+    <Router>
       <Routes>
-        <Route path="/" element={<Login />} />  
-        <Route path="/admin/*" element={<App />} />  
-        <Route path="/estudiantes/*" element={<App />} />  
-        <Route path="/secretario/*" element={<App />} />  
-        <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} /> 
+        <Route path="/" element={<Login />} />
+        <Route path="/admin/*" element={<App />} />
+        <Route path="/estudiantes/*" element={<App />} />
+        <Route path="/secretario/*" element={<App />} />
+        <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />
+        <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
       </Routes>
     </Router>
   </React.StrictMode>,
