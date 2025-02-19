@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
-import { getRevisionesPendientes } from '../../ts/Cordinador/RevisionesPendientes'; // Importa la API
+import { getRevisionesPendientes } from '../../ts/Cordinador/GetRevisionesPendientes'; // Importa la API
 
 const SolicitudRevisiones: React.FC = () => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const SolicitudRevisiones: React.FC = () => {
   const [searchCarnet, setSearchCarnet] = useState(''); // Campo de búsqueda del carnet
   const [order, setOrder] = useState<'asc' | 'desc'>('asc'); // Orden de las revisiones
   const [filteredRevisiones, setFilteredRevisiones] = useState(revisiones); // Revisión filtrada
-  
+
   // State hooks for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [revisionesPerPage, setRevisionesPerPage] = useState(5);  // Default to 5 items per page
@@ -63,8 +63,8 @@ const SolicitudRevisiones: React.FC = () => {
     );
   };
 
-  const handleVerDetalle = (revisionId: number) => {
-    navigate(`/cordinador/revision-estudiante/${revisionId}`);
+  const handleVerDetalle = (userId: number) => {
+    navigate(`/cordinador/revision-estudiante`, { state: { userId } });
   };
 
   // Agregar console.log para mostrar la longitud del carnet ingresado
@@ -139,7 +139,7 @@ const SolicitudRevisiones: React.FC = () => {
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">
                     <button
                       className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                      onClick={() => handleVerDetalle(revision.revision_thesis_id)}
+                      onClick={() => handleVerDetalle(revision.user.user_id)}
                     >
                       Ver detalle
                     </button>
