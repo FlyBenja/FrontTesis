@@ -27,7 +27,7 @@ const Login: React.FC = () => {
       // Mapping user roles to routes
       const rolePaths: { [key: number]: string } = {
         7: "/revisor/graficas", // Revisor role
-        6: "/cordinador/graficas", // Cordinador role
+        6: "/cordinador/grafica", // Cordinador role
         4: "/secretario/crea-sedes", // Secretary role
         3: "/admin/graficas", // Admin role
         1: "/estudiantes/inicio", // Student role
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
           confirmButtonColor: '#28a745', // Blue color for the button
         }).then(() => {
           // Checking if the user's role has a valid route
-          const validRoles = [1, 3, 4]; // Valid roles for navigation
+          const validRoles = [1, 3, 4, 6, 7]; // Valid roles for navigation
           const rolePath = validRoles.includes(response.data.rol)
             ? rolePaths[response.data.rol] // Route based on the user's role
             : "/"; // Default route for unknown roles

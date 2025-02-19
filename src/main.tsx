@@ -45,9 +45,11 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/admin/*" element={<App />} />
         <Route path="/estudiantes/*" element={<App />} />
+        <Route path="/admin/*" element={<App />} />
         <Route path="/secretario/*" element={<App />} />
+        <Route path="/cordinador/*" element={<App />} />
+        <Route path="/revisor/*" element={<App />} />
         <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />
         <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
       </Routes>

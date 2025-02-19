@@ -36,6 +36,11 @@ import CreaSedes from './pages/Secretario/CrearSedes';
 import CreaAdmin from './pages/Secretario/CrearAdmin';
 import AsignaPG from './pages/Secretario/AsignarPG';
 
+// Cordinador Links
+import Grafica from './pages/Cordinador/Graficas';
+import SolicitudRevisiones from './pages/Cordinador/SolicitudRevisiones';
+import RevisionEstudiante from './pages/Cordinador/RevisionEstudiante';
+
 function App() {
   // State variable for managing the loading state of the app
   const [loading, setLoading] = useState<boolean>(true);
@@ -109,6 +114,11 @@ function App() {
         <Route path="crea-sedes" element={<CreaSedes />} />
         <Route path="crea-admin" element={<CreaAdmin />} />
         <Route path="asignapg" element={<AsignaPG />} />
+
+        {/* Routes for the Cordinador section */}
+        <Route path="grafica" element={<Grafica />} />
+        <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
+        <Route path="revision-estudiante" element={<RevisionEstudiante />} />
       </Routes>
     </DefaultLayout>
   );
