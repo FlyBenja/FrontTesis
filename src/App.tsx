@@ -19,6 +19,7 @@ import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
 import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
 import CrearComisiones from './pages/Admin/Comisiones/CrearComision';
 import ListarComision from './pages/Admin/Comisiones/ListarComision';
+import EnviaRevision from './pages/Admin/EnviaRevision';
 
 // General Links
 import Profile from './pages/Generales/Profile';
@@ -98,6 +99,7 @@ function App() {
         <Route path="listado-comision" element={<ListarComision />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="crear-tareas" element={<CrearTareas />} />
+        <Route path="enviar-revisión" element={<EnviaRevision />} />
 
         {/* General Links */}
         <Route path="profile" element={<Profile />} />

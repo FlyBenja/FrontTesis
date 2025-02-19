@@ -146,13 +146,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             fill=""
                           />
                         </svg>
-                        Inicio
+                        <span style={{ marginLeft: '6px' }}>Inicio</span>
                         <svg
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
                             }`}
-                          width="18"
-                          height="18"
-                          viewBox="0 0 20 20"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                         >
@@ -222,9 +222,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       >
                         <svg
                           className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                         >
@@ -249,9 +249,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <svg
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
                             }`}
-                          width="18"
-                          height="18"
-                          viewBox="0 0 20 20"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                         >
@@ -321,9 +321,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       >
                         <svg
                           className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                         >
@@ -348,9 +348,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <svg
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
                             }`}
-                          width="18"
-                          height="18"
-                          viewBox="0 0 20 20"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                         >
@@ -431,9 +431,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         >
                           <svg
                             className="fill-current"
-                            width="18"
-                            height="18"
-                            viewBox="0 0 18 18"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                           >
@@ -457,9 +457,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           Comisiones
                           <svg
                             className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`}
-                            width="18"
-                            height="18"
-                            viewBox="0 0 20 20"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
@@ -518,8 +518,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 >
                   <svg
                     className="fill-current"
-                    width="18"
-                    height="18"
+                    width="24"
+                    height="24"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -545,9 +545,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 >
                   <svg
                     className="fill-current"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
+                    width="28"
+                    height="28"
+                    viewBox="0 0 18 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
@@ -561,6 +561,34 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Calendar --> */}
 
+              {/* <!-- Menu Item Enviar a Revisión --> */}
+              <li>
+                <NavLink
+                  to="/admin/enviar-revisión"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                    'bg-graydark dark:bg-meta-4'
+                    }`}
+                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M21 8V3H3v18h18V8z"></path>
+                    <path d="M21 8l-9 5-9-5"></path>
+                    <path d="M12 13v4"></path>
+                  </svg>
+                  <span style={{ marginLeft: '6px' }}>Enviar a Revisión</span>
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Enviar a Revisión --> */}
             </ul>
           </div>
         </nav>
