@@ -1,8 +1,10 @@
 import React, { useState, ReactNode, useEffect } from 'react';
 import Header from '../components/Header/index';
 import SidebarAdmin from '../components/Sidebar/Admin';
-import SidebarSecretario from '../components/Sidebar/Secretario/index';
+import SidebarSecretario from '../components/Sidebar/Secretario';
 import SidebarEstudiante from '../components/Sidebar/Estudiantes';
+import SidebarCordinador from '../components/Sidebar/Cordinador';
+import SidebarRevisor from '../components/Sidebar//Revisor';
 
 const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,15 +23,19 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <div className="flex h-screen overflow-hidden">
         {/* <!-- ===== Sidebar Start ===== --> */}
-        {role === 3 ? (
+        {role === 1 ? (
+          <SidebarEstudiante sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        ) : role === 3 ? (
           <SidebarAdmin sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : role === 4 ? (
           <SidebarSecretario sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        ) : role === 1 ? (
-          <SidebarEstudiante sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        ) : role === 6 ? (
+          <SidebarCordinador sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        ) : role === 7 ? (
+          <SidebarRevisor sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : null}
         {/* <!-- ===== Sidebar End ===== --> */}
-        
+
         {/* <!-- ===== Content Area Start ===== --> */}
         <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
           {/* <!-- ===== Header Start ===== --> */}

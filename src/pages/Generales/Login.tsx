@@ -26,8 +26,10 @@ const Login: React.FC = () => {
 
       // Mapping user roles to routes
       const rolePaths: { [key: number]: string } = {
-        3: "/admin/graficas", // Admin role
+        7: "/revisor/graficas", // Revisor role
+        6: "/cordinador/graficas", // Cordinador role
         4: "/secretario/crea-sedes", // Secretary role
+        3: "/admin/graficas", // Admin role
         1: "/estudiantes/inicio", // Student role
       };
 
