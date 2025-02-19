@@ -1,16 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { asignaRevisor } from '../../../ts/Cordinador/AsignaRevisor';
 
 interface AsignaRevisorProps {
   onClose: () => void;
+  revisionThesisId: number;
 }
 
-const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose }) => {
-  const [selectedRevisor, setSelectedRevisor] = useState<string>('');
+interface Revisor {
+  user_id: number;
+  name: string;
+}
 
-  const handleSave = () => {
-    // Lógica para guardar el revisor seleccionado
-    console.log(`Revisor asignado: ${selectedRevisor}`);
-    onClose();
+const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose, revisionThesisId }) => {
+  const [selectedRevisor, setSelectedRevisor] = useState<string>('');
+  const [revisores, setRevisores] = useState<Revisor[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchRevisores = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          throw new Error('Token de autenticación no encontrado');
+        }
+
+        const url = 'http://localhost:3000/api/reviewers';
+        const response = await axios.get(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.data && Array.isArray(response.data)) {
+          setRevisores(response.data.map(({ user_id, name }) => ({ user_id, name })));
+        } else {
+          throw new Error('La respuesta no contiene datos de revisores válidos.');
+        }
+      } catch (err) {
+        setError('Error al cargar los revisores.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRevisores();
+  }, []);
+
+  const handleSave = async () => {
+    if (!selectedRevisor) return;
+
+    try {
+      await asignaRevisor({
+        revision_thesis_id: revisionThesisId,
+        user_id: Number(selectedRevisor),
+      });
+
+      Swal.fire({
+        title: 'Éxito',
+        text: `Revisor asignado correctamente`,
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#28a745', // Verde
+        customClass: {
+          confirmButton: 'text-white bg-green-600',
+        },
+      }).then(() => {
+        onClose();  // Cierra el modal
+        navigate('/cordinador/solicitud-revisiones'); // Redirige
+      });
+    } catch (error) {
+      let errorMessage = 'Error desconocido';
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data
+          ? JSON.stringify(error.response?.data)
+          : 'Error desconocido';
+      }
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#dc3545', // Rojo
+        customClass: {
+          confirmButton: 'text-white bg-red-600',
+        },
+      });
+    }
   };
 
   return (
@@ -26,19 +107,23 @@ const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose }) => {
         <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Asignar Revisor</h2>
         <div className="mt-4">
           <label htmlFor="revisor" className="block text-gray-700 dark:text-white">Selecciona un revisor:</label>
-          <select
-            id="revisor"
-            className="mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded w-full bg-white dark:bg-gray-800 text-black dark:text-white"
-            value={selectedRevisor}
-            onChange={(e) => setSelectedRevisor(e.target.value)}
-          >
-            <option value="">Seleccione un revisor</option>
-            <option value="revisor1">Revisor 1</option>
-            <option value="revisor2">Revisor 2</option>
-            <option value="revisor3">Revisor 3</option>
-            <option value="revisor4">Revisor 4</option>
-            <option value="revisor5">Revisor 5</option>
-          </select>
+          {loading ? (
+            <p className="text-gray-500">Cargando revisores...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <select
+              id="revisor"
+              className="mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded w-full bg-white dark:bg-gray-800 text-black dark:text-white"
+              value={selectedRevisor}
+              onChange={(e) => setSelectedRevisor(e.target.value)}
+            >
+              <option value="">Seleccione un revisor</option>
+              {revisores.map((revisor) => (
+                <option key={revisor.user_id} value={revisor.user_id}>{revisor.name}</option>
+              ))}
+            </select>
+          )}
         </div>
         <div className="mt-4 flex justify-end space-x-2">
           <button
@@ -52,7 +137,7 @@ const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose }) => {
             onClick={handleSave}
             disabled={!selectedRevisor}
           >
-            Guardar
+            Asignar
           </button>
         </div>
       </div>

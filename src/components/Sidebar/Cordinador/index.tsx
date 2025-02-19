@@ -185,26 +185,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Revisores --> */}
               <li>
                 <NavLink
-                  to="/secretario/asignapg"
+                  to="/cordinador/revisores"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
                 >
-<svg
-  className="fill-current"
-  width="24"
-  height="24"
-  viewBox="0 0 24 24"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path
-    d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C8.13 14 4 15.34 4 17V18H20V17C20 15.34 15.87 14 12 14ZM12 6C13.1 6 14 6.9 14 8C14 9.1 13.1 10 12 10C10.9 10 10 9.1 10 8C10 6.9 10.9 6 12 6ZM12 16C13.65 16 15 16.91 15 18C15 18.47 14.74 18.89 14.33 19.19C14.76 19.63 15 20.21 15 21C15 22.1 14.1 23 13 23C11.9 23 11 22.1 11 21C11 20.21 11.24 19.63 11.67 19.19C11.26 18.89 11 18.47 11 18C11 16.91 12.35 16 12 16Z"
-    fill="currentColor"
-  />
-</svg>
-
+                  <svg
+                    className="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C8.13 14 4 15.34 4 17V18H20V17C20 15.34 15.87 14 12 14ZM12 6C13.1 6 14 6.9 14 8C14 9.1 13.1 10 12 10C10.9 10 10 9.1 10 8C10 6.9 10.9 6 12 6ZM12 16C13.65 16 15 16.91 15 18C15 18.47 14.74 18.89 14.33 19.19C14.76 19.63 15 20.21 15 21C15 22.1 14.1 23 13 23C11.9 23 11 22.1 11 21C11 20.21 11.24 19.63 11.67 19.19C11.26 18.89 11 18.47 11 18C11 16.91 12.35 16 12 16Z"
+                      fill="currentColor"
+                    />
+                  </svg>
                   Revisores
                 </NavLink>
               </li>

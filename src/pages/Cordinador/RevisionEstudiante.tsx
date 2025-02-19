@@ -8,6 +8,7 @@ const RevisionEstudiante: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRevisionId, setSelectedRevisionId] = useState<number | null>(null);
   const [revisiones, setRevisiones] = useState<any[]>([]);
 
   const userId = location.state?.userId;
@@ -27,12 +28,14 @@ const RevisionEstudiante: React.FC = () => {
     }
   }, [userId]);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (revisionId: number) => {
+    setSelectedRevisionId(revisionId);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedRevisionId(null);
   };
 
   return (
@@ -53,7 +56,6 @@ const RevisionEstudiante: React.FC = () => {
           revisiones.map((revision) => (
             <div key={revision.revision_thesis_id} className="mb-6 border-b pb-4">
               <div className="flex items-center">
-                {/* Foto de perfil o inicial */}
                 {revision.user.profilePhoto ? (
                   <img
                     src={revision.user.profilePhoto}
@@ -66,21 +68,18 @@ const RevisionEstudiante: React.FC = () => {
                   </div>
                 )}
 
-                {/* Información del estudiante */}
                 <div className="ml-4">
                   <p className="text-gray-700 dark:text-gray-300">Nombre: {revision.user.name}</p>
                   <p className="text-gray-700 dark:text-gray-300">Correo: {revision.user.email}</p>
                   <p className="text-gray-700 dark:text-gray-300">Carnet: {revision.user.carnet}</p>
                 </div>
 
-                {/* Año y sede */}
                 <div className="ml-auto text-right">
                   <p className="text-gray-700 dark:text-gray-300">Año: {revision.user.year.year}</p>
                   <p className="text-gray-700 dark:text-gray-300">Sede: {revision.user.location.nameSede}</p>
                 </div>
               </div>
 
-              {/* Fecha de revisión y estado */}
               <div className="mt-2">
                 <p className="text-gray-700 dark:text-gray-300">
                   Fecha de revisión: {new Date(revision.date_revision).toLocaleDateString()}
@@ -90,7 +89,6 @@ const RevisionEstudiante: React.FC = () => {
                 </p>
               </div>
 
-              {/* Botón para descargar tesis si existe */}
               {revision.thesis_dir && (
                 <div className="mt-4">
                   <a
@@ -104,7 +102,6 @@ const RevisionEstudiante: React.FC = () => {
                 </div>
               )}
 
-              {/* Vista previa del PDF si existe */}
               {revision.thesis_dir && (
                 <div className="mt-4">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Vista previa del PDF</h3>
@@ -117,13 +114,13 @@ const RevisionEstudiante: React.FC = () => {
                 </div>
               )}
 
-              {/* Botón para asignar revisor */}
               <div className="mt-4 text-right">
                 <button
                   className="px-6 py-2 bg-blue-500 text-white rounded-lg"
-                  onClick={handleOpenModal}
+                  onClick={() => handleOpenModal(revision.revision_thesis_id)}
                 >
                   Asignar Revisor
+                  <span className="ml-2">👤</span>
                 </button>
               </div>
             </div>
@@ -133,7 +130,7 @@ const RevisionEstudiante: React.FC = () => {
         )}
       </div>
 
-      {isModalOpen && <AsignaRevisor onClose={handleCloseModal} />}
+      {isModalOpen && selectedRevisionId && <AsignaRevisor revisionThesisId={selectedRevisionId} onClose={handleCloseModal} />}
     </>
   );
 };

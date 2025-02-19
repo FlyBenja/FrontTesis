@@ -41,6 +41,7 @@ import AsignaPG from './pages/Secretario/AsignarPG';
 import Grafica from './pages/Cordinador/Graficas';
 import SolicitudRevisiones from './pages/Cordinador/SolicitudRevisiones';
 import RevisionEstudiante from './pages/Cordinador/RevisionEstudiante';
+import Revisores from './pages/Cordinador/Revisores';
 
 function App() {
   // State variable for managing the loading state of the app
@@ -121,6 +122,7 @@ function App() {
         <Route path="grafica" element={<Grafica />} />
         <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
         <Route path="revision-estudiante" element={<RevisionEstudiante />} />
+        <Route path="revisores" element={<Revisores />} />
       </Routes>
     </DefaultLayout>
   );
