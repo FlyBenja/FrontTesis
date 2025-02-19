@@ -1,58 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
+import { getRevisionesPendientes } from '../../ts/Cordinador/RevisionesPendientes'; // Importa la API
 
 const SolicitudRevisiones: React.FC = () => {
   const navigate = useNavigate();
 
-  const estudiantes = [
-    { no: 1, nombre: "Axel Emiliano Herrera Muñoz", carnet: "1890-21-9415", fechaSolicitud: "20-02-2024" },
-    { no: 2, nombre: "Laura Gabriela Pérez López", carnet: "1890-21-9416", fechaSolicitud: "21-02-2024" },
-    { no: 3, nombre: "Carlos Antonio Gutiérrez Morales", carnet: "1890-21-9417", fechaSolicitud: "22-02-2024" },
-    { no: 4, nombre: "Sofía Isabel Ramírez Gómez", carnet: "1890-21-9418", fechaSolicitud: "23-02-2024" },
-    { no: 5, nombre: "Juan Sebastián Rodríguez Díaz", carnet: "1890-21-9419", fechaSolicitud: "24-02-2024" },
-    { no: 6, nombre: "María Fernanda García López", carnet: "1890-21-9420", fechaSolicitud: "25-02-2024" }
-  ];
-
-  // State hooks for pagination and search
+  const [revisiones, setRevisiones] = useState<any[]>([]);  // Datos de las revisiones
+  const [searchCarnet, setSearchCarnet] = useState(''); // Campo de búsqueda del carnet
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc'); // Orden de las revisiones
+  const [filteredRevisiones, setFilteredRevisiones] = useState(revisiones); // Revisión filtrada
+  
+  // State hooks for pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [catedraticosPerPage, setCatedraticosPerPage] = useState(5);  // Default to 5 items per page
+  const [revisionesPerPage, setRevisionesPerPage] = useState(5);  // Default to 5 items per page
   const [maxPageButtons, setMaxPageButtons] = useState(10);  // Default to 10 page buttons
-  const [searchCarnet, setSearchCarnet] = useState(''); // Search input for student carnet
-  const [filteredEstudiantes, setFilteredEstudiantes] = useState(estudiantes); // To store filtered students
 
-  // Handle search
-  const handleSearch = () => {
-    setFilteredEstudiantes(estudiantes.filter(estudiante =>
-      estudiante.carnet.includes(searchCarnet)
-    ));
-    setCurrentPage(1); // Reset to first page after search
+  // Obtener las revisiones pendientes desde la API
+  const fetchRevisiones = async (order: 'asc' | 'desc', carnet: string) => {
+    try {
+      const revisions = await getRevisionesPendientes(order, carnet);
+      setRevisiones(revisions);
+      setFilteredRevisiones(revisions); // Inicializa el estado de revisiones filtradas
+    } catch (error) {
+      console.error('Error al obtener las revisiones pendientes:', error);
+    }
   };
+
+  // Efecto para cargar las revisiones cuando cambia el carnet o el orden
+  useEffect(() => {
+    const carnetValue = searchCarnet.length >= 10 ? searchCarnet : '';  // Validar formato del carnet (longitud >= 10)
+    fetchRevisiones(order, carnetValue);  // Ejecutar la API con carnet vacío o el carnet completo
+  }, [order, searchCarnet]); // Depende de searchCarnet y order
 
   // Pagination logic
-  const indexOfLastEstudiante = currentPage * catedraticosPerPage;
-  const indexOfFirstEstudiante = indexOfLastEstudiante - catedraticosPerPage;
-  const currentEstudiantes = filteredEstudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante);
+  const indexOfLastRevision = currentPage * revisionesPerPage;
+  const indexOfFirstRevision = indexOfLastRevision - revisionesPerPage;
+  const currentRevisiones = filteredRevisiones.slice(indexOfFirstRevision, indexOfLastRevision);
 
-  const totalPages = Math.ceil(filteredEstudiantes.length / catedraticosPerPage);
-
-  const handleVerDetalle = () => {
-    navigate(`/cordinador/revision-estudiante`);
-  };
+  const totalPages = Math.ceil(filteredRevisiones.length / revisionesPerPage);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  // Cambiar el orden de las revisiones
+  const handleChangeOrder = () => {
+    setOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+  };
+
+  // Formatear la fecha de la solicitud
+  const formatDate = (date: string) => {
+    const formattedDate = new Date(date);
+    return (
+      <>
+        {formattedDate.toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        })}
+      </>
+    );
+  };
+
+  const handleVerDetalle = (revisionId: number) => {
+    navigate(`/cordinador/revision-estudiante/${revisionId}`);
+  };
+
+  // Agregar console.log para mostrar la longitud del carnet ingresado
+  const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newCarnet = e.target.value;
+    setSearchCarnet(newCarnet);  // Actualizar el estado
   };
 
   // Effect hook to handle window resize and adjust page settings accordingly
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setCatedraticosPerPage(8);
-        setMaxPageButtons(5);
+        setRevisionesPerPage(8); // Ajusta el número de elementos por página en pantallas pequeñas
+        setMaxPageButtons(5); // Ajusta la cantidad de botones de paginación en pantallas pequeñas
       } else {
-        setCatedraticosPerPage(5);
-        setMaxPageButtons(10);
+        setRevisionesPerPage(5); // Ajusta el número de elementos por página en pantallas grandes
+        setMaxPageButtons(10); // Ajusta la cantidad de botones de paginación en pantallas grandes
       }
     };
 
@@ -74,35 +103,43 @@ const SolicitudRevisiones: React.FC = () => {
             type="text"
             placeholder="Buscar por Carnet"
             value={searchCarnet}
-            onChange={(e) => setSearchCarnet(e.target.value)}
+            onChange={handleChangeSearchCarnet}  // Llamar a la nueva función con el console.log
             className="w-72 px-4 py-2 border rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           />
-          <button onClick={handleSearch} className="px-4 py-2 bg-blue-500 text-white rounded-md">
-            Buscar
+          <button
+            onClick={handleChangeOrder}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+          >
+            Cambiar Orden ({order === 'asc' ? 'Ascendente' : 'Descendente'})
           </button>
         </div>
+
         <div className="overflow-x-auto">
           <table className="w-full mt-4 border-collapse border border-gray-300 dark:border-gray-700">
             <thead>
               <tr className="bg-gray-100 dark:bg-gray-700">
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">No.</th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Nombre</th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white hidden sm:table-cell">Carnet</th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white hidden sm:table-cell">Fec. Solicitud</th>
+                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Carnet</th>
+                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Fec. Solicitud</th>
+                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Estado</th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Acción</th>
               </tr>
             </thead>
             <tbody>
-              {currentEstudiantes.map((estudiante) => (
-                <tr key={estudiante.no} className="border border-gray-300 dark:border-gray-700">
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{estudiante.no}</td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{estudiante.nombre}</td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white hidden sm:table-cell">{estudiante.carnet}</td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white hidden sm:table-cell">{estudiante.fechaSolicitud}</td>
+              {currentRevisiones.map((revision) => (
+                <tr key={revision.revision_thesis_id} className="border border-gray-300 dark:border-gray-700">
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{revision.revision_thesis_id}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{revision.user.name}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{revision.user.carnet}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{formatDate(revision.date_revision)}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold">
+                    {revision.approvalThesis.status}
+                  </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">
                     <button
                       className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                      onClick={handleVerDetalle}
+                      onClick={() => handleVerDetalle(revision.revision_thesis_id)}
                     >
                       Ver detalle
                     </button>
