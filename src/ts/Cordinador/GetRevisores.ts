@@ -7,6 +7,7 @@ interface Revisor {
   name: string;
   carnet: string;
   rol_nombre: string;
+  active: boolean; // Nuevo campo agregado
 }
 
 // Función para obtener la lista de revisores
@@ -37,6 +38,7 @@ export const getRevisores = async (): Promise<Revisor[]> => {
         name: revisor.name,
         carnet: revisor.carnet,
         rol_nombre: revisor.rol_nombre,
+        active: revisor.active, // Asignar el campo 'active'
       }));
     }
 

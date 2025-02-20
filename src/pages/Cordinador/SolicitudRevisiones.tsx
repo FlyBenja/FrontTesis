@@ -23,7 +23,6 @@ const SolicitudRevisiones: React.FC = () => {
       setRevisiones(revisions);
       setFilteredRevisiones(revisions); // Inicializa el estado de revisiones filtradas
     } catch (error) {
-      console.error('Error al obtener las revisiones pendientes:', error);
     }
   };
 
@@ -97,55 +96,65 @@ const SolicitudRevisiones: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="Nuevas solicitudes de revisión" />
-      <div className="p-4 bg-white dark:bg-gray-800 shadow rounded-lg">
+      <div className="mx-auto max-w-5xl px-1 py-1">
         <div className="mb-4 flex items-center space-x-2">
           <input
             type="text"
             placeholder="Buscar por Carnet"
             value={searchCarnet}
-            onChange={handleChangeSearchCarnet}  // Llamar a la nueva función con el console.log
+            onChange={handleChangeSearchCarnet}
             className="w-72 px-4 py-2 border rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           />
           <button
             onClick={handleChangeOrder}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md"
           >
             Cambiar Orden ({order === 'asc' ? 'Ascendente' : 'Descendente'})
           </button>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full mt-4 border-collapse border border-gray-300 dark:border-gray-700">
-            <thead>
-              <tr className="bg-gray-100 dark:bg-gray-700">
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">No.</th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Nombre</th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Carnet</th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Fec. Solicitud</th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Estado</th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">Acción</th>
+          <table className="min-w-full bg-white border rounded-lg dark:bg-boxdark dark:border-strokedark">
+            <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
+              <tr>
+                <th className="py-2 px-4 text-left">No.</th>
+                <th className="py-2 px-4 text-center">Nombre</th>
+                {/* Estas columnas se ocultan en pantallas pequeñas */}
+                <th className="py-2 px-4 text-center hidden md:table-cell">Carnet</th>
+                <th className="py-2 px-4 text-center hidden md:table-cell">Fec. Solicitud</th>
+                <th className="py-2 px-4 text-center hidden md:table-cell">Estado</th>
+                <th className="py-2 px-4 text-center">Acción</th>
               </tr>
             </thead>
             <tbody>
-              {currentRevisiones.map((revision) => (
-                <tr key={revision.revision_thesis_id} className="border border-gray-300 dark:border-gray-700">
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{revision.revision_thesis_id}</td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{revision.user.name}</td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{revision.user.carnet}</td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">{formatDate(revision.date_revision)}</td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold">
-                    {revision.approvalThesis.status}
-                  </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center text-gray-900 dark:text-white">
-                    <button
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                      onClick={() => handleVerDetalle(revision.user.user_id)}
-                    >
-                      Ver detalle
-                    </button>
+              {currentRevisiones.length > 0 ? (
+                currentRevisiones.map((revision) => (
+                  <tr key={revision.revision_thesis_id} className="border-t border-gray-200 dark:border-strokedark">
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{revision.revision_thesis_id}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{revision.user.name}</td>
+                    {/* Estas columnas se ocultan en pantallas pequeñas */}
+                    <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">{revision.user.carnet}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">{formatDate(revision.date_revision)}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold hidden md:table-cell">
+                      {revision.approvalThesis.status}
+                    </td>
+                    <td className="py-2 px-4 text-center">
+                      <button
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                        onClick={() => handleVerDetalle(revision.user.user_id)}
+                      >
+                        Ver detalle
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="py-4 text-center text-gray-500 dark:text-gray-400">
+                    No hay solicitudes de revisión
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -163,10 +172,7 @@ const SolicitudRevisiones: React.FC = () => {
             <button
               key={i + 1}
               onClick={() => paginate(i + 1)}
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === i + 1
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
-                }`}
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'}`}
             >
               {i + 1}
             </button>

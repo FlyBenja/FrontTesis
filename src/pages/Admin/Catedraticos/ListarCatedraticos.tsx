@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getCatedraticos } from '../../../ts/Admin/GetCatedraticos';
 import { getCatedraticoPorCarnet } from '../../../ts/Admin/GetCatedraticosCarnet';
-import { activaCatedratico } from '../../../ts/Admin/ActivarCatedraticos';
+import { activaUsuario } from '../../../ts/Generales/ActivarUsuario';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SwitcherFour from '../../../components/Switchers/SwitcherFour';
 import Swal from 'sweetalert2';
@@ -115,7 +115,7 @@ const ListarCatedraticos: React.FC = () => {
     setCatedraticos(updatedCatedraticos);
 
     try {
-      await activaCatedratico(userId, newStatus); // Call the API to update the professor's status
+      await activaUsuario(userId, newStatus); // Call the API to update the professor's status
     } catch {
       setCatedraticos((prev) =>
         prev.map((cat) => (cat.user_id === userId ? { ...cat, active: !newStatus } : cat))

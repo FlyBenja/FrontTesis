@@ -3,11 +3,10 @@ import axios from 'axios';
 // Define the structure of the response from the API when activating a professor
 interface ActivarCatedraticoResponse {
   message: string;
-  // You can add more fields depending on the response from the API
 }
 
 // Function to activate or deactivate a professor based on their user ID and the active status
-export const activaCatedratico = async (
+export const activaUsuario = async (
   userId: number,  // The ID of the professor to be activated or deactivated
   active: boolean  // The new active status for the professor (true for active, false for inactive)
 ): Promise<ActivarCatedraticoResponse> => {
@@ -34,15 +33,13 @@ export const activaCatedratico = async (
       }
     );
 
-    // Return the data from the response if the request is successful
-    return response.data;
+    // Return only the message from the response data if the request is successful
+    return { message: response.data.message };
   } catch (error) {
     // Error handling for Axios-related errors
     if (axios.isAxiosError(error)) {
       // Check if the error has a response and extract the error message
-      const errorMessage = error.response?.data
-        ? JSON.stringify(error.response?.data)  // Convert the response data to a string if available
-        : 'Error desconocido';  // If no response data, set the message as 'Unknown error'
+      const errorMessage = error.response?.data?.message || 'Error desconocido'; // Extract only the 'message' field
       throw new Error(errorMessage);  // Throw the error with the appropriate message
     }
 

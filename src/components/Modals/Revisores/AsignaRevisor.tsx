@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import { asignaRevisor } from '../../../ts/Cordinador/AsignaRevisor';
+import { getRevisores } from '../../../ts/Cordinador/GetRevisores'; // Importar la función para obtener los revisores
 
 interface AsignaRevisorProps {
   onClose: () => void;
@@ -24,24 +24,8 @@ const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose, revisionThesisId
   useEffect(() => {
     const fetchRevisores = async () => {
       try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          throw new Error('Token de autenticación no encontrado');
-        }
-
-        const url = 'http://localhost:3000/api/reviewers';
-        const response = await axios.get(url, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.data && Array.isArray(response.data)) {
-          setRevisores(response.data.map(({ user_id, name }) => ({ user_id, name })));
-        } else {
-          throw new Error('La respuesta no contiene datos de revisores válidos.');
-        }
+        const revisoresList = await getRevisores(); // Llamar a la función que obtiene los revisores
+        setRevisores(revisoresList); // Guardar la lista de revisores en el estado
       } catch (err) {
         setError('Error al cargar los revisores.');
       } finally {
@@ -56,6 +40,7 @@ const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose, revisionThesisId
     if (!selectedRevisor) return;
 
     try {
+      // Llamar a la API para asignar el revisor
       await asignaRevisor({
         revision_thesis_id: revisionThesisId,
         user_id: Number(selectedRevisor),
@@ -76,10 +61,8 @@ const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose, revisionThesisId
       });
     } catch (error) {
       let errorMessage = 'Error desconocido';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data
-          ? JSON.stringify(error.response?.data)
-          : 'Error desconocido';
+      if (error instanceof Error) {
+        errorMessage = error.message;
       }
       Swal.fire({
         title: 'Error',

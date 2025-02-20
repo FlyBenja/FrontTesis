@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import AsignaRevisor from '../../components/Modals/AsignaRevisor/AsignaRevisor';
+import AsignaRevisor from '../../components/Modals/Revisores/AsignaRevisor';
 import { getRevisionDetallePendi } from '../../ts/Cordinador/GetRevisionDetallePendi';
 
 const RevisionEstudiante: React.FC = () => {
