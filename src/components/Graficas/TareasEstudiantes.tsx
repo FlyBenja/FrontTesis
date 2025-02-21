@@ -1,7 +1,7 @@
-import { ApexOptions } from 'apexcharts'; 
-import React, { useEffect, useState } from 'react'; 
-import ReactApexChart from 'react-apexcharts';  
-import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil'; 
+import { ApexOptions } from 'apexcharts';
+import React, { useEffect, useState } from 'react';
+import ReactApexChart from 'react-apexcharts';
+import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 import { getTaskStats } from '../../ts/Admin/GetTaskStat';
 
 // Defines the structure of the chart data
@@ -32,7 +32,7 @@ const TareasEstudiantes: React.FC = () => {
         const perfil = await getDatosPerfil();
         const currentYear = new Date().getFullYear();
         const sedeId = perfil.sede;
-        
+
         // Fetch task statistics for the given course and year
         const stats = await getTaskStats(courseId, currentYear, sedeId);
 
@@ -117,7 +117,7 @@ const TareasEstudiantes: React.FC = () => {
         <div>
           {/* Course selection dropdown */}
           <select
-            className="py-1 pl-3 pr-8 text-sm font-medium outline-none"
+            className="py-1.5 pl-4 pr-10 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 shadow-sm outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-300 dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-600"
             value={courseId}
             onChange={handleCourseChange}
           >

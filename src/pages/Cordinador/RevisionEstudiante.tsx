@@ -38,6 +38,21 @@ const RevisionEstudiante: React.FC = () => {
     setSelectedRevisionId(null);
   };
 
+  const handleDownload = async (url: string, filename: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error al descargar el archivo:", error);
+    }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Revisión de estudiante" />
@@ -91,14 +106,12 @@ const RevisionEstudiante: React.FC = () => {
 
               {revision.thesis_dir && (
                 <div className="mt-4">
-                  <a
-                    href={revision.thesis_dir}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-2 bg-blue-500 text-white rounded-lg inline-block"
+                  <button
+                    className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                    onClick={() => handleDownload(revision.thesis_dir, `tesis_${revision.user.carnet}.pdf`)}
                   >
                     Descargar Tesis
-                  </a>
+                  </button>
                 </div>
               )}
 
