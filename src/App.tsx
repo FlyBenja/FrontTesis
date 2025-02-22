@@ -42,6 +42,8 @@ import Grafica from './pages/Cordinador/Graficas';
 import SolicitudRevisiones from './pages/Cordinador/SolicitudRevisiones';
 import RevisionEstudiante from './pages/Cordinador/RevisionEstudiante';
 import Revisores from './pages/Cordinador/Revisores';
+import Historial from './pages/Cordinador/Historial';
+import HistorialDetalle from './pages/Cordinador/HistorialDetalle';
 
 function App() {
   // State variable for managing the loading state of the app
@@ -123,6 +125,8 @@ function App() {
         <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
         <Route path="revision-estudiante" element={<RevisionEstudiante />} />
         <Route path="revisores" element={<Revisores />} />
+        <Route path="historial" element={<Historial />} />
+        <Route path="historial/detalle" element={<HistorialDetalle />} />
       </Routes>
     </DefaultLayout>
   );
