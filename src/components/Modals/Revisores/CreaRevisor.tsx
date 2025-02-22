@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { creaRevisor } from '../../../ts/Cordinador/CreaRevisores';
+import { updateRevisor } from '../../../ts/Cordinador/UpdateRevisores';
 
 interface CrearRevisorProps {
   onClose: () => void;
@@ -10,27 +11,31 @@ interface CrearRevisorProps {
 const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [carnet, setCarnet] = useState(''); // Cambié 'codigo' a 'carnet'
+  const [carnet, setCarnet] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (revisor) {
       setEmail(revisor.email || '');
       setName(revisor.name || '');
-      setCarnet(revisor.carnet || ''); // Cambié 'codigo' a 'carnet'
+      setCarnet(revisor.carnet || '');
     } else {
       setEmail('');
       setName('');
-      setCarnet(''); // Cambié 'codigo' a 'carnet'
+      setCarnet('');
     }
   }, [revisor]);
 
   const handleSave = async () => {
-    if (!email || !name || !carnet) return; // Cambié 'codigo' a 'carnet'
+    if (!email || !name || !carnet) return;
     setIsLoading(true);
 
     try {
-      await creaRevisor({ email, name, codigo: carnet }); 
+      if (revisor) {
+        await updateRevisor(revisor.user_id, { email, name, codigo: carnet });
+      } else {
+        await creaRevisor({ email, name, codigo: carnet });
+      }
 
       Swal.fire({
         title: 'Éxito',
@@ -90,14 +95,14 @@ const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
             />
           </div>
           <div>
-            <label htmlFor="carnet" className="block text-gray-700 dark:text-white">Carnet:</label> {/* Cambié 'codigo' a 'carnet' */}
+            <label htmlFor="carnet" className="block text-gray-700 dark:text-white">Carnet:</label>
             <input
               type="text"
-              id="carnet" 
+              id="carnet"
               className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
-              value={carnet} 
-              onChange={(e) => setCarnet(e.target.value)} 
-              placeholder="Carnet del revisor" 
+              value={carnet}
+              onChange={(e) => setCarnet(e.target.value)}
+              placeholder="Carnet del revisor"
             />
           </div>
         </div>
@@ -110,9 +115,9 @@ const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
             Cancelar
           </button>
           <button
-            className={`px-6 py-2 bg-blue-500 text-white rounded-lg w-full ${!(email && name && carnet) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`} // Cambié 'codigo' a 'carnet'
+            className={`px-6 py-2 bg-blue-500 text-white rounded-lg w-full ${!(email && name && carnet) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
             onClick={handleSave}
-            disabled={!(email && name && carnet) || isLoading} // Cambié 'codigo' a 'carnet'
+            disabled={!(email && name && carnet) || isLoading}
           >
             {isLoading ? (
               <div className="animate-spin h-5 w-5 border-t-2 border-white rounded-full mx-auto"></div>
