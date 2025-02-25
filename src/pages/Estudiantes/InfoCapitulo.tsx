@@ -5,6 +5,8 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { enviaComentario } from '../../ts/Generales/EnviaComentario';
 import { getComentarios, ComentarioData } from '../../ts/Generales/GetComentario';
 import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
+import { driver } from 'driver.js'; // Importa driver.js
+import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
 
 // Interface defining the structure for the comments
 interface Comentario {
@@ -176,6 +178,68 @@ const InfoCapitulo: React.FC = () => {
     }
   };
 
+  // Función para iniciar el recorrido
+  const startTour = () => {
+    const driverObj = driver({
+      showProgress: true, // Muestra la barra de progreso
+      animate: true, // Habilita animaciones
+      prevBtnText: 'Anterior', // Texto del botón "Anterior"
+      nextBtnText: 'Siguiente', // Texto del botón "Siguiente"
+      doneBtnText: 'Finalizar', // Texto del botón "Finalizar"
+      progressText: 'Paso {{current}} de {{total}}', // Texto de la barra de progreso
+    });
+
+    driverObj.setSteps([
+      {
+        element: '#back-button', // ID del botón "Regresar"
+        popover: {
+          title: 'Regresar',
+          description: 'Haz clic aquí para regresar a la lista de tareas.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '#comentarios-previos', // ID de la sección de comentarios previos
+        popover: {
+          title: 'Comentarios Previos',
+          description: 'Aquí puedes ver los comentarios anteriores sobre la tarea.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+      {
+        element: '#enviar-comentario', // ID de la sección de enviar comentario
+        popover: {
+          title: 'Enviar Comentario',
+          description: 'Aquí puedes escribir y enviar un nuevo comentario.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+      {
+        element: '#textarea-comentario', // ID del textarea para comentarios
+        popover: {
+          title: 'Escribir Comentario',
+          description: 'Escribe tu comentario en este campo.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+      {
+        element: '#enviar-button', // ID del botón "Enviar Comentario"
+        popover: {
+          title: 'Enviar Comentario',
+          description: 'Haz clic aquí para enviar tu comentario.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+    ]);
+
+    driverObj.drive(); // Inicia el recorrido
+  };
+
   return (
     <>
       {/* Breadcrumb to show the current page's name */}
@@ -184,16 +248,19 @@ const InfoCapitulo: React.FC = () => {
       <div className="mb-4 flex justify-between">
         {/* Button to go back to the previous page */}
         <button
+          id="back-button"
           className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
           onClick={() => navigate(-1)}  // Navigate back when clicked
         >
           <span className="mr-2">←</span> Regresar
         </button>
+
+      
       </div>
 
       <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
         {/* Display previous comments */}
-        <div className="w-full md:w-1/2 h-72 bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
+        <div id="comentarios-previos" className="w-full md:w-1/2 h-72 bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
           <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Comentarios Previos</h4>
           {comentariosPrevios.length === 0 ? (
             <p className="text-sm text-gray-500 dark:text-gray-400">No hay comentarios sobre alguna corrección</p>
@@ -212,10 +279,11 @@ const InfoCapitulo: React.FC = () => {
         </div>
 
         {/* Send new comment section */}
-        <div className="w-full md:w-1/2 h-72 p-4 bg-white dark:bg-boxdark rounded-lg">
+        <div id="enviar-comentario" className="w-full md:w-1/2 h-72 p-4 bg-white dark:bg-boxdark rounded-lg">
           <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Enviar Comentario</h4>
           {/* Textarea for typing the comment */}
           <textarea
+            id="textarea-comentario"
             value={comentario}
             onChange={handleComentarioChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -237,6 +305,7 @@ const InfoCapitulo: React.FC = () => {
             )}
             {/* Submit button to send the comment */}
             <button
+              id="enviar-button"
               className={`px-4 py-2 rounded-md ml-auto ${inputBloqueado || isButtonDisabled() || isComentarioBloqueado
                 ? 'bg-gray-400 text-white cursor-not-allowed'
                 : 'bg-blue-500 text-white hover:bg-blue-600'

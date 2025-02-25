@@ -56,7 +56,7 @@ const Graficas: React.FC = () => {
           <CardDataStats
             title="Total Estudiantes" // "Total Students" in Spanish
             total={totalStudents ? totalStudents.toLocaleString() : 'N/A'}
-            rate={`${totalStudentsSede ? ((totalStudentsSede / (totalStudents || 1)) * 100).toFixed(2) : '0'}%`}
+            rate={`${totalStudentsSede ? ((totalStudentsSede / (totalStudents || 1)) * 100).toFixed(2) : 'N/A'}`}
             levelDown={false}
           >
             {/* Icon used in the CardDataStats component */}

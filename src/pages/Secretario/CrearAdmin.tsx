@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; 
-import { getSedes } from '../../ts/Secretario/GetSedes'; 
-import { createAdmin } from '../../ts/Secretario/CreateAdmin'; 
-import { getAdmins } from '../../ts/Secretario/GetAdmins'; 
-import { deleteAdmin } from '../../ts/Secretario/DeleteAdmin'; 
-import Swal from 'sweetalert2'; 
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { getSedes } from '../../ts/Secretario/GetSedes';
+import { createAdmin } from '../../ts/Secretario/CreateAdmin';
+import { getAdmins } from '../../ts/Secretario/GetAdmins';
+import { deleteAdmin } from '../../ts/Secretario/DeleteAdmin';
+import Swal from 'sweetalert2';
+import { driver } from 'driver.js'; // Importa driver.js
+import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
 
 // Interface defining the structure of an Admin object
 interface Admin {
@@ -30,7 +32,9 @@ const CrearAdmin: React.FC = () => {
   const itemsPerPage = 5; // Number of items per page
 
   // State for storing the list of "sedes"
-  const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string }[]>([]);
+  const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string }[]>(
+    [],
+  );
 
   // Effect hook to fetch "sedes" and admins when the component mounts
   useEffect(() => {
@@ -133,7 +137,7 @@ const CrearAdmin: React.FC = () => {
   const handleDeleteClick = (adminId: number, sedeId: number) => {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: '¡Al eliminar el administrador se volvera un catedratico en la sede Asignada!',
+      text: '¡Al eliminar el administrador se volverá un catedrático en la sede asignada!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
@@ -192,23 +196,109 @@ const CrearAdmin: React.FC = () => {
     if (pageNumber > 0 && pageNumber <= totalPages) setCurrentPage(pageNumber);
   };
 
+  // Recorrido del componente principal
+  const startComponentTour = () => {
+    const driverObj = driver({
+      showProgress: true,
+      animate: true,
+      prevBtnText: 'Anterior',
+      nextBtnText: 'Siguiente',
+      doneBtnText: 'Finalizar',
+      progressText: 'Paso {{current}} de {{total}}',
+    });
+
+    driverObj.setSteps([
+      {
+        element: '#tabla-admins', // ID de la tabla de administradores
+        popover: {
+          title: 'Tabla de Administradores',
+          description:
+            'Aquí se muestran todos los administradores registrados en el sistema.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '#boton-crear-admin', // ID del botón "Crear Admin"
+        popover: {
+          title: 'Crear Administrador',
+          description:
+            'Haz clic aquí para abrir el formulario de creación de un nuevo administrador.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '#delete-admin', // Clase de los botones "Eliminar"
+        popover: {
+          title: 'Eliminar Administrador',
+          description:
+            'Puedes eliminar un administrador haciendo clic en el botón "Eliminar" de la fila correspondiente.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+    ]);
+
+    driverObj.drive();
+  };
+
   return (
     <>
-      {/* Breadcrumb to indicate the current page */}
       <Breadcrumb pageName="Crear Admin a Sede" />
 
       <div className="mx-auto max-w-6xl px-6 py-3">
-        {/* Section for displaying the list of admins */}
-        <div className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5">
-          <h3 className="text-lg font-semibold text-black dark:text-white mb-4 flex justify-between items-center">
-            Administradores Registrados
+        {/* Botones para iniciar los recorridos */}
+        <button
+          style={{ width: '35px', height: '35px', position: 'relative' }}
+          onClick={startComponentTour}
+          className="mb-4 flex items-center gap-2 px-1 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="#ffffff"
+          >
+            <g id="SVGRepo_iconCarrier">
+              <path
+                d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                stroke="#ffffff"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
+            </g>
+          </svg>
+
+          {/* Tooltip */}
+          <span
+            className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ left: 'calc(50% + 50px)' }}
+          >
+            Iniciar recorrido de ayuda
+          </span>
+        </button>
+
+        {/* Sección para mostrar la lista de administradores */}
+        <div
+          id="tabla-admins"
+          className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-black dark:text-white mb-4 sm:mb-0">
+              Administradores Registrados
+            </h3>
             <button
+              id="boton-crear-admin"
               onClick={handleOpenModal}
-              className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 ml-auto"
+              className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-2 sm:mt-0 sm:ml-auto text-md"
             >
               Crear Admin
             </button>
-          </h3>
+          </div>
+
           {admins.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-200 dark:border-strokedark">
@@ -218,7 +308,7 @@ const CrearAdmin: React.FC = () => {
                       No.
                     </th>
                     <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                      UserName
+                      Nombre
                     </th>
                     <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                       Correo
@@ -236,7 +326,10 @@ const CrearAdmin: React.FC = () => {
                 </thead>
                 <tbody>
                   {currentAdmins.map((admin) => (
-                    <tr key={admin.id} className="hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <tr
+                      key={admin.id}
+                      className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
                       <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                         {admin.id}
                       </td>
@@ -253,10 +346,16 @@ const CrearAdmin: React.FC = () => {
                         {admin.carnet}
                       </td>
                       <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {/* Button to delete an admin */}
                         <button
-                          onClick={() => handleDeleteClick(admin.id, sedes.find(sede => sede.nameSede === admin.sede)?.sede_id || 0)}
+                          onClick={() =>
+                            handleDeleteClick(
+                              admin.id,
+                              sedes.find((sede) => sede.nameSede === admin.sede)
+                                ?.sede_id || 0,
+                            )
+                          }
                           className="ml-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                          id="delete-admin"
                         >
                           Eliminar
                         </button>
@@ -267,13 +366,15 @@ const CrearAdmin: React.FC = () => {
               </table>
             </div>
           ) : (
-            <p className="text-gray-600 dark:text-gray-400">No hay administradores registrados.</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              No hay administradores registrados.
+            </p>
           )}
         </div>
 
-        {/* Pagination controls */}
+        {/* Controles de paginación */}
         {admins.length > itemsPerPage && (
-          <div className="flex justify-center mt-6">
+          <div id="paginacion" className="flex justify-center mt-6">
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -295,19 +396,22 @@ const CrearAdmin: React.FC = () => {
         )}
       </div>
 
-      {/* Modal for creating a new admin */}
+      {/* Modal para crear un nuevo administrador */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
           <div className="bg-white dark:bg-boxdark p-6 rounded-lg w-full max-w-sm">
             <h3 className="text-lg font-semibold mb-4">Crear Administrador</h3>
             <form onSubmit={handleCreateAdmin}>
               <div className="mb-4">
-                <label className="block text-gray-700 dark:text-white" htmlFor="adminUserName">
+                <label
+                  className="block text-gray-700 dark:text-white"
+                  htmlFor="adminUserName"
+                >
                   Nombre
                 </label>
                 <input
+                  id="input-nombre"
                   type="text"
-                  id="adminUserName"
                   className="w-full p-2 border rounded"
                   value={adminUserName}
                   onChange={(e) => setAdminUserName(e.target.value)}
@@ -315,12 +419,15 @@ const CrearAdmin: React.FC = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 dark:text-white" htmlFor="adminEmail">
+                <label
+                  className="block text-gray-700 dark:text-white"
+                  htmlFor="adminEmail"
+                >
                   Correo Electrónico
                 </label>
                 <input
+                  id="input-email"
                   type="email"
-                  id="adminEmail"
                   className="w-full p-2 border rounded"
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
@@ -328,11 +435,14 @@ const CrearAdmin: React.FC = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 dark:text-white" htmlFor="adminSede">
+                <label
+                  className="block text-gray-700 dark:text-white"
+                  htmlFor="adminSede"
+                >
                   Sede
                 </label>
                 <select
-                  id="adminSede"
+                  id="select-sede"
                   className="w-full p-2 border rounded"
                   value={adminSede}
                   onChange={(e) => setAdminSede(e.target.value)}
@@ -347,12 +457,15 @@ const CrearAdmin: React.FC = () => {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 dark:text-white" htmlFor="adminCarnet">
-                  Carnet
+                <label
+                  className="block text-gray-700 dark:text-white"
+                  htmlFor="adminCarnet"
+                >
+                  Código
                 </label>
                 <input
+                  id="input-carnet"
                   type="text"
-                  id="adminCarnet"
                   className="w-full p-2 border rounded"
                   value={adminCarnet}
                   onChange={(e) => setAdminCarnet(e.target.value)}
@@ -361,6 +474,7 @@ const CrearAdmin: React.FC = () => {
               </div>
               <div className="flex justify-end">
                 <button
+                  id="boton-crear"
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 >
