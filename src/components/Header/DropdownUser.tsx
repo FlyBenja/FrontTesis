@@ -11,17 +11,23 @@ const DropdownUser = () => {
 
   const role = localStorage.getItem('userRole');
 
-  const profileLink = role === '1' ? '/estudiantes/profile' :
-    role === '2' ? '/catedratico/profile' :
-      role === '3' ? '/admin/profile' :
-        role === '4' ? '/secretario/profile' :
-          '/decano/profile';
+  const profileLink = role === '1' ? '/estudiantes/perfil' :
+    role === '2' ? '/catedratico/perfil' :
+      role === '3' ? '/admin/perfil' :
+        role === '4' ? '/secretario/perfil' :
+          role === '5' ? '/decano/perfil' :
+            role === '6' ? '/cordinador/perfil' :
+              role === '7' ? '/revisor/perfil' :
+                '/default/perfil';  // Default in case role doesn't match any
 
-  const settingsLink = role === '1' ? '/estudiantes/settings' :
-    role === '2' ? '/catedratico/settings' :
-      role === '3' ? '/admin/settings' :
-        role === '4' ? '/secretario/settings' :
-          '/decano/settings';
+  const settingsLink = role === '1' ? '/estudiantes/configuracion' :
+    role === '2' ? '/catedratico/configuracion' :
+      role === '3' ? '/admin/configuracion' :
+        role === '4' ? '/secretario/configuracion' :
+          role === '5' ? '/decano/configuracion' :
+            role === '6' ? '/cordinador/configuracion' :
+              role === '7' ? '/revisor/configuracion' :
+                '/default/configuracion';  // Default in case role doesn't match any
 
   useEffect(() => {
     getDatosPerfil().then((perfil) => {
@@ -53,7 +59,7 @@ const DropdownUser = () => {
   const handleLogout = () => {
     localStorage.clear();
     navigate('/');
-  
+
     let reloadCount = 0;
     const reloadPage = () => {
       if (reloadCount < 3) {
@@ -64,10 +70,10 @@ const DropdownUser = () => {
         }, 500); // Agregamos un retraso de 500ms entre recargas
       }
     };
-  
+
     reloadPage();
   };
-    
+
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link

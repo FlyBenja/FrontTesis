@@ -42,8 +42,11 @@ import Grafica from './pages/Cordinador/Graficas';
 import SolicitudRevisiones from './pages/Cordinador/SolicitudRevisiones';
 import RevisionEstudiante from './pages/Cordinador/RevisionEstudiante';
 import Revisores from './pages/Cordinador/Revisores';
+import Asignaciones from './pages/Cordinador/Asignaciones';
+import AsignacionesDetalle from './pages/Cordinador/RevisionEstudianteComentarios';
 import Historial from './pages/Cordinador/Historial';
-import HistorialDetalle from './pages/Cordinador/HistorialDetalle';
+import HistorialDetalle from './pages/Cordinador/RevisionEstudianteComentarios';
+
 
 function App() {
   // State variable for managing the loading state of the app
@@ -105,8 +108,8 @@ function App() {
         <Route path="enviar-revisión" element={<EnviaRevision />} />
 
         {/* General Links */}
-        <Route path="profile" element={<Profile />} />
-        <Route path="settings" element={<Settings />} />
+        <Route path="perfil" element={<Profile />} />
+        <Route path="configuracion" element={<Settings />} />
 
         {/* Routes for the Student section */}
         <Route path="inicio" element={<Inicio />} />
@@ -125,6 +128,8 @@ function App() {
         <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
         <Route path="revision-estudiante" element={<RevisionEstudiante />} />
         <Route path="revisores" element={<Revisores />} />
+        <Route path="asignaciones" element={<Asignaciones />} />
+        <Route path="asignaciones/detalle" element={<AsignacionesDetalle />} />
         <Route path="historial" element={<Historial />} />
         <Route path="historial/detalle" element={<HistorialDetalle />} />
       </Routes>

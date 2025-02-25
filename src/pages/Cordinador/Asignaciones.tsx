@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
-import { getHistorialAprobados } from '../../ts/Cordinador/GetRevisionesAprobadas';
+import { getRevisionesEnRevision } from '../../ts/Cordinador/GetRevisionesEnRevision'; // Importa la nueva API
 
-const Historial: React.FC = () => {
+const Asignaciones: React.FC = () => {
   const navigate = useNavigate();
 
   const [revisiones, setRevisiones] = useState<any[]>([]);  // Datos de las revisiones
@@ -16,14 +16,14 @@ const Historial: React.FC = () => {
   const [revisionesPerPage, setRevisionesPerPage] = useState(5);  // Default to 5 items per page
   const [maxPageButtons, setMaxPageButtons] = useState(10);  // Default to 10 page buttons
 
-  // Obtener las revisiones aprobadas desde la nueva API
+  // Obtener las revisiones pendientes desde la nueva API
   const fetchRevisiones = async (order: 'asc' | 'desc', carnet: string) => {
     try {
-      const revisionesAprobadas = await getHistorialAprobados(order, carnet);
-      setRevisiones(revisionesAprobadas);
-      setFilteredRevisiones(revisionesAprobadas); // Inicializa el estado de revisiones filtradas
+      const revisions = await getRevisionesEnRevision(order, carnet);
+      setRevisiones(revisions);
+      setFilteredRevisiones(revisions); // Inicializa el estado de revisiones filtradas
     } catch (error) {
-      console.error(error);
+      console.error(error);  // Manejo de errores (puedes agregar más lógica si es necesario)
     }
   };
 
@@ -64,7 +64,7 @@ const Historial: React.FC = () => {
   };
 
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/historial/detalle`, { state: { userId } });
+    navigate(`/cordinador/asignaciones/detalle`, { state: { userId } });
   };
 
   // Agregar console.log para mostrar la longitud del carnet ingresado
@@ -72,7 +72,6 @@ const Historial: React.FC = () => {
     const newCarnet = e.target.value;
     setSearchCarnet(newCarnet);  // Actualizar el estado
   };
-
 
   // Effect hook to handle window resize and adjust page settings accordingly
   useEffect(() => {
@@ -97,7 +96,7 @@ const Historial: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Historial de solicitudes aprobadas" />
+      <Breadcrumb pageName="Revisiones en revisión" />
       <div className="mx-auto max-w-5xl px-1 py-1">
         <div className="mb-4 flex items-center space-x-2">
           <input
@@ -137,9 +136,8 @@ const Historial: React.FC = () => {
                     {/* Estas columnas se ocultan en pantallas pequeñas */}
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">{revision.user.carnet}</td>
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">{formatDate(revision.date_revision)}</td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white bg-green-300 dark:bg-green-500 font-semibold hidden md:table-cell">
-                      {/* Aquí se maneja el estado correctamente */}
-                      {'Aprobado'}
+                    <td className="py-2 px-4 text-center text-black dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold hidden md:table-cell">
+                      {revision.approvalThesis.status}
                     </td>
                     <td className="py-2 px-4 text-center">
                       <button
@@ -154,7 +152,7 @@ const Historial: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={6} className="py-4 text-center text-gray-500 dark:text-gray-400">
-                    No hay solicitudes aprobadas
+                    No hay solicitudes de revisión
                   </td>
                 </tr>
               )}
@@ -193,4 +191,4 @@ const Historial: React.FC = () => {
   );
 };
 
-export default Historial;
+export default Asignaciones;
