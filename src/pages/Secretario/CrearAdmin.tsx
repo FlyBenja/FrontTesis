@@ -197,7 +197,7 @@ const CrearAdmin: React.FC = () => {
   };
 
   // Recorrido del componente principal
-  const startComponentTour = () => {
+  const startTour = () => {
     const driverObj = driver({
       showProgress: true,
       animate: true,
@@ -248,55 +248,52 @@ const CrearAdmin: React.FC = () => {
       <Breadcrumb pageName="Crear Admin a Sede" />
 
       <div className="mx-auto max-w-6xl px-6 py-3">
-        {/* Botones para iniciar los recorridos */}
-        <button
-          style={{ width: '35px', height: '35px', position: 'relative' }}
-          onClick={startComponentTour}
-          className="mb-4 flex items-center gap-2 px-1 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="#ffffff"
-          >
-            <g id="SVGRepo_iconCarrier">
-              <path
-                d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-              <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
-            </g>
-          </svg>
 
-          {/* Tooltip */}
-          <span
-            className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{ left: 'calc(50% + 50px)' }}
-          >
-            Iniciar recorrido de ayuda
-          </span>
-        </button>
-
-        {/* Sección para mostrar la lista de administradores */}
         <div
           id="tabla-admins"
           className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5"
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-black dark:text-white mb-4 sm:mb-0">
+            <h3 className="text-lg font-semibold text-black dark:text-white">
               Administradores Registrados
             </h3>
-            <button
-              id="boton-crear-admin"
-              onClick={handleOpenModal}
-              className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-2 sm:mt-0 sm:ml-auto text-md"
-            >
-              Crear Admin
-            </button>
+            <div className="flex items-center ml-auto space-x-2">
+
+              <button
+                id="boton-crear-admin"
+                onClick={handleOpenModal}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                Crear Nuevo Admin
+              </button>
+
+              {/* Botón para iniciar los recorridos, alineado con el botón "Crear Admin" */}
+              <button
+                style={{ width: '35px', height: '35px' }}
+                onClick={startTour}
+                className="relative flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  stroke="#ffffff"
+                >
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                      stroke="#ffffff"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
+                  </g>
+                </svg>
+                <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                  Iniciar recorrido de ayuda
+                </span>
+              </button>
+            </div>
           </div>
 
           {admins.length > 0 ? (
@@ -415,6 +412,7 @@ const CrearAdmin: React.FC = () => {
                   className="w-full p-2 border rounded"
                   value={adminUserName}
                   onChange={(e) => setAdminUserName(e.target.value)}
+                  placeholder="Ingresa el nombre completo"
                   required
                 />
               </div>
@@ -431,6 +429,7 @@ const CrearAdmin: React.FC = () => {
                   className="w-full p-2 border rounded"
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
+                  placeholder="Ingresa el correo electrónico"
                   required
                 />
               </div>
@@ -469,6 +468,7 @@ const CrearAdmin: React.FC = () => {
                   className="w-full p-2 border rounded"
                   value={adminCarnet}
                   onChange={(e) => setAdminCarnet(e.target.value)}
+                  placeholder="Ingresa el Código del Catedrático"
                   required
                 />
               </div>
