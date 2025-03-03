@@ -3,7 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getTimeLineEstudiante } from '../../../ts/Generales/GetTimeLineEstudiante';
-import generaPDFIndividual from '../../../components/Pdfs/generaPDFIndividual';  
+import generaPDFIndividual from '../../../components/Pdfs/generaPDFIndividual';
+import { driver } from 'driver.js'; // Importa driver.js
+import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
 
 // Defining the structure of a single event in the timeline
 interface TimeLineEvent {
@@ -28,7 +30,7 @@ const TimeLine: React.FC = () => {
 
   // Extracting student data and selected year/course from the location state
   const { estudiante, selectedAño, selectedCurso } = location.state || {};
-  const studentName = estudiante ? estudiante.userName : "Desconocido";
+  const studentName = estudiante ? estudiante.userName : 'Desconocido';
   const userId = estudiante ? estudiante.id : null;
 
   // Fetching the timeline events when the component mounts or userId changes
@@ -49,14 +51,16 @@ const TimeLine: React.FC = () => {
         // Sorting events by date in descending order and formatting the date
         setEvents(
           logs
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Orden descendente
+            .sort(
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+            ) // Orden descendente
             .map((log) => ({
               user_id: log.user_id,
               typeEvent: log.typeEvent,
               description: log.description,
               task_id: log.task_id,
               date: new Date(log.date).toLocaleDateString(),
-            }))
+            })),
         );
       } catch (err: any) {
         // Handling errors if needed
@@ -69,7 +73,11 @@ const TimeLine: React.FC = () => {
   }, [userId]);
 
   // Function to show SweetAlert messages
-  const showAlert = (type: 'success' | 'error', title: string, text: string) => {
+  const showAlert = (
+    type: 'success' | 'error',
+    title: string,
+    text: string,
+  ) => {
     const confirmButtonColor = type === 'success' ? '#28a745' : '#dc3545';
     Swal.fire({
       icon: type,
@@ -83,7 +91,7 @@ const TimeLine: React.FC = () => {
   // Function to handle PDF generation when the "Imprimir Reporte" button is clicked
   const handlePrintPDF = () => {
     if (estudiante && selectedAño) {
-      generaPDFIndividual(estudiante, selectedAño, selectedCurso);  // Llamamos a la función que genera el PDF
+      generaPDFIndividual(estudiante, selectedAño, selectedCurso); // Llamamos a la función que genera el PDF
     }
   };
 
@@ -130,6 +138,62 @@ const TimeLine: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Función para iniciar el recorrido
+  const startTour = () => {
+    const driverObj = driver({
+      showProgress: true, // Muestra la barra de progreso
+      animate: true, // Habilita animaciones
+      prevBtnText: 'Anterior', // Texto del botón "Anterior"
+      nextBtnText: 'Siguiente', // Texto del botón "Siguiente"
+      doneBtnText: 'Finalizar', // Texto del botón "Finalizar"
+      progressText: 'Paso {{current}} de {{total}}', // Texto de la barra de progreso
+    });
+
+    driverObj.setSteps([
+      {
+        element: '#back-button', // ID del botón "Regresar"
+        popover: {
+          title: 'Regresar',
+          description: 'Haz clic aquí para regresar a la lista de estudiantes.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '#print-report', // ID del botón "Imprimir Reporte"
+        popover: {
+          title: 'Imprimir Reporte',
+          description:
+            'Haz clic aquí para generar un reporte en PDF de la línea de tiempo del estudiante.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '#view-tasks', // ID del botón "Ver Tareas"
+        popover: {
+          title: 'Ver Tareas',
+          description:
+            'Haz clic aquí para ver las tareas asignadas a este estudiante.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '#timeline', // ID de la línea de tiempo
+        popover: {
+          title: 'Línea de Tiempo',
+          description:
+            'Aquí se muestran los eventos de la línea de tiempo del estudiante.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+    ]);
+
+    driverObj.drive(); // Inicia el recorrido
+  };
+
   // Loading state: if still loading, display loading text
   if (loading) {
     return <div>Cargando línea de tiempo...</div>;
@@ -138,12 +202,43 @@ const TimeLine: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="TimeLine" />
-      <div className="mb-4">
+      <div className="mb-4 flex items-center justify-between sm:justify-start gap-4">
+        {/* Botón de regresar */}
         <button
+          id="back-button"
           className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
           onClick={() => navigate(-1)}
         >
           <span className="mr-2">←</span> Regresar
+        </button>
+
+        {/* Botón para iniciar el recorrido */}
+        <button
+          style={{ width: '35px', height: '35px' }}
+          onClick={startTour}
+          className="relative flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
+        >
+            <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          stroke="#ffffff"
+        >
+          <g id="SVGRepo_iconCarrier">
+            <path
+              d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+              stroke="#ffffff"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
+            <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
+          </g>
+        </svg>
+
+          <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+            Iniciar recorrido de ayuda
+          </span>
         </button>
       </div>
 
@@ -153,15 +248,19 @@ const TimeLine: React.FC = () => {
             Línea de Tiempo - {studentName}
           </h2>
           <div className="flex gap-4">
-          <button
+            <button
+              id="print-report" // Agrega este ID
               onClick={handlePrintPDF}
               className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
             >
               Imprimir Reporte
             </button>
             <button
+              id="view-tasks" // Agrega este ID
               onClick={() => {
-                navigate('/admin/tareas-estudiante', { state: { estudiante, selectedAño } });
+                navigate('/admin/tareas-estudiante', {
+                  state: { estudiante, selectedAño },
+                });
               }}
               className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
             >
@@ -170,17 +269,26 @@ const TimeLine: React.FC = () => {
           </div>
         </div>
 
-        <div className="relative border-l-2 border-gray-200 dark:border-strokedark">
+        <div
+          id="timeline" // Agrega este ID
+          className="relative border-l-2 border-gray-200 dark:border-strokedark"
+        >
           {currentEvents.length > 0 ? (
             currentEvents.map((event, index) => (
               <div key={index} className="mb-8 pl-8 relative">
                 <div className="absolute left-[-1.25rem] top-0 flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full">
                   <span>📝</span>
                 </div>
-                <div className={`p-4 rounded-lg shadow-md bg-white dark:bg-boxdark dark:text-white`}>
+                <div
+                  className={`p-4 rounded-lg shadow-md bg-white dark:bg-boxdark dark:text-white`}
+                >
                   <h3 className="text-lg font-semibold">{event.typeEvent}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{event.description}</p>
-                  <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">{event.date}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {event.description}
+                  </p>
+                  <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">
+                    {event.date}
+                  </p>
                 </div>
               </div>
             ))
@@ -188,7 +296,10 @@ const TimeLine: React.FC = () => {
             <table className="min-w-full">
               <tbody>
                 <tr>
-                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
+                  <td
+                    colSpan={3}
+                    className="py-2 px-4 text-center text-gray-500 dark:text-white"
+                  >
                     No Se Encontraron Eventos En Este Estudiante.
                   </td>
                 </tr>
@@ -197,34 +308,38 @@ const TimeLine: React.FC = () => {
           )}
         </div>
 
-        <div className="mt-4 flex justify-center">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8592;
-          </button>
-          {getPageRange().map((page) => (
+        {/* Paginación (solo se muestra si hay más de una página) */}
+        {totalPages > 1 && (
+          <div id="pagination" className="mt-4 flex justify-center">
             <button
-              key={page}
-              onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
-                }`}
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
             >
-              {page}
+              &#8592;
             </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8594;
-          </button>
-        </div>
+            {getPageRange().map((page) => (
+              <button
+                key={page}
+                onClick={() => paginate(page)}
+                className={`mx-1 px-3 py-1 rounded-md border ${
+                  currentPage === page
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+            >
+              &#8594;
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

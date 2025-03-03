@@ -6,6 +6,8 @@ import { activaUsuario } from '../../../ts/Generales/ActivarUsuario';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SwitcherFour from '../../../components/Switchers/SwitcherFour';
 import Swal from 'sweetalert2';
+import { driver } from 'driver.js'; // Importa driver.js
+import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
 
 // Interface to define the structure of a professor's data
 interface Catedratico {
@@ -160,25 +162,111 @@ const ListarCatedraticos: React.FC = () => {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i); // Return the page numbers as an array
   };
 
+  // Función para iniciar el recorrido
+  const startTour = () => {
+    const driverObj = driver({
+      showProgress: true, // Muestra la barra de progreso
+      animate: true, // Habilita animaciones
+      prevBtnText: 'Anterior', // Texto del botón "Anterior"
+      nextBtnText: 'Siguiente', // Texto del botón "Siguiente"
+      doneBtnText: 'Finalizar', // Texto del botón "Finalizar"
+      progressText: 'Paso {{current}} de {{total}}', // Texto de la barra de progreso
+    });
+
+    driverObj.setSteps([
+      {
+        element: '#search-input', // ID del campo de búsqueda
+        popover: {
+          title: 'Buscar Catedrático',
+          description: 'Ingresa el código del catedrático para buscarlo.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+      {
+        element: '#search-button', // ID del botón de búsqueda
+        popover: {
+          title: 'Buscar',
+          description: 'Haz clic aquí para buscar el catedrático.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+      {
+        element: '#professors-table', // ID de la tabla de catedráticos
+        popover: {
+          title: 'Lista de Catedráticos',
+          description: 'Aquí se muestran los catedráticos registrados.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+      {
+        element: '#active-switcher', // ID del switcher de activación
+        popover: {
+          title: 'Activar/Desactivar',
+          description: 'Activa o desactiva a un catedrático.',
+          side: 'top',
+          align: 'start',
+        },
+      },
+    ]);
+
+    driverObj.drive(); // Inicia el recorrido
+  };
+
   return (
     <>
       <Breadcrumb pageName="Listar Catedráticos" />
       <div className="mx-auto max-w-5xl px-1 py-1">
         <div className="mb-4 flex items-center space-x-2">
           <input
+            id="search-input"
             type="text"
             placeholder="Buscar por Código de Catedrático"
             value={searchCarnet}
             onChange={(e) => setSearchCarnet(e.target.value)}
             className="w-72 px-4 py-2 border rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           />
-          <button onClick={handleSearchClick} className="px-4 py-2 bg-blue-500 text-white rounded-md">
+          <button
+            id="search-button"
+            onClick={handleSearchClick}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md"
+          >
             Buscar
+          </button>
+
+          {/* Botón para iniciar el recorrido */}
+          <button
+            style={{ width: '35px', height: '35px' }}
+            onClick={startTour}
+            className="relative flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              stroke="#ffffff"
+            >
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+                <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
+              </g>
+            </svg>
+            <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+              Iniciar recorrido de ayuda
+            </span>
           </button>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border rounded-lg dark:bg-boxdark dark:border-strokedark">
+          <table id="professors-table" className="min-w-full bg-white border rounded-lg dark:bg-boxdark dark:border-strokedark">
             <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
               <tr>
                 <th className="py-2 px-4 text-left">Foto</th>
@@ -196,7 +284,9 @@ const ListarCatedraticos: React.FC = () => {
                     </td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{cat.userName}</td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{cat.professorCode}</td>
-                    <td className="py-2 px-4 flex justify-end">
+                    <td className="py-2 px-4 flex justify-end"
+                      id='active-switcher'
+                    >
                       <SwitcherFour
                         enabled={cat.active}
                         onChange={() => handleActiveChange(cat.user_id, !cat.active)} // Toggle professor's active status
@@ -217,34 +307,36 @@ const ListarCatedraticos: React.FC = () => {
         </div>
 
         {/* Pagination */}
-        <div className="mt-4 flex justify-center">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8592;
-          </button>
-          {getPageRange().map((page) => (
+        {catedraticos.length > catedraticosPerPage && (
+          <div id="pagination" className="mt-4 flex justify-center">
             <button
-              key={page}
-              onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
-                }`}
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
             >
-              {page}
+              &#8592;
             </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8594;
-          </button>
-        </div>
+            {getPageRange().map((page) => (
+              <button
+                key={page}
+                onClick={() => paginate(page)}
+                className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
+                  }`}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+            >
+              &#8594;
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
