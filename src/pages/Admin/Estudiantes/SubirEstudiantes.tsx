@@ -61,7 +61,7 @@ const SubirEstudiantes = () => {
       file &&
       file.type !== 'application/vnd.ms-excel' &&
       file.type !==
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ) {
       // If the file is not an Excel file
       showAlert(
@@ -217,15 +217,11 @@ const SubirEstudiantes = () => {
       <div className="flex justify-center mt-8">
         <div className="w-full max-w-md">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white text-center">
-                Subir Estudiantes
-              </h3>
-              {/* Botón para iniciar el recorrido */}
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center">
               <button
-                style={{ width: '35px', height: '35px', position: 'relative' }}
+                style={{ width: '35px', height: '35px', position: 'relative', marginRight: '10px' }}
                 onClick={startTour}
-                className="mb-4 flex items-center px-1 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
+                className="flex items-center px-1 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -250,10 +246,11 @@ const SubirEstudiantes = () => {
                   className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
                   style={{ left: 'calc(50% + 50px)' }}
                 >
-                  ¿Necesitas ayuda?,
-                  Iniciar recorrido de ayuda
+                  ¿Necesitas ayuda?, Iniciar recorrido de ayuda
                 </span>
               </button>
+
+              <h3 className="font-medium text-black dark:text-white ml-21">Subir Estudiantes</h3>
             </div>
             <div className="p-6.5">
               <label
@@ -289,11 +286,10 @@ const SubirEstudiantes = () => {
               />
 
               <button
-                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${
-                  fileSelected && selectedCurso
-                    ? 'opacity-100 cursor-pointer'
-                    : 'opacity-50 cursor-not-allowed'
-                }`}
+                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${fileSelected && selectedCurso
+                  ? 'opacity-100 cursor-pointer'
+                  : 'opacity-50 cursor-not-allowed'
+                  }`}
                 onClick={handleUpload} // Upload the file when clicked
                 disabled={!fileSelected || !selectedCurso} // Disable button if no file or course selected
                 id="confirm-submit" // ID para el recorrido

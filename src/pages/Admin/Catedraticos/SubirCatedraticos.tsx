@@ -152,37 +152,36 @@ const SubirCatedraticos = () => {
       <div className="flex justify-center mt-18">
         <div className="w-full max-w-md">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white text-center">
-                Subir Catedráticos
-              </h3>
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center">
               {/* Botón para iniciar el recorrido */}
-                <button
-                  style={{ width: '35px', height: '35px' }}
-                  onClick={startTour}
-                  className="relative flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
+              <button
+                style={{ width: '35px', height: '35px' }}
+                onClick={startTour}
+                className="relative flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  stroke="#ffffff"
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    stroke="#ffffff"
-                  >
-                    <g id="SVGRepo_iconCarrier">
-                      <path
-                        d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      ></path>
-                      <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
-                    </g>
-                  </svg>
-                  <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-                    Iniciar recorrido de ayuda
-                  </span>
-                </button>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                      stroke="#ffffff"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
+                  </g>
+                </svg>
+                <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                  Iniciar recorrido de ayuda
+                </span>
+              </button>
+
+              <h3 className="font-medium text-black dark:text-white ml-22">Subir Catedráticos</h3>
             </div>
             <div className="p-6.5">
               <p className="text-center text-sm font-medium text-black dark:text-white mb-4">
@@ -200,11 +199,10 @@ const SubirCatedraticos = () => {
 
               <button
                 id="confirm-button"
-                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${
-                  fileSelected
+                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${fileSelected
                     ? 'opacity-100 cursor-pointer'
                     : 'opacity-50 cursor-not-allowed'
-                }`}
+                  }`}
                 onClick={handleUpload}
                 disabled={!fileSelected || !sedeId}
               >

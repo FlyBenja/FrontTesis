@@ -315,56 +315,53 @@ const ListarEstudiantes: React.FC = () => {
     <>
       <Breadcrumb pageName="Listar Estudiantes" />
       <div className="mx-auto max-w-5xl px-1 py-1">
-        {/* Botón para iniciar el recorrido */}
-        <button
-          style={{ width: '35px', height: '35px', position: 'relative' }}
-          onClick={startTour}
-          className="mb-4 flex items-center px-1 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="#ffffff"
-          >
-            <g id="SVGRepo_iconCarrier">
-              <path
-                d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-              <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
-            </g>
-          </svg>
-
-          {/* Tooltip */}
-          <span
-            className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{ left: 'calc(50% + 50px)' }}
-          >
-            Iniciar recorrido de ayuda
-          </span>
-        </button>
-
         <div className="mb-4 flex flex-wrap items-center justify-between space-x-2">
-          <div className="flex items-center w-full sm:w-auto">
+          <div className="mb-4 flex items-center space-x-2">
             <input
-              id="search-carnet" // Agrega este ID
+              id="search-input"
               type="text"
               placeholder="Buscar por Carnet de Estudiante"
               value={searchCarnet}
               onChange={(e) => setSearchCarnet(e.target.value)}
-              className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+              className="w-72 px-4 py-2 border rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
             />
             <button
-              className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+              id="search-button"
               onClick={handleSearchClick}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md"
             >
               Buscar
             </button>
+
+            {/* Botón para iniciar el recorrido */}
+            <button
+              style={{ width: '35px', height: '35px' }}
+              onClick={startTour}
+              className="relative flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                stroke="#ffffff"
+              >
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                    stroke="#ffffff"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                  <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
+                </g>
+              </svg>
+              <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                Iniciar recorrido de ayuda
+              </span>
+            </button>
           </div>
+
           <div className="flex">
             <button
               id="print-report" // Agrega este ID
@@ -467,11 +464,10 @@ const ListarEstudiantes: React.FC = () => {
             <button
               key={page}
               onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${
-                currentPage === page
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
-              }`}
+              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
+                }`}
             >
               {page}
             </button>
