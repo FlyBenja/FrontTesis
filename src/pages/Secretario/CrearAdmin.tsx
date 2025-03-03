@@ -27,14 +27,14 @@ const CrearAdmin: React.FC = () => {
   const [adminEmail, setAdminEmail] = useState('');
   const [adminSede, setAdminSede] = useState('');
   const [adminCarnet, setAdminCarnet] = useState('');
-  // State for pagination control
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Number of items per page
 
   // State for storing the list of "sedes"
-  const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string }[]>(
-    [],
-  );
+  const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string }[]>([]);
+
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [adminsPerPage, setAdminsPerPage] = useState(5);
+  const [maxPageButtons, setMaxPageButtons] = useState(5);
 
   // Effect hook to fetch "sedes" and admins when the component mounts
   useEffect(() => {
@@ -73,7 +73,49 @@ const CrearAdmin: React.FC = () => {
     // Fetch the data for sedes and admins
     fetchSedes();
     fetchAdmins();
+
+    // Agregar el listener para el cambio de tamaño de la ventana
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Llamar a handleResize al cargar para establecer los valores iniciales
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // Limpiar el listener al desmontar el componente
+    };
   }, []); // Empty dependency array means it runs only once when the component mounts
+
+  // Función para manejar el cambio de tamaño de la ventana
+  const handleResize = () => {
+    if (window.innerWidth < 768) {
+      setAdminsPerPage(4);
+      setMaxPageButtons(5);
+    } else {
+      setAdminsPerPage(5);
+      setMaxPageButtons(10);
+    }
+  };
+
+  // Paginación
+  const indexOfLastAdmin = currentPage * adminsPerPage;
+  const indexOfFirstAdmin = indexOfLastAdmin - adminsPerPage;
+  const currentAdmins = admins.slice(indexOfFirstAdmin, indexOfLastAdmin);
+  const totalPages = Math.ceil(admins.length / adminsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const getPageRange = () => {
+    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let end = Math.min(totalPages, start + maxPageButtons - 1);
+
+    if (end - start + 1 < maxPageButtons) {
+      start = Math.max(1, end - maxPageButtons + 1);
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
 
   // Function to open the modal
   const handleOpenModal = () => setIsModalOpen(true);
@@ -183,19 +225,6 @@ const CrearAdmin: React.FC = () => {
     });
   };
 
-  // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentAdmins = admins.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Calculate total pages for pagination
-  const totalPages = Math.ceil(admins.length / itemsPerPage);
-
-  // Function to handle page navigation
-  const paginate = (pageNumber: number) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) setCurrentPage(pageNumber);
-  };
-
   // Recorrido del componente principal
   const startTour = () => {
     const driverObj = driver({
@@ -246,45 +275,33 @@ const CrearAdmin: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="Crear Admin a Sede" />
-
+  
       <div className="mx-auto max-w-6xl px-6 py-3">
-
-        <div
-          id="tabla-admins"
-          className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5"
-        >
+        <div id="tabla-admins" className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-black dark:text-white">
               Administradores Registrados
             </h3>
             <div className="flex items-center ml-auto space-x-2">
-
               <button
                 id="boton-crear-admin"
                 onClick={handleOpenModal}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              >
                 Crear Nuevo Admin
               </button>
-
+  
               {/* Botón para iniciar los recorridos, alineado con el botón "Crear Admin" */}
               <button
                 style={{ width: '35px', height: '35px' }}
                 onClick={startTour}
                 className="relative flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 group"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  stroke="#ffffff"
-                >
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
                   <g id="SVGRepo_iconCarrier">
                     <path
                       d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C13.1734 12.8241 12.5933 13 12 13V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                      stroke="#ffffff"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                     ></path>
                     <circle cx="12" cy="17" r="1" fill="#ffffff"></circle>
                   </g>
@@ -295,61 +312,32 @@ const CrearAdmin: React.FC = () => {
               </button>
             </div>
           </div>
-
+  
           {admins.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-200 dark:border-strokedark">
                 <thead>
                   <tr className="bg-gray-200 dark:bg-gray-700">
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                      No.
-                    </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                      Nombre
-                    </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                      Correo
-                    </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                      Sede
-                    </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                      Código
-                    </th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                      Acción
-                    </th>
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">No.</th>
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Nombre</th>
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Correo</th>
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Sede</th>
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Código</th>
+                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Acción</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentAdmins.map((admin) => (
-                    <tr
-                      key={admin.id}
-                      className="hover:bg-gray-100 dark:hover:bg-gray-800"
-                    >
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.id}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.nombre}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.email}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.sede}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.carnet}
-                      </td>
+                    <tr key={admin.id} className="hover:bg-gray-100 dark:hover:bg-gray-800">
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">{admin.id}</td>
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">{admin.nombre}</td>
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">{admin.email}</td>
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">{admin.sede}</td>
+                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">{admin.carnet}</td>
                       <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                         <button
                           onClick={() =>
-                            handleDeleteClick(
-                              admin.id,
-                              sedes.find((sede) => sede.nameSede === admin.sede)
-                                ?.sede_id || 0,
-                            )
+                            handleDeleteClick(admin.id, sedes.find((sede) => sede.nameSede === admin.sede)?.sede_id || 0)
                           }
                           className="ml-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
                           id="delete-admin"
@@ -361,38 +349,48 @@ const CrearAdmin: React.FC = () => {
                   ))}
                 </tbody>
               </table>
+  
+              {/* Pagination controls */}
+              <div className="mt-4 flex justify-center">
+                {/* Previous page button */}
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+                >
+                  &#8592;
+                </button>
+  
+                {/* Page number buttons */}
+                {getPageRange().map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => paginate(page)}
+                    className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+                      }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+  
+                {/* Next page button */}
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+                >
+                  &#8594;
+                </button>
+              </div>
             </div>
           ) : (
-            <p className="text-gray-600 dark:text-gray-400">
-              No hay administradores registrados.
-            </p>
+            <p className="text-gray-600 dark:text-gray-400">No hay administradores registrados.</p>
           )}
         </div>
-
-        {/* Controles de paginación */}
-        {admins.length > itemsPerPage && (
-          <div id="paginacion" className="flex justify-center mt-6">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-3 py-1 bg-gray-200 text-black rounded-l-md hover:bg-gray-300 disabled:opacity-50"
-            >
-              Anterior
-            </button>
-            <span className="px-4 py-2 text-black">
-              Página {currentPage} de {totalPages}
-            </span>
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 bg-gray-200 text-black rounded-r-md hover:bg-gray-300 disabled:opacity-50"
-            >
-              Siguiente
-            </button>
-          </div>
-        )}
       </div>
-
+  
       {/* Modal para crear un nuevo administrador */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
@@ -400,10 +398,7 @@ const CrearAdmin: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4">Crear Administrador</h3>
             <form onSubmit={handleCreateAdmin}>
               <div className="mb-4">
-                <label
-                  className="block text-gray-700 dark:text-white"
-                  htmlFor="adminUserName"
-                >
+                <label className="block text-gray-700 dark:text-white" htmlFor="adminUserName">
                   Nombre
                 </label>
                 <input
@@ -417,10 +412,7 @@ const CrearAdmin: React.FC = () => {
                 />
               </div>
               <div className="mb-4">
-                <label
-                  className="block text-gray-700 dark:text-white"
-                  htmlFor="adminEmail"
-                >
+                <label className="block text-gray-700 dark:text-white" htmlFor="adminEmail">
                   Correo Electrónico
                 </label>
                 <input
@@ -434,33 +426,26 @@ const CrearAdmin: React.FC = () => {
                 />
               </div>
               <div className="mb-4">
-                <label
-                  className="block text-gray-700 dark:text-white"
-                  htmlFor="adminSede"
-                >
+                <label className="block text-gray-700 dark:text-white" htmlFor="adminSede">
                   Sede
                 </label>
                 <select
-                  id="select-sede"
+                  id="input-sede"
                   className="w-full p-2 border rounded"
                   value={adminSede}
                   onChange={(e) => setAdminSede(e.target.value)}
                   required
                 >
-                  <option value="">Selecciona una sede</option>
                   {sedes.map((sede) => (
-                    <option key={sede.sede_id} value={sede.sede_id}>
+                    <option key={sede.sede_id} value={sede.nameSede}>
                       {sede.nameSede}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="mb-4">
-                <label
-                  className="block text-gray-700 dark:text-white"
-                  htmlFor="adminCarnet"
-                >
-                  Código
+                <label className="block text-gray-700 dark:text-white" htmlFor="adminCarnet">
+                  Carnet
                 </label>
                 <input
                   id="input-carnet"
@@ -468,24 +453,22 @@ const CrearAdmin: React.FC = () => {
                   className="w-full p-2 border rounded"
                   value={adminCarnet}
                   onChange={(e) => setAdminCarnet(e.target.value)}
-                  placeholder="Ingresa el Código del Catedrático"
+                  placeholder="Ingresa el carnet"
                   required
                 />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end space-x-3">
                 <button
-                  id="boton-crear"
+                  onClick={handleCloseModal}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                >
+                  Cancelar
+                </button>
+                <button
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 >
-                  Crear Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="ml-3 px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400"
-                >
-                  Cancelar
+                  Crear
                 </button>
               </div>
             </form>
@@ -493,7 +476,7 @@ const CrearAdmin: React.FC = () => {
         </div>
       )}
     </>
-  );
+  );  
 };
 
 export default CrearAdmin;
