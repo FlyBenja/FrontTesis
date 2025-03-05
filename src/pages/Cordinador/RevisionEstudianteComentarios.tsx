@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getRevisionDetallePendi } from '../../ts/Cordinador/GetRevisionDetallePendi';
+import { getComentariosRevision } from '../../ts/Cordinador/GetComentariosRevision';
 
-const HistorialDetalle: React.FC = () => {
+const RevisionEstudianteComentarios: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [revisiones, setRevisiones] = useState<any[]>([]);
@@ -14,7 +14,7 @@ const HistorialDetalle: React.FC = () => {
     if (userId) {
       const fetchRevisiones = async () => {
         try {
-          const data = await getRevisionDetallePendi(userId);
+          const data = await getComentariosRevision(userId);
           setRevisiones(data);
         } catch (error) {
           console.error('Error al obtener detalles de revisiones pendientes:', error);
@@ -57,50 +57,89 @@ const HistorialDetalle: React.FC = () => {
         {revisiones.length > 0 ? (
           revisiones.map((revision) => (
             <div key={revision.revision_thesis_id} className="mb-6 border-b pb-4">
-              <div className="flex items-center">
-                {revision.user.profilePhoto ? (
-                  <img
-                    src={revision.user.profilePhoto}
-                    alt="Foto de perfil"
-                    className="w-24 h-24 rounded-full"
-                  />
-                ) : (
-                  <div className="w-24 h-24 flex items-center justify-center rounded-full bg-blue-500 text-white text-2xl font-bold">
-                    {revision.user.name.charAt(0).toUpperCase()}
+              <div className="flex items-center justify-between mb-4">
+                {/* Foto de perfil y Datos del Alumno */}
+                <div className="flex items-center mr-12">
+                  {/* Foto de perfil */}
+                  <div className="mr-6">
+                    {revision.user.profilePhoto ? (
+                      <img
+                        src={revision.user.profilePhoto}
+                        alt="Foto de perfil"
+                        className="w-24 h-24 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 flex items-center justify-center rounded-full bg-blue-500 text-white text-2xl font-bold">
+                        {revision.user.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
-                )}
 
-                <div className="ml-4">
-                  <p className="text-gray-700 dark:text-gray-300">Nombre: {revision.user.name}</p>
-                  <p className="text-gray-700 dark:text-gray-300">Correo: {revision.user.email}</p>
-                  <p className="text-gray-700 dark:text-gray-300">Carnet: {revision.user.carnet}</p>
+                  {/* Datos del Alumno */}
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Datos del Alumno</h3>
+                    <p className="text-gray-700 dark:text-gray-300"><strong>Nombre:</strong> {revision.user.name}</p>
+                    <p className="text-gray-700 dark:text-gray-300"><strong>Carne:</strong> {revision.user.carnet}</p>
+                    <p className="text-gray-700 dark:text-gray-300"><strong>Correo:</strong> {revision.user.email}</p>
+                    <p className="text-gray-700 dark:text-gray-300"><strong>Sede:</strong> {revision.user.location.nameSede}</p>
+                    <p className="text-gray-700 dark:text-gray-300"><strong>Año:</strong> {revision.user.year.year}</p>
+                  </div>
                 </div>
 
-                <div className="ml-auto text-right">
-                  <p className="text-gray-700 dark:text-gray-300">Año: {revision.user.year.year}</p>
-                  <p className="text-gray-700 dark:text-gray-300">Sede: {revision.user.location.nameSede}</p>
+                {/* Datos del Revisor */}
+                <div className="flex items-start flex-col mr-12 self-start">
+                  <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center">Datos del Revisor</h3>
+                  {revision.AssignedReviews.map((assignedReview: any) => (
+                    <div key={assignedReview.assigned_review_id} className="mb-2">
+                      <p className="text-gray-700 dark:text-gray-300"><strong>Nombre:</strong> {assignedReview.user.name}</p>
+                      <p className="text-gray-700 dark:text-gray-300"><strong>Correo:</strong> {assignedReview.user.email}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Datos de la Sede */}
+                <div className="flex items-start flex-col text-right self-start">
+                  <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Datos de la Sede</h3>
+                  <p className="text-gray-700 dark:text-gray-300"><strong>Sede:</strong> Guastatoya</p>
+                  <p className="text-gray-700 dark:text-gray-300"><strong>Año:</strong> 2025</p>
                 </div>
               </div>
 
+              {/* Estado y Fecha de Revisión */}
               <div className="mt-2">
                 <p className="text-gray-700 dark:text-gray-300">
-                  Fecha de revisión: {new Date(revision.date_revision).toLocaleDateString()}
+                  <strong>Fecha de Revisión:</strong> {new Date(revision.date_revision).toLocaleDateString()}
                 </p>
                 <p className={`text-sm font-semibold ${revision.active_process ? 'text-green-500' : 'text-red-500'}`}>
-                  Estado: {revision.active_process ? 'En proceso' : 'Finalizado'}
+                  <strong>Estado:</strong> {revision.active_process ? 'En proceso' : 'Finalizado'}
                 </p>
               </div>
 
+              {/* Descargar Tesis */}
               {revision.thesis_dir && (
                 <div className="mt-4">
                   <button
                     className="px-6 py-2 bg-blue-500 text-white rounded-lg"
-                    onClick={() => handleDownload(revision.thesis_dir, `tesis_${revision.user.carnet}.pdf`)}
+                    onClick={() => handleDownload(revision.thesis_dir, `tesis_${revision.AssignedReviews[0].user.user_id}.pdf`)}
                   >
                     Descargar Tesis
                   </button>
                 </div>
               )}
+
+              {/* Comentarios del Revisor */}
+              {revision.AssignedReviews.map((assignedReview: any) => (
+                <div key={assignedReview.assigned_review_id} className="mt-4">
+                  <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Comentarios del Revisor</h3>
+                  {assignedReview.commentsRevisions.map((comment: any) => (
+                    <div key={comment.date_comment} className="mb-2 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                      <p className="font-semibold text-gray-700 dark:text-gray-300">{comment.title}</p>
+                      <p className="text-gray-600 dark:text-gray-400">{comment.comment}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-300">{new Date(comment.date_comment).toLocaleDateString()}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           ))
         ) : (
@@ -111,4 +150,4 @@ const HistorialDetalle: React.FC = () => {
   );
 };
 
-export default HistorialDetalle;
+export default RevisionEstudianteComentarios;

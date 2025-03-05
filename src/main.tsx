@@ -6,7 +6,6 @@ import Login from './pages/Generales/Login';
 import CambiaContra from './pages/Generales/CambiaContra';
 import RecuperarContra from './pages/Generales/RecuperarContra';
 import './css/style.css';
-import './css/satoshi.css';
 import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';
 import Swal from 'sweetalert2';

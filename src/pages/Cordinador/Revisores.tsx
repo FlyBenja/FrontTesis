@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import SwitcherFour from '../../components/Switchers/SwitcherFour';
 import { getRevisores } from '../../ts/Cordinador/GetRevisores';
+import { getDatosPerfil, PerfilData } from "../../ts/Generales/GetDatsPerfil";
 import { activaUsuario } from '../../ts/Generales/ActivarUsuario';
 import CrearRevisor from '../../components/Modals/Revisores/CreaRevisor';
 import Swal from 'sweetalert2';
@@ -12,20 +13,36 @@ const Revisores: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedRevisor, setSelectedRevisor] = useState<any | null>(null);
+  const [userIdFromProfile, setUserIdFromProfile] = useState<number | null>(null); // State for user_id
 
-  // State hooks for pagination
+  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [revisoresPerPage, setRevisoresPerPage] = useState(5);  // Default to 5 items per page
-  const [maxPageButtons, setMaxPageButtons] = useState(10);  // Default to 10 page buttons
+  const [revisoresPerPage, setRevisoresPerPage] = useState(5);
+  const [maxPageButtons, setMaxPageButtons] = useState(10);
 
   useEffect(() => {
-    fetchRevisores();
-  }, []);
+    fetchUserProfile(); // Fetch user profile on initial load
+    fetchRevisores(); // Fetch revisores once user profile is available
+  }, [userIdFromProfile]); // Add userIdFromProfile as dependency
 
+  // Fetch user profile data
+  const fetchUserProfile = async () => {
+    try {
+      const perfilData: PerfilData = await getDatosPerfil();
+      setUserIdFromProfile(perfilData.user_id); // Set user_id in state
+    } catch (err) {
+      setError('Error al obtener los datos del perfil');
+      setLoading(false);
+    }
+  };
+
+  // Fetch revisores data
   const fetchRevisores = async () => {
+    if (userIdFromProfile === null) return; // Ensure user_id is available before fetching revisores
     try {
       const data = await getRevisores();
-      setRevisores(data);
+      const filteredRevisores = data.filter(revisor => revisor.user_id !== userIdFromProfile); // Exclude current user
+      setRevisores(filteredRevisores);
       setLoading(false);
     } catch (err: any) {
       setError(err.message);
@@ -65,16 +82,14 @@ const Revisores: React.FC = () => {
     };
   }, []);
 
-  // Función para manejar el cambio de estado (activar/desactivar) de un revisor
+
   const handleActiveChange = async (userId: number, newStatus: boolean) => {
-    // Actualiza el estado localmente antes de llamar a la API
     const updatedRevisores = revisores.map((revisor) =>
       revisor.user_id === userId ? { ...revisor, active: newStatus } : revisor
     );
     setRevisores(updatedRevisores);
 
     if (!newStatus) {
-      // Si desactiva un revisor, muestra una alerta de confirmación
       const result = await Swal.fire({
         title: '¿Estás seguro?',
         text: 'Este revisor no podrá iniciar sesión, ¿aún deseas desactivarlo?',
@@ -87,38 +102,33 @@ const Revisores: React.FC = () => {
       });
 
       if (!result.isConfirmed) {
-        // Si el usuario cancela, revertimos el estado en la interfaz
         setRevisores(revisores);
         return;
       }
     }
 
-    // Llama a la API para activar o desactivar al revisor
     try {
-      const response = await activaUsuario(userId, newStatus); // Llama a la API
-      // Si la respuesta es exitosa, muestra la alerta con éxito
+      const response = await activaUsuario(userId, newStatus);
       Swal.fire({
         title: 'Éxito',
         text: response.message,
         icon: 'success',
         confirmButtonText: 'OK',
-        confirmButtonColor: '#28a745',  // Botón verde con letras blancas
+        confirmButtonColor: '#28a745',
       });
     } catch (err) {
-      // Si ocurre un error, revertimos el cambio de estado
       setRevisores((prev) =>
         prev.map((revisor) =>
           revisor.user_id === userId ? { ...revisor, active: !newStatus } : revisor
         )
       );
-      // Si se obtiene un error de la API, mostramos el error específico
       const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
       Swal.fire({
         title: 'Error',
-        text: errorMessage,  // Muestra el mensaje de error devuelto por la API
+        text: errorMessage,
         icon: 'error',
         confirmButtonText: 'OK',
-        confirmButtonColor: '#d33',  // Botón rojo con letras blancas
+        confirmButtonColor: '#d33',
       });
     }
   };
@@ -178,8 +188,8 @@ const Revisores: React.FC = () => {
                       Editar
                     </button>
                     <SwitcherFour
-                      enabled={revisor.active} // Usa `active` en lugar de `activo`
-                      onChange={() => handleActiveChange(revisor.user_id, !revisor.active)} // Utiliza la nueva función para manejar el cambio
+                      enabled={revisor.active}
+                      onChange={() => handleActiveChange(revisor.user_id, !revisor.active)}
                       uniqueId={`revisor-${revisor.user_id}`}
                     />
                   </td>

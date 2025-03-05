@@ -1,250 +1,387 @@
-import React, { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
-import { getTareas } from '../../ts/Generales/GetTareas';
-import { getTareasEstudiante } from '../../ts/Estudiantes/GetTareasEstudiante';
-import { entregarTarea } from '../../ts/Estudiantes/EntregarTarea';
+"use client"
+
+import type React from "react"
+import { useState, useEffect } from "react"
+import Swal from "sweetalert2"
+import { useLocation, useNavigate } from "react-router-dom"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb" 
+import { getDatosPerfil } from "../../ts/Generales/GetDatsPerfil"
+import { getTareas } from "../../ts/Generales/GetTareas"
+import { getTareasEstudiante } from "../../ts/Estudiantes/GetTareasEstudiante"
+import { entregarTarea } from "../../ts/Estudiantes/EntregarTarea"
+import { Calendar, Clock, ArrowLeft, ArrowRight, MessageSquare, CheckCircle, XCircle, ChevronLeft } from "lucide-react"
 
 const InfoCurso: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation()
+  const navigate = useNavigate()
 
-  const { courseTitle, courseId } = location.state || {};
+  const { courseTitle, courseId } = location.state || {}
 
-  const [tareas, setTareas] = useState<any[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [tareas, setTareas] = useState<any[]>([])
+  const [currentTaskIndex, setCurrentTaskIndex] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchTareas = async () => {
+      setLoading(true)
       try {
-        const perfil = await getDatosPerfil();
-        const currentYear = new Date().getFullYear();
+        const perfil = await getDatosPerfil()
+        const currentYear = new Date().getFullYear()
 
-        const tareasGenerales = await getTareas(perfil.sede, courseId, currentYear);
-        const tareasEstudiante = await getTareasEstudiante(perfil.user_id, currentYear, perfil.sede);
+        const tareasGenerales = await getTareas(perfil.sede, courseId, currentYear)
+        const tareasEstudiante = await getTareasEstudiante(perfil.user_id, currentYear, perfil.sede)
 
         const tareasCombinadas = tareasGenerales
           .map((tarea) => {
-            const tareaEstudiante = tareasEstudiante.find((t) => t.task_id === tarea.task_id);
+            const tareaEstudiante = tareasEstudiante.find((t) => t.task_id === tarea.task_id)
             return {
               ...tarea,
               submission_complete: tareaEstudiante?.submission_complete ?? false,
-            };
+            }
           })
-          .filter((tarea) => tarea.typeTask_id !== 1);
+          .filter((tarea) => tarea.typeTask_id !== 1)
 
-        setTareas(tareasCombinadas);
+        // Ordenar tareas: primero las no entregadas
+        const tareasOrdenadas = tareasCombinadas.sort((a, b) => Number(a.submission_complete) - Number(b.submission_complete))
+
+        setTareas(tareasOrdenadas)
       } catch (error) {
         Swal.fire({
-          icon: 'error',
-          title: 'Error al cargar las tareas',
-          text: 'Ocurrió un error al obtener las tareas. Intente nuevamente.',
-          confirmButtonText: 'OK',
+          icon: "error",
+          title: "Error al cargar las tareas",
+          text: "Ocurrió un error al obtener las tareas. Intente nuevamente.",
+          confirmButtonText: "OK",
           customClass: {
-            confirmButton: 'bg-red-600 text-white',
+            confirmButton: "bg-red-600 text-white",
           },
-        });
+        })
+      } finally {
+        setLoading(false)
       }
-    };
+    }
 
     if (courseId) {
-      fetchTareas();
+      fetchTareas()
     }
-  }, [courseId]);
+  }, [courseId])
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return `${date.getUTCDate().toString().padStart(2, '0')}/${(date.getUTCMonth() + 1)
+    const date = new Date(dateStr)
+    return `${date.getUTCDate().toString().padStart(2, "0")}/${(date.getUTCMonth() + 1)
       .toString()
-      .padStart(2, '0')}/${date.getUTCFullYear()}`;
-  };
+      .padStart(2, "0")}/${date.getUTCFullYear()}`
+  }
 
   const formatTime24Hour = (timeStr: string) => {
-    const [hours, minutes, seconds] = timeStr.split(':').map(Number);
-    const amPm = hours < 12 ? 'AM' : 'PM';
-    return `${hours.toString().padStart(2, '0')}:${minutes
+    const [hours, minutes, seconds] = timeStr.split(":").map(Number)
+    const amPm = hours < 12 ? "AM" : "PM"
+    return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
-      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${amPm}`;
-  };
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")} ${amPm}`
+  }
 
-  const handleNavigateToCapitulo = (task_id: number, submissionComplete: boolean, NameCapitulo: string, endTask: string, endTime: string | undefined) => {
+  const handleNavigateToCapitulo = (
+    task_id: number,
+    submissionComplete: boolean,
+    NameCapitulo: string,
+    endTask: string,
+    endTime: string | undefined,
+  ) => {
     if (!submissionComplete) {
       Swal.fire({
-        icon: 'error',
-        title: 'Acceso denegado',
-        text: 'No puedes acceder al capítulo porque la tarea no está entregada.',
-        confirmButtonText: 'Entendido',
+        icon: "error",
+        title: "Acceso denegado",
+        text: "No puedes acceder al capítulo porque la tarea no está entregada.",
+        confirmButtonText: "Entendido",
         customClass: {
-          confirmButton: 'bg-red-600 text-white',
+          confirmButton: "bg-red-600 text-white",
         },
-      });
-      return;
+      })
+      return
     }
-    navigate('/estudiantes/info-capitulo', {
+    navigate("/estudiantes/info-capitulo", {
       state: { task_id, endTask, endTime, NameCapitulo },
-    });
-  };
+    })
+  }
 
   const handleEntregarTarea = async (task_id: number) => {
     try {
-      const perfil = await getDatosPerfil();
-      const taskData = { user_id: perfil.user_id, task_id };
-      const tareaEntregada = tareas.find((tarea) => tarea.task_id === task_id);
+      const perfil = await getDatosPerfil()
+      const taskData = { user_id: perfil.user_id, task_id }
+      const tareaEntregada = tareas.find((tarea) => tarea.task_id === task_id)
 
       if (tareaEntregada) {
-        await entregarTarea(taskData);
+        await entregarTarea(taskData)
 
         Swal.fire({
-          icon: 'success',
-          title: 'Tarea entregada',
+          icon: "success",
+          title: "Tarea entregada",
           text: `Tarea "${tareaEntregada.title}" entregada correctamente.`,
-          confirmButtonText: 'OK',
+          confirmButtonText: "OK",
           customClass: {
-            confirmButton: 'bg-green-600 text-white',
+            confirmButton: "bg-green-600 text-white",
           },
-        });
+        })
 
         setTareas((prevTareas) =>
-          prevTareas.map((tarea) =>
-            tarea.task_id === task_id ? { ...tarea, submission_complete: true } : tarea
-          )
-        );
+          prevTareas.map((tarea) => (tarea.task_id === task_id ? { ...tarea, submission_complete: true } : tarea)),
+        )
       }
     } catch (error: any) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error al entregar tarea',
-        text: error.message || 'Ocurrió un error al intentar entregar la tarea.',
-        confirmButtonText: 'OK',
+        icon: "error",
+        title: "Error al entregar tarea",
+        text: error.message || "Ocurrió un error al intentar entregar la tarea.",
+        confirmButtonText: "OK",
         customClass: {
-          confirmButton: 'bg-red-600 text-white',
+          confirmButton: "bg-red-600 text-white",
         },
-      });
+      })
     }
-  };
+  }
 
   const isButtonDisabled = (endTask: string, endTime: string | undefined): boolean => {
-    const currentDate = new Date();
-    const endDate = new Date(endTask);
-    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+    const currentDate = new Date()
+    const endDate = new Date(endTask)
+    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
 
-    const currentHour = currentDate.getHours();
-    const currentMinutes = currentDate.getMinutes();
-    const currentSeconds = currentDate.getSeconds();
+    const currentHour = currentDate.getHours()
+    const currentMinutes = currentDate.getMinutes()
+    const currentSeconds = currentDate.getSeconds()
 
-    const formattedCurrentTime = `${currentHour.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
-    const formattedCurrentDateTime = `${currentDateOnly.toISOString().split('T')[0]} ${formattedCurrentTime}`;
+    const formattedCurrentTime = `${currentHour.toString().padStart(2, "0")}:${currentMinutes.toString().padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
+    const formattedCurrentDateTime = `${currentDateOnly.toISOString().split("T")[0]} ${formattedCurrentTime}`
 
-    const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()));
-    const formattedEndDateTime = `${endDateOnly.toISOString().split('T')[0]} ${endTime || ''}`;
+    const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()))
+    const formattedEndDateTime = `${endDateOnly.toISOString().split("T")[0]} ${endTime || ""}`
 
-    if (isNaN(endDateOnly.getTime())) return true;
-    return formattedCurrentDateTime > formattedEndDateTime;
-  };
+    if (isNaN(endDateOnly.getTime())) return true
+    return formattedCurrentDateTime > formattedEndDateTime
+  }
 
-  const indexOfLastTask = currentPage * 3;
-  const currentTareas = tareas.slice(indexOfLastTask - 3, indexOfLastTask);
-  const totalPages = Math.ceil(tareas.length / 3);
+  const handleNextTask = () => {
+    setCurrentTaskIndex((prevIndex) => (prevIndex + 1) % tareas.length)
+  }
 
-  const paginate = (page: number) => {
-    if (page < 1) page = 1;
-    if (page > totalPages) page = totalPages;
-    setCurrentPage(page);
-  };
+  const handlePreviousTask = () => {
+    setCurrentTaskIndex((prevIndex) => (prevIndex - 1 + tareas.length) % tareas.length)
+  }
+
+  const currentTarea = tareas[currentTaskIndex]
 
   return (
     <>
       <Breadcrumb pageName={courseTitle} />
 
-      <div className="mb-4">
+      <div className="mb-6">
         <button
-          className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md transition-all"
+          className="flex items-center text-gray-700 dark:text-white bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-4 py-2 rounded-md transition-all shadow-sm"
           onClick={() => navigate(-1)}
         >
-          <span className="mr-2">←</span> Regresar
+          <ChevronLeft className="mr-2 h-4 w-4" /> Regresar
         </button>
       </div>
 
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
-        {tareas.length > 0 ? (
-          <div className="space-y-4">
-            {currentTareas.map((tarea) => (
-              <div
-                key={tarea.task_id}
-                className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md flex flex-col sm:flex-row items-center justify-between cursor-pointer"
-                onClick={() =>
-                  handleNavigateToCapitulo(
-                    tarea.task_id,
-                    tarea.submission_complete ?? false,
-                    tarea.title,
-                    tarea.endTask,
-                    tarea.endTime
-                  )
-                }
-              >
-                <div className="flex-1 mb-4 sm:mb-0">
-                  <h4 className="text-lg font-semibold text-black dark:text-white">{tarea.title}</h4>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{tarea.description}</p>
-                  <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
-                    <p>Fecha/Hora de Inicio: {formatDate(tarea.taskStart)} - {formatTime24Hour(tarea.startTime)}</p>
-                    <p>Fecha/Hora Final: {formatDate(tarea.endTask)} - {formatTime24Hour(tarea.endTime)}</p>
+      <div className="max-w-5xl mx-auto">
+        <div className="bg-white dark:bg-boxdark rounded-xl shadow-lg overflow-hidden">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{courseTitle}</h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
+              {tareas.length > 0 ? `${tareas.length} tareas disponibles` : "No hay tareas disponibles"}
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center items-center p-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          ) : tareas.length > 0 ? (
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                  Tarea {currentTaskIndex + 1} de {tareas.length}
+                </h3>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={handlePreviousTask}
+                    disabled={currentTaskIndex === 0}
+                    className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 disabled:opacity-50 transition-colors hover:bg-gray-200 dark:hover:bg-gray-600"
+                    aria-label="Tarea anterior"
+                  >
+                    <ArrowLeft className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </button>
+                  <button
+                    onClick={handleNextTask}
+                    disabled={currentTaskIndex === tareas.length - 1}
+                    className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 disabled:opacity-50 transition-colors hover:bg-gray-200 dark:hover:bg-gray-600"
+                    aria-label="Tarea siguiente"
+                  >
+                    <ArrowRight className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-6">
+                <div className="flex flex-col">
+                  <div className="mb-4">
+                    <h4 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+                      {currentTarea.title}
+                      {currentTarea.submission_complete && (
+                        <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                          <CheckCircle className="mr-1 h-3 w-3" /> Entregada
+                        </span>
+                      )}
+                    </h4>
+                    <p className="text-gray-600 dark:text-gray-300">{currentTarea.description}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-center">
+                      <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400 mr-2" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Fecha de inicio</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{formatDate(currentTarea.taskStart)}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400 mr-2" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Hora de inicio</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {formatTime24Hour(currentTarea.startTime)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Fecha límite</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{formatDate(currentTarea.endTask)}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Hora límite</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {formatTime24Hour(currentTarea.endTime)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 mt-2">
+                    <button
+                      onClick={() => handleEntregarTarea(currentTarea.task_id)}
+                      disabled={
+                        currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
+                      }
+                      className={`px-4 py-2.5 rounded-lg font-medium text-white flex items-center justify-center ${
+                        currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-green-600 hover:bg-green-700 transition-colors"
+                      }`}
+                    >
+                      {currentTarea.submission_complete ? (
+                        <>
+                          <CheckCircle className="mr-2 h-5 w-5" /> Entregada
+                        </>
+                      ) : isButtonDisabled(currentTarea.endTask, currentTarea.endTime) ? (
+                        <>
+                          <XCircle className="mr-2 h-5 w-5" /> Fuera de plazo
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="mr-2 h-5 w-5" /> Entregar tarea
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleNavigateToCapitulo(
+                          currentTarea.task_id,
+                          currentTarea.submission_complete ?? false,
+                          currentTarea.title,
+                          currentTarea.endTask,
+                          currentTarea.endTime,
+                        )
+                      }
+                      disabled={!currentTarea.submission_complete}
+                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${
+                        !currentTarea.submission_complete
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                      }`}
+                    >
+                      Ver capítulo
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleNavigateToCapitulo(
+                          currentTarea.task_id,
+                          currentTarea.submission_complete ?? false,
+                          currentTarea.title,
+                          currentTarea.endTask,
+                          currentTarea.endTime,
+                        )
+                      }
+                      disabled={!currentTarea.submission_complete}
+                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${
+                        !currentTarea.submission_complete
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+                      }`}
+                    >
+                      <MessageSquare className="mr-2 h-5 w-5" /> Comentarios
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEntregarTarea(tarea.task_id);
-                  }}
-                  disabled={tarea.submission_complete || isButtonDisabled(tarea.endTask, tarea.endTime)}
-                  className={`ml-4 sm:ml-0 px-4 py-2 text-white rounded-md ${tarea.submission_complete || isButtonDisabled(tarea.endTask, tarea.endTime)
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-green-600 hover:bg-green-700'
-                    }`}
-                >
-                  {tarea.submission_complete ? 'Entregada' : 'Entregar'}
-                </button>
               </div>
-            ))}
-            {/* Mostrar paginación solo si hay más de 3 tareas */}
-            {tareas.length > 3 && (
-              <div className="mt-4 flex justify-center">
-                <button
-                  onClick={() => paginate(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-                >
-                  &#8592;
-                </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {currentTarea.submission_complete
+                    ? "Esta tarea ya ha sido entregada."
+                    : isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
+                      ? "El plazo de entrega ha finalizado."
+                      : "Entrega la tarea antes de la fecha límite."}
+                </span>
+                <div className="flex space-x-2">
                   <button
-                    key={page}
-                    onClick={() => paginate(page)}
-                    className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
-                      }`}
+                    onClick={handlePreviousTask}
+                    disabled={currentTaskIndex === 0}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-white bg-gray-100 dark:bg-gray-700 rounded-md disabled:opacity-50 transition-colors hover:bg-gray-200 dark:hover:bg-gray-600"
                   >
-                    {page}
+                    Anterior
                   </button>
-                ))}
-                <button
-                  onClick={() => paginate(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-                >
-                  &#8594;
-                </button>
+                  <button
+                    onClick={handleNextTask}
+                    disabled={currentTaskIndex === tareas.length - 1}
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md disabled:opacity-50 transition-colors hover:bg-blue-700"
+                  >
+                    Siguiente
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="text-center text-lg text-gray-500 dark:text-gray-300">No hay tareas disponibles.</div>
-        )}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-12">
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-4 mb-4">
+                <XCircle className="h-10 w-10 text-gray-500 dark:text-gray-400" />
+              </div>
+              <h3 className="text-xl font-medium text-gray-800 dark:text-white mb-2">No hay tareas disponibles</h3>
+              <p className="text-gray-500 dark:text-gray-400 text-center max-w-md">
+                No se encontraron tareas para este curso. Vuelve más tarde o contacta con tu profesor.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default InfoCurso;
+export default InfoCurso
+

@@ -26,12 +26,12 @@ export const asignaRevisor = async (data: AsignacionRevisor): Promise<void> => {
       },
     });
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data
-        ? JSON.stringify(error.response?.data)
-        : 'Error desconocido';
-      throw new Error(`Error de la API: ${errorMessage}`);
+    if (axios.isAxiosError(error) && error.response?.data) {
+      const apiError = error.response.data;
+      const message = apiError.message;
+      const details = apiError.details ? ` Detalles: ${apiError.details}` : '';
+      throw new Error(`${message}.${details}`);
     }
-    throw new Error('Error desconocido');
+    throw new Error('Ocurrió un error inesperado.');
   }
 };
