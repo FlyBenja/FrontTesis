@@ -40,6 +40,7 @@ import AsignaPG from './pages/Secretario/AsignarPG';
 // Cordinador Links
 import Grafica from './pages/Cordinador/Graficas';
 import MisAsignaciones from './pages/Cordinador/MisAsignaciones';
+import MisAsignacionesDetalle from './pages/Cordinador/RevisionEstudianteComentarios';
 import SolicitudRevisiones from './pages/Cordinador/SolicitudRevisiones';
 import RevisionEstudiante from './pages/Cordinador/RevisionEstudiante';
 import Revisores from './pages/Cordinador/Revisores';
@@ -127,6 +128,7 @@ function App() {
         {/* Routes for the Cordinador section */}
         <Route path="grafica" element={<Grafica />} />
         <Route path="mis-asignaciones" element={<MisAsignaciones />} />
+        <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
         <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
         <Route path="revision-estudiante" element={<RevisionEstudiante />} />
         <Route path="revisores" element={<Revisores />} />

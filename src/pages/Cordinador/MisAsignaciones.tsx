@@ -90,8 +90,8 @@ const MisAsignaciones: React.FC = () => {
     )
   }
 
-  const handleVerDetalle = (carnet: string) => {
-    navigate(`/cordinador/asignaciones/detalle`, { state: { carnet } })
+  const handleVerDetalle = (userId: number) => {
+    navigate(`/cordinador/mis-asignaciones/detalle`, { state: { userId } })
   }
 
   const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,7 +169,7 @@ const MisAsignaciones: React.FC = () => {
                     <td className="py-2 px-4 text-center">
                       <button
                         className="px-4 py-2 bg-blue-500 text-white rounded-md"
-                        onClick={() => handleVerDetalle(revision.user.carnet)}
+                        onClick={() => handleVerDetalle(revision.user.user_id)}
                       >
                         Ver detalle
                       </button>
