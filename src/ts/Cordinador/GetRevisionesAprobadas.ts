@@ -1,27 +1,29 @@
 import axios from 'axios';
 
-// Define the interface for the "HistorialAprobados" structure
-interface HistorialAprobados {
+// Define the interface for the "Approved Revision" structure
+interface ApprovedRevision {
   revision_thesis_id: number;   // Unique identifier for the thesis revision
   date_revision: string;        // Date of the revision
   thesis_dir: string;           // URL of the thesis document
-  approvals: Array<{ status: string; date_approved: string | null }>;  // Array containing approval status and date
+  approvaltheses: Array<{
+    status: string;
+    date_approved: string;
+  }>;  // Array containing approval details
   user: {
     user_id: number;            // ID of the user (student)
     name: string;               // Name of the student
     carnet: string;             // Carnet (ID) of the student
   };
   sede: {
-    nameSede: string;           // Name of the campus
+    nameSede: string;           // Name of the associated sede
   };
-  approvalThesis: any;          // Thesis approval details (if available)
 }
 
 // Function to fetch approved thesis revisions
-export const getHistorialAprobados = async (
-  order: string = 'asc',         // Order of the results ('asc' or 'desc')
-  carnet?: string                // Optional carnet filter for the student
-): Promise<HistorialAprobados[]> => {
+export const getRevisionesAprobadas = async (
+  order: string = 'asc',        // Order of the results ('asc' or 'desc')
+  carnet?: string               // Optional carnet filter for the student
+): Promise<ApprovedRevision[]> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
@@ -32,7 +34,7 @@ export const getHistorialAprobados = async (
     // Build the URL with the query parameters
     let url = `http://localhost:3000/api/revision-thesis/approved?order=${order}`;
     if (carnet) {
-      url += `&carnet=${carnet}`;  // Append carnet to the URL if it's provided
+      url += `&carnet=${carnet}`;
     }
 
     // Make the GET request to the specified URL to fetch the approved revisions
@@ -45,24 +47,20 @@ export const getHistorialAprobados = async (
 
     // Check if the response contains the necessary data
     if (response.data && Array.isArray(response.data.data)) {
-      // Map through the revisions and return them in the HistorialAprobados structure
+      // Map through the revisions and return them in the ApprovedRevision structure
       return response.data.data.map((revision: any) => ({
         revision_thesis_id: revision.revision_thesis_id,  // Assign the thesis revision ID
         date_revision: revision.date_revision,            // Assign the revision date
-        thesis_dir: revision.thesis_dir,                  // Assign the thesis file URL
-        approvals: revision.Approvals.map((approval: any) => ({
-          status: approval.status,                        // Assign the approval status
-          date_approved: approval.date_approved,          // Assign the approval date (nullable)
-        })),
+        thesis_dir: revision.thesis_dir,                  // Assign the thesis document URL
+        approvaltheses: revision.approvaltheses,          // Assign the approval details
         user: {
           user_id: revision.User.user_id,                 // Assign the student's user ID
           name: revision.User.name,                       // Assign the student's name
           carnet: revision.User.carnet,                   // Assign the student's carnet (ID)
         },
         sede: {
-          nameSede: revision.sede.nameSede,              // Assign the name of the campus
+          nameSede: revision.sede.nameSede,              // Assign the associated sede name
         },
-        approvalThesis: revision.ApprovalThesis,          // Assign the thesis approval details
       }));
     }
 
