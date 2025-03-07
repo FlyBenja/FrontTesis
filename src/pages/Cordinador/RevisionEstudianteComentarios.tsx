@@ -107,8 +107,11 @@ const RevisionEstudianteComentarios: React.FC = () => {
 
               {/* Estado y Fecha de Revisión */}
               <div className="mt-2">
-                <p className="text-gray-700 dark:text-gray-300">
-                  <strong>Fecha de Revisión:</strong> {new Date(revision.date_revision).toLocaleDateString()}
+                <p className="text-gray-700 dark:text-gray-300 mb-2">
+                  <strong>Fecha de Revisión: </strong>
+                  {revision.approvaltheses[0]?.status === 'approved'
+                    ? new Date(revision.approvaltheses[0].date_approved).toLocaleDateString()
+                    : new Date(revision.date_revision).toLocaleDateString()}
                 </p>
                 <p className={`text-sm font-semibold ${revision.active_process ? 'text-green-500' : 'text-red-500'}`}>
                   <strong>Estado:</strong> {revision.active_process ? 'En proceso' : 'Finalizado'}
