@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil'; // Asegúrate de importar correctamente
 import { enviaRevision } from '../../ts/Admin/EnviaRevision'; // Asegúrate de importar correctamente
+import ModalCreateUserSinLogin from '../../components/Modals/CrearUsuario/ModalCreateUserSinLogin';
 
 const EnviaRevision: React.FC = () => {
     const [carnet, setCarnet] = useState<string>('');
@@ -10,6 +11,7 @@ const EnviaRevision: React.FC = () => {
     const [cartaAprobada, setCartaAprobada] = useState<File | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [sedeId, setSedeId] = useState<number | null>(null);  // Estado para almacenar el sede_id
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const handleCarnetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCarnet(e.target.value);
@@ -103,7 +105,15 @@ const EnviaRevision: React.FC = () => {
         <>
             <Breadcrumb pageName="Enviar Tesis a Revisión" />
             <div className="mx-auto max-w-4xl px-6 py-8 bg-white rounded-xl shadow-md">
-                <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">Formulario</h1>
+                <div className="relative mb-6">
+                    <h1 className="text-2xl font-semibold text-center text-gray-800">Formulario</h1>
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="absolute right-0 top-0 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        Crear Usuario
+                    </button>
+                </div>
 
                 <div className="mb-6">
                     <label htmlFor="carnet" className="block text-sm font-semibold text-gray-700 dark:text-white">
@@ -159,6 +169,7 @@ const EnviaRevision: React.FC = () => {
                     </button>
                 </div>
             </div>
+            {isModalOpen && <ModalCreateUserSinLogin onClose={() => setIsModalOpen(false)} />}
         </>
     );
 };
