@@ -1,34 +1,35 @@
 import axios from 'axios';
 
-// Define the interface for the "CommentRevision" structure
+// Define interfaces based on the new JSON structure
 interface CommentRevision {
-  title: string; // Title of the revision comment
-  comment: string; // The actual comment made by the reviewer
-  date_comment: string; // The date when the comment was made
+  title: string;
+  comment: string;
+  date_comment: string;
 }
 
-// Define the structure for the Review with Assigned Reviews and Approval
 interface AssignedReview {
   assigned_review_id: number;
+  date_assigned: string;
   user: {
     user_id: number;
     name: string;
     email: string;
   };
-  commentsRevisions: CommentRevision[]; // List of comments associated with the review
+  commentsRevisions: CommentRevision[];
 }
 
-// Define the structure for the Thesis Revision Info
+interface ApprovalThesis {
+  status: string;
+  date_approved: string | null;
+  approved: boolean;
+}
+
 interface ThesisRevisionInfo {
   revision_thesis_id: number;
   active_process: boolean;
   thesis_dir: string;
   AssignedReviews: AssignedReview[];
-  approvaltheses: {
-    status: string;
-    date_approved: string;
-    approved: boolean;
-  }[];
+  approvaltheses: ApprovalThesis[];
   user: {
     name: string;
     carnet: string;
@@ -46,16 +47,12 @@ interface ThesisRevisionInfo {
 // Function to fetch thesis revision comments for a specific user
 export const getComentariosRevision = async (user_id: number): Promise<ThesisRevisionInfo[]> => {
   try {
-    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     if (!token) {
       throw new Error('Token de autenticación no encontrado');
     }
 
-    // Build the URL with the user_id parameter
     const url = `http://localhost:3000/api/revision-thesis/info/${user_id}`;
-
-    // Make the GET request to fetch the thesis revision info
     const response = await axios.get(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -63,7 +60,6 @@ export const getComentariosRevision = async (user_id: number): Promise<ThesisRev
       },
     });
 
-    // Check if the response contains the necessary data
     if (response.data && Array.isArray(response.data.data)) {
       return response.data.data.map((revision: any) => ({
         revision_thesis_id: revision.revision_thesis_id,
@@ -71,16 +67,13 @@ export const getComentariosRevision = async (user_id: number): Promise<ThesisRev
         thesis_dir: revision.thesis_dir,
         AssignedReviews: revision.AssignedReviews.map((assignedReview: any) => ({
           assigned_review_id: assignedReview.assigned_review_id,
+          date_assigned: assignedReview.date_assigned,
           user: {
             user_id: assignedReview.User.user_id,
             name: assignedReview.User.name,
             email: assignedReview.User.email,
           },
-          commentsRevisions: assignedReview.commentsRevisions.map((comment: any) => ({
-            title: comment.title,
-            comment: comment.comment,
-            date_comment: comment.date_comment,
-          })),
+          commentsRevisions: assignedReview.commentsRevisions || [],
         })),
         approvaltheses: revision.approvaltheses.map((approval: any) => ({
           status: approval.status,

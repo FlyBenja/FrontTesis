@@ -109,9 +109,53 @@ const RevisionEstudianteComentarios: React.FC = () => {
               <div className="mt-2">
                 <p className="text-gray-700 dark:text-gray-300 mb-2">
                   <strong>Fecha de Revisión: </strong>
-                  {revision.approvaltheses[0]?.status === 'approved'
-                    ? new Date(revision.approvaltheses[0].date_approved).toLocaleDateString()
-                    : new Date(revision.date_revision).toLocaleDateString()}
+                  {revision.approvaltheses[0]?.status === 'approved' && revision.approvaltheses[0]?.date_approved
+                    ? (
+                      <div className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4">
+                        <p className="text-sm text-black dark:text-white">
+                          {new Date(new Date(revision.approvaltheses[0].date_approved).setDate(new Date(revision.approvaltheses[0].date_approved).getDate() + 1)).toLocaleDateString('es-ES', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          })}
+                        </p>
+                        <p className="text-xs">
+                          {new Date(new Date(revision.approvaltheses[0].date_approved).setDate(new Date(revision.approvaltheses[0].date_approved).getDate() + 1)).toLocaleDateString('es-ES', {
+                            weekday: 'long',
+                            month: 'long',
+                            year: 'numeric',
+                          })}{' '}
+                          / {new Date(new Date(revision.approvaltheses[0].date_approved).setDate(new Date(revision.approvaltheses[0].date_approved).getDate() + 1)).toLocaleTimeString('es-ES', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                          })}
+                        </p>
+                      </div>
+                    )
+                    : (
+                      <div className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4">
+                        <p className="text-sm text-black dark:text-white">
+                          {new Date(revision.AssignedReviews[0]?.date_assigned || '').toLocaleDateString('es-ES', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          })}
+                        </p>
+                        <p className="text-xs">
+                          {new Date(revision.AssignedReviews[0]?.date_assigned || '').toLocaleDateString('es-ES', {
+                            weekday: 'long',
+                            month: 'long',
+                            year: 'numeric',
+                          })}{' '}
+                          / {new Date(revision.AssignedReviews[0]?.date_assigned || '').toLocaleTimeString('es-ES', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                          })}
+                        </p>
+                      </div>
+                    )}
                 </p>
                 <p className={`text-sm font-semibold ${revision.active_process ? 'text-green-500' : 'text-red-500'}`}>
                   <strong>Estado:</strong> {revision.active_process ? 'En proceso' : 'Finalizado'}
