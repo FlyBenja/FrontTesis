@@ -3,10 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { enviaComentario } from '../../../ts/Generales/EnviaComentario';
-import {
-  getComentarios,
-  ComentarioData,
-} from '../../../ts/Generales/GetComentario';
+import { getComentarios, ComentarioData, } from '../../../ts/Generales/GetComentario';
 import { updateComentStats } from '../../../ts/Admin/UpdateComentStat';
 import { driver } from 'driver.js'; // Importa driver.js
 import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
@@ -54,12 +51,11 @@ const Capitulos: React.FC = () => {
     const formattedCurrentTime = `${currentHour
       .toString()
       .padStart(2, '0')}:${currentMinutes
-      .toString()
-      .padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
+        .toString()
+        .padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
     // Combine date and time into a format like YYYY-MM-DD HH:mm:ss
-    const formattedCurrentDateTime = `${
-      currentDateOnly.toISOString().split('T')[0]
-    } ${formattedCurrentTime}`;
+    const formattedCurrentDateTime = `${currentDateOnly.toISOString().split('T')[0]
+      } ${formattedCurrentTime}`;
 
     const endDateOnly = new Date(
       Date.UTC(
@@ -68,9 +64,8 @@ const Capitulos: React.FC = () => {
         endDate.getUTCDate(),
       ),
     ); // Remove the time from the end date
-    const formattedEndDateTime = `${endDateOnly.toISOString().split('T')[0]} ${
-      tarea.endTime || ''
-    }`;
+    const formattedEndDateTime = `${endDateOnly.toISOString().split('T')[0]} ${tarea.endTime || ''
+      }`;
 
     if (isNaN(endDateOnly.getTime())) return true; // If the end date is invalid, disable the button
     return formattedCurrentDateTime > formattedEndDateTime; // Disable if the current date is later than the deadline
@@ -125,7 +120,7 @@ const Capitulos: React.FC = () => {
   };
 
   // Handle disabling a comment and updating the comment list
-  const handleDesactivarComentario = async (comentId: number) => {
+  const handleDesactivarComentario = async (comentId: number, estaBloqueado: boolean) => {
     try {
       // Call the API to update the comment status
       await updateComentStats(comentId);
@@ -149,8 +144,10 @@ const Capitulos: React.FC = () => {
       }
 
       Swal.fire({
-        title: 'Comentario bloqueado',
-        text: 'El comentario se ha bloqueado exitosamente',
+        title: estaBloqueado ? 'Comentarios activados' : 'Comentario bloqueado',
+        text: estaBloqueado
+          ? 'Los comentarios se han activado correctamente'
+          : 'Los comentario se han bloqueado exitosamente',
         icon: 'success',
         confirmButtonText: 'OK',
         customClass: {
@@ -320,11 +317,11 @@ const Capitulos: React.FC = () => {
 
           {/* Botón para iniciar el recorrido */}
           <button
-            style={{  width: '35px', height: '35px' }}
+            style={{ width: '35px', height: '35px' }}
             onClick={startTour}
             className="relative flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow-md transition duration-300 group"
           >
-              <svg
+            <svg
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -352,18 +349,13 @@ const Capitulos: React.FC = () => {
         <div className="mt-4">
           <button
             id="bloquear-button"
-            disabled={isComentarioBloqueado}
-            className={`px-4 py-2 rounded-md ${
-              isComentarioBloqueado
-                ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-red-500 text-white hover:bg-red-600'
-            }`}
-            onClick={() =>
-              !isComentarioBloqueado &&
-              handleDesactivarComentario(comentariosPrevios[0]?.id)
-            }
+            className={`px-4 py-2 rounded-md ${isComentarioBloqueado
+              ? 'bg-green-500 text-white hover:bg-green-600'
+              : 'bg-red-500 text-white hover:bg-red-600'
+              }`}
+            onClick={() => handleDesactivarComentario(comentariosPrevios[0]?.id, isComentarioBloqueado)}
           >
-            Bloquear Comentarios
+            {isComentarioBloqueado ? 'Activar Comentario' : 'Bloquear Comentarios'}
           </button>
         </div>
       </div>
@@ -432,11 +424,10 @@ const Capitulos: React.FC = () => {
             <button
               id="enviar-button"
               disabled={isButtonDisabled() || isComentarioBloqueado}
-              className={`px-4 py-2 rounded-md ${
-                isButtonDisabled() || isComentarioBloqueado
-                  ? 'bg-gray-400 text-white cursor-not-allowed'
-                  : 'bg-blue-500 text-white hover:bg-blue-600'
-              } ${!(isButtonDisabled() || isComentarioBloqueado) && 'ml-auto'}`}
+              className={`px-4 py-2 rounded-md ${isButtonDisabled() || isComentarioBloqueado
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+                } ${!(isButtonDisabled() || isComentarioBloqueado) && 'ml-auto'}`}
               onClick={handleEnviarComentario}
             >
               Enviar Comentario
