@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';  
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';  
+import { useEffect, useState } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-// Importing pages and components for different sections of the app
 import Calendar from './pages/Generales/Calendar';
 import CrearTareas from './pages/Admin/CrearTareas';
 import Graficas from './pages/Admin/Inicio/Graficas';
@@ -21,23 +20,19 @@ import CrearComisiones from './pages/Admin/Comisiones/CrearComision';
 import ListarComision from './pages/Admin/Comisiones/ListarComision';
 import EnviaRevision from './pages/Admin/EnviaRevision';
 
-// General Links
 import Profile from './pages/Generales/Profile';
 import Settings from './pages/Generales/Settings';
 
-// Student Links
 import Inicio from './pages/Estudiantes/Inicio';
 import Propuesta from './pages/Estudiantes/Propuesta';
 import Cursos from './pages/Estudiantes/Cursos';
 import InfoCurso from './pages/Estudiantes/InfoCurso';
 import InfoCapitulo from './pages/Estudiantes/InfoCapitulo';
 
-// Secretary Links
 import CreaSedes from './pages/Secretario/CrearSedes';
 import CreaAdmin from './pages/Secretario/CrearAdmin';
 import AsignaPG from './pages/Secretario/AsignarPG';
 
-// Cordinador Links
 import Grafica from './pages/Cordinador/Graficas';
 import MisAsignaciones from './pages/Cordinador/MisAsignaciones';
 import MisAsignacionesDetalle from './pages/Cordinador/RevisionEstudianteComentarios';
@@ -49,93 +44,125 @@ import AsignacionesDetalle from './pages/Cordinador/RevisionEstudianteComentario
 import Historial from './pages/Cordinador/Historial';
 import HistorialDetalle from './pages/Cordinador/RevisionEstudianteComentarios';
 
-
 function App() {
-  // State variable for managing the loading state of the app
   const [loading, setLoading] = useState<boolean>(true);
-  const { pathname } = useLocation();  // Hook to get the current pathname from the URL
-  const navigate = useNavigate();  // Hook for navigation
+  const [role, setRole] = useState<number | null>(null); // Estado para guardar el rol
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
-  // Effect that runs every time the pathname changes, it scrolls the page to the top
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // Effect that checks if the localStorage is empty. If so, it shows an alert using SweetAlert2.
   useEffect(() => {
     // Verificar si el localStorage está vacío
     if (localStorage.length === 0) {
-      // Mostrar alerta usando SweetAlert2
       Swal.fire({
         icon: 'warning',
         title: 'Acceso denegado',
         text: 'Favor de iniciar sesión para continuar.',
         confirmButtonText: 'Entendido',
         customClass: {
-          confirmButton: 'bg-red-600 text-white',  // Custom styling for the button
+          confirmButton: 'bg-red-600 text-white',
         },
       }).then(() => {
-        navigate('/'); // Redirigir a la página de inicio después de hacer clic en OK
+        navigate('/');
       });
+    } else {
+      // Asignar el rol desde el localStorage o estado global
+      const storedRole = localStorage.getItem('userRole');
+      setRole(storedRole ? parseInt(storedRole) : null);
     }
   }, [navigate]);
 
-  // Effect to simulate loading time by setting loading state to false after 1 second
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
-  // Return loading state until loading is complete, then display the layout and routes
-  return loading ? (
-    null
-  ) : (
+  if (loading) return null;
+
+  return (
     <DefaultLayout>
       <Routes>
-        {/* Routes for the Admin section */}
-        <Route path="graficas" element={<Graficas />} />
-        <Route path="bitacora" element={<Bitacora />} />
-        <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
-        <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
-        <Route path="time-line" element={<TimeLineAdmin />} />
-        <Route path="tareas-estudiante" element={<TareasEstudiante />} />
-        <Route path="propuestas" element={<Propuestas />} />
-        <Route path="capitulo" element={<Capitulos />} />
-        <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
-        <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
-        <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
-        <Route path="crear-comision" element={<CrearComisiones />} />
-        <Route path="listado-comision" element={<ListarComision />} />
-        <Route path="calendar" element={<Calendar />} />
-        <Route path="crear-tareas" element={<CrearTareas />} />
-        <Route path="enviar-revisión" element={<EnviaRevision />} />
+        {role === 1 && (  // Estudiante
+          <>
+            <Route path="time-line" element={<Inicio />} />
+            <Route path="propuestas" element={<Propuesta />} />
+            <Route path="cursos" element={<Cursos />} />
+            <Route path="info-curso" element={<InfoCurso />} />
+            <Route path="info-capitulo" element={<InfoCapitulo />} />
+          </>
+        )}
+
+        {role === 2 && (  // Catedrático
+          <>
+            <Route path="propuestas" element={<Propuestas />} />
+            <Route path="capitulo" element={<Capitulos />} />
+          </>
+        )}
+
+        {role === 3 && (  // Administrador
+          <>
+            <Route path="graficas" element={<Graficas />} />
+            <Route path="bitacora" element={<Bitacora />} />
+            <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
+            <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
+            <Route path="time-line" element={<TimeLineAdmin />} />
+            <Route path="tareas-estudiante" element={<TareasEstudiante />} />
+            <Route path="propuestas" element={<Propuestas />} />
+            <Route path="capitulo" element={<Capitulos />} />
+            <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
+            <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
+            <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
+            <Route path="crear-comision" element={<CrearComisiones />} />
+            <Route path="listado-comision" element={<ListarComision />} />
+            <Route path="crear-tareas" element={<CrearTareas />} />
+            <Route path="enviar-revisión" element={<EnviaRevision />} />
+          </>
+        )}
+
+        {role === 4 && (  // Secretario
+          <>
+            <Route path="crea-sedes" element={<CreaSedes />} />
+            <Route path="crea-admin" element={<CreaAdmin />} />
+            <Route path="asignapg" element={<AsignaPG />} />
+          </>
+        )}
+
+        {role === 5 && (  // Decano
+          <>
+            <Route path="grafica" element={<Grafica />} />
+            <Route path="mis-asignaciones" element={<MisAsignaciones />} />
+            <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
+            <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
+          </>
+        )}
+
+        {role === 6 && (  // Cordinador de tesis
+          <>
+            <Route path="graficas" element={<Grafica />} />
+            <Route path="mis-asignaciones" element={<MisAsignaciones />} />
+            <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
+            <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
+            <Route path="revision-estudiante" element={<RevisionEstudiante />} />
+            <Route path="revisores" element={<Revisores />} />
+            <Route path="asignaciones" element={<Asignaciones />} />
+            <Route path="asignaciones/detalle" element={<AsignacionesDetalle />} />
+            <Route path="historial" element={<Historial />} />
+            <Route path="historial/detalle" element={<HistorialDetalle />} />
+          </>
+        )}
+
+        {role === 7 && (  // Revisor
+          <>
+            <Route path="revision-estudiante" element={<RevisionEstudiante />} />
+          </>
+        )}
 
         {/* General Links */}
         <Route path="perfil" element={<Profile />} />
         <Route path="configuracion" element={<Settings />} />
-
-        {/* Routes for the Student section */}
-        <Route path="inicio" element={<Inicio />} />
-        <Route path="propuesta" element={<Propuesta />} />
-        <Route path="cursos" element={<Cursos />} />
-        <Route path="info-curso" element={<InfoCurso />} />
-        <Route path="info-capitulo" element={<InfoCapitulo />} />
-
-        {/* Routes for the Secretary section */}
-        <Route path="crea-sedes" element={<CreaSedes />} />
-        <Route path="crea-admin" element={<CreaAdmin />} />
-        <Route path="asignapg" element={<AsignaPG />} />
-
-        {/* Routes for the Cordinador section */}
-        <Route path="grafica" element={<Grafica />} />
-        <Route path="mis-asignaciones" element={<MisAsignaciones />} />
-        <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
-        <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
-        <Route path="revision-estudiante" element={<RevisionEstudiante />} />
-        <Route path="revisores" element={<Revisores />} />
-        <Route path="asignaciones" element={<Asignaciones />} />
-        <Route path="asignaciones/detalle" element={<AsignacionesDetalle />} />
-        <Route path="historial" element={<Historial />} />
-        <Route path="historial/detalle" element={<HistorialDetalle />} />
+        <Route path="calendario" element={<Calendar />} />
       </Routes>
     </DefaultLayout>
   );

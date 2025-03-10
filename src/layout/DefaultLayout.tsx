@@ -4,7 +4,7 @@ import SidebarAdmin from '../components/Sidebar/Admin';
 import SidebarSecretario from '../components/Sidebar/Secretario';
 import SidebarEstudiante from '../components/Sidebar/Estudiantes';
 import SidebarCordinador from '../components/Sidebar/Cordinador';
-import SidebarRevisor from '../components/Sidebar//Revisor';
+import SidebarRevisor from '../components/Sidebar/Revisor';
 
 const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

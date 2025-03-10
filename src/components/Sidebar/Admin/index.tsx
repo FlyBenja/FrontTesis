@@ -556,7 +556,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill="currentColor"
                     />
                   </svg>
-                  Calendar
+                  Calendario
                 </NavLink>
               </li>
               {/* <!-- Menu Item Calendar --> */}

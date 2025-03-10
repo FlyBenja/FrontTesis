@@ -62,7 +62,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-        <NavLink to="/estudiantes/inicio">
+        <NavLink to="/estudiantes/time-line">
           <img src={Logo} alt="Logo" />
         </NavLink>
 
@@ -104,7 +104,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Time Line --> */}
               <li>
                 <NavLink
-                  to="/estudiantes/inicio"
+                  to="/estudiantes/time-line"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
@@ -131,7 +131,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Propuestas --> */}
               <li>
                 <NavLink
-                  to="/estudiantes/propuesta"
+                  to="/estudiantes/propuestas"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
@@ -185,8 +185,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Calendar --> */}
               <li>
                 <NavLink
-                  to="/estudiantes/calendar"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                  to="/estudiantes/calendario"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -204,7 +204,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill="currentColor"
                     />
                   </svg>
-                  Calendar
+                  Calendario
                 </NavLink>
               </li>
               {/* <!-- Menu Item Calendar --> */}
