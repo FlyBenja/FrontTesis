@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import CardDataStats from '../../components/Cards/CardDataStats.tsx';
 import GraficaPorSede from '../../components/Graficas/TotalRevisionesPorSede.tsx';
-import { getTotalesRevision } from '../../ts/Cordinador/TotalesRevision';
+import { getTotalesRevision } from '../../ts/CoordinadorTesis/TotalesRevision.ts';
 
 const Graficas: React.FC = () => {
   const [totales, setTotales] = useState({

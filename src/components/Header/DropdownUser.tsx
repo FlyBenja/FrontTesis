@@ -13,20 +13,20 @@ const DropdownUser = () => {
 
   const profileLink = role === '1' ? '/estudiantes/perfil' :
     role === '2' ? '/catedratico/perfil' :
-      role === '3' ? '/admin/perfil' :
-        role === '4' ? '/secretario/perfil' :
+      role === '3' ? '/administrador/perfil' :
+        role === '4' ? '/coordinadorsede/perfil' :
           role === '5' ? '/decano/perfil' :
-            role === '6' ? '/cordinador/perfil' :
-              role === '7' ? '/revisor/perfil' :
+            role === '6' ? '/coordinadortesis/perfil' :
+              role === '7' ? '/revisortesis/perfil' :
                 '/default/perfil';  // Default in case role doesn't match any
 
   const settingsLink = role === '1' ? '/estudiantes/configuracion' :
     role === '2' ? '/catedratico/configuracion' :
-      role === '3' ? '/admin/configuracion' :
-        role === '4' ? '/secretario/configuracion' :
+      role === '3' ? '/administrador/configuracion' :
+        role === '4' ? '/coordinadorsede/configuracion' :
           role === '5' ? '/decano/configuracion' :
-            role === '6' ? '/cordinador/configuracion' :
-              role === '7' ? '/revisor/configuracion' :
+            role === '6' ? '/coordinadortesis/configuracion' :
+              role === '7' ? '/revisortesis/configuracion' :
                 '/default/configuracion';  // Default in case role doesn't match any
 
   useEffect(() => {

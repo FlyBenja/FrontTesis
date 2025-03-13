@@ -2,7 +2,7 @@ import { ApexOptions } from 'apexcharts';
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
-import { getTaskStats } from '../../ts/Admin/GetTaskStat';
+import { getTaskStats } from '../../ts/Administrador/GetTaskStat';
 
 // Defines the structure of the chart data
 interface ChartData {

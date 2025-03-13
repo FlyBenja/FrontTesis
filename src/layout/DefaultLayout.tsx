@@ -1,10 +1,10 @@
 import React, { useState, ReactNode, useEffect } from 'react';
 import Header from '../components/Header/index';
-import SidebarAdmin from '../components/Sidebar/Admin';
-import SidebarSecretario from '../components/Sidebar/Secretario';
+import SidebarAdministrador from '../components/Sidebar/Administrador';
+import SidebarCoordinadorSede from '../components/Sidebar/CoordinadorSede/index';
 import SidebarEstudiante from '../components/Sidebar/Estudiantes';
-import SidebarCordinador from '../components/Sidebar/Cordinador';
-import SidebarRevisor from '../components/Sidebar/Revisor';
+import SidebarCoordinadorTesis from '../components/Sidebar/CoordinadorTesis';
+import SidebarRevisorTesis from '../components/Sidebar/RevisorTesis';
 
 const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,13 +26,13 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         {role === 1 ? (
           <SidebarEstudiante sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : role === 3 ? (
-          <SidebarAdmin sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <SidebarAdministrador sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : role === 4 ? (
-          <SidebarSecretario sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <SidebarCoordinadorSede sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : role === 6 ? (
-          <SidebarCordinador sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <SidebarCoordinadorTesis sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : role === 7 ? (
-          <SidebarRevisor sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <SidebarRevisorTesis sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : null}
         {/* <!-- ===== Sidebar End ===== --> */}
 

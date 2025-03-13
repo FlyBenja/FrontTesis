@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getComentariosRevision } from '../../ts/Cordinador/GetComentariosRevision';
+import { getComentariosRevision } from '../../ts/CoordinadorTesis/GetComentariosRevision';
 
 const RevisionEstudianteComentarios: React.FC = () => {
   const navigate = useNavigate();

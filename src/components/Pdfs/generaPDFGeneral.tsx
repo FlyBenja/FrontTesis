@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import umgLogo from '../../images/Login/logo3.png';
-import { getDetalleTareasGeneral, CourseDetails } from '../../ts/Admin/GetDetalleTareasGeneral';
+import { getDetalleTareasGeneral, CourseDetails } from '../../ts/Administrador/GetDetalleTareasGeneral';
 import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
 
 const generaPDFGeneral = async (

@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import umgLogo from '../../images/Login/logo3.png';
-import { getDetalleTareas } from '../../ts/Admin/GetDetalleTareas'; // Ajusta el path según donde tengas la API
+import { getDetalleTareas } from '../../ts/Administrador/GetDetalleTareas'; // Ajusta el path según donde tengas la API
 import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil'; // Ajusta el path según corresponda
 
 interface EstudianteIndiviProps {

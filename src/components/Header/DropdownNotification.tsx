@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside'; 
 import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
-import { getNotificationsAdmin } from '../../ts/Admin/GetNotificationsAdmin'; 
+import { getNotificationsAdmin } from '../../ts/Administrador/GetNotificationsAdmin'; 
 import { getNotificationsUser } from '../../ts/Estudiantes/GetNotificationsUser'; 
 
 const DropdownNotification = () => {

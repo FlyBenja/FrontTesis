@@ -1,10 +1,12 @@
+"use client"
+
 import type React from "react"
 import { useState, useEffect, useCallback } from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { useNavigate } from "react-router-dom"
-import { getRevisionesPendientes } from "../../ts/Cordinador/GetRevisionesPendientes" // Importa la API
+import { getRevisionesAprobadas } from "../../ts/CoordinadorTesis/GetRevisionesAprobadas" // Importa la API
 
-const SolicitudRevisiones: React.FC = () => {
+const Historial: React.FC = () => {
   const navigate = useNavigate()
 
   const [revisiones, setRevisiones] = useState<any[]>([]) // Datos de las revisiones
@@ -21,7 +23,7 @@ const SolicitudRevisiones: React.FC = () => {
   // Obtener las revisiones pendientes desde la API
   const fetchRevisiones = useCallback(async (order: "asc" | "desc", carnet: string) => {
     try {
-      const revisions = await getRevisionesPendientes(order, carnet)
+      const revisions = await getRevisionesAprobadas(order, carnet)
       setRevisiones(revisions)
       setFilteredRevisiones(revisions) // Inicializa el estado de revisiones filtradas
 
@@ -71,7 +73,7 @@ const SolicitudRevisiones: React.FC = () => {
   }
 
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/revision-estudiante`, { state: { userId } })
+    navigate(`/cordinador/historial/detalle`, { state: { userId } })
   }
 
   // Agregar console.log para mostrar la longitud del carnet ingresado
@@ -144,8 +146,8 @@ const SolicitudRevisiones: React.FC = () => {
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">
                       {formatDate(revision.date_revision)}
                     </td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold hidden md:table-cell">
-                      {revision.approvalThesis.status}
+                    <td className="py-2 px-4 text-center text-black dark:text-white bg-green-300 dark:bg-green-500 font-semibold hidden md:table-cell">
+                      Aprobado
                     </td>
                     <td className="py-2 px-4 text-center">
                       <button
@@ -199,5 +201,5 @@ const SolicitudRevisiones: React.FC = () => {
   )
 }
 
-export default SolicitudRevisiones
+export default Historial
 

@@ -1,114 +1,128 @@
-import type React from "react";
-import { useState, useEffect, useCallback } from "react";
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
-import { useNavigate } from "react-router-dom";
-import { getRevisionesEnRevision } from "../../ts/Cordinador/GetRevisionesEnRevision";
-import { getDatosPerfil, PerfilData } from "../../ts/Generales/GetDatsPerfil";
+import type React from "react"
+import { useState, useEffect, useCallback } from "react"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import { useNavigate } from "react-router-dom"
+import { getRevisionesCordinador } from "../../ts/CoordinadorTesis/GetRevisionesCordinador"
+import { getDatosPerfil } from "../../ts/Generales/GetDatsPerfil"
 
-const Asignaciones: React.FC = () => {
-  const navigate = useNavigate();
+const MisAsignaciones: React.FC = () => {
+  const navigate = useNavigate()
 
-  const [revisiones, setRevisiones] = useState<any[]>([]);
-  const [searchCarnet, setSearchCarnet] = useState("");
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [filteredRevisiones, setFilteredRevisiones] = useState(revisiones);
-  const [isCarnetSearch, setIsCarnetSearch] = useState(false);
-  const [userId, setUserId] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [revisionesPerPage, setRevisionesPerPage] = useState(5);
-  const [maxPageButtons, setMaxPageButtons] = useState(10);
+  const [userId, setUserId] = useState<number | null>(null)
+  const [revisiones, setRevisiones] = useState<any[]>([])
+  const [searchCarnet, setSearchCarnet] = useState("")
+  const [order, setOrder] = useState<"asc" | "desc">("asc")
+  const [filteredRevisiones, setFilteredRevisiones] = useState(revisiones)
+  const [isCarnetSearch, setIsCarnetSearch] = useState(false)
 
-  // Obtener el perfil del usuario
+  // State hooks for pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [revisionesPerPage, setRevisionesPerPage] = useState(5)
+  const [maxPageButtons, setMaxPageButtons] = useState(10)
+
   useEffect(() => {
-    const fetchPerfil = async () => {
+    const fetchUserId = async () => {
       try {
-        const perfil: PerfilData = await getDatosPerfil();
-        setUserId(perfil.user_id);
+        const perfil = await getDatosPerfil()
+        setUserId(perfil.user_id)
       } catch (error) {
-        console.error("Error al obtener los datos del perfil", error);
+        console.error("Error obteniendo el user_id:", error)
       }
-    };
-    fetchPerfil();
-  }, []);
-
-  // Obtener las revisiones desde la API
-  const fetchRevisiones = useCallback(async (order: 'asc' | 'desc', carnet: string) => {
-    try {
-      const revisiones = await getRevisionesEnRevision(order, carnet);
-      if (userId) {
-        const revisionesFiltradas = revisiones.filter(revision =>
-          !revision.assignedReviews.some(assignedReview => assignedReview.user_id === userId)
-        );
-        setRevisiones(revisionesFiltradas);
-        setFilteredRevisiones(revisionesFiltradas);
-      }
-      setIsCarnetSearch(carnet.length >= 10);
-    } catch (error) {
-      console.error(error);
-      setRevisiones([]);
-      setFilteredRevisiones([]);
-      setIsCarnetSearch(carnet.length >= 10);
     }
-  }, [userId]);
+    fetchUserId()
+  }, [])
 
-  // Efecto para cargar las revisiones cuando cambia el carnet o el orden
+  // Obtener las revisiones del coordinador
+  const fetchRevisiones = useCallback(
+    async (order: "asc" | "desc", carnet: string) => {
+      try {
+        if (userId !== null) {
+          const revisions = await getRevisionesCordinador(userId, order, carnet)
+          setRevisiones(revisions)
+          setFilteredRevisiones(revisions)
+          setIsCarnetSearch(carnet.length >= 10)
+        }
+      } catch (error) {
+        console.error(error)
+        setRevisiones([])
+        setFilteredRevisiones([])
+        setIsCarnetSearch(carnet.length >= 10)
+      }
+    },
+    [userId],
+  )
+
+  // Efecto para cargar las revisiones cuando cambia el carnet, el orden o el userId
   useEffect(() => {
-    const carnetValue = searchCarnet.length >= 10 ? searchCarnet : '';
-    fetchRevisiones(order, carnetValue);
-  }, [order, searchCarnet, fetchRevisiones]);
+    if (userId !== null) {
+      const carnetValue = searchCarnet.length >= 10 ? searchCarnet : ""
+      fetchRevisiones(order, carnetValue)
+    }
+  }, [order, searchCarnet, userId, fetchRevisiones])
 
-  // Paginación
-  const indexOfLastRevision = currentPage * revisionesPerPage;
-  const indexOfFirstRevision = indexOfLastRevision - revisionesPerPage;
-  const currentRevisiones = filteredRevisiones.slice(indexOfFirstRevision, indexOfLastRevision);
+  // Pagination logic
+  const indexOfLastRevision = currentPage * revisionesPerPage
+  const indexOfFirstRevision = indexOfLastRevision - revisionesPerPage
+  const currentRevisiones = filteredRevisiones.slice(indexOfFirstRevision, indexOfLastRevision)
 
-  const totalPages = Math.ceil(filteredRevisiones.length / revisionesPerPage);
+  const totalPages = Math.ceil(filteredRevisiones.length / revisionesPerPage)
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+  }
 
   // Cambiar el orden de las revisiones
   const handleChangeOrder = () => {
-    setOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
-  };
+    setOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"))
+  }
 
-  // Formatear la fecha
+  // Formatear la fecha de la solicitud
   const formatDate = (date: string) => {
-    const formattedDate = new Date(date);
-    return formattedDate.toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+    const formattedDate = new Date(date)
+    return (
+      <>
+        {formattedDate.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })}
+      </>
+    )
+  }
 
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/asignaciones/detalle`, { state: { userId } });
-  };
+    navigate(`/cordinador/mis-asignaciones/detalle`, { state: { userId } })
+  }
 
   const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchCarnet(e.target.value);
-  };
+    const newCarnet = e.target.value
+    setSearchCarnet(newCarnet)
+  }
 
-  // Ajustar la configuración de la página en función del tamaño de la ventana
+  // Effect hook to handle window resize and adjust page settings accordingly
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setRevisionesPerPage(8);
-        setMaxPageButtons(5);
+        setRevisionesPerPage(8)
+        setMaxPageButtons(5)
       } else {
-        setRevisionesPerPage(5);
-        setMaxPageButtons(10);
+        setRevisionesPerPage(5)
+        setMaxPageButtons(10)
       }
-    };
+    }
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    handleResize()
+
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
   return (
     <>
-      <Breadcrumb pageName="Revisiones en revisión" />
+      <Breadcrumb pageName="Mis Revisiones Asignadas" />
       <div className="mx-auto max-w-5xl px-1 py-1">
         <div className="mb-4 flex items-center space-x-2">
           <input
@@ -138,9 +152,9 @@ const Asignaciones: React.FC = () => {
             </thead>
             <tbody>
               {currentRevisiones.length > 0 ? (
-                currentRevisiones.map((revision) => (
-                  <tr key={revision.revision_thesis_id} className="border-t border-gray-200 dark:border-strokedark">
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{revision.revision_thesis_id}</td>
+                currentRevisiones.map((revision, index) => (
+                  <tr key={index} className="border-t border-gray-200 dark:border-strokedark">
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{index + 1}</td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{revision.user.name}</td>
                     {/* Estas columnas se ocultan en pantallas pequeñas */}
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">
@@ -150,7 +164,7 @@ const Asignaciones: React.FC = () => {
                       {formatDate(revision.date_revision)}
                     </td>
                     <td className="py-2 px-4 text-center text-black dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold hidden md:table-cell">
-                      {revision.approvalThesis.status}
+                      {revision.approval_status}
                     </td>
                     <td className="py-2 px-4 text-center">
                       <button
@@ -175,7 +189,7 @@ const Asignaciones: React.FC = () => {
           </table>
         </div>
 
-        {/* Paginación */}
+        {/* Pagination */}
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => paginate(currentPage - 1)}
@@ -203,7 +217,8 @@ const Asignaciones: React.FC = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Asignaciones;
+export default MisAsignaciones
+

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { creaRevisor } from '../../../ts/Cordinador/CreaRevisores';
-import { updateRevisor } from '../../../ts/Cordinador/UpdateRevisores';
+import { creaRevisor } from '../../../ts/CoordinadorTesis/CreaRevisores';
+import { updateRevisor } from '../../../ts/CoordinadorTesis/UpdateRevisores';
 
 interface CrearRevisorProps {
   onClose: () => void;

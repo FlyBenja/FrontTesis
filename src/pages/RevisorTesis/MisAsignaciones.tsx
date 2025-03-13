@@ -1,46 +1,64 @@
-"use client"
-
 import type React from "react"
 import { useState, useEffect, useCallback } from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { useNavigate } from "react-router-dom"
-import { getRevisionesAprobadas } from "../../ts/Cordinador/GetRevisionesAprobadas" // Importa la API
+import { getRevisionesCordinador } from "../../ts/CoordinadorTesis/GetRevisionesCordinador"
+import { getDatosPerfil } from "../../ts/Generales/GetDatsPerfil"
 
-const Historial: React.FC = () => {
+const MisAsignaciones: React.FC = () => {
   const navigate = useNavigate()
 
-  const [revisiones, setRevisiones] = useState<any[]>([]) // Datos de las revisiones
-  const [searchCarnet, setSearchCarnet] = useState("") // Campo de búsqueda del carnet
-  const [order, setOrder] = useState<"asc" | "desc">("asc") // Orden de las revisiones
-  const [filteredRevisiones, setFilteredRevisiones] = useState(revisiones) // Revisión filtrada
-  const [isCarnetSearch, setIsCarnetSearch] = useState(false) // Nuevo estado para rastrear si se buscó por carnet
+  const [userId, setUserId] = useState<number | null>(null)
+  const [revisiones, setRevisiones] = useState<any[]>([])
+  const [searchCarnet, setSearchCarnet] = useState("")
+  const [order, setOrder] = useState<"asc" | "desc">("asc")
+  const [filteredRevisiones, setFilteredRevisiones] = useState(revisiones)
+  const [isCarnetSearch, setIsCarnetSearch] = useState(false)
 
   // State hooks for pagination
   const [currentPage, setCurrentPage] = useState(1)
-  const [revisionesPerPage, setRevisionesPerPage] = useState(5) // Default to 5 items per page
-  const [maxPageButtons, setMaxPageButtons] = useState(10) // Default to 10 page buttons
+  const [revisionesPerPage, setRevisionesPerPage] = useState(5)
+  const [maxPageButtons, setMaxPageButtons] = useState(10)
 
-  // Obtener las revisiones pendientes desde la API
-  const fetchRevisiones = useCallback(async (order: "asc" | "desc", carnet: string) => {
-    try {
-      const revisions = await getRevisionesAprobadas(order, carnet)
-      setRevisiones(revisions)
-      setFilteredRevisiones(revisions) // Inicializa el estado de revisiones filtradas
-
-      // Actualizar el estado de búsqueda por carnet
-      setIsCarnetSearch(carnet.length >= 10)
-    } catch (error) {
-      setRevisiones([])
-      setFilteredRevisiones([])
-      setIsCarnetSearch(carnet.length >= 10)
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const perfil = await getDatosPerfil()
+        setUserId(perfil.user_id)
+      } catch (error) {
+        console.error("Error obteniendo el user_id:", error)
+      }
     }
+    fetchUserId()
   }, [])
 
-  // Efecto para cargar las revisiones cuando cambia el carnet o el orden
+  // Obtener las revisiones del coordinador
+  const fetchRevisiones = useCallback(
+    async (order: "asc" | "desc", carnet: string) => {
+      try {
+        if (userId !== null) {
+          const revisions = await getRevisionesCordinador(userId, order, carnet)
+          setRevisiones(revisions)
+          setFilteredRevisiones(revisions)
+          setIsCarnetSearch(carnet.length >= 10)
+        }
+      } catch (error) {
+        console.error(error)
+        setRevisiones([])
+        setFilteredRevisiones([])
+        setIsCarnetSearch(carnet.length >= 10)
+      }
+    },
+    [userId],
+  )
+
+  // Efecto para cargar las revisiones cuando cambia el carnet, el orden o el userId
   useEffect(() => {
-    const carnetValue = searchCarnet.length >= 10 ? searchCarnet : "" // Validar formato del carnet (longitud >= 10)
-    fetchRevisiones(order, carnetValue) // Ejecutar la API con carnet vacío o el carnet completo
-  }, [order, searchCarnet, fetchRevisiones]) // Depende de searchCarnet y order
+    if (userId !== null) {
+      const carnetValue = searchCarnet.length >= 10 ? searchCarnet : ""
+      fetchRevisiones(order, carnetValue)
+    }
+  }, [order, searchCarnet, userId, fetchRevisiones])
 
   // Pagination logic
   const indexOfLastRevision = currentPage * revisionesPerPage
@@ -73,24 +91,23 @@ const Historial: React.FC = () => {
   }
 
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/historial/detalle`, { state: { userId } })
+    navigate(`/cordinador/mis-asignaciones/detalle`, { state: { userId } })
   }
 
-  // Agregar console.log para mostrar la longitud del carnet ingresado
   const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newCarnet = e.target.value
-    setSearchCarnet(newCarnet) // Actualizar el estado
+    setSearchCarnet(newCarnet)
   }
 
   // Effect hook to handle window resize and adjust page settings accordingly
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setRevisionesPerPage(8) // Ajusta el número de elementos por página en pantallas pequeñas
-        setMaxPageButtons(5) // Ajusta la cantidad de botones de paginación en pantallas pequeñas
+        setRevisionesPerPage(8)
+        setMaxPageButtons(5)
       } else {
-        setRevisionesPerPage(5) // Ajusta el número de elementos por página en pantallas grandes
-        setMaxPageButtons(10) // Ajusta la cantidad de botones de paginación en pantallas grandes
+        setRevisionesPerPage(5)
+        setMaxPageButtons(10)
       }
     }
 
@@ -105,7 +122,7 @@ const Historial: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Nuevas solicitudes de revisión" />
+      <Breadcrumb pageName="Mis Revisiones Asignadas" />
       <div className="mx-auto max-w-5xl px-1 py-1">
         <div className="mb-4 flex items-center space-x-2">
           <input
@@ -135,9 +152,9 @@ const Historial: React.FC = () => {
             </thead>
             <tbody>
               {currentRevisiones.length > 0 ? (
-                currentRevisiones.map((revision) => (
-                  <tr key={revision.revision_thesis_id} className="border-t border-gray-200 dark:border-strokedark">
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{revision.revision_thesis_id}</td>
+                currentRevisiones.map((revision, index) => (
+                  <tr key={index} className="border-t border-gray-200 dark:border-strokedark">
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{index + 1}</td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{revision.user.name}</td>
                     {/* Estas columnas se ocultan en pantallas pequeñas */}
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">
@@ -146,8 +163,8 @@ const Historial: React.FC = () => {
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">
                       {formatDate(revision.date_revision)}
                     </td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white bg-green-300 dark:bg-green-500 font-semibold hidden md:table-cell">
-                      Aprobado
+                    <td className="py-2 px-4 text-center text-black dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold hidden md:table-cell">
+                      {revision.approval_status}
                     </td>
                     <td className="py-2 px-4 text-center">
                       <button
@@ -162,7 +179,9 @@ const Historial: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={6} className="py-4 text-center text-gray-500 dark:text-gray-400">
-                    {isCarnetSearch ? "No existe carnet del Estudiante" : "No hay solicitudes de revisión"}
+                    {isCarnetSearch && searchCarnet.length >= 10
+                      ? "No existe carnet del Estudiante"
+                      : "No hay solicitudes de revisión"}
                   </td>
                 </tr>
               )}
@@ -201,5 +220,5 @@ const Historial: React.FC = () => {
   )
 }
 
-export default Historial
+export default MisAsignaciones
 

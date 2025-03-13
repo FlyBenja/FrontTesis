@@ -45,10 +45,10 @@ root.render(
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/estudiantes/*" element={<App />} />
-        <Route path="/admin/*" element={<App />} />
-        <Route path="/secretario/*" element={<App />} />
-        <Route path="/cordinador/*" element={<App />} />
-        <Route path="/revisor/*" element={<App />} />
+        <Route path="/administrador/*" element={<App />} />
+        <Route path="/coordinadorsede/*" element={<App />} />
+        <Route path="/coordinadortesis/*" element={<App />} />
+        <Route path="/revisortesis/*" element={<App />} />
         <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />
         <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
       </Routes>

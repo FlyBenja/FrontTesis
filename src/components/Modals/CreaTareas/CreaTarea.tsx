@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { createTarea } from '../../../ts/Admin/CreateTareas';
-import { updateTarea } from '../../../ts/Admin/UpdateTareas';
+import { createTarea } from '../../../ts/Administrador/CreateTareas';
+import { updateTarea } from '../../../ts/Administrador/UpdateTareas';
 import { getCursos } from '../../../ts/Generales/GetCursos';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
-import { getDatosTarea } from '../../../ts/Admin/GetDatosTarea';
+import { getDatosTarea } from '../../../ts/Administrador/GetDatosTarea';
 import Swal from 'sweetalert2';
 
 // Props interface for the CreaTarea component

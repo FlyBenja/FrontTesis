@@ -2,47 +2,51 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-import Calendar from './pages/Generales/Calendar';
-import CrearTareas from './pages/Admin/CrearTareas';
-import Graficas from './pages/Admin/Inicio/Graficas';
-import DefaultLayout from './layout/DefaultLayout';
-import Bitacora from './pages/Admin/Inicio/Bitacora';
-import SubirEstudiantes from './pages/Admin/Estudiantes/SubirEstudiantes';
-import ListarEstudiantes from './pages/Admin/Estudiantes/ListarEstudiantes';
-import TimeLineAdmin from './pages/Admin/Estudiantes/TimeLine';
-import TareasEstudiante from './pages/Admin/Estudiantes/TareasEstudiante';
-import Propuestas from './pages/Admin/Estudiantes/Propuestas';
-import Capitulos from './pages/Admin/Estudiantes/Capitulos';
-import SubirCatedraticos from './pages/Admin/Catedraticos/SubirCatedraticos';
-import ListarCatedraticos from './pages/Admin/Catedraticos/ListarCatedraticos';
-import CrearCatedraticos from './pages/Admin/Catedraticos/CrearCatedraticos';
-import CrearComisiones from './pages/Admin/Comisiones/CrearComision';
-import ListarComision from './pages/Admin/Comisiones/ListarComision';
-import EnviaRevision from './pages/Admin/EnviaRevision';
+// Administrador
+import CrearTareas from './pages/Administrador/CrearTareas';
+import SubirEstudiantes from './pages/Administrador/Estudiantes/SubirEstudiantes';
+import ListarEstudiantes from './pages/Administrador/Estudiantes/ListarEstudiantes';
+import TimeLineAdmin from './pages/Administrador/Estudiantes/TimeLine';
+import TareasEstudiante from './pages/Administrador/Estudiantes/TareasEstudiante';
+import Propuestas from './pages/Administrador/Estudiantes/Propuestas';
+import Capitulos from './pages/Administrador/Estudiantes/Capitulos';
+import EnviaRevision from './pages/Administrador/EnviaRevision';
 
+// Generales
+import Graficas from './pages/Administrador/Inicio/Graficas';
+import Bitacora from './pages/Administrador/Inicio/Bitacora';
 import Profile from './pages/Generales/Profile';
 import Settings from './pages/Generales/Settings';
+import Calendar from './pages/Generales/Calendar';
+import DefaultLayout from './layout/DefaultLayout';
 
+// Estudiantes
 import Inicio from './pages/Estudiantes/Inicio';
 import Propuesta from './pages/Estudiantes/Propuesta';
 import Cursos from './pages/Estudiantes/Cursos';
 import InfoCurso from './pages/Estudiantes/InfoCurso';
 import InfoCapitulo from './pages/Estudiantes/InfoCapitulo';
 
-import CreaSedes from './pages/Secretario/CrearSedes';
-import CreaAdmin from './pages/Secretario/CrearAdmin';
-import AsignaPG from './pages/Secretario/AsignarPG';
+// CoordinadorSede
+import SubirCatedraticos from './pages/CoordinadorSede/Catedraticos/SubirCatedraticos';
+import ListarCatedraticos from './pages/CoordinadorSede/Catedraticos/ListarCatedraticos';
+import CrearCatedraticos from './pages/CoordinadorSede/Catedraticos/CrearCatedraticos';
+import CrearComisiones from './pages/CoordinadorSede/Comisiones/CrearComision';
+import ListarComision from './pages/CoordinadorSede/Comisiones/ListarComision';
+import CreaAdmin from './pages/CoordinadorSede/CrearAdmin';
+import AsignaPG from './pages/CoordinadorSede/AsignarPG';
 
-import Grafica from './pages/Cordinador/Graficas';
-import MisAsignaciones from './pages/Cordinador/MisAsignaciones';
-import MisAsignacionesDetalle from './pages/Cordinador/RevisionEstudianteComentarios';
-import SolicitudRevisiones from './pages/Cordinador/SolicitudRevisiones';
-import RevisionEstudiante from './pages/Cordinador/RevisionEstudiante';
-import Revisores from './pages/Cordinador/Revisores';
-import Asignaciones from './pages/Cordinador/Asignaciones';
-import AsignacionesDetalle from './pages/Cordinador/RevisionEstudianteComentarios';
-import Historial from './pages/Cordinador/Historial';
-import HistorialDetalle from './pages/Cordinador/RevisionEstudianteComentarios';
+// CoordinadorTesis
+import Grafica from './pages/CoordinadorTesis/Graficas';
+import MisAsignaciones from './pages/CoordinadorTesis/MisAsignaciones';
+import MisAsignacionesDetalle from './pages/CoordinadorTesis/RevisionEstudianteComentarios';
+import SolicitudRevisiones from './pages/CoordinadorTesis/SolicitudRevisiones';
+import RevisionEstudiante from './pages/CoordinadorTesis/RevisionEstudiante';
+import Revisores from './pages/CoordinadorTesis/Revisores';
+import Asignaciones from './pages/CoordinadorTesis/Asignaciones';
+import AsignacionesDetalle from './pages/CoordinadorTesis/RevisionEstudianteComentarios';
+import Historial from './pages/CoordinadorTesis/Historial';
+import HistorialDetalle from './pages/CoordinadorTesis/RevisionEstudianteComentarios';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -103,27 +107,24 @@ function App() {
 
         {role === 3 && (  // Administrador
           <>
-            <Route path="graficas" element={<Graficas />} />
-            <Route path="bitacora" element={<Bitacora />} />
             <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
             <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
             <Route path="time-line" element={<TimeLineAdmin />} />
             <Route path="tareas-estudiante" element={<TareasEstudiante />} />
             <Route path="propuestas" element={<Propuestas />} />
             <Route path="capitulo" element={<Capitulos />} />
-            <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
-            <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
-            <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
-            <Route path="crear-comision" element={<CrearComisiones />} />
-            <Route path="listado-comision" element={<ListarComision />} />
             <Route path="crear-tareas" element={<CrearTareas />} />
             <Route path="enviar-revisión" element={<EnviaRevision />} />
           </>
         )}
 
-        {role === 4 && (  // Secretario
+        {role === 4 && (  // CoordinadorSede
           <>
-            <Route path="crea-sedes" element={<CreaSedes />} />
+            <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
+            <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
+            <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
+            <Route path="crear-comision" element={<CrearComisiones />} />
+            <Route path="listado-comision" element={<ListarComision />} />
             <Route path="crea-admin" element={<CreaAdmin />} />
             <Route path="asignapg" element={<AsignaPG />} />
           </>
@@ -138,7 +139,7 @@ function App() {
           </>
         )}
 
-        {role === 6 && (  // Cordinador de tesis
+        {role === 6 && (  // CoordinadorTesis
           <>
             <Route path="graficas" element={<Grafica />} />
             <Route path="mis-asignaciones" element={<MisAsignaciones />} />
@@ -160,6 +161,8 @@ function App() {
         )}
 
         {/* General Links */}
+        <Route path="graficas" element={<Graficas />} />
+        <Route path="bitacora" element={<Bitacora />} />
         <Route path="perfil" element={<Profile />} />
         <Route path="configuracion" element={<Settings />} />
         <Route path="calendario" element={<Calendar />} />

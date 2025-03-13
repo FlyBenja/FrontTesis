@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';  
-import { getCatedraticosActivos } from '../../../ts/Admin/GetCatedraticoActive';  
+import { getCatedraticosActivos } from '../../../ts/CoordinadorSede/GetCatedraticoActive';  
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';  
-import { asignarCatedraticoComision } from '../../../ts/Admin/AsignaCatedraticoComision';  
+import { asignarCatedraticoComision } from '../../../ts/CoordinadorSede/AsignaCatedraticoComision';  
 import Swal from 'sweetalert2'; 
 
 // Defining the TypeScript interface for the professor (catedrático) data structure

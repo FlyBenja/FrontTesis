@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getSedes } from "../../ts/Secretario/GetSedes";
-import { crearAsignacionSedeCurso } from "../../ts/Secretario/CreatePG";
+import { getSedes } from "../../ts/CoordinadorSede/GetSedes";
+import { crearAsignacionSedeCurso } from "../../ts/CoordinadorSede/CreatePG";
 import { getCursos } from "../../ts/Generales/GetCursos";
 import { driver } from 'driver.js'; // Importa driver.js
 import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js

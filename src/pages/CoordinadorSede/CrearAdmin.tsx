@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getSedes } from '../../ts/Secretario/GetSedes';
-import { createAdmin } from '../../ts/Secretario/CreateAdmin';
-import { getAdmins } from '../../ts/Secretario/GetAdmins';
-import { deleteAdmin } from '../../ts/Secretario/DeleteAdmin';
+import { getSedes } from '../../ts/CoordinadorSede/GetSedes';
+import { createAdmin } from '../../ts/CoordinadorSede/CreateAdmin';
+import { getAdmins } from '../../ts/CoordinadorSede/GetAdmins';
+import { deleteAdmin } from '../../ts/CoordinadorSede/DeleteAdmin';
 import Swal from 'sweetalert2';
 import { driver } from 'driver.js'; // Importa driver.js
 import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js

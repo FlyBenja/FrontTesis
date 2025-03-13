@@ -2,7 +2,7 @@ import { ApexOptions } from 'apexcharts';
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
-import { getSedeComplete, SedeStats } from '../../ts/Admin/GetSedeComplete';
+import { getSedeComplete, SedeStats } from '../../ts/Administrador/GetSedeComplete';
 
 // Defining the structure of the data expected for the chart
 interface ChartData {
