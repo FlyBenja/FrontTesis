@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Function to retrieve the total number of students for a specific sede (location)
-export const getStudentsSede = async (sedeId: number): Promise<{ totalStudents: number; totalStudentsSede: number }> => {
+export const getStudentsSede = async (sedeId: number): Promise<{ totalStudents: number; totalStudentsSede: number; totalApprovedRevisions: number; totalInRevisions: number }> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');

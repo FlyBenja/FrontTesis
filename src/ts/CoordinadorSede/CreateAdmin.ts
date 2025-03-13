@@ -5,7 +5,6 @@ export const createAdmin = async (adminData: {
   email: string;        // Email of the admin
   name: string;         // Name of the admin
   carnet: string;       // Carnet or ID of the admin
-  sede_id: number;      // ID of the 'sede' (location or department) the admin belongs to
 }): Promise<void> => {
   try {
     // Retrieve the authentication token from localStorage

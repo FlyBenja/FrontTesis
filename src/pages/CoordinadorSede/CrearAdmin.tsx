@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getSedes } from '../../ts/CoordinadorSede/GetSedes';
 import { createAdmin } from '../../ts/CoordinadorSede/CreateAdmin';
 import { getAdmins } from '../../ts/CoordinadorSede/GetAdmins';
 import { deleteAdmin } from '../../ts/CoordinadorSede/DeleteAdmin';
@@ -25,11 +24,7 @@ const CrearAdmin: React.FC = () => {
   // States for managing form inputs
   const [adminUserName, setAdminUserName] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
-  const [adminSede, setAdminSede] = useState('');
   const [adminCarnet, setAdminCarnet] = useState('');
-
-  // State for storing the list of "sedes"
-  const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string }[]>([]);
 
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,17 +33,6 @@ const CrearAdmin: React.FC = () => {
 
   // Effect hook to fetch "sedes" and admins when the component mounts
   useEffect(() => {
-    // Function to fetch the list of sedes
-    const fetchSedes = async () => {
-      try {
-        const data = await getSedes();
-        // Sort the sedes by sede_id in ascending order
-        const sortedSedes = data.sort((a, b) => a.sede_id - b.sede_id);
-        setSedes(sortedSedes); // Save the sorted sedes in state
-      } catch (error) {
-        console.error('Error al obtener las sedes:', error);
-      }
-    };
 
     // Function to fetch the list of admins
     const fetchAdmins = async () => {
@@ -71,7 +55,6 @@ const CrearAdmin: React.FC = () => {
     };
 
     // Fetch the data for sedes and admins
-    fetchSedes();
     fetchAdmins();
 
     // Agregar el listener para el cambio de tamaño de la ventana
@@ -124,7 +107,6 @@ const CrearAdmin: React.FC = () => {
     setIsModalOpen(false);
     setAdminUserName('');
     setAdminEmail('');
-    setAdminSede('');
     setAdminCarnet('');
   };
 
@@ -138,7 +120,6 @@ const CrearAdmin: React.FC = () => {
         email: adminEmail,
         name: adminUserName,
         carnet: adminCarnet,
-        sede_id: parseInt(adminSede),
       });
 
       // Display success alert
@@ -176,7 +157,7 @@ const CrearAdmin: React.FC = () => {
   };
 
   // Function to handle admin deletion
-  const handleDeleteClick = (adminId: number, sedeId: number) => {
+  const handleDeleteClick = (adminId: number) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: '¡Al eliminar el administrador se volverá un catedrático en la sede asignada!',
@@ -190,7 +171,7 @@ const CrearAdmin: React.FC = () => {
       if (result.isConfirmed) {
         try {
           // Call the deleteAdmin API to delete the admin
-          await deleteAdmin(adminId, sedeId);
+          await deleteAdmin(adminId);
           // Display success alert after deletion
           Swal.fire({
             icon: 'success',
@@ -275,7 +256,7 @@ const CrearAdmin: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="Crear Admin a Sede" />
-  
+
       <div className="mx-auto max-w-6xl px-6 py-3">
         <div id="tabla-admins" className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
@@ -290,7 +271,7 @@ const CrearAdmin: React.FC = () => {
               >
                 Crear Nuevo Admin
               </button>
-  
+
               {/* Botón para iniciar los recorridos, alineado con el botón "Crear Admin" */}
               <button
                 style={{ width: '35px', height: '35px' }}
@@ -312,7 +293,7 @@ const CrearAdmin: React.FC = () => {
               </button>
             </div>
           </div>
-  
+
           {admins.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-200 dark:border-strokedark">
@@ -337,7 +318,7 @@ const CrearAdmin: React.FC = () => {
                       <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
                         <button
                           onClick={() =>
-                            handleDeleteClick(admin.id, sedes.find((sede) => sede.nameSede === admin.sede)?.sede_id || 0)
+                            handleDeleteClick(admin.id || 0)
                           }
                           className="ml-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
                           id="delete-admin"
@@ -349,7 +330,7 @@ const CrearAdmin: React.FC = () => {
                   ))}
                 </tbody>
               </table>
-  
+
               {/* Pagination controls */}
               <div className="mt-4 flex justify-center">
                 {/* Previous page button */}
@@ -360,7 +341,7 @@ const CrearAdmin: React.FC = () => {
                 >
                   &#8592;
                 </button>
-  
+
                 {/* Page number buttons */}
                 {getPageRange().map((page) => (
                   <button
@@ -374,7 +355,7 @@ const CrearAdmin: React.FC = () => {
                     {page}
                   </button>
                 ))}
-  
+
                 {/* Next page button */}
                 <button
                   onClick={() => paginate(currentPage + 1)}
@@ -390,7 +371,7 @@ const CrearAdmin: React.FC = () => {
           )}
         </div>
       </div>
-  
+
       {/* Modal para crear un nuevo administrador */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
@@ -426,24 +407,6 @@ const CrearAdmin: React.FC = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 dark:text-white" htmlFor="adminSede">
-                  Sede
-                </label>
-                <select
-                  id="input-sede"
-                  className="w-full p-2 border rounded"
-                  value={adminSede}
-                  onChange={(e) => setAdminSede(e.target.value)}
-                  required
-                >
-                  {sedes.map((sede) => (
-                    <option key={sede.sede_id} value={sede.nameSede}>
-                      {sede.nameSede}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-4">
                 <label className="block text-gray-700 dark:text-white" htmlFor="adminCarnet">
                   Carnet
                 </label>
@@ -476,7 +439,7 @@ const CrearAdmin: React.FC = () => {
         </div>
       )}
     </>
-  );  
+  );
 };
 
 export default CrearAdmin;

@@ -6,7 +6,7 @@ export interface ResponseMessage {
 }
 
 // Asynchronous function to delete an admin by user ID and sede ID
-export const deleteAdmin = async (userId: number, sedeId: number): Promise<ResponseMessage> => {
+export const deleteAdmin = async (userId: number): Promise<ResponseMessage> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
@@ -20,7 +20,6 @@ export const deleteAdmin = async (userId: number, sedeId: number): Promise<Respo
       'http://localhost:3000/api/admin/remove',  // API endpoint for removing the admin
       {
         user_id: userId,  // The ID of the user to be removed
-        sede_id: sedeId,   // The ID of the 'sede' (location or department) where the admin is located
       },
       {
         headers: {
