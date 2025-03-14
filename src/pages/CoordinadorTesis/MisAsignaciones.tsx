@@ -91,7 +91,7 @@ const MisAsignaciones: React.FC = () => {
   }
 
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/mis-asignaciones/detalle`, { state: { userId } })
+    navigate(`/coordinadortesis/mis-asignaciones/detalle-comentario`, { state: { userId } })
   }
 
   const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,9 +152,9 @@ const MisAsignaciones: React.FC = () => {
             </thead>
             <tbody>
               {currentRevisiones.length > 0 ? (
-                currentRevisiones.map((revision, index) => (
-                  <tr key={index} className="border-t border-gray-200 dark:border-strokedark">
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{index + 1}</td>
+                currentRevisiones.map((revision) => (
+                  <tr key={revision.revision_thesis_id} className="border-t border-gray-200 dark:border-strokedark">
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{revision.revision_thesis_id}</td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{revision.user.name}</td>
                     {/* Estas columnas se ocultan en pantallas pequeñas */}
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">

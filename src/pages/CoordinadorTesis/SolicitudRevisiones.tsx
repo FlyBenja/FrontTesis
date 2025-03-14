@@ -71,7 +71,7 @@ const SolicitudRevisiones: React.FC = () => {
   }
 
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/revision-estudiante`, { state: { userId } })
+    navigate(`/coordinadortesis/revision-estudiante`, { state: { userId } })
   }
 
   // Agregar console.log para mostrar la longitud del carnet ingresado

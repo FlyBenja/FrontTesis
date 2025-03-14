@@ -6,6 +6,7 @@ interface Review {
   date_revision: string; // Date of the revision
   active_process: boolean; // Indicates if the process is active
   approval_status: string; // Status of the thesis approval
+  revision_thesis_id: number; // ID of the thesis revision
   user: {
     user_id: number;
     name: string;
@@ -48,6 +49,7 @@ export const getRevisionesCordinador = async (
         date_revision: review.RevisionThesis?.date_revision || 'No especificado',
         active_process: review.RevisionThesis?.active_process ?? false,
         approval_status: review.RevisionThesis?.approvaltheses?.[0]?.status || 'Desconocido',
+        revision_thesis_id: review.RevisionThesis?.revision_thesis_id || 0,
         user: {
           user_id: review.RevisionThesis?.User?.user_id || 0,
           name: review.RevisionThesis?.User?.name || 'No disponible',

@@ -73,7 +73,7 @@ const Historial: React.FC = () => {
   }
 
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/historial/detalle`, { state: { userId } })
+    navigate(`/coordinadortesis/historial/detalle`, { state: { userId } })
   }
 
   // Agregar console.log para mostrar la longitud del carnet ingresado

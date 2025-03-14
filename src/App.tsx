@@ -39,14 +39,15 @@ import AsignaPG from './pages/CoordinadorSede/AsignarPG';
 // CoordinadorTesis
 import Grafica from './pages/CoordinadorTesis/Graficas';
 import MisAsignaciones from './pages/CoordinadorTesis/MisAsignaciones';
-import MisAsignacionesDetalle from './pages/CoordinadorTesis/RevisionEstudianteComentarios';
+import MisAsignacionesDetalle from './pages/CoordinadorTesis/RevisionEstudianteGetComentarios';
+import MisAsignacionesDetalleComentarios from './pages/CoordinadorTesis/RevisionEstudianteCreaComentarios';
 import SolicitudRevisiones from './pages/CoordinadorTesis/SolicitudRevisiones';
 import RevisionEstudiante from './pages/CoordinadorTesis/RevisionEstudiante';
 import Revisores from './pages/CoordinadorTesis/Revisores';
 import Asignaciones from './pages/CoordinadorTesis/Asignaciones';
-import AsignacionesDetalle from './pages/CoordinadorTesis/RevisionEstudianteComentarios';
+import AsignacionesDetalle from './pages/CoordinadorTesis/RevisionEstudianteGetComentarios';
 import Historial from './pages/CoordinadorTesis/Historial';
-import HistorialDetalle from './pages/CoordinadorTesis/RevisionEstudianteComentarios';
+import HistorialDetalle from './pages/CoordinadorTesis/RevisionEstudianteGetComentarios';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -144,6 +145,7 @@ function App() {
             <Route path="graficas" element={<Grafica />} />
             <Route path="mis-asignaciones" element={<MisAsignaciones />} />
             <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
+            <Route path="mis-asignaciones/detalle-comentario" element={<MisAsignacionesDetalleComentarios />} />
             <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
             <Route path="revision-estudiante" element={<RevisionEstudiante />} />
             <Route path="revisores" element={<Revisores />} />

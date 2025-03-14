@@ -82,7 +82,7 @@ const Asignaciones: React.FC = () => {
   };
 
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/asignaciones/detalle`, { state: { userId } });
+    navigate(`/coordinadortesis/asignaciones/detalle`, { state: { userId } });
   };
 
   const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {

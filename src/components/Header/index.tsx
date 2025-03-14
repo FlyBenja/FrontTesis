@@ -14,11 +14,12 @@ const Header = (props: {
   // Define routes based on role
   const roleRoutes: { [key: string]: string } = {
     '1': '/estudiantes/inicio',
-    '2': '/admin/graficas',
-    '3': '/admin/graficas',
-    '4': '/secretario/crea-sedes',
-    '5': '/admin/graficas',
-    '6': '/cordinador/grafica',
+    '2': '/catedratico/graficas',
+    '3': '/administrador/graficas',
+    '4': '/coordinadorsede/graficas',
+    '5': '/decano/graficas',
+    '6': '/coordinadortesis/graficas',
+    '7': '/revisortesis/graficas',
   };
 
   return (

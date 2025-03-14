@@ -4,7 +4,7 @@ import SwitcherFour from '../../components/Switchers/SwitcherFour';
 import { getRevisores } from '../../ts/CoordinadorTesis/GetRevisores';
 import { getDatosPerfil, PerfilData } from "../../ts/Generales/GetDatsPerfil";
 import { activaUsuario } from '../../ts/Generales/ActivarUsuario';
-import CrearRevisor from '../../components/Modals/Revisores/CreaRevisor';
+import CrearRevisor from '../../components/Modals/CoordinadorTesis/CreaRevisor';
 import Swal from 'sweetalert2';
 
 const Revisores: React.FC = () => {

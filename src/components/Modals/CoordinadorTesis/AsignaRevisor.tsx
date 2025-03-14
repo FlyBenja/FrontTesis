@@ -57,7 +57,7 @@ const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose, revisionThesisId
         },
       }).then(() => {
         onClose();  // Cierra el modal
-        navigate('/cordinador/solicitud-revisiones'); // Redirige
+        navigate('/coordinadortesis/solicitud-revisiones'); // Redirige
       });
     } catch (error) {
       let errorMessage = 'Error desconocido';
