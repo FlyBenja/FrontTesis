@@ -105,11 +105,11 @@ const TareasEstudiante: React.FC = () => {
 
     // Navigate based on task type
     if (tarea.typeTask_id === 1) {
-      navigate('/admin/propuestas', {
+      navigate('/administrador/propuestas', {
         state: { tarea, estudiante, selectedAño },
       }); // Navigate to proposals if task type is 1
     } else {
-      navigate('/admin/capitulo', {
+      navigate('/administrador/capitulo', {
         state: { tarea, estudiante, selectedAño },
       }); // Navigate to chapter if task type is not 1
     }

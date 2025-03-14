@@ -327,10 +327,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Crear Tareas --> */}
 
-              {/* <!-- Menu Item Calendar --> */}
+              {/* <!-- Menu Item Calendario --> */}
               <li>
                 <NavLink
-                  to="/administrador/calendar"
+                  to="/administrador/calendario"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/administrador/calendar' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
@@ -352,7 +352,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Calendario
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Calendar --> */}
+              {/* <!-- Menu Item Calendario --> */}
 
               {/* <!-- Menu Item Enviar a Revisión --> */}
               <li>

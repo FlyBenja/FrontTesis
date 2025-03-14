@@ -130,7 +130,7 @@ const ListarEstudiantes: React.FC = () => {
 
   // Handle click on student row to navigate to the student's timeline
   const handleStudentClick = (estudiante: Estudiante) => {
-    navigate(`/admin/time-line`, {
+    navigate(`/administrador/time-line`, {
       state: {
         estudiante,
         selectedAño,

@@ -258,7 +258,7 @@ const TimeLine: React.FC = () => {
             <button
               id="view-tasks" // Agrega este ID
               onClick={() => {
-                navigate('/admin/tareas-estudiante', {
+                navigate('/administrador/tareas-estudiante', {
                   state: { estudiante, selectedAño },
                 });
               }}
