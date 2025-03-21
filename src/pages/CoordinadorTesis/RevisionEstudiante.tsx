@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import AsignaRevisor from '../../components/Modals/CoordinadorTesis/AsignaRevisor';
-import { getRevisionDetallePendi } from '../../ts/CoordinadorTesis/GetRevisionDetallePendi';
+import { getRevisionDetallePendi } from '../../ts/CoordinadorYRevisorTesis/GetRevisionDetallePendi';
 
 const RevisionEstudiante: React.FC = () => {
   const navigate = useNavigate();

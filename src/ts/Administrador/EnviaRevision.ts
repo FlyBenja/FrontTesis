@@ -33,7 +33,7 @@ export const enviaRevision = async ({
 
     // Realiza una solicitud POST para enviar la revisión
     const response = await axios.post(
-      'http://localhost:3000/api/revision-thesis',  // La URL del endpoint de la API
+      'https://api.onlineproject.online/api/revision-thesis',  // La URL del endpoint de la API
       formData,  // Los datos enviados (incluyendo los archivos y los parámetros)
       {
         headers: {

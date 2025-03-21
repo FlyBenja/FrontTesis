@@ -1,14 +1,15 @@
 import axios from 'axios';
 
-// Define la interfaz para la creación de revisores
+// Define la interfaz para la actualización de revisores
 interface RevisorData {
   email: string;
   name: string;
   codigo: string;
 }
 
-// Función para crear un revisor
-export const creaRevisor = async (data: RevisorData): Promise<void> => {
+// Función para actualizar un revisor
+export const updateRevisor = async (userId: number, data: RevisorData): Promise<void> => {
+    console.log(userId);
   try {
     // Obtener el token de autenticación desde localStorage
     const token = localStorage.getItem('authToken');
@@ -16,11 +17,11 @@ export const creaRevisor = async (data: RevisorData): Promise<void> => {
       throw new Error('Token de autenticación no encontrado');
     }
 
-    // URL de la API
-    const url = 'http://localhost:3000/api/reviewers';
+    // URL de la API con el parámetro userId
+    const url = `https://api.onlineproject.online/api/reviewers/${userId}`;
 
-    // Realizar la solicitud POST
-    await axios.post(url, data, {
+    // Realizar la solicitud PUT para actualizar el revisor
+    await axios.put(url, data, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

@@ -37,7 +37,7 @@ export const getDetalleTareas = async (
     }
 
     // Make a GET request to the specified URL with the parameters
-    const response = await axios.get(`http://localhost:3000/api/students/${user_id}/courses/${course_id}/sede/${sede_id}/year/${year}/details`, {
+    const response = await axios.get(`https://api.onlineproject.online/api/students/${user_id}/courses/${course_id}/sede/${sede_id}/year/${year}/details`, {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the authorization token in the request headers
         'Content-Type': 'application/json',  // Specify the content type as JSON

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import ClickOutside from '../ClickOutside'; 
+import ClickOutside from '../ClickOutside';
 import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
-import { getNotificationsAdmin } from '../../ts/Administrador/GetNotificationsAdmin'; 
-import { getNotificationsUser } from '../../ts/Estudiantes/GetNotificationsUser'; 
+import { getNotificationsAdmin } from '../../ts/Administrador/GetNotificationsAdmin';
+import { getNotificationsUser } from '../../ts/Estudiantes/GetNotificationsUser';
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -13,26 +13,28 @@ const DropdownNotification = () => {
   const [userId, setUserId] = useState<number | null>(null);
   const [notifications, setNotifications] = useState<{ notification_text: string; notification_date: string }[]>([]);
 
+  // Cargar el rol desde localStorage sin que se borre
   useEffect(() => {
     const storedRole = localStorage.getItem('userRole');
     if (storedRole) {
       setRole(Number(storedRole));
     }
+  }, []);
 
+  useEffect(() => {
     const fetchProfileData = async () => {
       try {
         const perfilData: PerfilData = await getDatosPerfil();
         setSedeId(perfilData.sede);
         setUserId(perfilData.user_id);
       } catch (error) {
-        // Handle error
+        console.error("Error al obtener datos del perfil:", error);
       }
     };
 
     fetchProfileData();
   }, []);
 
-  // Define fetchNotifications function
   const fetchNotifications = async () => {
     try {
       if (role === 3 && sedeId) {
@@ -43,7 +45,7 @@ const DropdownNotification = () => {
         setNotifications(notificationsData);
       }
     } catch (error) {
-      // Handle error
+      console.error("Error al obtener notificaciones:", error);
     }
   };
 
@@ -53,20 +55,26 @@ const DropdownNotification = () => {
     }
   }, [role, sedeId, userId]);
 
-  // Set interval to fetch notifications every 5 minutes
+  // Verificar cambios en localStorage (depuración)
+  useEffect(() => {
+    console.log("LocalStorage userRole:", localStorage.getItem('userRole'));
+  }, [role]);
+
+  // Intervalo para obtener notificaciones cada 5 minutos
   useEffect(() => {
     const interval = setInterval(() => {
       fetchNotifications();
-    }, 5 * 60 * 1000); // 5 minutes in milliseconds
+    }, 5 * 60 * 1000);
 
-    return () => clearInterval(interval); // Clean up the interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <li>
         <Link
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault(); // Evita que la página recargue
             setNotifying(false);
             setDropdownOpen(!dropdownOpen);
           }}
@@ -97,21 +105,8 @@ const DropdownNotification = () => {
                   <Link className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4" to="#">
                     <p className="text-sm text-black dark:text-white">{notification.notification_text}</p>
                     <p className="text-xs">
-                      {new Date(notification.notification_date).toLocaleDateString('es-ES', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                      })}{' '}
-                      / {new Date(notification.notification_date).toLocaleDateString('es-ES', {
-                        weekday: 'long',
-                        month: 'long',
-                        year: 'numeric',
-                      })}{' '}
-                      / {new Date(notification.notification_date).toLocaleTimeString('es-ES', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                      })}
+                      {new Date(notification.notification_date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}{' '}
+                      / {new Date(notification.notification_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                     </p>
                   </Link>
                 </li>

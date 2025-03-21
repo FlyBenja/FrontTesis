@@ -12,7 +12,7 @@ export const asignarCatedraticoComision = async (
 
     // Make a POST request to assign the professor to the commission
     const response = await axios.post(
-      `http://localhost:3000/api/comisiones/${comisionId}/usuario`,  // URL with the commission ID
+      `https://api.onlineproject.online/api/comisiones/${comisionId}/usuario`,  // URL with the commission ID
       catedraticoData,  // Send the professor data as the request body
       {
         headers: {

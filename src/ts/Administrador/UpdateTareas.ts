@@ -22,7 +22,7 @@ export const updateTarea = async (
     }
 
     // Make the PUT request to update the task with the provided task_id and data
-    await axios.put(`http://localhost:3000/api/tareas/${task_id}`, tareaDataUpdate, {
+    await axios.put(`https://api.onlineproject.online/api/tareas/${task_id}`, tareaDataUpdate, {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the authentication token in the request headers
         'Content-Type': 'application/json',  // Specify the content type as JSON

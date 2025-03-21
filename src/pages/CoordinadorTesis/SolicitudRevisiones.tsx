@@ -2,7 +2,7 @@ import type React from "react"
 import { useState, useEffect, useCallback } from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { useNavigate } from "react-router-dom"
-import { getRevisionesPendientes } from "../../ts/CoordinadorTesis/GetRevisionesPendientes" // Importa la API
+import { getRevisionesPendientes } from "../../ts/CoordinadorYRevisorTesis/GetRevisionesPendientes" // Importa la API
 
 const SolicitudRevisiones: React.FC = () => {
   const navigate = useNavigate()

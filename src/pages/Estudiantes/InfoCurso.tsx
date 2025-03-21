@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Swal from "sweetalert2"
 import { useLocation, useNavigate } from "react-router-dom"
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb" 
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getDatosPerfil } from "../../ts/Generales/GetDatsPerfil"
 import { getTareas } from "../../ts/Generales/GetTareas"
 import { getTareasEstudiante } from "../../ts/Estudiantes/GetTareasEstudiante"
@@ -175,7 +175,8 @@ const InfoCurso: React.FC = () => {
 
       <div className="mb-6">
         <button
-          className="flex items-center text-gray-700 dark:text-white bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-4 py-2 rounded-md transition-all shadow-sm"
+          id="back-button"
+          className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
           onClick={() => navigate(-1)}
         >
           <ChevronLeft className="mr-2 h-4 w-4" /> Regresar
@@ -276,11 +277,10 @@ const InfoCurso: React.FC = () => {
                       disabled={
                         currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
                       }
-                      className={`px-4 py-2.5 rounded-lg font-medium text-white flex items-center justify-center ${
-                        currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
+                      className={`px-4 py-2.5 rounded-lg font-medium text-white flex items-center justify-center ${currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-green-600 hover:bg-green-700 transition-colors"
-                      }`}
+                        }`}
                     >
                       {currentTarea.submission_complete ? (
                         <>
@@ -308,11 +308,10 @@ const InfoCurso: React.FC = () => {
                         )
                       }
                       disabled={!currentTarea.submission_complete}
-                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${
-                        !currentTarea.submission_complete
+                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${!currentTarea.submission_complete
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                      }`}
+                        }`}
                     >
                       Ver capítulo
                     </button>
@@ -328,11 +327,10 @@ const InfoCurso: React.FC = () => {
                         )
                       }
                       disabled={!currentTarea.submission_complete}
-                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${
-                        !currentTarea.submission_complete
+                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${!currentTarea.submission_complete
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-purple-600 text-white hover:bg-purple-700 transition-colors"
-                      }`}
+                        }`}
                     >
                       <MessageSquare className="mr-2 h-5 w-5" /> Comentarios
                     </button>

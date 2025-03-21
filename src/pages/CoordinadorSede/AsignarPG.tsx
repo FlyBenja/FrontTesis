@@ -22,20 +22,21 @@ const AsignarPG: React.FC = () => {
         const perfil = await getDatosPerfil();
         setSedeId(perfil.sede);
         setSedeNombre(perfil.NombreSede);
-
+  
         if (perfil.sede) {
           const currentYear = new Date().getFullYear();
           const cursos = await getCursos(perfil.sede, currentYear);
-
+  
           const pg1Available = cursos.some((curso) => curso.course_id === 1);
           const pg2Available = cursos.some((curso) => curso.course_id === 2);
-
+  
           setPg1(pg1Available);
           setPg2(pg2Available);
           setPg1Disabled(pg1Available);
           setPg2Disabled(pg2Available);
-
-          setIsButtonDisabled(!(pg1Available || pg2Available));
+  
+          // Habilita el botón solo si hay al menos un curso NO asignado
+          setIsButtonDisabled(pg1Available && pg2Available);
         }
       } catch (error: any) {
         Swal.fire({
@@ -48,41 +49,50 @@ const AsignarPG: React.FC = () => {
         });
       }
     };
-
+  
     fetchPerfil();
   }, []);
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sedeId) return;
-
+  
     try {
       const currentYear = new Date().getFullYear();
-      const payloads = [];
-
-      if (pg1 && !pg1Disabled) {
-        payloads.push({ course_id: 1, sede_id: sedeId, year_id: currentYear, courseActive: true });
+      let payload = null;
+  
+      if (pg1 && !pg1Disabled && !pg2) {
+        payload = { course_id: 1, sede_id: sedeId, year_id: currentYear, courseActive: true };
+      } else if (pg2 && !pg2Disabled && !pg1) {
+        payload = { course_id: 2, sede_id: sedeId, year_id: currentYear, courseActive: true };
       }
-      if (pg2 && !pg2Disabled) {
-        payloads.push({ course_id: 2, sede_id: sedeId, year_id: currentYear, courseActive: true });
-      }
-
-      if (payloads.length > 0) {
-        await Promise.all(payloads.map(payload => crearAsignacionSedeCurso(payload)));
+  
+      if (payload) {
+        await crearAsignacionSedeCurso(payload);
         Swal.fire({
           icon: "success",
           title: "¡Asignación completada!",
-          text: `Se asignaron correctamente los cursos seleccionados a la sede "${sedeNombre}" para el año ${currentYear}.`,
+          text: `El curso ${payload.course_id === 1 ? "PG I" : "PG II"} se asignó correctamente a la sede "${sedeNombre}" para el año ${currentYear}.`,
           confirmButtonText: "OK",
           confirmButtonColor: "#4CAF50",
           customClass: { confirmButton: "text-white" },
         });
+  
+        // Actualiza la lista de cursos asignados después de la asignación
+        setPg1Disabled(payload.course_id === 1 || pg1Disabled);
+        setPg2Disabled(payload.course_id === 2 || pg2Disabled);
+        setIsButtonDisabled(pg1Disabled && pg2Disabled);
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "Selección inválida",
+          text: "Por favor, seleccione solo un curso a la vez para asignar.",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#F59E0B",
+          customClass: { confirmButton: "text-white" },
+        });
       }
     } catch (error: any) {
-      // Limpiar los checkboxes no bloqueados en caso de error
-      if (!pg1Disabled) setPg1(false); // Desmarcar pg1 si no está bloqueado
-      if (!pg2Disabled) setPg2(false); // Desmarcar pg2 si no está bloqueado
-
       Swal.fire({
         icon: "error",
         title: "Error en la asignación",
@@ -92,7 +102,7 @@ const AsignarPG: React.FC = () => {
         customClass: { confirmButton: "text-white" },
       });
     }
-  };
+  };  
 
   // Función para iniciar el recorrido
   const startTour = () => {

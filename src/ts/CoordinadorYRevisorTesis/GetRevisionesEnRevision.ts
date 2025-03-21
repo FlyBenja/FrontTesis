@@ -10,15 +10,16 @@ interface Revision {
     name: string;               // Name of the student
     carnet: string;             // Carnet (ID) of the student
   };
+  assignedReviews: Array<{ assigned_review_id: number; user_id: number }>; // Assigned reviews with reviewer IDs
   approvalThesis: {
     status: string;             // Status of the thesis approval
   };
 }
 
-// Function to fetch pending thesis revisions
-export const getRevisionesPendientes = async (
+// Function to fetch thesis revisions in review
+export const getRevisionesEnRevision = async (
   order: string = 'asc',        // Order of the results ('asc' or 'desc')
-  carnet?: string               // Optional carnet filter for the student
+  carnet: string                // Carnet filter for the student (mandatory)
 ): Promise<Revision[]> => {
   try {
     // Retrieve the authentication token from localStorage
@@ -28,12 +29,9 @@ export const getRevisionesPendientes = async (
     }
 
     // Build the URL with the query parameters
-    let url = `http://localhost:3000/api/revision-thesis/pending?order=${order}`;
-    if (carnet) {
-      url += `&carnet=${carnet}`;
-    }
+    const url = `https://api.onlineproject.online/api/revision-thesis/in-review?order=${order}&carnet=${carnet}`;
 
-    // Make the GET request to the specified URL to fetch the pending revisions
+    // Make the GET request to the specified URL to fetch the thesis revisions in review
     const response = await axios.get(url, {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the authorization token in the request headers
@@ -53,6 +51,7 @@ export const getRevisionesPendientes = async (
           name: revision.User.name,                       // Assign the student's name
           carnet: revision.User.carnet,                   // Assign the student's carnet (ID)
         },
+        assignedReviews: revision.AssignedReviews,        // Assign the assigned reviews (reviewers)
         approvalThesis: {
           status: revision.ApprovalThesis.status,        // Assign the thesis approval status
         },
@@ -60,7 +59,7 @@ export const getRevisionesPendientes = async (
     }
 
     // If the response does not contain valid data, throw an error
-    throw new Error('La respuesta no contiene datos de revisiones pendientes válidos.');
+    throw new Error('La respuesta no contiene datos de revisiones en revisión válidos.');
   } catch (error) {
     // Enhanced error handling
     if (axios.isAxiosError(error)) {

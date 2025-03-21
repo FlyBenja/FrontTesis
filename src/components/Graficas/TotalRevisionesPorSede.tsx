@@ -1,7 +1,7 @@
 import { ApexOptions } from 'apexcharts';
 import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { getRevisionesPorSede } from '../../ts/CoordinadorTesis/RevisionesPorSede';
+import { getRevisionesPorSede } from '../../ts/CoordinadorYRevisorTesis/RevisionesPorSede';
 
 const options: ApexOptions = {
   legend: {

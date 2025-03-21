@@ -2,7 +2,7 @@ import type React from "react"
 import { useState, useEffect, useCallback } from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { useNavigate } from "react-router-dom"
-import { getRevisionesCordinador } from "../../ts/CoordinadorTesis/GetRevisionesCordinador"
+import { getRevisionesCordinador } from "../../ts/CoordinadorYRevisorTesis/GetRevisionesCordinador"
 import { getDatosPerfil } from "../../ts/Generales/GetDatsPerfil"
 
 const MisAsignaciones: React.FC = () => {

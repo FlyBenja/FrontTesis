@@ -158,7 +158,11 @@ function App() {
 
         {role === 7 && (  // Revisor
           <>
-            <Route path="revision-estudiante" element={<RevisionEstudiante />} />
+            <Route path="mis-asignaciones" element={<MisAsignaciones />} />
+            <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
+            <Route path="mis-asignaciones/detalle-comentario" element={<MisAsignacionesDetalleComentarios />} />
+            <Route path="historial" element={<Historial />} />
+            <Route path="historial/detalle" element={<HistorialDetalle />} />
           </>
         )}
 

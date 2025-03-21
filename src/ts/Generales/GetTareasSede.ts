@@ -28,7 +28,7 @@ export const getTareasSede = async (
 
     // Make the GET request to the API URL with the `sedeId` and `year` parameters
     const response = await axios.get(
-      `http://localhost:3000/api/tareas/${sedeId}/${year}`,
+      `https://api.onlineproject.online/api/tareas/${sedeId}/${year}`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,  // Add the token in the authorization header

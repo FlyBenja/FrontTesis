@@ -17,7 +17,7 @@ export const deleteAdmin = async (userId: number): Promise<ResponseMessage> => {
 
     // Make the PUT request to the API endpoint to remove the admin
     const response = await axios.put(
-      'http://localhost:3000/api/admin/remove',  // API endpoint for removing the admin
+      'https://api.onlineproject.online/api/admin/remove',  // API endpoint for removing the admin
       {
         user_id: userId,  // The ID of the user to be removed
       },

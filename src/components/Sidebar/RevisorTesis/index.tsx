@@ -62,7 +62,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-        <NavLink to="/coordinadortesis/grafica">
+        <NavLink to="/revisortesis/mis-asignaciones">
           <img src={Logo} alt="Logo" />
         </NavLink>
 
@@ -101,38 +101,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
             <ul className="mb-6 flex flex-col gap-1.5">
 
-              {/* <!-- Menu Item Graficas --> */}
-              <li>
-                <NavLink
-                  to="/coordinadortesis/grafica"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
-                    'bg-graydark dark:bg-meta-4'
-                    }`}
-                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
-                >
-                  <svg
-                    className="fill-current"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Inicio
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Graficas --> */}
-
               {/* <!-- Menu Item Mis Asignaciones --> */}
               <li>
                 <NavLink
-                  to="/coordinadortesis/mis-asignaciones"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                  to="/revisortesis/mis-asignaciones"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/revisortesis/mis-asignaciones' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -155,89 +128,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Mis Asignaciones --> */}
 
-              {/* <!-- Menu Item Solicitudes de Revisión --> */}
-              <li>
-                <NavLink
-                  to="/coordinadortesis/solicitud-revisiones"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
-                    'bg-graydark dark:bg-meta-4'
-                    }`}
-                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
-                >
-                  <svg
-                    className="fill-current"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 2H15L20 7V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2H9ZM14 3.5V8H18.5L14 3.5ZM12 12C13.1 12 14 11.1 14 10C14 8.9 13.1 8 12 8C10.9 8 10 8.9 10 10C10 11.1 10.9 12 12 12ZM12 14C9.79 14 8 15.79 8 18C8 18.71 8.19 19.38 8.51 19.98L7.11 21.39C6.6 21.9 6.93 23 7.7 23H16.3C17.07 23 17.4 21.9 16.89 21.39L15.49 19.98C15.81 19.38 16 18.71 16 18C16 15.79 14.21 14 12 14Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Solicitudes de Revisión
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Solicitudes de Revisión --> */}
-
-              {/* <!-- Menu Item Asignaciones Activas --> */}
-              <li>
-                <NavLink
-                  to="/cordincoordinadortesisador/asignaciones"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
-                    'bg-graydark dark:bg-meta-4'
-                    }`}
-                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
-                >
-                  <svg
-                    className="fill-current"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M4 4H14L20 10V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V4ZM14 3.5V9H19.5L14 3.5ZM10.293 14.293L8.586 12.586C8.195 12.195 7.562 12.195 7.171 12.586C6.781 12.976 6.781 13.609 7.171 14L9.586 16.414C9.976 16.805 10.609 16.805 11 16.414L16.829 10.586C17.219 10.195 17.219 9.562 16.829 9.171C16.438 8.781 15.805 8.781 15.414 9.171L10.293 14.293Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Asignaciones
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Asignaciones Activas --> */}
-              {/* <!-- Menu Item Revisores --> */}
-              <li>
-                <NavLink
-                  to="/cordcoordinadortesisinador/revisores"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' && 'bg-graydark dark:bg-meta-4'}`}
-                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
-                >
-                  <svg
-                    className="fill-current"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C8.13 14 4 15.34 4 17V18H20V17C20 15.34 15.87 14 12 14ZM12 6C13.1 6 14 6.9 14 8C14 9.1 13.1 10 12 10C10.9 10 10 9.1 10 8C10 6.9 10.9 6 12 6Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Revisores
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Revisores --> */}
-
               {/* <!-- Menu Item Historial --> */}
               <li>
                 <NavLink
-                  to="/cordinacoordinadortesisdor/historial"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                  to="/revisortesis/historial"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/revisortesis/historial' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar

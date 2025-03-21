@@ -21,7 +21,7 @@ export const crearAsignacionSedeCurso = async (
     }
 
     // Make the POST request to create the assignment
-    await axios.post('http://localhost:3000/api/crearAsignacionSedeCurso', payload, {
+    await axios.post('https://api.onlineproject.online/api/crearAsignacionSedeCurso', payload, {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
         'Content-Type': 'application/json',  // Set content type to JSON

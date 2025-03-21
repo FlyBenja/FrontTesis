@@ -25,7 +25,7 @@ export const getComisiones = async (
 
     // Make the GET request to the API with the 'sedeId' and 'year' as query parameters
     const response = await axios.get(
-      `http://localhost:3000/api/group-comision?sede_id=${sedeId}&year=${year}`, // API endpoint with parameters
+      `https://api.onlineproject.online/api/group-comision?sede_id=${sedeId}&year=${year}`, // API endpoint with parameters
       {
         headers: {
           'Authorization': `Bearer ${token}`,  // Include the authentication token in the request headers

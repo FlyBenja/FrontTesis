@@ -34,7 +34,7 @@ export const getComentarios = async (task_id: number, user_id: number): Promise<
 
     // Make a GET request to the specified URL, passing task_id and user_id
     const response = await axios.get(
-      `http://localhost:3000/api/comments/${task_id}/user/${user_id}`,
+      `https://api.onlineproject.online/api/comments/${task_id}/user/${user_id}`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,
