@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; 
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil'; 
 import { subirPropuesta } from '../../ts/Estudiantes/SubirPropuestas'; 
+import { updatePropuesta } from '../../ts/Estudiantes//UpdatePropuesta'; 
 import { getPropuesta } from '../../ts/Generales/GetPropuesta'; 
 import { getTareasSede, Tarea } from '../../ts/Generales/GetTareasSede'; 
 
@@ -136,51 +137,67 @@ const Propuesta: React.FC = () => {
       });
       return;
     }
-
-    setLoading(true); // Set loading state to true while uploading
-
+  
+    setLoading(true);
+  
     try {
-      const perfilData = await getDatosPerfil(); // Fetch profile data again to get the user_id
+      const perfilData = await getDatosPerfil();
       const user_id = perfilData?.user_id;
-
       if (!user_id) {
-        throw new Error('No se pudo recuperar el ID del usuario. Por favor, inténtalo más tarde.');
+        throw new Error('No se pudo recuperar el ID del usuario.');
       }
-
-      await subirPropuesta({
-        file: pdfFile, // File to be uploaded
-        user_id, // User ID for the proposal submission
-        task_id: taskId!, // Task ID for the proposal
-      });
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Propuesta subida exitosamente',
-        text: 'Tu propuesta ha sido subida correctamente.',
-        confirmButtonText: 'OK',
-        customClass: {
-          confirmButton: 'bg-green-600 text-white',
-        },
-      });
-
-      setPdfFile(null); // Reset file state after successful upload
-      setPdfUrl(null); // Reset file URL state after successful upload
-
-      fetchPropuesta(user_id); // Re-fetch proposal data after uploading
+  
+      const propuestaExistente = await getPropuesta(user_id);
+      
+      if (propuestaExistente && propuestaExistente.approved_proposal === 0) {
+        await updatePropuesta({
+          file: pdfFile,
+          thesisSubmissions_id: propuestaExistente.thesisSubmissions_id,
+          user_id,
+        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Propuesta actualizada exitosamente',
+          text: 'Tu propuesta ha sido actualizada correctamente.',
+          confirmButtonText: 'OK',
+          customClass: {
+            confirmButton: 'bg-green-600 text-white',
+          },
+        });
+      } else {
+        await subirPropuesta({
+          file: pdfFile,
+          user_id,
+          task_id: taskId!,
+        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Propuesta subida exitosamente',
+          text: 'Tu propuesta ha sido subida correctamente.',
+          confirmButtonText: 'OK',
+          customClass: {
+            confirmButton: 'bg-green-600 text-white',
+          },
+        });
+      }
+  
+      setPdfFile(null);
+      setPdfUrl(null);
+      fetchPropuesta(user_id);
     } catch (error: any) {
       Swal.fire({
         icon: 'error',
         title: 'Error al subir',
-        text: error.response?.data?.message || error.message || 'Error al subir la propuesta',
+        text: error.response?.data?.message || error.message || 'Error al procesar la propuesta',
         confirmButtonText: 'OK',
         customClass: {
           confirmButton: 'bg-red-600 text-white',
         },
       });
     } finally {
-      setLoading(false); // Reset loading state after upload attempt
+      setLoading(false);
     }
-  };
+  };  
 
   // Function to handle the download of the proposal template
   const handleDownloadTemplate = () => {
