@@ -73,7 +73,7 @@ const Header = (props: {
             {/* <!-- Dark Mode Toggler --> */}
 
             {/* <!-- Notification Menu Area --> */}
-            {role !== '4' && <DropdownNotification />}
+            {(role === '1' || role === '3') && <DropdownNotification />}
             {/* <!-- Notification Menu Area --> */}
           </ul>
 
