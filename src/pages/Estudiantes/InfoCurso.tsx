@@ -310,25 +310,6 @@ const InfoCurso: React.FC = () => {
                       disabled={!currentTarea.submission_complete}
                       className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${!currentTarea.submission_complete
                           ? "bg-gray-400 text-white cursor-not-allowed"
-                          : "bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                        }`}
-                    >
-                      Ver capítulo
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        handleNavigateToCapitulo(
-                          currentTarea.task_id,
-                          currentTarea.submission_complete ?? false,
-                          currentTarea.title,
-                          currentTarea.endTask,
-                          currentTarea.endTime,
-                        )
-                      }
-                      disabled={!currentTarea.submission_complete}
-                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${!currentTarea.submission_complete
-                          ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-purple-600 text-white hover:bg-purple-700 transition-colors"
                         }`}
                     >
