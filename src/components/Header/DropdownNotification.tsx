@@ -57,7 +57,6 @@ const DropdownNotification = () => {
 
   // Verificar cambios en localStorage (depuración)
   useEffect(() => {
-    console.log("LocalStorage userRole:", localStorage.getItem('userRole'));
   }, [role]);
 
   // Intervalo para obtener notificaciones cada 5 minutos

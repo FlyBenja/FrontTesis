@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'; 
-import Swal from 'sweetalert2'; 
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; 
-import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil'; 
-import { subirPropuesta } from '../../ts/Estudiantes/SubirPropuestas'; 
-import { updatePropuesta } from '../../ts/Estudiantes//UpdatePropuesta'; 
-import { getPropuesta } from '../../ts/Generales/GetPropuesta'; 
-import { getTareasSede, Tarea } from '../../ts/Generales/GetTareasSede'; 
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
+import { subirPropuesta } from '../../ts/Estudiantes/SubirPropuestas';
+import { updatePropuesta } from '../../ts/Estudiantes//UpdatePropuesta';
+import { getPropuesta } from '../../ts/Generales/GetPropuesta';
+import { getTareasSede, Tarea } from '../../ts/Generales/GetTareasSede';
 
 const Propuesta: React.FC = () => {
   // State declarations
@@ -137,18 +137,18 @@ const Propuesta: React.FC = () => {
       });
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       const perfilData = await getDatosPerfil();
       const user_id = perfilData?.user_id;
       if (!user_id) {
         throw new Error('No se pudo recuperar el ID del usuario.');
       }
-  
+
       const propuestaExistente = await getPropuesta(user_id);
-      
+
       if (propuestaExistente && propuestaExistente.approved_proposal === 0) {
         await updatePropuesta({
           file: pdfFile,
@@ -180,7 +180,7 @@ const Propuesta: React.FC = () => {
           },
         });
       }
-  
+
       setPdfFile(null);
       setPdfUrl(null);
       fetchPropuesta(user_id);
@@ -197,7 +197,7 @@ const Propuesta: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   // Function to handle the download of the proposal template
   const handleDownloadTemplate = () => {
@@ -249,7 +249,7 @@ const Propuesta: React.FC = () => {
                 </h2>
                 <button
                   onClick={handleDownloadTemplate}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-gray-700"
+                  className={`px-4 py-2 rounded-lg text-white ${approvedProposal !== 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-gray-700'}`}
                   disabled={approvedProposal !== 0} // Bloquear si la propuesta está aprobada
                 >
                   Descargar Plantilla
