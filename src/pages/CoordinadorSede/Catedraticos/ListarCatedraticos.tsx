@@ -36,7 +36,7 @@ const ListarCatedraticos: React.FC = () => {
         setMaxPageButtons(5);
       } else {
         // Otherwise, display 5 items per page and 10 page buttons
-        setCatedraticosPerPage(5);
+        setCatedraticosPerPage(10);
         setMaxPageButtons(10);
       }
     };

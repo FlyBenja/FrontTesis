@@ -170,7 +170,7 @@ function App() {
         <Route path="graficas" element={<Graficas />} />
         <Route path="bitacora" element={<Bitacora />} />
         <Route path="perfil" element={<Profile />} />
-        <Route path="configuracion" element={<Settings />} />
+        <Route path="contraseña" element={<Settings />} />
         <Route path="calendario" element={<Calendar />} />
       </Routes>
     </DefaultLayout>

@@ -68,7 +68,7 @@ const Settings = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Configuración" /> {/* "Settings" */}
+      <Breadcrumb pageName="Contraseña" /> {/* "Settings" */}
       <div className="mx-auto max-w-5xl px-4 py-1">
         <div className="grid grid-cols-1 md:grid-cols-1 gap-8 items-stretch">
 

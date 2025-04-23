@@ -91,8 +91,8 @@ const TareasEstudiante: React.FC = () => {
       // If task is not submitted, show a warning and prevent navigation
       if (!tareaEstudiante.submission_complete) {
         Swal.fire({
-          icon: 'error',
-          title: 'Acceso denegado',
+          icon: 'warning',
+          title: 'Aviso',
           text: 'No puedes acceder al capítulo porque la tarea no ha sido entregada por el estudiante.',
           confirmButtonText: 'Entendido',
           customClass: {

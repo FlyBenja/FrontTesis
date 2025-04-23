@@ -35,11 +35,11 @@ const Login: React.FC = () => {
       return;
     }
 
-    if (password.length < 6) {
+    if (password.length < 4) {
       Swal.fire({
         icon: 'error',
         title: 'Contraseña inválida',
-        text: 'La contraseña debe tener al menos 6 caracteres.',
+        text: 'La contraseña debe tener al menos 4 caracteres.',
         confirmButtonColor: '#d33',
       });
       return;

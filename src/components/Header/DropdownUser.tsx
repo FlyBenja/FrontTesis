@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Swal from "sweetalert2";
 import ClickOutside from '../ClickOutside';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 
@@ -20,24 +21,39 @@ const DropdownUser = () => {
               role === '7' ? '/revisortesis/perfil' :
                 '/default/perfil';  // Default in case role doesn't match any
 
-  const settingsLink = role === '1' ? '/estudiantes/configuracion' :
-    role === '2' ? '/catedratico/configuracion' :
-      role === '3' ? '/administrador/configuracion' :
-        role === '4' ? '/coordinadorsede/configuracion' :
-          role === '5' ? '/decano/configuracion' :
-            role === '6' ? '/coordinadortesis/configuracion' :
-              role === '7' ? '/revisortesis/configuracion' :
-                '/default/configuracion';  // Default in case role doesn't match any
-
-  useEffect(() => {
-    getDatosPerfil().then((perfil) => {
-      setUserName(perfil.userName);
-      setRoleName(perfil.roleName);
-      setProfilePhoto(perfil.profilePhoto);
-    });
-  }, []);
+  const settingsLink = role === '1' ? '/estudiantes/contraseña' :
+    role === '2' ? '/catedratico/contraseña' :
+      role === '3' ? '/administrador/contraseña' :
+        role === '4' ? '/coordinadorsede/contraseña' :
+          role === '5' ? '/decano/contraseña' :
+            role === '6' ? '/coordinadortesis/contraseña' :
+              role === '7' ? '/revisortesis/contraseña' :
+                '/default/contraseña';  // Default in case role doesn't match any
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getDatosPerfil()
+      .then((perfil) => {
+        if (!perfil.userName) {
+          throw new Error('Sesión inválida');
+        }
+        setUserName(perfil.userName);
+        setRoleName(perfil.roleName);
+        setProfilePhoto(perfil.profilePhoto);
+      })
+      .catch(() => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Sesión expirada',
+          text: 'Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.',
+          confirmButtonColor: '#d33',
+        }).then(() => {
+          localStorage.clear();
+          navigate('/');
+        });
+      });
+  }, [navigate]);
 
   useEffect(() => {
     if (localStorage.length === 0) {
@@ -59,19 +75,7 @@ const DropdownUser = () => {
   const handleLogout = () => {
     localStorage.clear();
     navigate('/');
-
-    let reloadCount = 0;
-    const reloadPage = () => {
-      if (reloadCount < 3) {
-        reloadCount++;
-        setTimeout(() => {
-          window.location.reload();
-          reloadPage();
-        }, 500); // Agregamos un retraso de 500ms entre recargas
-      }
-    };
-
-    reloadPage();
+    window.location.reload();
   };
 
   return (
@@ -176,7 +180,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                Configuración
+                Contraseña
               </Link>
             </li>
           </ul>

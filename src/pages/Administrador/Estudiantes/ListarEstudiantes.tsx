@@ -224,7 +224,7 @@ const ListarEstudiantes: React.FC = () => {
         setEstudiantesPerPage(8); // Set more students per page on smaller screens
         setMaxPageButtons(5); // Set fewer page buttons
       } else {
-        setEstudiantesPerPage(4); // Set default students per page
+        setEstudiantesPerPage(10); // Set default students per page
         setMaxPageButtons(10); // Set default page buttons
       }
     };

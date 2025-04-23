@@ -40,6 +40,16 @@ const CambiaContra: React.FC = () => {
       return;
     }
 
+    if (newPassword.length < 4) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Contraseña inválida',
+        text: 'La nueva contraseña debe tener al menos 4 caracteres.',
+        confirmButtonColor: '#d33',
+      });
+      return;
+    }
+
     // Retrieve auth token from localStorage
     const token = getAuthToken();
     if (!token) {
