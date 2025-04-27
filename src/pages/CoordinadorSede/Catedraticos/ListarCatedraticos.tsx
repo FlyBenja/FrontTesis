@@ -219,14 +219,14 @@ const ListarCatedraticos: React.FC = () => {
     <>
       <Breadcrumb pageName="Listar Catedráticos" />
       <div className="mx-auto max-w-5xl px-1 py-1">
-        <div className="mb-4 flex items-center space-x-2">
+        <div className="mb-4 flex items-center space-x-2  ">
           <input
             id="search-input"
             type="text"
-            placeholder="Buscar por Código de Catedrático"
+            placeholder="Buscar por Código / Nombre Catedrático"
             value={searchCarnet}
             onChange={(e) => setSearchCarnet(e.target.value)}
-            className="w-72 px-4 py-2 border rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+            className="w-80 px-2 py-2 border rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           />
           <button
             id="search-button"

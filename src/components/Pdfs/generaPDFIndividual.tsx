@@ -103,9 +103,9 @@ const generaPDFIndividual = async (
   doc.text('Email:', 18, 70, { align: 'center' });
 
   doc.setFont('helvetica', 'normal'); // Regresa a texto normal
-  doc.text(student.name, 44, 50, { align: 'center' });
+  doc.text(student.name, 69.5, 50, { align: 'center' });
   doc.text(student.carnet, 40, 60, { align: 'center' });
-  doc.text(student.email, 51, 70, { align: 'center' });
+  doc.text(student.email, 50, 70, { align: 'center' });
 
   // Información del Curso (columna derecha)
   doc.setFontSize(14);
