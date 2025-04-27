@@ -5,7 +5,7 @@ import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { FaTrashAlt, FaUserPlus } from 'react-icons/fa'; 
 import { deleteUserComision } from '../../../ts/CoordinadorSede/DeleteUserComision'; 
 import Swal from 'sweetalert2'; 
-import ListarCatedraticosModal from '../../../components/Modals/AsignaCatedratico/ListarCatedraticosModal'; 
+import ListarCatedraticosModal from '../../../components/Modals/ListarCatedraticosModal'; 
 
 interface Usuario {
   userId: number;

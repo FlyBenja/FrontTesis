@@ -1,12 +1,12 @@
 import React from 'react';
 
-interface SwitcherFourProps {
+interface ActivaCatedraticosProps {
   enabled: boolean;
   onChange: () => void;
   uniqueId: string; // Agregamos un uniqueId para hacer único el id del input
 }
 
-const SwitcherFour: React.FC<SwitcherFourProps> = ({ enabled, onChange, uniqueId }) => {
+const ActivaCatedraticos: React.FC<ActivaCatedraticosProps> = ({ enabled, onChange, uniqueId }) => {
   return (
     <div>
       <label htmlFor={`toggle-${uniqueId}`} className="flex cursor-pointer select-none items-center">
@@ -35,4 +35,4 @@ const SwitcherFour: React.FC<SwitcherFourProps> = ({ enabled, onChange, uniqueId
   );
 };
 
-export default SwitcherFour;
+export default ActivaCatedraticos;

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getComentariosRevision } from "../../ts/CoordinadorYRevisorTesis/GetComentariosRevision"
-import EnviaComentarios from "../../components/Modals/CoordinadorTesis/EnviaComentario"
+import EnviaComentarios from "../../components/Modals/EnviaComentario"
 import { ArrowLeft, Download, CheckCircle, MessageSquare } from "lucide-react"
 
 const RevisionEstudianteCreaComentarios: React.FC = () => {

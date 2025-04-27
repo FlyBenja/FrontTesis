@@ -12,11 +12,15 @@ import Propuestas from './pages/Administrador/Estudiantes/Propuestas';
 import Capitulos from './pages/Administrador/Estudiantes/Capitulos';
 import EnviaRevision from './pages/Administrador/EnviaRevision';
 
+// CoordinadorGeneral
+import CrearSede from './pages/CoordinadorGeneral/CrearSedes';
+import CrearCoordinador from './pages/CoordinadorGeneral/CrearCoordinador';
+
 // Generales
 import Graficas from './pages/Administrador/Inicio/Graficas';
 import Bitacora from './pages/Administrador/Inicio/Bitacora';
 import Profile from './pages/Generales/Profile';
-import Settings from './pages/Generales/Settings';
+import Settings from './pages/Generales/Contraseña';
 import Calendar from './pages/Generales/Calendar';
 import DefaultLayout from './layout/DefaultLayout';
 
@@ -131,12 +135,18 @@ function App() {
           </>
         )}
 
-        {role === 5 && (  // Decano
+        {role === 5 && (  // CoordinadorGeneral
           <>
-            <Route path="grafica" element={<Grafica />} />
-            <Route path="mis-asignaciones" element={<MisAsignaciones />} />
-            <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
-            <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
+            <Route path="crear-sedes" element={<CrearSede />} />
+            <Route path="crear-coordinador" element={<CrearCoordinador />} />
+            <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
+            <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
+            <Route path="time-line" element={<TimeLineAdmin />} />
+            <Route path="tareas-estudiante" element={<TareasEstudiante />} />
+            <Route path="propuestas" element={<Propuestas />} />
+            <Route path="capitulo" element={<Capitulos />} />
+            <Route path="crear-tareas" element={<CrearTareas />} />
+            <Route path="enviar-revisión" element={<EnviaRevision />} />
           </>
         )}
 

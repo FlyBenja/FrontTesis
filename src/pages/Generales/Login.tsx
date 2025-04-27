@@ -53,6 +53,7 @@ const Login: React.FC = () => {
       const rolePaths: { [key: number]: string } = {
         7: "/revisortesis/mis-asignaciones",
         6: "/coordinadortesis/graficas",
+        5: "/coordinadorgeneral/crear-sedes",
         4: "/coordinadorsede/graficas",
         3: "/administrador/graficas",
         1: "/estudiantes/time-line",
@@ -74,7 +75,7 @@ const Login: React.FC = () => {
           text: 'Inicio de sesión exitoso.',
           confirmButtonColor: '#28a745',
         }).then(() => {
-          const validRoles = [1, 3, 4, 6, 7];
+          const validRoles = [1, 3, 4, 5, 6, 7];
           const rolePath = validRoles.includes(response.data.rol)
             ? rolePaths[response.data.rol]
             : "/";

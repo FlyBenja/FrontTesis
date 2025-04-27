@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';  // Importa useNavigate
-import { enviaComentario } from '../../../ts/CoordinadorYRevisorTesis/EnviaComentarios';
+import { enviaComentario } from '../../ts/CoordinadorYRevisorTesis/EnviaComentarios';
 
 interface EnviaComentariosProps {
   onClose: () => void;

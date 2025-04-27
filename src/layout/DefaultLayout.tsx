@@ -5,6 +5,7 @@ import SidebarCoordinadorSede from '../components/Sidebar/CoordinadorSede/index'
 import SidebarEstudiante from '../components/Sidebar/Estudiantes';
 import SidebarCoordinadorTesis from '../components/Sidebar/CoordinadorTesis';
 import SidebarRevisorTesis from '../components/Sidebar/RevisorTesis';
+import SidebarCoordinadorGeneral from '../components/Sidebar/CoordinadorGeneral';
 
 const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -29,6 +30,8 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           <SidebarAdministrador sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : role === 4 ? (
           <SidebarCoordinadorSede sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        ) : role === 5 ? (
+          <SidebarCoordinadorGeneral sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : role === 6 ? (
           <SidebarCoordinadorTesis sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         ) : role === 7 ? (

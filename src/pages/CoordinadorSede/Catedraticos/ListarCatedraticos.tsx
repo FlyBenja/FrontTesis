@@ -3,11 +3,11 @@ import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getCatedraticos } from '../../../ts/CoordinadorSede/GetCatedraticos';
 import { getCatedraticoPorCarnet } from '../../../ts/CoordinadorSede/GetCatedraticosCarnet';
 import { activaUsuario } from '../../../ts/Generales/ActivarUsuario';
-import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import SwitcherFour from '../../../components/Switchers/SwitcherFour';
-import Swal from 'sweetalert2';
 import { driver } from 'driver.js'; // Importa driver.js
 import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import ActivaCatedraticos from '../../../components/Switchers/ActivaCatedraticos';
+import Swal from 'sweetalert2';
 
 // Interface to define the structure of a professor's data
 interface Catedratico {
@@ -287,7 +287,7 @@ const ListarCatedraticos: React.FC = () => {
                     <td className="py-2 px-4 flex justify-end"
                       id='active-switcher'
                     >
-                      <SwitcherFour
+                      <ActivaCatedraticos
                         enabled={cat.active}
                         onChange={() => handleActiveChange(cat.user_id, !cat.active)} // Toggle professor's active status
                         uniqueId={cat.user_id.toString()}

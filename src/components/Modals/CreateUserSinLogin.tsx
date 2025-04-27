@@ -1,45 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { creaRevisor } from '../../../ts/CoordinadorYRevisorTesis/CreaRevisores';
-import { updateRevisor } from '../../../ts/CoordinadorYRevisorTesis/UpdateRevisores';
+import { createUserSinLogin } from '../../ts/Administrador/CreateUserSinLogin';
 
-interface CrearRevisorProps {
+interface CrearUsuarioProps {
   onClose: () => void;
-  revisor?: any | null;
+  usuario?: any | null;
 }
 
-const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
+const ModalCreateUserSinLogin: React.FC<CrearUsuarioProps> = ({ onClose, usuario }) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [carnet, setCarnet] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (revisor) {
-      setEmail(revisor.email || '');
-      setName(revisor.name || '');
-      setCarnet(revisor.carnet || '');
+    if (usuario) {
+      setEmail(usuario.email || '');
+      setName(usuario.name || '');
+      setCarnet(usuario.carnet || '');
     } else {
       setEmail('');
       setName('');
       setCarnet('');
     }
-  }, [revisor]);
+  }, [usuario]);
 
   const handleSave = async () => {
     if (!email || !name || !carnet) return;
     setIsLoading(true);
 
     try {
-      if (revisor) {
-        await updateRevisor(revisor.user_id, { email, name, codigo: carnet });
-      } else {
-        await creaRevisor({ email, name, codigo: carnet });
-      }
-
+      await createUserSinLogin({ email, name, carnet });
+      
       Swal.fire({
         title: 'Éxito',
-        text: `Revisor ${revisor ? 'actualizado' : 'creado'} correctamente`,
+        text: 'Usuario creado correctamente',
         icon: 'success',
         confirmButtonText: 'OK',
         confirmButtonColor: '#28a745',
@@ -68,7 +63,7 @@ const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
           &#10005;
         </button>
         <h2 className="text-xl font-bold mb-6 text-black dark:text-white">
-          {revisor ? 'Editar Revisor' : 'Crear Revisor'}
+          {usuario ? 'Editar Usuario' : 'Crear Usuario'}
         </h2>
 
         <div className="space-y-4">
@@ -91,7 +86,7 @@ const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
               className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nombre del revisor"
+              placeholder="Nombre del usuario"
             />
           </div>
           <div>
@@ -102,7 +97,7 @@ const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
               className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
               value={carnet}
               onChange={(e) => setCarnet(e.target.value)}
-              placeholder="Carnet del revisor"
+              placeholder="Carnet del usuario"
             />
           </div>
         </div>
@@ -122,7 +117,7 @@ const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
             {isLoading ? (
               <div className="animate-spin h-5 w-5 border-t-2 border-white rounded-full mx-auto"></div>
             ) : (
-              revisor ? 'Actualizar' : 'Crear Revisor'
+              usuario ? 'Actualizar' : 'Crear Usuario'
             )}
           </button>
         </div>
@@ -131,4 +126,4 @@ const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
   );
 };
 
-export default CrearRevisor;
+export default ModalCreateUserSinLogin;

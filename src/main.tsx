@@ -48,6 +48,7 @@ root.render(
         <Route path="/administrador/*" element={<App />} />
         <Route path="/coordinadorsede/*" element={<App />} />
         <Route path="/coordinadortesis/*" element={<App />} />
+        <Route path="/coordinadorgeneral/*" element={<App />} />
         <Route path="/revisortesis/*" element={<App />} />
         <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />
         <Route path="/recuperar-contraseña" element={<RecuperarContra />} />

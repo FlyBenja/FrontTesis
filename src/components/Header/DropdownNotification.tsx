@@ -101,13 +101,13 @@ const DropdownNotification = () => {
             <ul className="flex h-auto flex-col overflow-y-auto">
               {notifications.map((notification, index) => (
                 <li key={index}>
-                  <Link className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 cursor-default" to="#">
+                  <div className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 cursor-default">
                     <p className="text-sm text-black dark:text-white">{notification.notification_text}</p>
                     <p className="text-xs">
                       {new Date(notification.notification_date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}{' '}
                       / {new Date(notification.notification_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                     </p>
-                  </Link>
+                  </div>
                 </li>
               ))}
             </ul>

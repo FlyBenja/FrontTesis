@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { asignaRevisor } from '../../../ts/CoordinadorYRevisorTesis/AsignaRevisor';
-import { getRevisores } from '../../../ts/CoordinadorYRevisorTesis/GetRevisores'; // Importar la función para obtener los revisores
+import { asignaRevisor } from '../../ts/CoordinadorYRevisorTesis/AsignaRevisor';
+import { getRevisores } from '../../ts/CoordinadorYRevisorTesis/GetRevisores'; // Importar la función para obtener los revisores
 
 interface AsignaRevisorProps {
   onClose: () => void;

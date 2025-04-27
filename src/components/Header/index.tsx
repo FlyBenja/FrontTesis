@@ -64,6 +64,28 @@ const Header = (props: {
           </Link>
         </div>
 
+        {role === '5' && (
+          <div className="mb-6 w-full max-w-xs">
+            <label
+              htmlFor="sede"
+              className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2"
+            >
+              Seleccione una sede
+            </label>
+            <select
+              id="sede"
+              className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition"
+              defaultValue={1}
+            >
+              {[...Array(10)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  Departamento {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div className="hidden sm:block"></div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import SwitcherFour from '../../components/Switchers/SwitcherFour';
+import ActivaRevisores from '../../components/Switchers/ActivaRevisores';
 import { getRevisores } from '../../ts/CoordinadorYRevisorTesis/GetRevisores';
 import { getDatosPerfil, PerfilData } from "../../ts/Generales/GetDatsPerfil";
 import { activaUsuario } from '../../ts/Generales/ActivarUsuario';
-import CrearRevisor from '../../components/Modals/CoordinadorTesis/CreaRevisor';
+import CrearRevisor from '../../components/Modals/CreaRevisor';
 import Swal from 'sweetalert2';
 
 const Revisores: React.FC = () => {
@@ -187,7 +187,7 @@ const Revisores: React.FC = () => {
                     <button className="px-4 py-2 bg-yellow-300 text-black rounded-md" onClick={() => openModal(revisor)}>
                       Editar
                     </button>
-                    <SwitcherFour
+                    <ActivaRevisores
                       enabled={revisor.active}
                       onChange={() => handleActiveChange(revisor.user_id, !revisor.active)}
                       uniqueId={`revisor-${revisor.user_id}`}
