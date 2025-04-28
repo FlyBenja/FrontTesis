@@ -1,13 +1,13 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 // Importing necessary components
-import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
-import CardDataStats from "../../../components/Cards/CardDataStats.tsx"
-import TareasEstudiantes from "../../../components/Graficas/TareasEstudiantes.tsx"
-import PorcentajeSede from "../../../components/Graficas/PorcentajeSede.tsx"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb.tsx"
+import CardDataStats from "../../components/Cards/CardDataStats.tsx"
+import TareasEstudiantes from "../../components/Graficas/TareasEstudiantes.tsx"
+import PorcentajeSede from "../../components/Graficas/PorcentajeSede.tsx"
 // Importing functions to get data
-import { getDatosPerfil, type PerfilData } from "../../../ts/Generales/GetDatsPerfil"
-import { getStudentsSede } from "../../../ts/Administrador/GetStudentsSede.ts"
+import { getDatosPerfil, type PerfilData } from "../../ts/Generales/GetDatsPerfil.ts"
+import { getStudentsSede } from "../../ts/Administrador/GetStudentsSede.ts"
 
 const Graficas: React.FC = () => {
   // State to store the total number of students, total students per sede, and revision data

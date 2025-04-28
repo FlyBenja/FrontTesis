@@ -193,9 +193,8 @@ const ListarEstudiantes: React.FC = () => {
     <>
       <Breadcrumb pageName="Listar Estudiantes" />
       <div className="mx-auto max-w-5xl px-1 py-1">
-        <div className="mb-4 flex flex-wrap items-center justify-between space-x-2">
-          <div className="flex items-center">
-            {/* Componente de búsqueda separado */}
+        <div className="mb-4 flex flex-wrap items-center space-x-2">
+          <div className="flex items-center flex-grow">
             <BuscadorEstudiantes
               selectedAño={selectedAño}
               selectedCurso={selectedCurso}
@@ -203,17 +202,15 @@ const ListarEstudiantes: React.FC = () => {
             />
           </div>
 
-          {/* Botón para iniciar el recorrido */}
-          <AyudaEstudiantes />
-
-          <div className="flex">
+          <div className="flex items-center space-x-2">
             <button
               id="print-report"
-              className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
               onClick={() => handlePrintPDF(Number(selectedAño), Number(selectedCurso))}
             >
               Imprimir Reporte
             </button>
+            <AyudaEstudiantes />
           </div>
         </div>
 

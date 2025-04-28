@@ -15,6 +15,12 @@ import EnviaRevision from './pages/Administrador/EnviaRevision';
 // CoordinadorGeneral
 import CrearSede from './pages/CoordinadorGeneral/CrearSedes';
 import CrearCoordinador from './pages/CoordinadorGeneral/CrearCoordinador';
+import CrearTareasCor from './pages/CoordinadorGeneral/CrearTareas';
+import ListarEstudiantesCor from './pages/CoordinadorGeneral/Estudiantes/ListarEstudiantes';
+import TimeLineAdminCor from './pages/CoordinadorGeneral/Estudiantes/TimeLine';
+import TareasEstudianteCor from './pages/CoordinadorGeneral/Estudiantes/TareasEstudiante';
+import PropuestasCor from './pages/CoordinadorGeneral/Estudiantes/Propuestas';
+import CapitulosCor from './pages/CoordinadorGeneral/Estudiantes/Capitulos';
 
 // Generales
 import Graficas from './pages/Administrador/Inicio/Graficas';
@@ -139,12 +145,12 @@ function App() {
           <>
             <Route path="crear-sedes" element={<CrearSede />} />
             <Route path="crear-coordinador" element={<CrearCoordinador />} />
-            <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
-            <Route path="time-line" element={<TimeLineAdmin />} />
-            <Route path="tareas-estudiante" element={<TareasEstudiante />} />
-            <Route path="propuestas" element={<Propuestas />} />
-            <Route path="capitulo" element={<Capitulos />} />
-            <Route path="crear-tareas" element={<CrearTareas />} />
+            <Route path="listado-estudiantes" element={<ListarEstudiantesCor />} />
+            <Route path="time-line" element={<TimeLineAdminCor />} />
+            <Route path="tareas-estudiante" element={<TareasEstudianteCor />} />
+            <Route path="propuestas" element={<PropuestasCor />} />
+            <Route path="capitulo" element={<CapitulosCor />} />
+            <Route path="crear-tareas" element={<CrearTareasCor  />} />
             <Route path="historial" element={<Historial />} />
           </>
         )}
