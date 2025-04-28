@@ -4,7 +4,7 @@ import { getPropuesta } from '../../../ts/Generales/GetPropuesta';
 import { aprobarPropuesta } from '../../../ts/Administrador/AprobarPropuesta';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import Swal from 'sweetalert2';
-import AyudaPropuestas from '../../../components/Recorridos/Administrador/AyudaPropuestas';
+import AyudaPropuestas from '../../../components/Recorridos/Administrador/TourPropuestas';
 
 // Define TypeScript interfaces for the expected data structure
 interface Propuesta {

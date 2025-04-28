@@ -1,7 +1,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
-import AyudaSedes from '../../components/Recorridos/CoordinadorGeneral/AyudaSedes';
+import AyudaSedes from '../../components/Recorridos/CoordinadorGeneral/TourSedes';
 import CrearSedes from "../../components/Modals/CrearSede"
 
 // Interface defining the structure of a Sede object

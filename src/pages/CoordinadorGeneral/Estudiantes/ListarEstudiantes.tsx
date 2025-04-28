@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFGeneral from "../../../components/Pdfs/generaPDFGeneral"
 import BuscadorEstudiantes from "../../../components/Searches/BusquedaEstudiantes"
-import AyudaEstudiantes from "../../../components/Recorridos/Administrador/AyudaEstudiantes"
+import AyudaEstudiantes from "../../../components/Recorridos/Administrador/TourEstudiantes"
 
 interface Estudiante {
   id: number

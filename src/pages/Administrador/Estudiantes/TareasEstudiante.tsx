@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { getTareasSede, Tarea } from '../../../ts/Generales/GetTareasSede';
 import {getTareasEstudiante, TareaEstudiante,} from '../../../ts/Estudiantes/GetTareasEstudiante';
-import AyudaTareasEstudiante from '../../../components/Recorridos/Administrador/AyudaTareasEstudiante';
+import AyudaTareasEstudiante from '../../../components/Recorridos/Administrador/TourTareasEstudiante';
 
 const TareasEstudiante: React.FC = () => {
   // React Router hooks to navigate and get the current location

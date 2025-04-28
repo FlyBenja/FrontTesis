@@ -2,7 +2,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { getTimeLineEstudiante } from "../../../ts/Generales/GetTimeLineEstudiante"
-import AyudaTimeLine from '../../../components/Recorridos/Administrador/AyudaTimeLine';
+import AyudaTimeLine from '../../../components/Recorridos/Administrador/TourTimeLine';
 import Swal from "sweetalert2"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFIndividual from "../../../components/Pdfs/generaPDFIndividual"

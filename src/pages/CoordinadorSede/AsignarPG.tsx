@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getDatosPerfil } from "../../ts/Generales/GetDatsPerfil";
 import { getCursos } from "../../ts/Generales/GetCursos";
 import { crearAsignacionSedeCurso } from "../../ts/CoordinadorSede/CreatePG";
-import AyudaAsignarPG from '../../components/Recorridos/CoordinadorSede/AyudaAsignarPG';
+import AyudaAsignarPG from '../../components/Recorridos/CoordinadorSede/TourAsignarPG';
 import Swal from "sweetalert2";
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 

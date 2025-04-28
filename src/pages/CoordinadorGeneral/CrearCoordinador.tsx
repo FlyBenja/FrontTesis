@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import AyudaCoordinador from '../../components/Recorridos/CoordinadorGeneral/AyudaCoordinador';
+import AyudaCoordinador from '../../components/Recorridos/CoordinadorGeneral/TourCoordinador.tsx';
 import ModalCrearCoordinador from '../../components/Modals/CrearCoordinador.tsx'; // Importa el nuevo componente ModalCrearCoordinador
 
 // Interface defining the structure of a Coordinador object

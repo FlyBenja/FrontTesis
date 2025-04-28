@@ -5,7 +5,7 @@ import { getCursos } from '../../ts/Generales/GetCursos';
 import { getYears } from '../../ts/Generales/GetYears';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 import { getTareas } from '../../ts/Generales/GetTareas';
-import AyudaCreaTareas from '../../components/Recorridos/Administrador/AyudaCreaTareas';
+import AyudaCreaTareas from '../../components/Recorridos/Administrador/TourCreaTareas';
 
 // Define the type for a "Tarea" (task) object
 export interface Tarea {

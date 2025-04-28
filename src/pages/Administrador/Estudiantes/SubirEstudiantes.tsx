@@ -4,7 +4,7 @@ import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { getCursos } from '../../../ts/Generales/GetCursos';
 import { getDatosPerfil } from '../../../ts/Generales/GetDatsPerfil';
 import { cargaMasiva } from '../../../ts/Administrador/CargaMasiva';
-import AyudaSubirEstudiantes from '../../../components/Recorridos/Administrador/AyudaSubirEstudiantes';
+import AyudaSubirEstudiantes from '../../../components/Recorridos/Administrador/TourSubirEstudiantes';
 
 // Main component for uploading students
 const SubirEstudiantes = () => {

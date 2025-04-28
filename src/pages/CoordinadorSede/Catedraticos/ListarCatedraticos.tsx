@@ -7,7 +7,7 @@ import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import ActivaCatedraticos from "../../../components/Switchers/ActivaCatedraticos"
 import Swal from "sweetalert2"
 import BusquedaCatedratico from "../../../components/Searches/BusquedaCatedratico"
-import AyudaCatedraticos from "../../../components/Recorridos/CoordinadorSede/AyudaCatedraticos"
+import AyudaCatedraticos from "../../../components/Recorridos/CoordinadorSede/TourCatedraticos"
 
 // Interface to define the structure of a professor's data
 interface Catedratico {

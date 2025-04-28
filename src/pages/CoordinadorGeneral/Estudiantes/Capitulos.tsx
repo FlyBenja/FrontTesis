@@ -5,7 +5,7 @@ import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { enviaComentario } from '../../../ts/Generales/EnviaComentario';
 import { getComentarios, ComentarioData, } from '../../../ts/Generales/GetComentario';
 import { updateComentStats } from '../../../ts/Administrador/UpdateComentStat';
-import AyudaCapitulos from '../../../components/Recorridos/Administrador/AyudaCapitulos';
+import AyudaCapitulos from '../../../components/Recorridos/Administrador/TourCapitulos';
 
 // The interface has been updated to include comment_active
 interface Comentario {

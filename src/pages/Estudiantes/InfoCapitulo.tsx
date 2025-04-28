@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { enviaComentario } from '../../ts/Generales/EnviaComentario';
 import { getComentarios, ComentarioData } from '../../ts/Generales/GetComentario';
 import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
-import AyudaInfoCap from '../../components/Recorridos/Estudiante/AyudaInfoCap';
+import AyudaInfoCap from '../../components/Recorridos/Estudiante/TourInfoCap';
 import Swal from 'sweetalert2';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
