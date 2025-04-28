@@ -26,7 +26,7 @@ const RecuperarContra: React.FC = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();  // Prevent default form submission behavior
-  
+
     // Validate the email before proceeding
     if (!validateEmail(email)) {
       MySwal.fire({
@@ -37,13 +37,13 @@ const RecuperarContra: React.FC = () => {
       });
       return;
     }
-  
+
     setLoading(true);  // Set loading to true while processing the form
-  
+
     try {
       // Llamada a la API para enviar el correo de recuperación
       const successMessage = await recuperaContraCorreo(email);  // Llamada a la API
-      
+
       setLoading(false);  // Reset loading state
       MySwal.fire({
         icon: 'success',
@@ -51,7 +51,7 @@ const RecuperarContra: React.FC = () => {
         text: successMessage,  // Usar el mensaje de éxito de la API
         confirmButtonColor: '#28a745',
       }).then(() => {
-        navigate('/');  // Redirect to homepage after success
+        navigate(-1);  // Redirect to homepage after success
       });
     } catch (error: any) {
       // Handle errors if the email submission fails
@@ -59,7 +59,7 @@ const RecuperarContra: React.FC = () => {
         error?.message ||
         (error.response && error.response.data?.message) ||
         'Ocurrió un error inesperado al intentar recuperar la contraseña.';  // Default error message
-  
+
       setLoading(false);  // Reset loading state
       MySwal.fire({
         icon: 'error',
@@ -68,7 +68,7 @@ const RecuperarContra: React.FC = () => {
         confirmButtonColor: '#d33',
       });
     }
-  };  
+  };
 
   // Handle the "Regresar" button action
   const handleGoBack = () => {

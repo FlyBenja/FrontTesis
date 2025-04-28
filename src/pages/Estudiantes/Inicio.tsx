@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; 
 import { getTimeLineEstudiante } from '../../ts/Generales/GetTimeLineEstudiante'; 
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil'; 
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; 
 
 // Interface for the structure of a timeline event
 interface TimeLineEvent {

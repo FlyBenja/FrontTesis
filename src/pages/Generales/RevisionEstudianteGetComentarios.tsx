@@ -1,11 +1,9 @@
-"use client"
-
-import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getComentariosRevision } from "../../ts/CoordinadorYRevisorTesis/GetComentariosRevision"
 import { ArrowLeft, Download, MessageSquare } from "lucide-react"
+import type React from "react"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 
 const RevisionEstudianteComentarios: React.FC = () => {
   const navigate = useNavigate()

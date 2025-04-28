@@ -1,10 +1,10 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getComentariosRevision } from "../../ts/CoordinadorYRevisorTesis/GetComentariosRevision"
-import EnviaComentarios from "../../components/Modals/EnviaComentario"
 import { ArrowLeft, Download, CheckCircle, MessageSquare } from "lucide-react"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import EnviaComentarios from "../../components/Modals/EnviaComentario"
 
 const RevisionEstudianteCreaComentarios: React.FC = () => {
   const navigate = useNavigate()

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaLock } from 'react-icons/fa';
+import { updatePassword } from '../../ts/Generales/UpdatePassword.ts';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import umgLogo from '../../images/Login/logo3.png';
 import ofiLogo from '../../images/Login/sistemas1_11zon.png';
-import { updatePassword } from '../../ts/Generales/UpdatePassword.ts';
 
 // Initialize SweetAlert with React content
 const MySwal = withReactContent(Swal);

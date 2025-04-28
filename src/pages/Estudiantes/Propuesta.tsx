@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
 import { subirPropuesta } from '../../ts/Estudiantes/SubirPropuestas';
 import { updatePropuesta } from '../../ts/Estudiantes//UpdatePropuesta';
 import { getPropuesta } from '../../ts/Generales/GetPropuesta';
 import { getTareasSede, Tarea } from '../../ts/Generales/GetTareasSede';
+import Swal from 'sweetalert2';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 const Propuesta: React.FC = () => {
   // State declarations

@@ -1,8 +1,8 @@
-import type React from "react"
 import { useState, useEffect, useCallback } from "react"
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { useNavigate } from "react-router-dom"
 import { getRevisionesAprobadas } from "../../ts/CoordinadorYRevisorTesis/GetRevisionesAprobadas" // Importa la API
+import type React from "react"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 
 const Historial: React.FC = () => {
   const navigate = useNavigate()

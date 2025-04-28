@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { getTotalesRevision } from '../../ts/CoordinadorYRevisorTesis/TotalesRevision.ts';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import CardDataStats from '../../components/Cards/CardDataStats.tsx';
 import GraficaPorSede from '../../components/Graficas/TotalRevisionesPorSede.tsx';
-import { getTotalesRevision } from '../../ts/CoordinadorYRevisorTesis/TotalesRevision.ts';
 
 const Graficas: React.FC = () => {
   const [totales, setTotales] = useState({

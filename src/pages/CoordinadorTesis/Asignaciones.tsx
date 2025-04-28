@@ -1,9 +1,9 @@
-import type React from "react";
 import { useState, useEffect, useCallback } from "react";
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { useNavigate } from "react-router-dom";
 import { getRevisionesEnRevision } from "../../ts/CoordinadorYRevisorTesis/GetRevisionesEnRevision";
 import { getDatosPerfil, PerfilData } from "../../ts/Generales/GetDatsPerfil";
+import type React from "react";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 
 const Asignaciones: React.FC = () => {
   const navigate = useNavigate();

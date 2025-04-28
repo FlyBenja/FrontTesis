@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getRevisionDetallePendi } from '../../ts/CoordinadorYRevisorTesis/GetRevisionDetallePendi';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import AsignaRevisor from '../../components/Modals/AsignaRevisor';
-import { getRevisionDetallePendi } from '../../ts/CoordinadorYRevisorTesis/GetRevisionDetallePendi';
 
 const RevisionEstudiante: React.FC = () => {
   const navigate = useNavigate();

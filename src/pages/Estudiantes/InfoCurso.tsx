@@ -1,15 +1,13 @@
-"use client"
-
-import type React from "react"
 import { useState, useEffect } from "react"
-import Swal from "sweetalert2"
 import { useLocation, useNavigate } from "react-router-dom"
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getDatosPerfil } from "../../ts/Generales/GetDatsPerfil"
 import { getTareas } from "../../ts/Generales/GetTareas"
 import { getTareasEstudiante } from "../../ts/Estudiantes/GetTareasEstudiante"
 import { entregarTarea } from "../../ts/Estudiantes/EntregarTarea"
 import { Calendar, Clock, ArrowLeft, ArrowRight, MessageSquare, CheckCircle, XCircle, ChevronLeft } from "lucide-react"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import Swal from "sweetalert2"
+import type React from "react"
 
 const InfoCurso: React.FC = () => {
   const location = useLocation()
@@ -64,6 +62,18 @@ const InfoCurso: React.FC = () => {
       fetchTareas()
     }
   }, [courseId])
+
+  useEffect(() => {
+    Swal.fire({
+      icon: "warning",
+      title: "Aviso",
+      text: "En este apartado, únicamente se debe confirmar la entrega de la tarea, sin que sea necesario cargar ningún archivo.",
+      confirmButtonText: "DE ACUERDO",
+      customClass: {
+        confirmButton: "bg-red-600 text-white",
+      },
+    });
+  }, []);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -186,7 +196,7 @@ const InfoCurso: React.FC = () => {
       <div className="max-w-5xl mx-auto">
         <div className="bg-white dark:bg-boxdark rounded-xl shadow-lg overflow-hidden">
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{courseTitle}</h2>
+            
             <p className="text-gray-500 dark:text-gray-400 mt-1">
               {tareas.length > 0 ? `${tareas.length} tareas disponibles` : "No hay tareas disponibles"}
             </p>

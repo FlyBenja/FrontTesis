@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import { getDatosPerfil } from "../../../ts/Generales/GetDatsPerfil"

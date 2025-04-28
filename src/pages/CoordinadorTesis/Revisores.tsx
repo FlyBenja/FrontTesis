@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import ActivaRevisores from '../../components/Switchers/ActivaRevisores';
 import { getRevisores } from '../../ts/CoordinadorYRevisorTesis/GetRevisores';
 import { getDatosPerfil, PerfilData } from "../../ts/Generales/GetDatsPerfil";
 import { activaUsuario } from '../../ts/Generales/ActivarUsuario';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import ActivaRevisores from '../../components/Switchers/ActivaRevisores';
 import CrearRevisor from '../../components/Modals/CreaRevisor';
 import Swal from 'sweetalert2';
 

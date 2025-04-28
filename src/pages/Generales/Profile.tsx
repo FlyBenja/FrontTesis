@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
+import { updateProfilePhoto } from '../../ts/Generales/PutPhotoProfile';
+import { FaCamera } from 'react-icons/fa';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import userSix from '../../images/user/user-06.png';
 import ofiLogo from '../../images/Login/sistemas1_11zon.png';
-import { FaCamera } from 'react-icons/fa';
-import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
 import Swal from 'sweetalert2';
-import { updateProfilePhoto } from '../../ts/Generales/PutPhotoProfile';
 
 const Profile = () => {
   const [profileImage, setProfileImage] = useState<string>(userSix); // State for profile image
