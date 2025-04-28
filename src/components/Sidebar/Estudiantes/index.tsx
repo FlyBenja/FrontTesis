@@ -105,7 +105,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/estudiantes/time-line"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/estudiantes/time-line' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -132,7 +132,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/estudiantes/propuestas"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/estudiantes/propuestas' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -159,7 +159,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/estudiantes/cursos"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/estudiantes/cursos' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -186,7 +186,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/estudiantes/calendario"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/admin/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/estudiantes/calendario' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar

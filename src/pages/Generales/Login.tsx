@@ -53,7 +53,7 @@ const Login: React.FC = () => {
       const rolePaths: { [key: number]: string } = {
         7: "/revisortesis/mis-asignaciones",
         6: "/coordinadortesis/graficas",
-        5: "/coordinadorgeneral/crear-sedes",
+        5: "/coordinadorgeneral/graficas",
         4: "/coordinadorsede/graficas",
         3: "/administrador/graficas",
         1: "/estudiantes/time-line",

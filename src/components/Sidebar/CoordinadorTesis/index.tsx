@@ -105,7 +105,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/coordinadortesis/graficas"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/graficas' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -132,7 +132,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/coordinadortesis/mis-asignaciones"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/mis-asignaciones' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -159,15 +159,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/coordinadortesis/solicitud-revisiones"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/solicitud-revisiones' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
                 >
                   <svg
                     className="fill-current"
-                    width="24"
-                    height="24"
+                    width="30"
+                    height="30"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -186,7 +186,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/coordinadortesis/asignaciones"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/asignaciones' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -208,11 +208,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
               {/* <!-- Menu Item Asignaciones Activas --> */}
+
               {/* <!-- Menu Item Revisores --> */}
               <li>
                 <NavLink
                   to="/coordinadortesis/revisores"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/calendar' && 'bg-graydark dark:bg-meta-4'}`}
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/revisores' && 'bg-graydark dark:bg-meta-4'}`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
                 >
                   <svg
@@ -237,7 +238,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/coordinadortesis/historial"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/calendar' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/historial' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar

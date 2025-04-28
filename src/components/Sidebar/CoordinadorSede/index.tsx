@@ -412,7 +412,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/coordinadorsede/crea-admin"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/administrador/crear-tareas' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadorsede/crea-admin' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -439,7 +439,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/coordinadorsede/asignapg"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/administrador/crear-tareas' &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadorsede/asignapg' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar

@@ -139,14 +139,13 @@ function App() {
           <>
             <Route path="crear-sedes" element={<CrearSede />} />
             <Route path="crear-coordinador" element={<CrearCoordinador />} />
-            <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
             <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
             <Route path="time-line" element={<TimeLineAdmin />} />
             <Route path="tareas-estudiante" element={<TareasEstudiante />} />
             <Route path="propuestas" element={<Propuestas />} />
             <Route path="capitulo" element={<Capitulos />} />
             <Route path="crear-tareas" element={<CrearTareas />} />
-            <Route path="enviar-revisión" element={<EnviaRevision />} />
+            <Route path="historial" element={<Historial />} />
           </>
         )}
 
