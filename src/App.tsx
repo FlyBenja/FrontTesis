@@ -2,81 +2,81 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-// Administrador
-import CrearTareas from './pages/Administrador/CrearTareas';
-import SubirEstudiantes from './pages/Administrador/Estudiantes/SubirEstudiantes';
-import ListarEstudiantes from './pages/Administrador/Estudiantes/ListarEstudiantes';
-import TimeLineAdmin from './pages/Administrador/Estudiantes/TimeLine';
-import TareasEstudiante from './pages/Administrador/Estudiantes/TareasEstudiante';
-import Propuestas from './pages/Administrador/Estudiantes/Propuestas';
-import Capitulos from './pages/Administrador/Estudiantes/Capitulos';
-import EnviaRevision from './pages/Administrador/EnviaRevision';
+// Administrator
+import CreateTasks from './pages/Administrator/CreateTasks';
+import UploadStudents from './pages/Administrator/Students/UploadStudents';
+import ListStudents from './pages/Administrator/Students/ListStudents';
+import AdminTimeLine from './pages/Administrator/Students/TimeLine';
+import StudentTasks from './pages/Administrator/Students/TasksStudent';
+import Proposals from './pages/Administrator/Students/Proposals';
+import Chapters from './pages/Administrator/Students/Chapters';
+import SubmitReview from './pages/Administrator/SubmitReview';
 
-// CoordinadorGeneral
-import CrearSede from './pages/CoordinadorGeneral/CrearSedes';
-import CrearCoordinador from './pages/CoordinadorGeneral/CrearCoordinador';
-import CrearTareasCor from './pages/CoordinadorGeneral/CrearTareas';
-import ListarEstudiantesCor from './pages/CoordinadorGeneral/Estudiantes/ListarEstudiantes';
-import TimeLineAdminCor from './pages/CoordinadorGeneral/Estudiantes/TimeLine';
-import TareasEstudianteCor from './pages/CoordinadorGeneral/Estudiantes/TareasEstudiante';
-import PropuestasCor from './pages/CoordinadorGeneral/Estudiantes/Propuestas';
-import CapitulosCor from './pages/CoordinadorGeneral/Estudiantes/Capitulos';
+// General Coordinator
+import CreateHeadquarters from './pages/GeneralCoordinator/CreateHeadquarters';
+import CreateCoordinator from './pages/GeneralCoordinator/CreateCoordinator';
+import CreateTasksCoordinator from './pages/GeneralCoordinator/CreateTasks';
+import ListStudentsCoordinator from './pages/GeneralCoordinator/Students/ListStudents';
+import AdminTimeLineCoordinator from './pages/GeneralCoordinator/Students/TimeLine';
+import StudentTasksCoordinator from './pages/GeneralCoordinator/Students/TasksStudent';
+import ProposalsCoordinator from './pages/GeneralCoordinator/Students/Proposals';
+import ChaptersCoordinator from './pages/GeneralCoordinator/Students/Chapters';
 
-// Generales
-import Graficas from './pages/Administrador/Inicio/Graficas';
-import Bitacora from './pages/Administrador/Inicio/Bitacora';
-import Profile from './pages/Generales/Profile';
-import Settings from './pages/Generales/Contraseña';
-import Calendar from './pages/Generales/Calendar';
+// General Pages
+import Graphics from './pages/Administrator/Start/Graphics';
+import Binnacle from './pages/Administrator/Start/Binnacle';
+import Profile from './pages/General/Profile';
+import PasswordSettings from './pages/General/Password';
+import Calendar from './pages/General/Calendar';
 import DefaultLayout from './layout/DefaultLayout';
 
-// Estudiantes
-import Inicio from './pages/Estudiantes/Inicio';
-import Propuesta from './pages/Estudiantes/Propuesta';
-import Cursos from './pages/Estudiantes/Cursos';
-import InfoCurso from './pages/Estudiantes/InfoCurso';
-import InfoCapitulo from './pages/Estudiantes/InfoCapitulo';
+// Student
+import Start from './pages/Students/Start';
+import Proposal from './pages/Students/Proposal';
+import Courses from './pages/Students/Courses';
+import CourseInfo from './pages/Students/CourseInfo';
+import ChapterInfo from './pages/Students/InfoChapter';
 
-// CoordinadorSede
-import SubirCatedraticos from './pages/CoordinadorSede/Catedraticos/SubirCatedraticos';
-import ListarCatedraticos from './pages/CoordinadorSede/Catedraticos/ListarCatedraticos';
-import CrearCatedraticos from './pages/CoordinadorSede/Catedraticos/CrearCatedraticos';
-import CrearComisiones from './pages/CoordinadorSede/Comisiones/CrearComision';
-import ListarComision from './pages/CoordinadorSede/Comisiones/ListarComision';
-import CreaAdmin from './pages/CoordinadorSede/CrearAdmin';
-import AsignaPG from './pages/CoordinadorSede/AsignarPG';
+// Headquarters Coordinator
+import UploadProfessors from './pages/HeadquartersCoordinator/Professors/UploadProfessors';
+import ListProfessors from './pages/HeadquartersCoordinator/Professors/ListProfessors';
+import CreateProfessors from './pages/HeadquartersCoordinator/Professors/CreateProfessors';
+import CreateCommission from './pages/HeadquartersCoordinator/Commissions/CreateCommission';
+import ListCommission from './pages/HeadquartersCoordinator/Commissions/ListCommission';
+import CreateAdmin from './pages/HeadquartersCoordinator/CreateAdmin';
+import AssignPG from './pages/HeadquartersCoordinator/AssignPG';
 
-// CoordinadorTesis
-import Grafica from './pages/CoordinadorTesis/Graficas';
-import MisAsignaciones from './pages/CoordinadorTesis/MisAsignaciones';
-import MisAsignacionesDetalle from './pages/Generales/RevisionEstudianteGetComentarios';
-import MisAsignacionesDetalleComentarios from './pages/Generales/RevisionEstudianteCreaComentarios';
-import SolicitudRevisiones from './pages/CoordinadorTesis/SolicitudRevisiones';
-import RevisionEstudiante from './pages/CoordinadorTesis/RevisionEstudiante';
-import Revisores from './pages/CoordinadorTesis/Revisores';
-import Asignaciones from './pages/CoordinadorTesis/Asignaciones';
-import AsignacionesDetalle from './pages/Generales/RevisionEstudianteGetComentarios';
-import Historial from './pages/CoordinadorTesis/Historial';
-import HistorialDetalle from './pages/Generales/RevisionEstudianteGetComentarios';
+// Thesis Coordinator
+import ThesisGraphics from './pages/ThesisCoordinator/Graphics';
+import MyAssignments from './pages/ThesisCoordinator/MyAssignments';
+import AssignmentDetails from './pages/General/ReviewStudentGetComments';
+import AssignmentCommentDetails from './pages/General/ReviewStudentCreateComments';
+import RequestReviews from './pages/ThesisCoordinator/RequestReviews';
+import StudentReview from './pages/ThesisCoordinator/StudentReview';
+import Reviewers from './pages/ThesisCoordinator/Reviewers';
+import Assignments from './pages/ThesisCoordinator/Assignments';
+import Record from './pages/ThesisCoordinator/Record';
+import RecordDetails from './pages/General/ReviewStudentGetComments';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [role, setRole] = useState<number | null>(null); // Estado para guardar el rol
+  const [role, setRole] = useState<number | null>(null); // State to store the user role
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Scroll to top on route change
     window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {
-    // Verificar si el localStorage está vacío
+    // Check if localStorage is empty
     if (localStorage.length === 0) {
       Swal.fire({
         icon: 'warning',
-        title: 'Acceso denegado',
-        text: 'Favor de iniciar sesión para continuar.',
-        confirmButtonText: 'Entendido',
+        title: 'Access Denied',
+        text: 'Please log in to continue.',
+        confirmButtonText: 'Understood',
         customClass: {
           confirmButton: 'bg-red-600 text-white',
         },
@@ -84,13 +84,14 @@ function App() {
         navigate('/');
       });
     } else {
-      // Asignar el rol desde el localStorage o estado global
+      // Get the role from localStorage
       const storedRole = localStorage.getItem('userRole');
       setRole(storedRole ? parseInt(storedRole) : null);
     }
   }, [navigate]);
 
   useEffect(() => {
+    // Simulate loading delay
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
@@ -99,93 +100,100 @@ function App() {
   return (
     <DefaultLayout>
       <Routes>
-        {role === 1 && (  // Estudiante
+        {/* Student */}
+        {role === 1 && (
           <>
-            <Route path="time-line" element={<Inicio />} />
-            <Route path="propuestas" element={<Propuesta />} />
-            <Route path="cursos" element={<Cursos />} />
-            <Route path="info-curso" element={<InfoCurso />} />
-            <Route path="info-capitulo" element={<InfoCapitulo />} />
+            <Route path="time-line" element={<Start />} />
+            <Route path="propuestas" element={<Proposal />} />
+            <Route path="cursos" element={<Courses />} />
+            <Route path="info-curso" element={<CourseInfo />} />
+            <Route path="info-capitulo" element={<ChapterInfo />} />
           </>
         )}
 
-        {role === 2 && (  // Catedrático
+        {/* Professor */}
+        {role === 2 && (
           <>
-            <Route path="propuestas" element={<Propuestas />} />
-            <Route path="capitulo" element={<Capitulos />} />
+            <Route path="propuestas" element={<Proposals />} />
+            <Route path="capitulo" element={<Chapters />} />
           </>
         )}
 
-        {role === 3 && (  // Administrador
+        {/* Administrator */}
+        {role === 3 && (
           <>
-            <Route path="subir-estudiantes" element={<SubirEstudiantes />} />
-            <Route path="listado-estudiantes" element={<ListarEstudiantes />} />
-            <Route path="time-line" element={<TimeLineAdmin />} />
-            <Route path="tareas-estudiante" element={<TareasEstudiante />} />
-            <Route path="propuestas" element={<Propuestas />} />
-            <Route path="capitulo" element={<Capitulos />} />
-            <Route path="crear-tareas" element={<CrearTareas />} />
-            <Route path="enviar-revisión" element={<EnviaRevision />} />
+            <Route path="subir-estudiantes" element={<UploadStudents />} />
+            <Route path="listado-estudiantes" element={<ListStudents />} />
+            <Route path="time-line" element={<AdminTimeLine />} />
+            <Route path="tareas-estudiante" element={<StudentTasks />} />
+            <Route path="propuestas" element={<Proposals />} />
+            <Route path="capitulo" element={<Chapters />} />
+            <Route path="crear-tareas" element={<CreateTasks />} />
+            <Route path="enviar-revisión" element={<SubmitReview />} />
           </>
         )}
 
-        {role === 4 && (  // CoordinadorSede
+        {/* Headquarters Coordinator */}
+        {role === 4 && (
           <>
-            <Route path="subir-catedraticos" element={<SubirCatedraticos />} />
-            <Route path="listado-catedraticos" element={<ListarCatedraticos />} />
-            <Route path="crear-catedraticos" element={<CrearCatedraticos />} />
-            <Route path="crear-comision" element={<CrearComisiones />} />
-            <Route path="listado-comision" element={<ListarComision />} />
-            <Route path="crea-admin" element={<CreaAdmin />} />
-            <Route path="asignapg" element={<AsignaPG />} />
+            <Route path="subir-catedraticos" element={<UploadProfessors />} />
+            <Route path="listado-catedraticos" element={<ListProfessors />} />
+            <Route path="crear-catedraticos" element={<CreateProfessors />} />
+            <Route path="crear-comision" element={<CreateCommission />} />
+            <Route path="listado-comision" element={<ListCommission />} />
+            <Route path="crea-admin" element={<CreateAdmin />} />
+            <Route path="asignapg" element={<AssignPG />} />
           </>
         )}
 
-        {role === 5 && (  // CoordinadorGeneral
+        {/* General Coordinator */}
+        {role === 5 && (
           <>
-            <Route path="crear-sedes" element={<CrearSede />} />
-            <Route path="crear-coordinador" element={<CrearCoordinador />} />
-            <Route path="listado-estudiantes" element={<ListarEstudiantesCor />} />
-            <Route path="time-line" element={<TimeLineAdminCor />} />
-            <Route path="tareas-estudiante" element={<TareasEstudianteCor />} />
-            <Route path="propuestas" element={<PropuestasCor />} />
-            <Route path="capitulo" element={<CapitulosCor />} />
-            <Route path="crear-tareas" element={<CrearTareasCor  />} />
-            <Route path="historial" element={<Historial />} />
+            <Route path="crear-sedes" element={<CreateHeadquarters />} />
+            <Route path="crear-coordinador" element={<CreateCoordinator />} />
+            <Route path="listado-estudiantes" element={<ListStudentsCoordinator />} />
+            <Route path="time-line" element={<AdminTimeLineCoordinator />} />
+            <Route path="tareas-estudiante" element={<StudentTasksCoordinator />} />
+            <Route path="propuestas" element={<ProposalsCoordinator />} />
+            <Route path="capitulo" element={<ChaptersCoordinator />} />
+            <Route path="crear-tareas" element={<CreateTasksCoordinator />} />
+            <Route path="historial" element={<Record />} />
           </>
         )}
 
-        {role === 6 && (  // CoordinadorTesis
+        {/* Thesis Coordinator */}
+        {role === 6 && (
           <>
-            <Route path="graficas" element={<Grafica />} />
-            <Route path="mis-asignaciones" element={<MisAsignaciones />} />
-            <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
-            <Route path="mis-asignaciones/detalle-comentario" element={<MisAsignacionesDetalleComentarios />} />
-            <Route path="solicitud-revisiones" element={<SolicitudRevisiones />} />
-            <Route path="revision-estudiante" element={<RevisionEstudiante />} />
-            <Route path="revisores" element={<Revisores />} />
-            <Route path="asignaciones" element={<Asignaciones />} />
-            <Route path="asignaciones/detalle" element={<AsignacionesDetalle />} />
-            <Route path="historial" element={<Historial />} />
-            <Route path="historial/detalle" element={<HistorialDetalle />} />
+            <Route path="graficas" element={<ThesisGraphics />} />
+            <Route path="mis-asignaciones" element={<MyAssignments />} />
+            <Route path="mis-asignaciones/detalle" element={<AssignmentDetails />} />
+            <Route path="mis-asignaciones/detalle-comentario" element={<AssignmentCommentDetails />} />
+            <Route path="solicitud-revisiones" element={<RequestReviews />} />
+            <Route path="revision-estudiante" element={<StudentReview />} />
+            <Route path="revisores" element={<Reviewers />} />
+            <Route path="asignaciones" element={<Assignments />} />
+            <Route path="asignaciones/detalle" element={<AssignmentDetails />} />
+            <Route path="historial" element={<Record />} />
+            <Route path="historial/detalle" element={<RecordDetails />} />
           </>
         )}
 
-        {role === 7 && (  // Revisor
+        {/* Reviewer */}
+        {role === 7 && (
           <>
-            <Route path="mis-asignaciones" element={<MisAsignaciones />} />
-            <Route path="mis-asignaciones/detalle" element={<MisAsignacionesDetalle />} />
-            <Route path="mis-asignaciones/detalle-comentario" element={<MisAsignacionesDetalleComentarios />} />
-            <Route path="historial" element={<Historial />} />
-            <Route path="historial/detalle" element={<HistorialDetalle />} />
+            <Route path="mis-asignaciones" element={<MyAssignments />} />
+            <Route path="mis-asignaciones/detalle" element={<AssignmentDetails />} />
+            <Route path="mis-asignaciones/detalle-comentario" element={<AssignmentCommentDetails />} />
+            <Route path="historial" element={<Record />} />
+            <Route path="historial/detalle" element={<RecordDetails />} />
           </>
         )}
 
-        {/* General Links */}
-        <Route path="graficas" element={<Graficas />} />
-        <Route path="bitacora" element={<Bitacora />} />
+        {/* General Routes for All Roles */}
+        <Route path="graficas" element={<Graphics />} />
+        <Route path="bitacora" element={<Binnacle />} />
         <Route path="perfil" element={<Profile />} />
-        <Route path="contraseña" element={<Settings />} />
+        <Route path="contraseña" element={<PasswordSettings />} />
         <Route path="calendario" element={<Calendar />} />
       </Routes>
     </DefaultLayout>

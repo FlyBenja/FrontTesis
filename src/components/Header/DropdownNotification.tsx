@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../Dark Mode/ClickOutside';
-import { getDatosPerfil, PerfilData } from '../../ts/Generales/GetDatsPerfil';
-import { getNotificationsAdmin } from '../../ts/Administrador/GetNotificationsAdmin';
-import { getNotificationsUser } from '../../ts/Estudiantes/GetNotificationsUser';
+import { getDatosPerfil, PerfilData } from '../../ts/General/GetProfileData';
+import { getNotificationsAdmin } from '../../ts/Administrator/GetNotificationsAdmin';
+import { getNotificationsUser } from '../../ts/Students/GetNotificationsUser';
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import ReactDOM from 'react-dom/client';
 import App from './App';
-import Login from './pages/Generales/Login';
-import CambiaContra from './pages/Generales/CambiaContra';
-import RecuperarContra from './pages/Generales/RecuperarContra';
+import Login from './pages/General/Login';
+import CambiaContra from './pages/General/SwitchAgainst';
+import RecuperarContra from './pages/General/RecoverAgainst';
 import './css/style.css';
 import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';

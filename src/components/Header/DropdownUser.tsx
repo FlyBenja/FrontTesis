@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import ClickOutside from '../Dark Mode/ClickOutside';
-import { getDatosPerfil } from '../../ts/Generales/GetDatsPerfil';
+import { getDatosPerfil } from '../../ts/General/GetProfileData';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

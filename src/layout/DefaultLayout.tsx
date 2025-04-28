@@ -1,11 +1,11 @@
 import React, { useState, ReactNode, useEffect } from 'react';
 import Header from '../components/Header/index';
-import SidebarAdministrador from '../components/Sidebar/Administrador';
-import SidebarCoordinadorSede from '../components/Sidebar/CoordinadorSede/index';
-import SidebarEstudiante from '../components/Sidebar/Estudiantes';
-import SidebarCoordinadorTesis from '../components/Sidebar/CoordinadorTesis';
-import SidebarRevisorTesis from '../components/Sidebar/RevisorTesis';
-import SidebarCoordinadorGeneral from '../components/Sidebar/CoordinadorGeneral';
+import SidebarAdministrador from '../components/Sidebar/Administrator';
+import SidebarCoordinadorSede from '../components/Sidebar/HeadquartersCoordinator/index';
+import SidebarEstudiante from '../components/Sidebar/Students';
+import SidebarCoordinadorTesis from '../components/Sidebar/ThesisCoordinator';
+import SidebarRevisorTesis from '../components/Sidebar/ThesisReviewer';
+import SidebarCoordinadorGeneral from '../components/Sidebar/GeneralCoordinator';
 
 const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
