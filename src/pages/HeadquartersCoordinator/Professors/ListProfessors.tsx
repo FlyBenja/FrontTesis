@@ -148,17 +148,19 @@ const ListarCatedraticos: React.FC = () => {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i) // Return the page numbers as an array
   }
 
-
   return (
     <>
       <Breadcrumb pageName="Listar Catedráticos" />
       <div className="mx-auto max-w-5xl px-1 py-1">
-        <div className="mb-4 flex items-center space-x-2">
-          {/* Componente de búsqueda separado */}
-          <BusquedaCatedratico onSearchResults={handleSearchResults} />
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center space-x-2">
+            <BusquedaCatedratico onSearchResults={handleSearchResults} />
+          </div>
 
           {/* Botón para iniciar el recorrido */}
-          <AyudaCatedraticos />
+          <div className="flex items-center">
+            <AyudaCatedraticos />
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -218,8 +220,8 @@ const ListarCatedraticos: React.FC = () => {
                 key={page}
                 onClick={() => paginate(page)}
                 className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
                   }`}
               >
                 {page}

@@ -1,68 +1,75 @@
-import { driver } from 'driver.js'; // Importa driver.js
-import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import { driver } from 'driver.js'; 
+import 'driver.js/dist/driver.css'; 
 
+/**
+ * This component provides a guided tour for the "Asignar PG" (Assign Graduation Projects) page.
+ * The tour highlights key elements such as selecting a campus, enabling PG I/II checkboxes, and assigning PGs.
+ */
 const AyudaAsignarPG = () => {
-    // Función para iniciar el recorrido
+    /**
+     * Starts the guided tour by initializing the driver.js object and defining the steps.
+     * Each step highlights an element and provides a description to guide the user.
+     */
     const startTour = () => {
         const driverObj = driver({
-            showProgress: true, // Muestra la barra de progreso
-            animate: true, // Habilita animaciones
-            prevBtnText: 'Anterior', // Texto del botón "Anterior"
-            nextBtnText: 'Siguiente', // Texto del botón "Siguiente"
-            doneBtnText: 'Finalizar', // Texto del botón "Finalizar"
-            progressText: 'Paso {{current}} de {{total}}', // Texto de la barra de progreso
+            showProgress: true, // Display progress bar
+            animate: true, // Enable animations
+            prevBtnText: 'Anterior', // Text for the "Previous" button
+            nextBtnText: 'Siguiente', // Text for the "Next" button
+            doneBtnText: 'Finalizar', // Text for the "Done" button
+            progressText: 'Paso {{current}} de {{total}}', // Progress text
         });
 
         driverObj.setSteps([
             {
-                element: '#sede', // ID del campo "Seleccione la sede"
+                element: '#sede', // ID of the "Select Campus" field
                 popover: {
-                    title: 'Seleccionar Sede',
-                    description: 'Aquí debes seleccionar la sede a la que deseas asignar los proyectos de graduación (PG).',
+                    title: 'Seleccionar Sede', // Title for the "Select Campus" step
+                    description: 'Aquí debes seleccionar la sede a la que deseas asignar los proyectos de graduación (PG).', // Description for the "Select Campus" step
                     side: 'bottom',
                     align: 'start',
                 },
             },
             {
-                element: '#pg1', // ID del checkbox "PG1"
+                element: '#pg1', // ID of the checkbox "PG1"
                 popover: {
-                    title: 'Activar PG I',
-                    description: 'Marca esta casilla si deseas activar el Proyecto de Graduación I (PG I) para la sede seleccionada.',
+                    title: 'Activar PG I', // Title for the "Activate PG I" step
+                    description: 'Marca esta casilla si deseas activar el Proyecto de Graduación I (PG I) para la sede seleccionada.', // Description for the "Activate PG I" step
                     side: 'bottom',
                     align: 'start',
                 },
             },
             {
-                element: '#pg2', // ID del checkbox "PG2"
+                element: '#pg2', // ID of the checkbox "PG2"
                 popover: {
-                    title: 'Activar PG II',
-                    description: 'Marca esta casilla si deseas activar el Proyecto de Graduación II (PG II) para la sede seleccionada.',
+                    title: 'Activar PG II', // Title for the "Activate PG II" step
+                    description: 'Marca esta casilla si deseas activar el Proyecto de Graduación II (PG II) para la sede seleccionada.', // Description for the "Activate PG II" step
                     side: 'bottom',
                     align: 'start',
                 },
             },
             {
-                element: 'button[type="submit"]', // Selector del botón "Asignar"
+                element: 'button[type="submit"]', // Selector for the "Assign" button
                 popover: {
-                    title: 'Asignar PG',
-                    description: 'Haz clic aquí para guardar la asignación de los proyectos de graduación seleccionados.',
+                    title: 'Asignar PG', // Title for the "Assign PG" step
+                    description: 'Haz clic aquí para guardar la asignación de los proyectos de graduación seleccionados.', // Description for the "Assign PG" step
                     side: 'top',
                     align: 'start',
                 },
             },
         ]);
 
-        driverObj.drive(); // Inicia el recorrido
+        driverObj.drive(); // Start the tour
     };
 
     return (
         <>
             <div>
-                {/* Botón para iniciar los recorridos */}
+                {/* Button to start the guided tour */}
                 <button
                     onClick={startTour}
                     className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"
-                    aria-label="Iniciar recorrido guiado"
+                    aria-label="Iniciar recorrido guiado" // "Start guided tour"
                 >
                     <svg
                         className="w-5 h-5"
@@ -83,7 +90,7 @@ const AyudaAsignarPG = () => {
                     </svg>
                     {/* Tooltip */}
                     <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-                        Iniciar recorrido de ayuda
+                        Iniciar recorrido de ayuda {/* "Start help tour" */}
                     </span>
                 </button>
             </div>

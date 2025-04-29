@@ -1,56 +1,60 @@
-import React from "react";
-import { driver } from "driver.js"; 
-import "driver.js/dist/driver.css"; 
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 /**
- * AyudaCatedraticos component provides a guided tour for managing professors.
- * It helps users understand how to use the various sections for searching, listing,
- * and activating/deactivating professors.
+ * AyudaSubirCatedratico component
+ * This component renders a help button that launches a guided tour using Driver.js
+ * for assisting users in uploading a professor Excel file.
+ *
+ * The tour highlights:
+ * - The file input element for uploading Excel files
+ * - The confirm upload button
+ * - The template download button
+ *
+ * All tooltips and button texts are in Spanish as per UI requirements.
  *
  */
-const AyudaCatedraticos: React.FC = () => {
+const AyudaSubirCatedratico = () => {
   /**
-   * Starts the guided tour using driver.js
-   * This function configures the tour steps and initiates the tour when called.
+   * Starts the guided tour using Driver.js
+   * It defines the steps and UI targets for the onboarding help system.
    */
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true, // Shows the progress bar
-      animate: true, // Enables animations
-      prevBtnText: "Anterior", // "Previous" button text
-      nextBtnText: "Siguiente", // "Next" button text
-      doneBtnText: "Finalizar", // "Finish" button text
-      progressText: "Paso {{current}} de {{total}}", // Progress text
+      showProgress: true, // Shows progress bar
+      animate: true, // Enables animation between steps
+      prevBtnText: 'Anterior', // "Previous" button text
+      nextBtnText: 'Siguiente', // "Next" button text
+      doneBtnText: 'Finalizar', // "Done" button text
+      progressText: 'Paso {{current}} de {{total}}', // "Step x of y" text
     });
 
-    // Defining the steps of the tour
     driverObj.setSteps([
       {
-        element: "#search-input", // ID of the search input field
+        element: '#file-input', // Element for file input field
         popover: {
-          title: "Buscar Catedrático", // "Search Professor" title
-          description:
-            "Escribe el código del catedrático (mínimo 12 caracteres) para buscarlo automáticamente.", // Description for search field
-          side: "top",
-          align: "start",
+          title: 'Seleccionar Archivo',
+          description: 'Haz clic aquí para seleccionar un archivo Excel (.xls, .xlsx).',
+          side: 'top',
+          align: 'start',
         },
       },
       {
-        element: "#professors-table", // ID of the professors' table
+        element: '#confirm-button', // Element for confirm button
         popover: {
-          title: "Lista de Catedráticos", // "List of Professors" title
-          description: "Aquí se muestran los catedráticos registrados.", // "Here you can see the registered professors."
-          side: "top",
-          align: "start",
+          title: 'Confirmar Subida',
+          description: 'Haz clic aquí para subir el archivo seleccionado.',
+          side: 'top',
+          align: 'start',
         },
       },
       {
-        element: "#active-switcher", // ID of the activation switcher
+        element: '#download-template', // Element for download template button
         popover: {
-          title: "Activar/Desactivar", // "Activate/Deactivate" title
-          description: "Activa o desactiva a un catedrático.", // "Activate or deactivate a professor."
-          side: "top",
-          align: "start",
+          title: 'Descargar Plantilla',
+          description: 'Haz clic aquí para descargar la plantilla de Excel.',
+          side: 'top',
+          align: 'start',
         },
       },
     ]);
@@ -92,4 +96,4 @@ const AyudaCatedraticos: React.FC = () => {
   );
 };
 
-export default AyudaCatedraticos;
+export default AyudaSubirCatedratico;

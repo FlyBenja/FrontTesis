@@ -1,58 +1,65 @@
-import { driver } from 'driver.js'; // Importa driver.js
-import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import { driver } from 'driver.js'; 
+import 'driver.js/dist/driver.css'; 
 
+/**
+ * This component provides a guided tour for the coordinator management interface.
+ * The tour walks the user through the coordinator table, creation button, and deletion functionality.
+ */
 const AyudaCoordinador = () => {
-  // Recorrido del componente principal
+  /**
+   * Starts the guided tour by initializing the driver.js object and defining the steps.
+   * Each step highlights an element and provides a description to guide the user.
+   */
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true,
-      animate: true,
-      prevBtnText: 'Anterior',
-      nextBtnText: 'Siguiente',
-      doneBtnText: 'Finalizar',
-      progressText: 'Paso {{current}} de {{total}}',
+      showProgress: true, // Show progress bar
+      animate: true, // Enable animations
+      prevBtnText: 'Anterior', // Text for the "Previous" button
+      nextBtnText: 'Siguiente', // Text for the "Next" button
+      doneBtnText: 'Finalizar', // Text for the "Done" button
+      progressText: 'Paso {{current}} de {{total}}', // Progress bar text
     });
 
     driverObj.setSteps([
       {
-        element: '#tabla-coordinadores', // ID de la tabla de coordinadores
+        element: '#tabla-coordinadores', // ID of the coordinator table
         popover: {
-          title: 'Tabla de Coordinadores',
-          description: 'Aquí se muestran todos los coordinadores registrados en el sistema.',
+          title: 'Tabla de Coordinadores', // Title for the coordinator table step
+          description: 'Aquí se muestran todos los coordinadores registrados en el sistema.', // Description for the coordinator table step
           side: 'bottom',
           align: 'start',
         },
       },
       {
-        element: '#boton-crear-coordinador', // ID del botón "Crear Coordinador"
+        element: '#boton-crear-coordinador', // ID of the "Create Coordinator" button
         popover: {
-          title: 'Crear Coordinador',
-          description: 'Haz clic aquí para abrir el formulario de creación de un nuevo coordinador.',
+          title: 'Crear Coordinador', // Title for the "Create Coordinator" step
+          description: 'Haz clic aquí para abrir el formulario de creación de un nuevo coordinador.', // Description for the "Create Coordinator" step
           side: 'bottom',
           align: 'start',
         },
       },
       {
-        element: '#delete-coordinador', // Clase de los botones "Eliminar"
+        element: '#delete-coordinador', // Class for the "Delete" buttons
         popover: {
-          title: 'Eliminar Coordinador',
-          description: 'Puedes eliminar un coordinador haciendo clic en el botón "Eliminar" de la fila correspondiente.',
+          title: 'Eliminar Coordinador', // Title for the "Delete Coordinator" step
+          description: 'Puedes eliminar un coordinador haciendo clic en el botón "Eliminar" de la fila correspondiente.', // Description for the "Delete Coordinator" step
           side: 'bottom',
           align: 'start',
         },
       },
     ]);
 
-    driverObj.drive();
+    driverObj.drive(); // Start the tour
   };
 
   return (
     <div>
-      {/* Botón para iniciar los recorridos */}
+      {/* Button to start the guided tour */}
       <button
         onClick={startTour}
         className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"
-        aria-label="Iniciar recorrido guiado"
+        aria-label="Iniciar recorrido guiado" // "Start guided tour"
       >
         <svg
           className="w-5 h-5"
@@ -73,7 +80,7 @@ const AyudaCoordinador = () => {
         </svg>
         {/* Tooltip */}
         <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-          Iniciar recorrido de ayuda
+          Iniciar recorrido de ayuda {/* "Start help tour" */}
         </span>
       </button>
     </div>

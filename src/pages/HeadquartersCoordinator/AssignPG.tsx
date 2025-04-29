@@ -110,7 +110,7 @@ const AsignarPG: React.FC = () => {
         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center">
           {/* Botón para iniciar el recorrido */}
           <AyudaAsignarPG />
-          <h2 className="text-2xl font-bold text-center mb-6 text-black dark:text-white ml-9">Asignar PG1 y PG2 a {sedeNombre}</h2>
+          <h2 className="text-2xl font-bold text-center mb-2 text-black dark:text-white ml-9">Asignar PG1 y PG2 a {sedeNombre}</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

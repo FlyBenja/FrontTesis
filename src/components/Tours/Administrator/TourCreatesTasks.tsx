@@ -1,21 +1,29 @@
-import { driver } from 'driver.js'; // Importa driver.js
-import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import { driver } from 'driver.js'; 
+import 'driver.js/dist/driver.css'; 
 
+/**
+ * `AyudaTareas` is a React functional component that provides a guided tour for a task management page.
+ * It allows users to see the step-by-step guidance for various task-related actions on the page.
+ * 
+ */
 const AyudaTareas = () => {
-  // Función para iniciar el recorrido
+  /**
+   * Starts the guided tour by initializing driver.js and setting the steps.
+   * Each step corresponds to a UI element with a popover description to guide the user.
+   */
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true, // Muestra la barra de progreso
-      animate: true, // Habilita animaciones
-      prevBtnText: 'Anterior', // Texto del botón "Anterior"
-      nextBtnText: 'Siguiente', // Texto del botón "Siguiente"
-      doneBtnText: 'Finalizar', // Texto del botón "Finalizar"
-      progressText: 'Paso {{current}} de {{total}}', // Texto de la barra de progreso
+      showProgress: true, // Show the progress bar
+      animate: true, // Enable animations
+      prevBtnText: 'Anterior', // Text for the "Previous" button
+      nextBtnText: 'Siguiente', // Text for the "Next" button
+      doneBtnText: 'Finalizar', // Text for the "Finish" button
+      progressText: 'Paso {{current}} de {{total}}', // Progress bar text
     });
 
     driverObj.setSteps([
       {
-        element: '#year-select', // ID del campo de selección de año
+        element: '#year-select', // ID of the year selection field
         popover: {
           title: 'Seleccionar Año',
           description: 'Selecciona el año para el cual deseas ver las tareas.',
@@ -24,7 +32,7 @@ const AyudaTareas = () => {
         },
       },
       {
-        element: '#curso-select', // ID del campo de selección de curso
+        element: '#curso-select', // ID of the course selection field
         popover: {
           title: 'Seleccionar Curso',
           description: 'Selecciona el curso para el cual deseas ver las tareas.',
@@ -33,7 +41,7 @@ const AyudaTareas = () => {
         },
       },
       {
-        element: '#crear-tarea-button', // ID del botón "Crear Tarea"
+        element: '#crear-tarea-button', // ID of the "Create Task" button
         popover: {
           title: 'Crear Tarea',
           description: 'Haz clic aquí para crear una nueva tarea.',
@@ -42,7 +50,7 @@ const AyudaTareas = () => {
         },
       },
       {
-        element: '#tareas-list', // ID de la lista de tareas
+        element: '#tareas-list', // ID of the task list
         popover: {
           title: 'Lista de Tareas',
           description: 'Aquí se muestran las tareas creadas.',
@@ -51,7 +59,7 @@ const AyudaTareas = () => {
         },
       },
       {
-        element: '#pagination', // ID de la paginación
+        element: '#pagination', // ID of the pagination component
         popover: {
           title: 'Paginación',
           description: 'Navega entre las páginas de la lista de tareas.',
@@ -61,12 +69,12 @@ const AyudaTareas = () => {
       },
     ]);
 
-    driverObj.drive(); // Inicia el recorrido
+    driverObj.drive(); // Starts the tour
   };
 
   return (
     <div>
-      {/* Botón para iniciar los recorridos */}
+      {/* Button to start the guided tour */}
       <button
         onClick={startTour}
         className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"

@@ -1,64 +1,72 @@
-import { driver } from 'driver.js'; // Importa driver.js
-import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import { driver } from 'driver.js'; 
+import 'driver.js/dist/driver.css'; 
 
+/**
+ * This component provides a guided tour for the "Proposals" page using driver.js.
+ * It walks the user through the main elements like the "Back" button, proposal selection,
+ * approval button, and PDF viewer.
+ */
 const AyudaPropuestas = () => {
-  // Función para iniciar el recorrido
+  /**
+   * Starts the guided tour by setting up the steps for the user.
+   * Each step highlights a specific element and provides a description.
+   */
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true, // Muestra la barra de progreso
-      animate: true, // Habilita animaciones
-      prevBtnText: 'Anterior', // Texto del botón "Anterior"
-      nextBtnText: 'Siguiente', // Texto del botón "Siguiente"
-      doneBtnText: 'Finalizar', // Texto del botón "Finalizar"
-      progressText: 'Paso {{current}} de {{total}}', // Texto de la barra de progreso
+      showProgress: true, // Shows the progress bar
+      animate: true, // Enables animations
+      prevBtnText: 'Anterior', // Text for the "Previous" button
+      nextBtnText: 'Siguiente', // Text for the "Next" button
+      doneBtnText: 'Finalizar', // Text for the "Done" button
+      progressText: 'Paso {{current}} de {{total}}', // Progress bar text
     });
 
     driverObj.setSteps([
       {
-        element: '#back-button', // ID del botón "Regresar"
+        element: '#back-button', // ID of the "Back" button
         popover: {
-          title: 'Regresar',
-          description: 'Haz clic aquí para regresar a la lista de tareas.',
-          side: 'bottom',
-          align: 'start',
+          title: 'Regresar', // Title of the tooltip
+          description: 'Haz clic aquí para regresar a la lista de tareas.', // Tooltip description
+          side: 'bottom', // Tooltip position
+          align: 'start', // Tooltip alignment
         },
       },
       {
-        element: '#select-proposal', // ID de la sección de selección de propuestas
+        element: '#select-proposal', // ID of the proposal selection section
         popover: {
-          title: 'Seleccionar Propuesta',
-          description: 'Aquí puedes seleccionar una propuesta para aprobarla.',
-          side: 'top',
-          align: 'start',
+          title: 'Seleccionar Propuesta', // Title of the tooltip
+          description: 'Aquí puedes seleccionar una propuesta para aprobarla.', // Tooltip description
+          side: 'top', // Tooltip position
+          align: 'start', // Tooltip alignment
         },
       },
       {
-        element: '#approve-button', // ID del botón "Aprobar Propuesta"
+        element: '#approve-button', // ID of the "Approve Proposal" button
         popover: {
-          title: 'Aprobar Propuesta',
-          description: 'Haz clic aquí para aprobar la propuesta seleccionada.',
-          side: 'top',
-          align: 'start',
+          title: 'Aprobar Propuesta', // Title of the tooltip
+          description: 'Haz clic aquí para aprobar la propuesta seleccionada.', // Tooltip description
+          side: 'top', // Tooltip position
+          align: 'start', // Tooltip alignment
         },
       },
       {
-        element: '#pdf-viewer', // ID del visor de PDF
+        element: '#pdf-viewer', // ID of the PDF viewer
         popover: {
-          title: 'Visualización de PDF',
+          title: 'Visualización de PDF', // Title of the tooltip
           description:
-            'Aquí puedes ver el documento PDF de la propuesta seleccionada.',
-          side: 'top',
-          align: 'start',
+            'Aquí puedes ver el documento PDF de la propuesta seleccionada.', // Tooltip description
+          side: 'top', // Tooltip position
+          align: 'start', // Tooltip alignment
         },
       },
     ]);
 
-    driverObj.drive(); // Inicia el recorrido
+    driverObj.drive(); // Starts the tour
   };
 
   return (
     <div>
-      {/* Botón para iniciar los recorridos */}
+      {/* Button to start the guided tour */}
       <button
         onClick={startTour}
         className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"

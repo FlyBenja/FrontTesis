@@ -3,12 +3,11 @@ import { getDatosPerfil, PerfilData } from '../../ts/General/GetProfileData';
 import { updateProfilePhoto } from '../../ts/General/PutPhotoProfile';
 import { FaCamera } from 'react-icons/fa';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import userSix from '../../images/user/user-06.png';
 import ofiLogo from '../../images/Login/sistemas1_11zon.png';
 import Swal from 'sweetalert2';
 
 const Profile = () => {
-  const [profileImage, setProfileImage] = useState<string>(userSix); // State for profile image
+  const [profileImage, setProfileImage] = useState<string>(); // State for profile image
   const [perfilData, setPerfilData] = useState<PerfilData | null>(null); // State for profile data
 
   useEffect(() => {
@@ -57,7 +56,7 @@ const Profile = () => {
         const errorMessage = error?.message || 'Hubo un problema al actualizar la foto de perfil.';
 
         // Restore original profile image if update fails
-        setProfileImage(perfilData?.profilePhoto || userSix);
+        setProfileImage(perfilData?.profilePhoto || ' ');
 
         // Error alert
         Swal.fire({

@@ -3,20 +3,25 @@ import umgLogo from '../../images/Login/logo3.png';
 import { getDetalleTareasGeneral, CourseDetails } from '../../ts/Administrator/GetGeneralTaskDetails';
 import { getDatosPerfil, PerfilData } from '../../ts/General/GetProfileData';
 
+/**
+ * Generates a general report PDF for a specific year and course.
+ * The report includes student task submissions and their completion status.
+ * 
+ */
 const generaPDFGeneral = async (
   selectedAño: number,
   selectedCurso: number
 ) => {
   const doc = new jsPDF();
 
-  // Colores para el fondo y encabezados
+  // Colors for background and headers
   const backgroundColor = { r: 245, g: 245, b: 245 };
   const titleColor = { r: 56, g: 112, b: 255 };
   const headerColor = { r: 56, g: 112, b: 255 };
   const textColor = { r: 0, g: 0, b: 0 };
   const tableRowColor = { r: 240, g: 240, b: 240 };
 
-  // Llamar a la API para obtener los detalles del perfil y la sede
+  // Fetch user profile and campus details via API
   let sede_id: number;
   let Usergenerate: string;
 
@@ -29,7 +34,7 @@ const generaPDFGeneral = async (
     return;
   }
 
-  // Llamar a la API para obtener los detalles del curso y las entregas
+  // Fetch course details and submissions via API
   const courseDetails: CourseDetails | null = await getDetalleTareasGeneral(selectedCurso, sede_id, selectedAño);
 
   if (!courseDetails) {
@@ -39,11 +44,11 @@ const generaPDFGeneral = async (
 
   const { course, sede, students } = courseDetails;
 
-  // Establecer fondo con color suave
+  // Set background with light color
   doc.setFillColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
   doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
 
-  // Agregar el logo en la parte superior izquierda
+  // Add logo at top-left corner
   const logoWidth = 21;
   const logoHeight = 21;
   const logoX = 10;
@@ -51,29 +56,29 @@ const generaPDFGeneral = async (
   const logoBase64 = umgLogo;
   doc.addImage(logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight);
 
-  // Agregar texto de cabecera con color gris claro
+  // Add header text with light gray color
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(200, 200, 200); // Gris claro
+  doc.setTextColor(200, 200, 200); // Light gray
   doc.text(
     'UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)',
     (doc.internal.pageSize.width - doc.getTextWidth('UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)')) / 2,
     15
   );
 
-  // Título del PDF con el nombre del estudiante, centrado
+  // Title of the PDF with student name, centered
   doc.setFontSize(22);
   doc.setTextColor(titleColor.r, titleColor.g, titleColor.b);
   const title = `Reporte de Estudiante`;
   const titleWidth = doc.getTextWidth(title);
   doc.text(title, (doc.internal.pageSize.width - titleWidth) / 2, 25);
 
-  // Línea separadora
+  // Separator line
   doc.setLineWidth(0.5);
   doc.setDrawColor(titleColor.r, titleColor.g, titleColor.b);
   doc.line(10, 30, doc.internal.pageSize.width - 10, 30);
 
-  // Información del Curso en una sola línea
+  // Course information in a single line
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(textColor.r, textColor.g, textColor.b);
@@ -83,50 +88,50 @@ const generaPDFGeneral = async (
   doc.setFont('helvetica', 'normal');
   doc.text(`Curso: ${course} | Sede: ${sede} | Año: ${selectedAño}`, 40, 50);
 
-  // Tabla de tareas entregadas
+  // Task submission table
   const rowHeight = 8;
   const columnWidths = [30, 60, 90];
 
-  let startY = 60; // Comienza a partir de la siguiente línea disponible
-  let studentCount = 1; // Mantener el contador global de estudiantes
+  let startY = 60; // Start from the next available line
+  let studentCount = 1; // Global counter for students
 
   students.forEach((studentDetail) => {
     const { student, submissions } = studentDetail;
 
-    // Determinar el número de estudiantes por página dependiendo de las entregas
+    // Determine the number of students per page depending on submissions
     const studentsPerPage = submissions.length > 3 ? 3 : submissions.length === 1 ? 5 : 4;
 
     if (studentCount > 1 && studentCount % studentsPerPage === 1) {
-      // Crear nueva página cuando se llega al límite de estudiantes por página
+      // Create a new page when the student per page limit is reached
       doc.addPage();
-      startY = 20; // Resetear la posición Y para la nueva página
+      startY = 20; // Reset the Y position for the new page
     }
 
-    // Línea separadora para cada nuevo estudiante
+    // Separator line for each new student
     if (studentCount > 1) {
       doc.setLineWidth(0.5);
       doc.setDrawColor(titleColor.r, titleColor.g, titleColor.b);
       doc.line(10, startY - 7, doc.internal.pageSize.width - 10, startY - 7);
     }
 
-    // Título del Estudiante con el contador
+    // Student title with counter
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(textColor.r, textColor.g, textColor.b);
     doc.text(`No. ${studentCount} - Información del Estudiante`, 70, startY);
 
-    // Información del Estudiante en una sola línea
+    // Student information in a single line
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(textColor.r, textColor.g, textColor.b);
     doc.text(`Nombre: ${student.name} | Carnet: ${student.carnet} | Correo: ${student.email}`, 30, startY + 10);
 
-    // Tabla de tareas entregadas
+    // Task submission table
     const tableStartY = startY + 20;
     doc.setDrawColor(headerColor.r, headerColor.g, headerColor.b);
     doc.setLineWidth(0.5);
 
-    // Encabezado de la tabla
+    // Table header
     doc.setFillColor(headerColor.r, headerColor.g, headerColor.b);
     doc.rect(14, tableStartY, columnWidths[0], rowHeight, 'F');
     doc.rect(44, tableStartY, columnWidths[1], rowHeight, 'F');
@@ -137,7 +142,7 @@ const generaPDFGeneral = async (
     doc.text('Fecha de Entrega', 107, tableStartY + 5);
     doc.text('Completada', 165, tableStartY + 5);
 
-    // Dibujar contenido de la tabla
+    // Draw content of the table
     submissions.forEach((submission, idx) => {
       const yPosition = tableStartY + (idx + 1) * rowHeight;
       const completionStatus = submission.submission_complete ? 'Sí' : 'No';
@@ -147,7 +152,7 @@ const generaPDFGeneral = async (
       doc.rect(44, yPosition, columnWidths[1], rowHeight, 'F');
       doc.rect(104, yPosition, columnWidths[2], rowHeight, 'F');
 
-      // Formatear la fecha de entrega
+      // Format the delivery date
       const deliveryDate = new Date(submission.date);
       const formattedDate = `${deliveryDate.getDate().toString().padStart(2, '0')}/${(
         deliveryDate.getMonth() + 1
@@ -169,11 +174,11 @@ const generaPDFGeneral = async (
       doc.text(completionStatus, 134 + columnWidths[2] / 2, yPosition + 5, { align: 'center' });
     });
 
-    startY = tableStartY + (submissions.length + 1) * rowHeight + 10; // Ajustar el Y para el siguiente estudiante
-    studentCount++; // Incrementar el contador de estudiantes
+    startY = tableStartY + (submissions.length + 1) * rowHeight + 10; // Adjust Y position for next student
+    studentCount++; // Increment student counter
   });
 
-  // Pie de página
+  // Footer
   doc.setFontSize(10);
   doc.setTextColor(150, 150, 150);
   doc.text(
@@ -182,7 +187,7 @@ const generaPDFGeneral = async (
     280
   );
 
-  // Guardar el PDF
+  // Save the PDF
   doc.save(`Reporte_General_Año_${selectedAño}.pdf`);
 };
 

@@ -4,34 +4,47 @@ import Swal from "sweetalert2";
 import ClickOutside from '../Dark Mode/ClickOutside';
 import { getDatosPerfil } from '../../ts/General/GetProfileData';
 
+/**
+ * DropdownUser Component
+ * Displays a dropdown menu with user information (name, role, photo),
+ * allowing navigation to profile, password change, or logout.
+ */
+
 const DropdownUser = () => {
+  // State to control the dropdown opening
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // States to store user data
   const [userName, setUserName] = useState('');
   const [roleName, setRoleName] = useState('');
   const [profilePhoto, setProfilePhoto] = useState<string | null>('');
 
+  // Get the user role stored in localStorage
   const role = localStorage.getItem('userRole');
 
+  // Define the profile route based on the role
   const profileLink = role === '1' ? '/estudiantes/perfil' :
     role === '2' ? '/catedratico/perfil' :
       role === '3' ? '/administrador/perfil' :
         role === '4' ? '/coordinadorsede/perfil' :
-          role === '5' ? '/decano/perfil' :
+          role === '5' ? '/coordinadorgeneral/perfil' :
             role === '6' ? '/coordinadortesis/perfil' :
               role === '7' ? '/revisortesis/perfil' :
-                '/default/perfil';  // Default in case role doesn't match any
+                '/default/perfil';  // Default route if role is not recognized
 
+  // Define the password change route based on the role
   const settingsLink = role === '1' ? '/estudiantes/contraseña' :
     role === '2' ? '/catedratico/contraseña' :
       role === '3' ? '/administrador/contraseña' :
         role === '4' ? '/coordinadorsede/contraseña' :
-          role === '5' ? '/decano/contraseña' :
+          role === '5' ? '/coordinadorgeneral/contraseña' :
             role === '6' ? '/coordinadortesis/contraseña' :
               role === '7' ? '/revisortesis/contraseña' :
-                '/default/contraseña';  // Default in case role doesn't match any
+                '/default/contraseña';  // Default route if role is not recognized
 
   const navigate = useNavigate();
 
+  // Fetch profile data when the component loads
   useEffect(() => {
     getDatosPerfil()
       .then((perfil) => {
@@ -43,6 +56,7 @@ const DropdownUser = () => {
         setProfilePhoto(perfil.profilePhoto);
       })
       .catch(() => {
+        // If fetching profile fails, show alert and redirect to login
         Swal.fire({
           icon: 'error',
           title: 'Sesión expirada',
@@ -55,6 +69,7 @@ const DropdownUser = () => {
       });
   }, [navigate]);
 
+  // Check if localStorage is empty to prevent navigation if there is no session
   useEffect(() => {
     if (localStorage.length === 0) {
       if (window.history && window.history.pushState) {
@@ -65,12 +80,18 @@ const DropdownUser = () => {
       }
     }
 
+    // Cleanup the event when the component unmounts
     return () => {
       window.removeEventListener('popstate', () => {
         navigate('/');
       });
     };
   }, [navigate]);
+
+  /**
+   * Handles the logout process
+   * Clears localStorage, redirects to login, and reloads the page
+   */
 
   const handleLogout = () => {
     localStorage.clear();
@@ -80,9 +101,10 @@ const DropdownUser = () => {
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
+      {/* Button that toggles the menu on click */}
       <Link
         onClick={(e) => {
-          e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+          e.preventDefault(); // Prevent default behavior
           setDropdownOpen(!dropdownOpen);
         }}
         className="flex items-center gap-4"
@@ -90,6 +112,7 @@ const DropdownUser = () => {
         aria-expanded={dropdownOpen ? 'true' : 'false'}
         aria-haspopup="true"
       >
+        {/* Displays the user's name and role */}
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
             {userName}
@@ -98,6 +121,8 @@ const DropdownUser = () => {
             {roleName}
           </span>
         </span>
+
+        {/* Displays the profile photo or user's initial */}
         <span className="h-12 w-12 rounded-full flex items-center justify-center bg-blue-500 text-white">
           {profilePhoto ? (
             <img
@@ -112,6 +137,7 @@ const DropdownUser = () => {
           )}
         </span>
 
+        {/* Arrow icon */}
         <svg
           className="hidden fill-current sm:block"
           width="12"
@@ -128,6 +154,7 @@ const DropdownUser = () => {
         </svg>
       </Link>
 
+      {/* Dropdown menu if it is open */}
       {dropdownOpen && (
         <div
           className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark`}
@@ -138,6 +165,7 @@ const DropdownUser = () => {
                 to={profileLink}
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
+                {/* User icon */}
                 <svg
                   className="fill-current"
                   width="22"
@@ -158,11 +186,14 @@ const DropdownUser = () => {
                 Mi Perfil
               </Link>
             </li>
+
+            {/* Option: Change password */}
             <li>
               <Link
                 to={settingsLink}
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
+                {/* Settings icon */}
                 <svg
                   className="fill-current"
                   width="22"
@@ -184,6 +215,8 @@ const DropdownUser = () => {
               </Link>
             </li>
           </ul>
+
+          {/* Logout button */}
           <button
             onClick={handleLogout}
             className="flex items-center gap-3.5 px-6 py-7.5 text-sm font-medium text-red-500 hover:text-red-700 duration-300 ease-in-out lg:text-base"

@@ -1,82 +1,63 @@
-import { driver } from 'driver.js'; 
-import 'driver.js/dist/driver.css'; 
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 /**
- * AyudaInfoCap component provides a guided tour for the information capture section.
- * It helps users understand how to navigate through various elements like
- * navigating back, viewing comments, and sending new comments.
- *
+ * AyudaCrearAdmin component
+ * 
+ * This component renders a help button that triggers a guided tour
+ * explaining how to manage administrators within the system.
+ * 
  */
-const AyudaInfoCap = () => {
+const AyudaCrearAdmin = () => {
     /**
-     * Starts the guided tour using driver.js.
-     * This function configures the steps and starts the tour when called.
+     * Starts the guided tour for the admin management interface
      */
     const startTour = () => {
         const driverObj = driver({
-            showProgress: true, // Shows the progress bar
-            animate: true, // Enables animations
+            showProgress: true, // Show the progress bar
+            animate: true, // Enable animations
             prevBtnText: 'Anterior', // "Previous" button text
             nextBtnText: 'Siguiente', // "Next" button text
             doneBtnText: 'Finalizar', // "Finish" button text
-            progressText: 'Paso {{current}} de {{total}}', // Progress text
+            progressText: 'Paso {{current}} de {{total}}', // Progress bar text
         });
 
-        // Defining the steps of the tour
         driverObj.setSteps([
             {
-                element: '#back-button', // ID of the "Back" button
+                element: '#tabla-admins', // ID of the administrators table
                 popover: {
-                    title: 'Regresar', // "Back" title
-                    description: 'Haz clic aquí para regresar a la lista de tareas.', // "Click here to go back to the task list."
+                    title: 'Tabla de Administradores',
+                    description: 'Aquí se muestran todos los administradores registrados en el sistema.',
                     side: 'bottom',
                     align: 'start',
                 },
             },
             {
-                element: '#comentarios-previos', // ID of the previous comments section
+                element: '#boton-crear-admin', // ID of the "Create Admin" button
                 popover: {
-                    title: 'Comentarios Previos', // "Previous Comments" title
-                    description: 'Aquí puedes ver los comentarios anteriores sobre la tarea.', // "Here you can see the previous comments on the task."
-                    side: 'top',
+                    title: 'Crear Administrador',
+                    description: 'Haz clic aquí para abrir el formulario de creación de un nuevo administrador.',
+                    side: 'bottom',
                     align: 'start',
                 },
             },
             {
-                element: '#enviar-comentario', // ID of the send comment section
+                element: '#delete-admin', // ID of the "Delete Admin" button
                 popover: {
-                    title: 'Enviar Comentario', // "Send Comment" title
-                    description: 'Aquí puedes escribir y enviar un nuevo comentario.', // "Here you can write and send a new comment."
-                    side: 'top',
-                    align: 'start',
-                },
-            },
-            {
-                element: '#textarea-comentario', // ID of the comment textarea
-                popover: {
-                    title: 'Escribir Comentario', // "Write Comment" title
-                    description: 'Escribe tu comentario en este campo.', // "Write your comment in this field."
-                    side: 'top',
-                    align: 'start',
-                },
-            },
-            {
-                element: '#enviar-button', // ID of the "Send Comment" button
-                popover: {
-                    title: 'Enviar Comentario', // "Send Comment" title
-                    description: 'Haz clic aquí para enviar tu comentario.', // "Click here to send your comment."
-                    side: 'top',
+                    title: 'Eliminar Administrador',
+                    description: 'Puedes eliminar un administrador haciendo clic en el botón "Eliminar" de la fila correspondiente.',
+                    side: 'bottom',
                     align: 'start',
                 },
             },
         ]);
 
-        driverObj.drive(); // Starts the guided tour
+        driverObj.drive(); // Start the guided tour
     };
 
     return (
         <div>
-            {/* Button to start the guided tour */}
+            {/* Button to start the tour */}
             <button
                 onClick={startTour}
                 className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"
@@ -108,4 +89,4 @@ const AyudaInfoCap = () => {
     );
 };
 
-export default AyudaInfoCap;
+export default AyudaCrearAdmin;

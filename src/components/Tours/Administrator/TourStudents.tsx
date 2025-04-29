@@ -1,86 +1,94 @@
 import React from "react";
-import { driver } from "driver.js"; // Importa driver.js
-import "driver.js/dist/driver.css"; // Importa los estilos de driver.js
+import { driver } from "driver.js"; 
+import "driver.js/dist/driver.css"; 
 
+/**
+ * AyudaEstudiantes component provides a guided tour for the student list page.
+ * It highlights key elements like search, filtering, and actions like printing reports.
+ * 
+ */
 const AyudaEstudiantes: React.FC = () => {
-  // Función para iniciar el recorrido
+  /**
+   * Starts the guided tour by initializing driver.js with the desired settings.
+   * The tour will highlight various elements on the page and provide descriptions.
+   */
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true, // Muestra la barra de progreso
-      animate: true, // Habilita animaciones
-      prevBtnText: "Anterior", // Texto del botón "Anterior"
-      nextBtnText: "Siguiente", // Texto del botón "Siguiente"
-      doneBtnText: "Finalizar", // Texto del botón "Finalizar"
-      progressText: "Paso {{current}} de {{total}}", // Texto de la barra de progreso
+      showProgress: true, // Show progress bar
+      animate: true, // Enable animations
+      prevBtnText: "Anterior", // Previous button text
+      nextBtnText: "Siguiente", // Next button text
+      doneBtnText: "Finalizar", // Done button text
+      progressText: "Paso {{current}} de {{total}}", // Progress bar text
     });
 
     driverObj.setSteps([
       {
-        element: "#search-input", // ID del campo de búsqueda por carnet
+        element: "#search-input", // ID of the search field by student ID
         popover: {
-          title: "Buscar Estudiante",
+          title: "Buscar Estudiante", // Title of the popover
           description:
-            "Escribe el carnet del estudiante (mínimo 12 caracteres) para buscarlo automáticamente.",
-          side: "bottom",
-          align: "start",
+            "Escribe el carnet del estudiante (mínimo 12 caracteres) para buscarlo automáticamente.", // Description of the search input
+          side: "bottom", // Position of the popover relative to the element
+          align: "start", // Alignment of the popover
         },
       },
       {
-        element: "#select-year", // ID del campo de selección de año
+        element: "#select-year", // ID of the year selection field
         popover: {
-          title: "Seleccionar Año",
-          description: "Selecciona el año para filtrar la lista de estudiantes.",
-          side: "bottom",
-          align: "start",
+          title: "Seleccionar Año", // Title of the popover
+          description: "Selecciona el año para filtrar la lista de estudiantes.", // Description of the year selector
+          side: "bottom", // Position of the popover
+          align: "start", // Alignment of the popover
         },
       },
       {
-        element: "#select-course", // ID del campo de selección de curso
+        element: "#select-course", // ID of the course selection field
         popover: {
-          title: "Seleccionar Curso",
-          description: "Selecciona el curso para filtrar la lista de estudiantes.",
-          side: "bottom",
-          align: "start",
+          title: "Seleccionar Curso", // Title of the popover
+          description: "Selecciona el curso para filtrar la lista de estudiantes.", // Description of the course selector
+          side: "bottom", // Position of the popover
+          align: "start", // Alignment of the popover
         },
       },
       {
-        element: "#print-report", // ID del botón de imprimir reporte
+        element: "#print-report", // ID of the print report button
         popover: {
-          title: "Imprimir Reporte",
+          title: "Imprimir Reporte", // Title of the popover
           description:
-            "Haz clic aquí para generar un reporte en PDF de los estudiantes filtrados.",
-          side: "bottom",
-          align: "start",
+            "Haz clic aquí para generar un reporte en PDF de los estudiantes filtrados.", // Description of the print report button
+          side: "bottom", // Position of the popover
+          align: "start", // Alignment of the popover
         },
       },
       {
-        element: "#student-table", // ID de la tabla de estudiantes
+        element: "#student-table", // ID of the student table
         popover: {
-          title: "Lista de Estudiantes",
+          title: "Lista de Estudiantes", // Title of the popover
           description:
-            "Aquí se muestran los estudiantes filtrados. Haz clic en un estudiante para ver su línea de tiempo.",
-          side: "top",
-          align: "start",
+            "Aquí se muestran los estudiantes filtrados. Haz clic en un estudiante para ver su línea de tiempo.", // Description of the student table
+          side: "top", // Position of the popover
+          align: "start", // Alignment of the popover
         },
       },
       {
-        element: "#pagination", // ID de la paginación
+        element: "#pagination", // ID of the pagination controls
         popover: {
-          title: "Paginación",
+          title: "Paginación", // Title of the popover
           description:
-            "Usa estos controles para navegar entre las páginas de estudiantes.",
-          side: "top",
-          align: "start",
+            "Usa estos controles para navegar entre las páginas de estudiantes.", // Description of the pagination controls
+          side: "top", // Position of the popover
+          align: "start", // Alignment of the popover
         },
       },
     ]);
 
-    driverObj.drive(); // Inicia el recorrido
+    driverObj.drive(); // Start the guided tour
   };
 
   return (
     <div>
-      {/* Botón para iniciar los recorridos */}
+      {/* Button to start the tour */}
       <button
         onClick={startTour}
         className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"

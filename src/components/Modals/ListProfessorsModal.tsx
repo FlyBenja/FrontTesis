@@ -28,7 +28,13 @@ const ROLES_CODIGOS: { [key: string]: number } = {
   'Vocal 3': 5,
 };
 
-// The ListarCatedraticosModal component renders a modal for listing active professors and assigning them to a role
+/**
+ * The ListarCatedraticosModal component renders a modal for listing active professors 
+ * and assigning them to a role within a group.
+ *
+ * @param {ListarCatedraticosModalProps} props - The props for the modal component.
+ * @returns {JSX.Element} - The rendered JSX element for the modal.
+ */
 const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClose, selectedRow, groupId }) => {
   // State for managing the list of professors, selected professor, and loading state
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
@@ -55,12 +61,20 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
     fetchCatedraticos();  // Call the fetch function when the component mounts
   }, []);  // Empty dependency array means this effect runs only once after the initial render
 
-  // Handler to select a professor when clicked
+  /**
+   * Handles selecting a professor when clicked.
+   *
+   * @param {Catedratico} catedratico - The professor object to select.
+   */
   const handleSelect = (catedratico: Catedratico) => {
     setSelectedCatedratico(catedratico);
   };
 
-  // Handler to assign the selected professor to the role/committee
+  /**
+   * Handles assigning the selected professor to the role/committee.
+   * 
+   * Displays a success or error alert depending on the result.
+   */
   const handleAssign = async () => {
     if (selectedCatedratico && selectedRow && groupId) {
       try {

@@ -1,5 +1,9 @@
 import React, { ReactNode } from 'react';
 
+/**
+ * Props interface for the CardDataStats component.
+ * 
+ */
 interface CardDataStatsProps {
   title: string;
   total: string;
@@ -9,6 +13,14 @@ interface CardDataStatsProps {
   children: ReactNode;
 }
 
+/**
+ * CardDataStats Component
+ * 
+ * This component displays a card containing statistical data such as a total value,
+ * a rate of change, and a graphical indicator for increasing or decreasing trends.
+ * It also accepts an icon or element as a child to visually represent the data.
+ * 
+ */
 const CardDataStats: React.FC<CardDataStatsProps> = ({
   title,
   total,
@@ -19,11 +31,15 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
 }) => {
   return (
     <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+
+      {/* Icon Container */}
       <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
         {children}
       </div>
 
+      {/* Data and Rate Section */}
       <div className="mt-4 flex items-end justify-between">
+        {/* Total and Title */}
         <div>
           <h4 className="text-title-md font-bold text-black dark:text-white">
             {total}
@@ -31,13 +47,14 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
           <span className="text-sm font-medium">{title}</span>
         </div>
 
+        {/* Rate and Trend Indicator */}
         <span
-          className={`flex items-center gap-1 text-sm font-medium ${
-            levelUp && 'text-meta-3'
-          } ${levelDown && 'text-meta-5'} `}
+          className={`flex items-center gap-1 text-sm font-medium ${levelUp ? 'text-meta-3' : ''
+            } ${levelDown ? 'text-meta-5' : ''}`}
         >
           {rate}
 
+          {/* Upward Trend Icon */}
           {levelUp && (
             <svg
               className="fill-meta-3"
@@ -53,6 +70,8 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
               />
             </svg>
           )}
+
+          {/* Downward Trend Icon */}
           {levelDown && (
             <svg
               className="fill-meta-5"

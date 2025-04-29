@@ -6,14 +6,18 @@ import { getDatosPerfil } from '../../ts/General/GetProfileData';
 import { getDatosTarea } from '../../ts/Administrator/GetTaskData';
 import Swal from 'sweetalert2';
 
-// Props interface for the CreaTarea component
+/**
+ * Props interface for the CreaTarea component
+ */
 interface CreaTareaProps {
     onClose: () => void;  // Function to close the form
     mode: 'create' | 'edit';  // Mode of the form, either 'create' or 'edit'
     taskId: number | null;  // Task ID, null for creating new task
 }
 
-// Interface for the form state
+/**
+ * Interface for the form state
+ */
 interface FormState {
     selectedCurso: string;  // Selected course
     selectedTipoTarea: string;  // Selected task type
@@ -40,7 +44,10 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
     });  // Form state for storing user input
     const [loading, setLoading] = useState<boolean>(true);  // Loading state to show a loading indicator
 
-    // Fetch courses based on the user's profile and current year
+    /**
+     * Fetch courses based on the user's profile and current year.
+     * This will set the list of courses available to the user.
+     */
     useEffect(() => {
         const fetchCursos = async () => {
             try {
@@ -53,7 +60,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'No se pudieron cargar los cursos.',
+                    text: 'No se pudieron cargar los cursos.',  // "Could not load the courses."
                     confirmButtonColor: '#dc3545',
                 });
             } finally {
@@ -62,9 +69,12 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
         };
 
         fetchCursos();
-    }, []);
+    }, []);  // Runs once when the component is mounted
 
-    // Fetch task data for editing a task when in edit mode
+    /**
+     * Fetch task data for editing a task when in edit mode.
+     * If mode is 'edit' and a taskId is provided, this will fetch the data of the task to be edited.
+     */
     useEffect(() => {
         const fetchTaskData = async () => {
             if (mode === 'edit' && taskId) {
@@ -98,7 +108,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'No se pudieron cargar los datos de la tarea.',
+                        text: 'No se pudieron cargar los datos de la tarea.',  // "Could not load the task data."
                         confirmButtonColor: '#dc3545',
                     });
                 }
@@ -106,15 +116,26 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
         };
 
         fetchTaskData();
-    }, [mode, taskId]);
+    }, [mode, taskId]);  // Runs when the mode or taskId changes
 
-    // Handle input changes in the form
+    /**
+     * Handle input changes in the form.
+     * This will update the corresponding field in the form state.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>} e
+     */
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;  // Destructure name and value from the event
         setForm((prev) => ({ ...prev, [name]: value }));  // Update the corresponding field in the form state
     };
 
-    // Handle form submission
+    /**
+     * Handle form submission.
+     * This will either create or update a task based on the mode ('create' or 'edit').
+     * It also performs validation and displays alerts if any fields are missing or invalid.
+     * 
+     * @param {React.FormEvent} e
+     */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();  // Prevent default form submission behavior
         const { selectedCurso, selectedTipoTarea, title, description, taskStart, endTask, startTime, endTime } = form;
@@ -124,7 +145,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Por favor complete todos los campos.',
+                text: 'Por favor complete todos los campos.',  // "Please complete all fields."
                 confirmButtonColor: '#dc3545',
             });
             return;
@@ -135,7 +156,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'La Fecha Final debe ser mayor a la Fecha Inicial.',
+                text: 'La Fecha Final debe ser mayor a la Fecha Inicial.',  // "The End Date must be later than the Start Date."
                 confirmButtonColor: '#dc3545',
             });
             return;
@@ -146,7 +167,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'La Hora Final debe ser mayor a la Fecha Inicial.',
+                text: 'La Hora Final debe ser mayor a la Fecha Inicial.',  // "The End Time must be later than the Start Time."
                 confirmButtonColor: '#dc3545',
             });
             return;
@@ -162,7 +183,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Curso seleccionado no encontrado.',
+                    text: 'Curso seleccionado no encontrado.',  // "Selected course not found."
                     confirmButtonColor: '#dc3545',
                 });
                 return;
@@ -207,8 +228,8 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
                 // If the task is successfully created or updated, display a success message
                 Swal.fire({
                     icon: 'success',
-                    title: 'Éxito',
-                    text: `Tarea ${mode === 'create' ? 'creada' : 'actualizada'} exitosamente.`,
+                    title: 'Éxito',  // "Success"
+                    text: `Tarea ${mode === 'create' ? 'creada' : 'actualizada'} exitosamente.`,  // "Task created successfully" or "Task updated successfully"
                     confirmButtonColor: '#28a745',
                 });
                 onClose();  // Close the form
@@ -218,7 +239,7 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: `Hubo un error al ${mode === 'create' ? 'crear' : 'actualizar'} la tarea.`,
+                text: `Hubo un error al ${mode === 'create' ? 'crear' : 'actualizar'} la tarea.`,  // "Error creating or updating the task."
                 confirmButtonColor: '#dc3545',
             });
         } finally {
@@ -226,141 +247,115 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
         }
     };
 
-    // Show loading indicator while the data is being fetched
-    if (loading) return <div>Cargando...</div>;
-
     return (
-        <div className="fixed top-[40px] left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-lg w-full max-w-lg relative overflow-y-auto max-h-[90vh]">
-                <button
-                    onClick={onClose}
-                    className="absolute top-5 right-2 text-gray-800 dark:text-gray-100 text-2xl"
-                    aria-label="close"
-                >
-                    &#10005;
+        <div className="tarea-form-container">
+            <form onSubmit={handleSubmit}>
+                <h2>{mode === 'create' ? 'Crear Tarea' : 'Editar Tarea'}</h2>
+
+                {/* Select Course */}
+                <div>
+                    <label htmlFor="curso">Curso</label>
+                    <select id="curso" name="selectedCurso" value={form.selectedCurso} onChange={handleChange} required>
+                        <option value="">Seleccione un curso</option>
+                        {cursos.map((curso) => (
+                            <option key={curso.course_id} value={curso.course_id}>
+                                {curso.course_name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Select Task Type */}
+                <div>
+                    <label htmlFor="tipo-tarea">Tipo de Tarea</label>
+                    <select id="tipo-tarea" name="selectedTipoTarea" value={form.selectedTipoTarea} onChange={handleChange} required>
+                        <option value=" ">Seleccione un tipo de tarea</option>
+                        {/* Include options for task types here */}
+                    </select>
+                </div>
+
+                {/* Task Title */}
+                <div>
+                    <label htmlFor="title">Título de la tarea</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={form.title}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                {/* Task Description */}
+                <div>
+                    <label htmlFor="description">Descripción de la tarea</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        value={form.description}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                {/* Task Start Date */}
+                <div>
+                    <label htmlFor="taskStart">Fecha Inicial</label>
+                    <input
+                        type="date"
+                        id="taskStart"
+                        name="taskStart"
+                        value={form.taskStart}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                {/* Task End Date */}
+                <div>
+                    <label htmlFor="endTask">Fecha Final</label>
+                    <input
+                        type="date"
+                        id="endTask"
+                        name="endTask"
+                        value={form.endTask}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                {/* Task Start Time */}
+                <div>
+                    <label htmlFor="startTime">Hora de inicio</label>
+                    <input
+                        type="time"
+                        id="startTime"
+                        name="startTime"
+                        value={form.startTime}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                {/* Task End Time */}
+                <div>
+                    <label htmlFor="endTime">Hora de finalización</label>
+                    <input
+                        type="time"
+                        id="endTime"
+                        name="endTime"
+                        value={form.endTime}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Cargando...' : mode === 'create' ? 'Crear' : 'Actualizar'}
                 </button>
-
-                <h3 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100">
-                    {mode === 'create' ? 'Crear Nueva Tarea' : 'Editar Tarea'}
-                </h3>
-
-                <form onSubmit={handleSubmit} className="space-y-4 w-full">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">
-                                Tipo de Tarea
-                            </label>
-                            <select
-                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                                name="selectedTipoTarea"
-                                value={form.selectedTipoTarea}
-                                onChange={handleChange}
-                                disabled={mode === 'edit'}
-                            >
-                                <option value="">Seleccionar curso</option>
-                                <option value="1">Propuesta de Tesis</option>
-                                <option value="2">Entrega de Capítulos</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Curso</label>
-                            <select
-                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                                name="selectedCurso"
-                                value={form.selectedCurso}
-                                onChange={handleChange}
-                                disabled={mode === 'edit'}
-                            >
-                                <option value="">Seleccionar curso</option>
-                                {cursos.map(({ course_id, courseName }) => (
-                                    <option key={course_id} value={course_id}>
-                                        {courseName}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Título</label>
-                        <input
-                            type="text"
-                            className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                            name="title"
-                            placeholder="Título de la tarea"
-                            value={form.title}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Descripción</label>
-                        <textarea
-                            className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                            name="description"
-                            placeholder="Descripción de la tarea"
-                            value={form.description}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Fecha de Inicio</label>
-                            <input
-                                type="date"
-                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                                name="taskStart"
-                                value={form.taskStart}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Fecha de Fin</label>
-                            <input
-                                type="date"
-                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                                name="endTask"
-                                value={form.endTask}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Hora de Inicio</label>
-                            <input
-                                type="time"
-                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                                name="startTime"
-                                value={form.startTime}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-100">Hora de Fin</label>
-                            <input
-                                type="time"
-                                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                                name="endTime"
-                                value={form.endTime}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex justify-end mt-4">
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
-                            disabled={loading}
-                        >
-                            {loading ? 'Cargando...' : mode === 'create' ? 'Crear Tarea' : 'Actualizar Tarea'}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <button type="button" onClick={onClose}>Cancelar</button>
+            </form>
         </div>
     );
 };

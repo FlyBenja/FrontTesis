@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
 
+/**
+ * Interface defining the properties required by the CrearCoordinador component.
+ */
 interface CrearCoordinadorProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onCreateCoordinador: (codigo: string, nombre: string, correo: string, sedeId: number) => void;
+  isOpen: boolean; // Indicates if the modal is visible.
+  onClose: () => void; // Function to close the modal.
+  onCreateCoordinador: (codigo: string, nombre: string, correo: string, sedeId: number) => void; // Function to create the coordinator.
 }
 
+/**
+ * It uses local state to manage form values and invokes a callback function when the form is submitted.
+ */
 const CrearCoordinador: React.FC<CrearCoordinadorProps> = ({ isOpen, onClose, onCreateCoordinador }) => {
-  const [codigo, setCodigo] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [correo, setCorreo] = useState('');
+  // Local state to store form values for code, name, email, and department ID
+  const [codigo, setCodigo] = useState<string>('');
+  const [nombre, setNombre] = useState<string>('');
+  const [correo, setCorreo] = useState<string>('');
   const [sedeId, setSedeId] = useState<number>(1);
 
+  /**
+   * Handles the form submission. It checks if all fields are filled, 
+   * and if so, it invokes the onCreateCoordinador callback with the form values.
+   * After submission, it resets the form and closes the modal.
+   */
   const handleSubmit = () => {
     if (codigo && nombre && correo) {
       onCreateCoordinador(codigo, nombre, correo, sedeId);
@@ -23,13 +35,16 @@ const CrearCoordinador: React.FC<CrearCoordinadorProps> = ({ isOpen, onClose, on
     }
   };
 
+  // If the modal is not open, return null to prevent rendering
   if (!isOpen) return null;
 
   return (
+    // Modal container with darkened background to focus attention on the form
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
       <div className="bg-white dark:bg-boxdark p-6 rounded-lg shadow-md w-96">
         <h3 className="text-xl font-semibold mb-4 text-black dark:text-white">Crear Coordinador</h3>
 
+        {/* Form for creating a coordinator */}
         <div className="mb-4">
           <label htmlFor="codigo" className="block text-sm font-semibold text-black dark:text-white">Código</label>
           <input
@@ -71,19 +86,16 @@ const CrearCoordinador: React.FC<CrearCoordinadorProps> = ({ isOpen, onClose, on
             onChange={(e) => setSedeId(Number(e.target.value))}
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value={1}>Departamento 1</option>
-            <option value={2}>Departamento 2</option>
-            <option value={3}>Departamento 3</option>
-            <option value={4}>Departamento 4</option>
-            <option value={5}>Departamento 5</option>
-            <option value={6}>Departamento 6</option>
-            <option value={7}>Departamento 7</option>
-            <option value={8}>Departamento 8</option>
-            <option value={9}>Departamento 9</option>
-            <option value={10}>Departamento 10</option>
+            {/* Dropdown options for selecting a department */}
+            {[...Array(10)].map((_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {`Departamento ${i + 1}`}
+              </option>
+            ))}
           </select>
         </div>
 
+        {/* Action buttons for canceling or submitting the form */}
         <div className="flex justify-between items-center">
           <button
             onClick={onClose}

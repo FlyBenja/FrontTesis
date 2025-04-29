@@ -1,87 +1,92 @@
 import React from 'react';
-import { driver } from 'driver.js'; // Importa driver.js
-import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import { driver } from 'driver.js'; 
+import 'driver.js/dist/driver.css'; 
 
+/**
+ * AyudaCapitulos Component
+ * This component provides a guided tour for the user to help them navigate the "Capítulos" section.
+ * It includes steps for interacting with elements such as the back button, comments section, and send comment button.
+ */
 const AyudaCapitulos: React.FC = () => {
-  // Función para iniciar el recorrido
+  // Function to start the guided tour
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true, // Muestra la barra de progreso
-      animate: true, // Habilita animaciones
-      prevBtnText: 'Anterior', // Texto del botón "Anterior"
-      nextBtnText: 'Siguiente', // Texto del botón "Siguiente"
-      doneBtnText: 'Finalizar', // Texto del botón "Finalizar"
-      progressText: 'Paso {{current}} de {{total}}', // Texto de la barra de progreso
+      showProgress: true, // Show progress bar
+      animate: true, // Enable animations
+      prevBtnText: 'Anterior', // "Previous" button text
+      nextBtnText: 'Siguiente', // "Next" button text
+      doneBtnText: 'Finalizar', // "Done" button text
+      progressText: 'Paso {{current}} de {{total}}', // Progress bar text
     });
 
     driverObj.setSteps([
       {
-        element: '#back-button', // ID del botón "Regresar"
+        element: '#back-button', // ID of the "Back" button
         popover: {
-          title: 'Regresar',
-          description: 'Haz clic aquí para regresar a la lista de tareas.',
-          side: 'bottom',
-          align: 'start',
+          title: 'Regresar', // Title of the popover
+          description: 'Haz clic aquí para regresar a la lista de tareas.', // Description of the popover
+          side: 'bottom', // Popover position relative to the element
+          align: 'start', // Popover alignment
         },
       },
       {
-        element: '#comentarios-previos', // ID de la sección de comentarios previos
+        element: '#comentarios-previos', // ID of the "Previous Comments" section
         popover: {
-          title: 'Comentarios Previos',
+          title: 'Comentarios Previos', // Title of the popover
           description:
-            'Aquí puedes ver los comentarios anteriores sobre la tarea.',
-          side: 'top',
-          align: 'start',
+            'Aquí puedes ver los comentarios anteriores sobre la tarea.', // Description of the popover
+          side: 'top', // Popover position relative to the element
+          align: 'start', // Popover alignment
         },
       },
       {
-        element: '#enviar-comentario', // ID de la sección de enviar comentario
+        element: '#enviar-comentario', // ID of the "Send Comment" section
         popover: {
-          title: 'Enviar Comentario',
-          description: 'Aquí puedes escribir y enviar un nuevo comentario.',
-          side: 'top',
-          align: 'start',
+          title: 'Enviar Comentario', // Title of the popover
+          description: 'Aquí puedes escribir y enviar un nuevo comentario.', // Description of the popover
+          side: 'top', // Popover position relative to the element
+          align: 'start', // Popover alignment
         },
       },
       {
-        element: '#textarea-comentario', // ID del textarea para comentarios
+        element: '#textarea-comentario', // ID of the textarea for comments
         popover: {
-          title: 'Escribir Comentario',
-          description: 'Escribe tu comentario en este campo.',
-          side: 'top',
-          align: 'start',
+          title: 'Escribir Comentario', // Title of the popover
+          description: 'Escribe tu comentario en este campo.', // Description of the popover
+          side: 'top', // Popover position relative to the element
+          align: 'start', // Popover alignment
         },
       },
       {
-        element: '#enviar-button', // ID del botón "Enviar Comentario"
+        element: '#enviar-button', // ID of the "Send Comment" button
         popover: {
-          title: 'Enviar Comentario',
-          description: 'Haz clic aquí para enviar tu comentario.',
-          side: 'top',
-          align: 'start',
+          title: 'Enviar Comentario', // Title of the popover
+          description: 'Haz clic aquí para enviar tu comentario.', // Description of the popover
+          side: 'top', // Popover position relative to the element
+          align: 'start', // Popover alignment
         },
       },
       {
-        element: '#bloquear-button', // ID del botón "Bloquear Comentarios"
+        element: '#bloquear-button', // ID of the "Block Comments" button
         popover: {
-          title: 'Bloquear Comentarios',
-          description: 'Haz clic aquí para bloquear los comentarios.',
-          side: 'bottom',
-          align: 'start',
+          title: 'Bloquear Comentarios', // Title of the popover
+          description: 'Haz clic aquí para bloquear los comentarios.', // Description of the popover
+          side: 'bottom', // Popover position relative to the element
+          align: 'start', // Popover alignment
         },
       },
     ]);
 
-    driverObj.drive(); // Inicia el recorrido
+    driverObj.drive(); // Start the tour
   };
 
   return (
     <div>
-      {/* Botón para iniciar los recorridos */}
+      {/* Button to start the guided tour */}
       <button
         onClick={startTour}
         className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"
-        aria-label="Iniciar recorrido guiado"
+        aria-label="Iniciar recorrido guiado" // Tooltip text for button
       >
         <svg
           className="w-5 h-5"

@@ -1,71 +1,79 @@
-import { driver } from 'driver.js'; // Importa driver.js
-import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
+/**
+ * Component that provides a guided tour for uploading students.
+ * This tour walks the user through selecting a course, uploading an Excel file,
+ * confirming the upload, and downloading a template if necessary.
+ */
 const AyudaSubirEstudiantes = () => {
-  // Función para iniciar el recorrido
+  /**
+   * Starts the guided tour by initializing the driver.js object and defining the steps.
+   * Each step highlights an element and provides a description for the user.
+   */
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true, // Muestra la barra de progreso
-      animate: true, // Habilita animaciones
-      prevBtnText: 'Anterior', // Texto del botón "Anterior"
-      nextBtnText: 'Siguiente', // Texto del botón "Siguiente"
-      doneBtnText: 'Finalizar', // Texto del botón "Finalizar"
-      progressText: 'Paso {{current}} de {{total}}', // Texto de la barra de progreso
+      showProgress: true, // Show progress bar
+      animate: true, // Enable animations
+      prevBtnText: 'Anterior', // Text for the "Previous" button
+      nextBtnText: 'Siguiente', // Text for the "Next" button
+      doneBtnText: 'Finalizar', // Text for the "Done" button
+      progressText: 'Paso {{current}} de {{total}}', // Progress bar text
     });
 
     driverObj.setSteps([
       {
-        element: '#curso', // ID del campo "Seleccionar curso"
+        element: '#curso', // ID of the "Select course" field
         popover: {
-          title: 'Seleccionar Curso',
+          title: 'Seleccionar Curso', // Title for the "Select course" step
           description:
-            'Aquí debes seleccionar el curso al que deseas subir los estudiantes.',
+            'Aquí debes seleccionar el curso al que deseas subir los estudiantes.', // Description for the "Select course" step
           side: 'bottom',
           align: 'start',
         },
       },
       {
-        element: 'input[type="file"]', // Selector del campo de archivo
+        element: 'input[type="file"]', // Selector for the file input field
         popover: {
-          title: 'Seleccionar Archivo',
+          title: 'Seleccionar Archivo', // Title for the "Select file" step
           description:
-            'Haz clic aquí para seleccionar un archivo Excel (.xls, .xlsx) con la lista de estudiantes.',
+            'Haz clic aquí para seleccionar un archivo Excel (.xls, .xlsx) con la lista de estudiantes.', // Description for the "Select file" step
           side: 'bottom',
           align: 'start',
         },
       },
       {
-        element: '#confirm-submit', // Selector del botón "Confirmar Subida"
+        element: '#confirm-submit', // Selector for the "Confirm Upload" button
         popover: {
-          title: 'Confirmar Subida',
+          title: 'Confirmar Subida', // Title for the "Confirm Upload" step
           description:
-            'Haz clic aquí para subir el archivo y cargar los estudiantes al curso seleccionado.',
+            'Haz clic aquí para subir el archivo y cargar los estudiantes al curso seleccionado.', // Description for the "Confirm Upload" step
           side: 'top',
           align: 'start',
         },
       },
       {
-        element: '#plantilla-excel', // Selector del botón "Descargar Plantilla"
+        element: '#plantilla-excel', // Selector for the "Download Template" button
         popover: {
-          title: 'Descargar Plantilla',
+          title: 'Descargar Plantilla', // Title for the "Download Template" step
           description:
-            'Si no tienes un archivo Excel, puedes descargar una plantilla para llenar los datos de los estudiantes.',
+            'Si no tienes un archivo Excel, puedes descargar una plantilla para llenar los datos de los estudiantes.', // Description for the "Download Template" step
           side: 'top',
           align: 'start',
         },
       },
     ]);
 
-    driverObj.drive(); // Inicia el recorrido
+    driverObj.drive(); // Starts the tour
   };
 
   return (
     <div>
-      {/* Botón para iniciar los recorridos */}
+      {/* Button to start the guided tour */}
       <button
         onClick={startTour}
         className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"
-        aria-label="Iniciar recorrido guiado"
+        aria-label="Iniciar recorrido guiado" // "Start guided tour"
       >
         <svg
           className="w-5 h-5"
@@ -86,7 +94,7 @@ const AyudaSubirEstudiantes = () => {
         </svg>
         {/* Tooltip */}
         <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-          Iniciar recorrido de ayuda
+          Iniciar recorrido de ayuda {/* "Start help tour" */}
         </span>
       </button>
     </div>

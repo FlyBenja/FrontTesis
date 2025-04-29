@@ -1,18 +1,24 @@
 import useColorMode from '../../hooks/useColorMode';
 
+// DarkModeSwitcher component allows users to toggle between light and dark themes.
 const DarkModeSwitcher = () => {
+  // useColorMode hook provides the current color mode (light or dark) and a function to update it.
   const [colorMode, setColorMode] = useColorMode();
 
   return (
     <li>
+      {/* Label contains the styling for the switcher based on the current color mode */}
       <label
         className={`relative m-0 block h-7.5 w-14 rounded-full ${
+          // Sets background color based on the current color mode
           colorMode === 'dark' ? 'bg-primary' : 'bg-stroke'
-        }`}
+          }`}
       >
+        {/* Checkbox input that triggers the color mode switch when toggled */}
         <input
           type="checkbox"
           onChange={() => {
+            // Toggle between light and dark mode when the checkbox is clicked
             if (typeof setColorMode === 'function') {
               setColorMode(colorMode === 'light' ? 'dark' : 'light');
             }
@@ -21,9 +27,11 @@ const DarkModeSwitcher = () => {
         />
         <span
           className={`absolute top-1/2 left-[3px] flex h-6 w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white shadow-switcher duration-75 ease-linear ${
+            // Moves the toggle to the right when the color mode is dark
             colorMode === 'dark' && '!right-[3px] !translate-x-full'
-          }`}
+            }`}
         >
+          {/* Sun icon for light mode */}
           <span className="dark:hidden">
             <svg
               width="16"
@@ -42,6 +50,8 @@ const DarkModeSwitcher = () => {
               />
             </svg>
           </span>
+
+          {/* Moon icon for dark mode */}
           <span className="hidden dark:inline-block">
             <svg
               width="16"

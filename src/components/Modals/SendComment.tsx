@@ -1,20 +1,32 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';  // Importa useNavigate
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import { enviaComentario } from '../../ts/ThesisCoordinatorandReviewer/SendComments';
 
+/**
+ * Props for the EnviaComentarios component
+ */
 interface EnviaComentariosProps {
   onClose: () => void;
   revision_thesis_id: number;
 }
 
+/**
+ * EnviaComentarios component for sending a comment on a thesis revision.
+ */
 const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_thesis_id }) => {
-  const [titulo, setTitulo] = useState('');
-  const [comentario, setComentario] = useState('');
-  const [status, setStatus] = useState<string>('');
-  const navigate = useNavigate();  // Usar el hook para la navegación
+  const [titulo, setTitulo] = useState('');  // Title of the comment
+  const [comentario, setComentario] = useState('');  // The content of the comment
+  const [status, setStatus] = useState<string>('');  // Status of the comment (approved or rejected)
+  const navigate = useNavigate();  // Hook for navigation
 
+  /**
+   * Handles saving the comment.
+   * Validates the input and sends the comment to the server using the enviaComentario function.
+   * Displays success or error alerts based on the result.
+   */
   const handleSave = async () => {
+    // Validate if the fields are filled
     if (!titulo || !comentario || status === '') {
       Swal.fire({
         title: 'Error',
@@ -27,13 +39,15 @@ const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_t
     }
 
     try {
+      // Call the function to send the comment
       await enviaComentario({
         revision_thesis_id: revision_thesis_id,
         title: titulo,
         comment: comentario,
-        status: Number(status),
+        status: Number(status),  // Convert the status to number
       });
 
+      // Show success alert and redirect
       Swal.fire({
         title: 'Éxito',
         text: 'Comentario enviado correctamente',
@@ -41,10 +55,11 @@ const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_t
         confirmButtonText: 'OK',
         confirmButtonColor: '#28a745',
       }).then(() => {
-        onClose();
-        navigate('/coordinadortesis/mis-asignaciones');  // Redirigir a la página deseada
+        onClose();  // Close the modal
+        navigate('/coordinadortesis/mis-asignaciones');  // Redirect to the desired page
       });
     } catch (error) {
+      // Show error alert if something goes wrong
       Swal.fire({
         title: 'Error',
         text: 'No se pudo enviar el comentario.',
@@ -75,7 +90,7 @@ const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_t
               id="titulo"
               className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
               value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
+              onChange={(e) => setTitulo(e.target.value)}  // Update the title
               placeholder="Título del comentario"
             />
           </div>
@@ -86,7 +101,7 @@ const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_t
               className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
               rows={4}
               value={comentario}
-              onChange={(e) => setComentario(e.target.value)}
+              onChange={(e) => setComentario(e.target.value)}  // Update the comment content
               placeholder="Escriba su comentario aquí"
             />
           </div>
@@ -96,7 +111,7 @@ const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_t
               id="status"
               className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => setStatus(e.target.value)}  // Update the status
             >
               <option value="">Seleccione una opción</option>
               <option value="1">Aprobado</option>
@@ -108,14 +123,14 @@ const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_t
         <div className="mt-6 flex justify-between space-x-4">
           <button
             className="px-6 py-2 bg-red-500 text-white rounded-lg w-full"
-            onClick={onClose}
+            onClick={onClose}  // Close the modal without saving
           >
             Cancelar
           </button>
           <button
             className={`px-6 py-2 bg-blue-500 text-white rounded-lg w-full ${!(titulo && comentario && status) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
-            onClick={handleSave}
-            disabled={!(titulo && comentario && status)}
+            onClick={handleSave}  // Trigger the save function
+            disabled={!(titulo && comentario && status)}  // Disable the button if fields are empty
           >
             Enviar
           </button>

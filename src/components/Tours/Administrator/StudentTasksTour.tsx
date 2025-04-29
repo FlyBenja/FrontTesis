@@ -1,61 +1,69 @@
-import { driver } from 'driver.js'; // Importa driver.js
-import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import { driver } from 'driver.js'; 
+import 'driver.js/dist/driver.css'; 
 
+/**
+ * The AyudaTareasEstudiante component provides an interactive guided tour for students' tasks page.
+ * The tour highlights different sections such as "Back button", "Proposals", and "Chapters" with descriptive tooltips.
+ *
+ */
 const AyudaTareasEstudiante = () => {
-  // Función para iniciar el recorrido
+  /**
+   * Starts the guided tour using driver.js.
+   * It defines the steps and tooltips to guide the user through different sections.
+   */
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true,
-      animate: true,
-      prevBtnText: 'Anterior',
-      nextBtnText: 'Siguiente',
-      doneBtnText: 'Finalizar',
-      progressText: 'Paso {{current}} de {{total}}',
+      showProgress: true, // Shows the progress of the tour
+      animate: true, // Enables animations for the transitions
+      prevBtnText: 'Anterior', // 'Previous' button text
+      nextBtnText: 'Siguiente', // 'Next' button text
+      doneBtnText: 'Finalizar', // 'Finish' button text
+      progressText: 'Paso {{current}} de {{total}}', // Text for progress (e.g., Step 1 of 5)
     });
 
     driverObj.setSteps([
       {
-        element: '#back-button', // ID del botón "Regresar"
+        element: '#back-button', // ID of the "Back" button
         popover: {
-          title: 'Regresar',
+          title: 'Regresar', // 'Back' title
           description:
-            'Haz clic aquí para regresar a la lista de la línea de tiempo del estudiante.',
-          side: 'bottom',
-          align: 'start',
+            'Haz clic aquí para regresar a la lista de la línea de tiempo del estudiante.', // Description of the back button
+          side: 'bottom', // Position of the popover
+          align: 'start', // Alignment of the popover
         },
       },
       {
-        element: '#proposals-section', // ID de la sección de "Propuestas"
+        element: '#proposals-section', // ID of the "Proposals" section
         popover: {
-          title: 'Propuestas',
+          title: 'Propuestas', // 'Proposals' title
           description:
-            'Aquí se muestran las tareas de tipo "Propuesta". Haz clic en una tarea para ver más detalles.',
-          side: 'top',
-          align: 'start',
+            'Aquí se muestran las tareas de tipo "Propuesta". Haz clic en una tarea para ver más detalles.', // Description of the proposals section
+          side: 'top', // Position of the popover
+          align: 'start', // Alignment of the popover
         },
       },
       {
-        element: '#chapters-section', // ID de la sección de "Capítulos"
+        element: '#chapters-section', // ID of the "Chapters" section
         popover: {
-          title: 'Capítulos',
+          title: 'Capítulos', // 'Chapters' title
           description:
-            'Aquí se muestran las tareas de tipo "Capítulo". Solo puedes acceder si el estudiante ha entregado la tarea.',
-          side: 'top',
-          align: 'start',
+            'Aquí se muestran las tareas de tipo "Capítulo". Solo puedes acceder si el estudiante ha entregado la tarea.', // Description of the chapters section
+          side: 'top', // Position of the popover
+          align: 'start', // Alignment of the popover
         },
       },
     ]);
 
-    driverObj.drive();
+    driverObj.drive(); // Start the tour
   };
 
   return (
     <div>
-      {/* Botón para iniciar los recorridos */}
+      {/* Button to start the guided tour */}
       <button
         onClick={startTour}
         className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"
-        aria-label="Iniciar recorrido guiado"
+        aria-label="Iniciar recorrido guiado" // 'Start guided tour' label for accessibility
       >
         <svg
           className="w-5 h-5"
@@ -76,7 +84,7 @@ const AyudaTareasEstudiante = () => {
         </svg>
         {/* Tooltip */}
         <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-          Iniciar recorrido de ayuda
+          Iniciar recorrido de ayuda // 'Start help tour' tooltip text
         </span>
       </button>
     </div>

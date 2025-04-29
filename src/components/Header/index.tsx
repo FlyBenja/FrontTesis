@@ -4,6 +4,10 @@ import DropdownUser from './DropdownUser';
 import LogoIcon from '../../images/logo/logo-icon.svg';
 import DarkModeSwitcher from './DarkModeSwitcher';
 
+/**
+ * Header component
+ * 
+ */
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
@@ -11,7 +15,7 @@ const Header = (props: {
   // Extract role from localStorage
   const role = localStorage.getItem('userRole');
 
-  // Define routes based on role
+  // Define role-based routes
   const roleRoutes: { [key: string]: string } = {
     '1': '/estudiantes/inicio',
     '2': '/catedratico/graficas',
@@ -59,11 +63,14 @@ const Header = (props: {
           </button>
           {/* <!-- Hamburger Toggle BTN --> */}
 
+          {/* <!-- Logo --> */}
           <Link className="block flex-shrink-0 lg:hidden" to={roleRoutes[role || '1']}>
             <img src={LogoIcon} alt="Logo" width={120} />
           </Link>
+          {/* <!-- Logo --> */}
         </div>
 
+        {/* <!-- Sede selector for role 5 (Decano) --> */}
         {role === '5' && (
           <div className="mb-6 w-full max-w-xs">
             <label
@@ -85,24 +92,27 @@ const Header = (props: {
             </select>
           </div>
         )}
+        {/* <!-- Sede selector for role 5 (Decano) --> */}
 
         <div className="hidden sm:block"></div>
 
+        {/* <!-- Right side items --> */}
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
-            {/* <!-- Dark Mode Toggler --> */}
+            {/* <!-- Dark Mode Switcher --> */}
             <DarkModeSwitcher />
-            {/* <!-- Dark Mode Toggler --> */}
+            {/* <!-- Dark Mode Switcher --> */}
 
-            {/* <!-- Notification Menu Area --> */}
+            {/* <!-- Notification Dropdown (only for Estudiante and Administrador) --> */}
             {(role === '1' || role === '3') && <DropdownNotification />}
-            {/* <!-- Notification Menu Area --> */}
+            {/* <!-- Notification Dropdown --> */}
           </ul>
 
-          {/* <!-- User Area --> */}
+          {/* <!-- User Menu --> */}
           <DropdownUser />
-          {/* <!-- User Area --> */}
+          {/* <!-- User Menu --> */}
         </div>
+        {/* <!-- Right side items --> */}
       </div>
     </header>
   );

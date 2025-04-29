@@ -11,7 +11,7 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [role, setRole] = useState<number | null>(null);
 
-  // Recuperar el rol del localStorage
+  // Recover the localStorage role
   useEffect(() => {
     const storedRole = localStorage.getItem('userRole');
     if (storedRole) {

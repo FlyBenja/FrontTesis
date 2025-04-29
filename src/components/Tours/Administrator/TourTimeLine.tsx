@@ -1,67 +1,83 @@
-import { driver } from 'driver.js'; // Importa driver.js
-import 'driver.js/dist/driver.css'; // Importa los estilos de driver.js
+import { driver } from 'driver.js'; 
+import 'driver.js/dist/driver.css'; 
 
+/**
+ * AyudaTimeLine Component
+ * 
+ * This component provides a guided tour feature to help users navigate through the timeline page. It uses 
+ * the 'driver.js' library to create an interactive tour of the page elements. The tour highlights the 
+ * key elements such as the back button, print report button, view tasks button, and timeline events.
+ * 
+ */
 const AyudaTimeLine = () => {
-  // Función para iniciar el recorrido
+  /**
+   * Start Tour Function
+   * 
+   * This function initializes and starts the guided tour of the timeline page using the 'driver.js' library.
+   * The steps of the tour highlight various elements such as buttons and the timeline.
+   */
   const startTour = () => {
+    // Initialize driver.js with options
     const driverObj = driver({
-      showProgress: true, // Muestra la barra de progreso
-      animate: true, // Habilita animaciones
-      prevBtnText: "Anterior", // Texto del botón "Anterior"
-      nextBtnText: "Siguiente", // Texto del botón "Siguiente"
-      doneBtnText: "Finalizar", // Texto del botón "Finalizar"
-      progressText: "Paso {{current}} de {{total}}", // Texto de la barra de progreso
+      showProgress: true, // Show progress bar
+      animate: true, // Enable animations
+      prevBtnText: "Anterior", // Previous button text
+      nextBtnText: "Siguiente", // Next button text
+      doneBtnText: "Finalizar", // Done button text
+      progressText: "Paso {{current}} de {{total}}", // Progress text format
     });
 
+    // Define the steps of the tour
     driverObj.setSteps([
       {
-        element: "#back-button", // ID del botón "Regresar"
+        element: "#back-button", // ID of the "Back" button
         popover: {
-          title: "Regresar",
-          description: "Haz clic aquí para regresar a la lista de estudiantes.",
-          side: "bottom",
-          align: "start",
+          title: "Regresar", // Title of the popover
+          description: "Haz clic aquí para regresar a la lista de estudiantes.", // Description of the "Back" button
+          side: "bottom", // Position of the popover relative to the element
+          align: "start", // Alignment of the popover
         },
       },
       {
-        element: "#print-report", // ID del botón "Imprimir Reporte"
+        element: "#print-report", // ID of the "Print Report" button
         popover: {
-          title: "Imprimir Reporte",
-          description: "Haz clic aquí para generar un reporte en PDF de la línea de tiempo del estudiante.",
-          side: "bottom",
-          align: "start",
+          title: "Imprimir Reporte", // Title of the popover
+          description: "Haz clic aquí para generar un reporte en PDF de la línea de tiempo del estudiante.", // Description of the "Print Report" button
+          side: "bottom", // Position of the popover relative to the element
+          align: "start", // Alignment of the popover
         },
       },
       {
-        element: "#view-tasks", // ID del botón "Ver Tareas"
+        element: "#view-tasks", // ID of the "View Tasks" button
         popover: {
-          title: "Ver Tareas",
-          description: "Haz clic aquí para ver las tareas asignadas a este estudiante.",
-          side: "bottom",
-          align: "start",
+          title: "Ver Tareas", // Title of the popover
+          description: "Haz clic aquí para ver las tareas asignadas a este estudiante.", // Description of the "View Tasks" button
+          side: "bottom", // Position of the popover relative to the element
+          align: "start", // Alignment of the popover
         },
       },
       {
-        element: "#timeline", // ID de la línea de tiempo
+        element: "#timeline", // ID of the timeline element
         popover: {
-          title: "Línea de Tiempo",
-          description: "Aquí se muestran los eventos de la línea de tiempo del estudiante.",
-          side: "top",
-          align: "start",
+          title: "Línea de Tiempo", // Title of the popover
+          description: "Aquí se muestran los eventos de la línea de tiempo del estudiante.", // Description of the timeline
+          side: "top", // Position of the popover relative to the element
+          align: "start", // Alignment of the popover
         },
       },
     ]);
 
-    driverObj.drive(); // Inicia el recorrido
+    // Start the tour
+    driverObj.drive(); 
   };
 
   return (
     <div>
-      {/* Botón para iniciar los recorridos */}
+      {/* Button to start the tour */}
       <button
         onClick={startTour}
         className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"
-        aria-label="Iniciar recorrido guiado"
+        aria-label="Iniciar recorrido guiado" // Tooltip for accessibility
       >
         <svg
           className="w-5 h-5"
