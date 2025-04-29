@@ -5,7 +5,7 @@ export const recuperaContraCorreo = async (email: string): Promise<string> => {
   try {
     // Make a POST request to request password recovery
     const response = await axios.post(
-      'https://api.onlineproject.online/auth/requestPasswordRecovery',
+      'http://localhost:3000/auth/requestPasswordRecovery',
       JSON.stringify({ email }),  // Send the email as part of the request body
       {
         headers: {

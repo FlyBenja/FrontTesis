@@ -20,7 +20,7 @@ export const getRevisores = async (): Promise<Revisor[]> => {
     }
 
     // URL de la API
-    const url = 'https://api.onlineproject.online/api/reviewers';
+    const url = 'http://localhost:3000/api/reviewers';
 
     // Realizar la solicitud GET
     const response = await axios.get(url, {

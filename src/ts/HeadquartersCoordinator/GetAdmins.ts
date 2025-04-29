@@ -33,7 +33,7 @@ export const getAdmins = async (): Promise<Admin[]> => {
     }
 
     // Make the GET request to the specified URL to retrieve the list of admins
-    const response = await axios.get<AdminsResponse>('https://api.onlineproject.online/api/admins', {
+    const response = await axios.get<AdminsResponse>('http://localhost:3000/api/admins', {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
         'Content-Type': 'application/json',   // Set content type to JSON

@@ -12,7 +12,7 @@ export const createSede = async (nameSede: string): Promise<void> => {
 
     // Make the POST request to the specified URL to create the 'sede'
     await axios.post(
-      'https://api.onlineproject.online/api/sedes',  // API endpoint for creating a 'sede'
+      'http://localhost:3000/api/sedes',  // API endpoint for creating a 'sede'
       { nameSede },  // The payload containing the name of the 'sede'
       {
         headers: {

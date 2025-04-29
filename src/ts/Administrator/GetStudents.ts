@@ -25,7 +25,7 @@ export const getEstudiantes = async (
 
     // Make the GET request to the specified URL to fetch the students
     const response = await axios.get(
-      `https://api.onlineproject.online/api/sedes/${sedeId}/cursos/${courseId}/estudiantes/${nameYear}`,
+      `http://localhost:3000/api/sedes/${sedeId}/cursos/${courseId}/estudiantes/${nameYear}`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,  // Include the authorization token in the request headers

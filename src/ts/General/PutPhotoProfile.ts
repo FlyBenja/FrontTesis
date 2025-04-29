@@ -22,7 +22,7 @@ export const updateProfilePhoto = async (image: File): Promise<string> => {
 
     // Hacer la solicitud PUT para actualizar la foto de perfil
     const response = await axios.put(
-      'https://api.onlineproject.online/auth/updateProfilePhoto',
+      'http://localhost:3000/auth/updateProfilePhoto',
       formData,
       {
         headers: {

@@ -12,7 +12,7 @@ export const getStudentsSede = async (sedeId: number): Promise<{ totalStudents: 
     }
 
     // Define the URL for the GET request, using the provided sedeId
-    const url = `https://api.onlineproject.online/api/graphics/data/${sedeId}`;
+    const url = `http://localhost:3000/api/graphics/data/${sedeId}`;
     
     // Make the GET request to the API with the appropriate headers
     const response = await axios.get(url, {
