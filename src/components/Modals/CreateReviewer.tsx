@@ -6,7 +6,7 @@ import { updateRevisor } from '../../ts/ThesisCoordinatorandReviewer/UpdateRevie
 /**
  * Interface for the `CrearRevisor` component props
  */
-interface CrearRevisorProps {
+interface CreateReviewerProps {
   onClose: () => void;
   revisor?: any | null;
 }
@@ -18,7 +18,7 @@ interface CrearRevisorProps {
  * Otherwise, it will be used to create a new reviewer.
  * 
  */
-const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
+const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => {
   const [email, setEmail] = useState(''); // State to hold the email input
   const [name, setName] = useState(''); // State to hold the name input
   const [carnet, setCarnet] = useState(''); // State to hold the carnet (ID) input
@@ -149,4 +149,4 @@ const CrearRevisor: React.FC<CrearRevisorProps> = ({ onClose, revisor }) => {
   );
 };
 
-export default CrearRevisor;
+export default CreateReviewer;

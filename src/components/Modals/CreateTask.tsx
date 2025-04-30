@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 /**
  * Props interface for the CreaTarea component
  */
-interface CreaTareaProps {
+interface CreateTaskProps {
     onClose: () => void;  // Function to close the form
     mode: 'create' | 'edit';  // Mode of the form, either 'create' or 'edit'
     taskId: number | null;  // Task ID, null for creating new task
@@ -29,7 +29,7 @@ interface FormState {
     endTime: string;  // Task end time
 }
 
-const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
+const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
     // State variables for the component
     const [cursos, setCursos] = useState<any[]>([]);  // List of courses
     const [form, setForm] = useState<FormState>({
@@ -360,4 +360,4 @@ const CreaTarea: React.FC<CreaTareaProps> = ({ onClose, mode, taskId }) => {
     );
 };
 
-export default CreaTarea;
+export default CreateTask;

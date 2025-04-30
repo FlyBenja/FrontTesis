@@ -1,181 +1,201 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { enviaComentario } from '../../ts/General/SendComment';
-import { getComentarios, ComentarioData } from '../../ts/General/GetComment';
-import { getDatosPerfil, PerfilData } from '../../ts/General/GetProfileData';
-import AyudaInfoCap from '../../components/Tours/Student/TourInfoCap';
-import Swal from 'sweetalert2';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import { enviaComentario } from "../../ts/General/SendComment"
+import { getComentarios, type ComentarioData } from "../../ts/General/GetComment"
+import { getDatosPerfil, type PerfilData } from "../../ts/General/GetProfileData"
+import TourInfoCap from "../../components/Tours/Student/TourInfoCap"
+import Swal from "sweetalert2"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 
-// Interface defining the structure for the comments
+/**
+ * Interface defining the structure for the comments
+ */
 interface Comentario {
-  id: number;
-  texto: string;
-  fecha: string;
-  role: string;
-  comment_active: boolean;
+  id: number
+  texto: string
+  fecha: string
+  role: string
+  comment_active: boolean
 }
 
-const InfoCapitulo: React.FC = () => {
-  const navigate = useNavigate();  // Hook for navigating to different routes
-  const location = useLocation();  // Hook for accessing location state passed via navigation
+/**
+ * Component for displaying chapter information and comments
+ */
+const InfoChapter: React.FC = () => {
+  const navigate = useNavigate() // Hook for navigating to different routes
+  const location = useLocation() // Hook for accessing location state passed via navigation
 
   // Destructure data passed from the previous page
-  const { task_id, endTask, endTime, NameCapitulo } = location.state || {};
+  const { task_id, endTask, endTime, NameCapitulo } = location.state || {}
 
   // States for managing comment text, previous comments, user ID, and whether the input is blocked
-  const [comentario, setComentario] = useState<string>('');  // State for current comment text
-  const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]);  // State for storing previous comments
-  const [userId, setUserId] = useState<number | null>(null);  // State for storing the user ID
-  const [inputBloqueado, setInputBloqueado] = useState<boolean>(true);  // State for disabling the input field
+  const [comentario, setComentario] = useState<string>("") // State for current comment text
+  const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]) // State for storing previous comments
+  const [userId, setUserId] = useState<number | null>(null) // State for storing the user ID
+  const [inputBloqueado, setInputBloqueado] = useState<boolean>(true) // State for disabling the input field
 
-  // Determina si el componente de escritura y botones deben estar deshabilitados.
-  // Si existe al menos un comentario y su propiedad comment_active es false, se deshabilita.
-  const isComentarioBloqueado = comentariosPrevios.length > 0 && comentariosPrevios[0].comment_active === false;
+  // Determines if the writing component and buttons should be disabled.
+  // If there is at least one comment and its comment_active property is false, it is disabled.
+  const isComentarioBloqueado = comentariosPrevios.length > 0 && comentariosPrevios[0].comment_active === false
 
-  // Function to check whether the button should be disabled based on the task end time
+  /**
+   * Function to check whether the button should be disabled based on the task end time
+   */
   const isButtonDisabled = (): boolean => {
-    const currentDate = new Date();
-    const endDate = new Date(endTask);  // Convert the passed endTask date into a Date object
-    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()); // Strip the time for current date comparison
+    const currentDate = new Date()
+    const endDate = new Date(endTask) // Convert the passed endTask date into a Date object
+    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) // Strip the time for current date comparison
 
-    const currentHour = currentDate.getHours();
-    const currentMinutes = currentDate.getMinutes();
-    const currentSeconds = currentDate.getSeconds();
+    const currentHour = currentDate.getHours()
+    const currentMinutes = currentDate.getMinutes()
+    const currentSeconds = currentDate.getSeconds()
 
     // Format the current time into HH:MM:SS
-    const formattedCurrentTime = `${currentHour.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
-    const formattedCurrentDateTime = `${currentDateOnly.toISOString().split('T')[0]} ${formattedCurrentTime}`;
+    const formattedCurrentTime = `${currentHour.toString().padStart(2, "0")}:${currentMinutes.toString().padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
+    const formattedCurrentDateTime = `${currentDateOnly.toISOString().split("T")[0]} ${formattedCurrentTime}`
 
     // Format the task's end time for comparison
-    const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()));
-    const formattedEndDateTime = `${endDateOnly.toISOString().split('T')[0]} ${endTime || ''}`;
+    const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()))
+    const formattedEndDateTime = `${endDateOnly.toISOString().split("T")[0]} ${endTime || ""}`
 
     // Return true if the task's end date/time is in the past
-    if (isNaN(endDateOnly.getTime())) return true;
-    return formattedCurrentDateTime > formattedEndDateTime;
-  };
+    if (isNaN(endDateOnly.getTime())) return true
+    return formattedCurrentDateTime > formattedEndDateTime
+  }
 
-  // Function to format dates into a user-friendly format (DD/MM/YYYY)
+  /**
+   * Function to format dates into a user-friendly format (DD/MM/YYYY)
+   */
   const formatearFecha = (fecha: string): string => {
-    const date = new Date(fecha);
-    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-  };
+    const date = new Date(fecha)
+    return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`
+  }
 
-  // Function to load the previous comments for the task
+  /**
+   * Function to load the previous comments for the task
+   */
   const cargarComentarios = async () => {
-    if (!task_id || !userId) return;  // If task_id or userId are missing, do nothing
+    if (!task_id || !userId) return // If task_id or userId are missing, do nothing
 
     try {
       // Fetch the comments using the task_id and user_id
-      const comentarios: ComentarioData = await getComentarios(task_id, userId);
+      const comentarios: ComentarioData = await getComentarios(task_id, userId)
 
       // Map the fetched comments into the required format
       const comentariosFormateados = comentarios.comments.map((comment) => ({
-        id: comment.comment_id, // ID único del comentario
+        id: comment.comment_id, // Unique comment ID
         texto: comment.comment,
         fecha: formatearFecha(comment.datecomment),
         role: comment.role,
         comment_active: comment.comment_active,
-      }));
+      }))
 
       // Update state with formatted comments
-      setComentariosPrevios(comentariosFormateados);
+      setComentariosPrevios(comentariosFormateados)
 
       // Check if the first comment is from the student and block input accordingly
-      if (comentariosFormateados.length > 0 && comentariosFormateados[0].role === 'Estudiante') {
-        setInputBloqueado(true);
+      if (comentariosFormateados.length > 0 && comentariosFormateados[0].role === "Estudiante") {
+        setInputBloqueado(true)
       } else {
-        setInputBloqueado(false);
+        setInputBloqueado(false)
       }
     } catch (error) {
       // In case of error, clear comments and block input by default
-      setComentariosPrevios([]);
-      setInputBloqueado(true);
+      setComentariosPrevios([])
+      setInputBloqueado(true)
     }
-  };
+  }
 
-  // Hook to load the user profile data on component mount
+  /**
+   * Hook to load the user profile data on component mount
+   */
   useEffect(() => {
     const cargarPerfil = async () => {
       try {
-        const perfilData: PerfilData = await getDatosPerfil();  // Fetch user profile data
-        setUserId(perfilData.user_id);  // Set the user ID from the profile data
+        const perfilData: PerfilData = await getDatosPerfil() // Fetch user profile data
+        setUserId(perfilData.user_id) // Set the user ID from the profile data
       } catch (error) {
         // Show error alert if profile data cannot be fetched
         Swal.fire({
-          title: 'Error',
-          text: 'Hubo un problema al obtener los datos del perfil',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
+          title: "Error",
+          text: "Hubo un problema al obtener los datos del perfil",
+          icon: "error",
+          confirmButtonText: "OK",
+        })
       }
-    };
+    }
 
-    cargarPerfil();  // Call the function to load profile data
-  }, []);
+    cargarPerfil() // Call the function to load profile data
+  }, [])
 
-  // Hook to load comments whenever task_id or userId changes
+  /**
+   * Hook to load comments whenever task_id or userId changes
+   */
   useEffect(() => {
-    cargarComentarios();  // Load the comments after the component mounts
-  }, [task_id, userId]);
+    cargarComentarios() // Load the comments after the component mounts
+  }, [task_id, userId])
 
-  // Handle changes in the comment textarea input
+  /**
+   * Handle changes in the comment textarea input
+   */
   const handleComentarioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setComentario(e.target.value);
-  };
+    setComentario(e.target.value)
+  }
 
-  // Function to handle sending the comment
+  /**
+   * Function to handle sending the comment
+   */
   const handleEnviarComentario = async () => {
     if (!task_id || !userId) {
       // Show error if task_id or user_id are missing
       Swal.fire({
-        title: 'Error',
-        text: 'Datos de la tarea o del usuario no disponibles',
-        icon: 'error',
-        confirmButtonText: 'OK',
+        title: "Error",
+        text: "Datos de la tarea o del usuario no disponibles",
+        icon: "error",
+        confirmButtonText: "OK",
         customClass: {
-          confirmButton: 'bg-red-500 text-white px-4 py-2 rounded-md',
+          confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
         },
-      });
-      return;
+      })
+      return
     }
 
     // Prepare the comment data
     const commentData = {
       comment: comentario,
-      role: 'student',
+      role: "student",
       user_id: userId,
-    };
+    }
 
     try {
       // Attempt to send the comment via the API
-      await enviaComentario(task_id, commentData);
-      setComentario('');  // Clear the comment input
-      await cargarComentarios();  // Reload comments after submitting
+      await enviaComentario(task_id, commentData)
+      setComentario("") // Clear the comment input
+      await cargarComentarios() // Reload comments after submitting
       // Show success alert
       Swal.fire({
-        title: 'Comentario enviado',
-        text: 'El comentario se ha enviado exitosamente',
-        icon: 'success',
-        confirmButtonText: 'OK',
+        title: "Comentario enviado",
+        text: "El comentario se ha enviado exitosamente",
+        icon: "success",
+        confirmButtonText: "OK",
         customClass: {
-          confirmButton: 'bg-green-500 text-white px-4 py-2 rounded-md',
+          confirmButton: "bg-green-500 text-white px-4 py-2 rounded-md",
         },
-      });
+      })
     } catch (error: any) {
       // Show error alert if there was an issue submitting the comment
       Swal.fire({
-        title: 'Error',
-        text: error.message || 'Hubo un error al enviar el comentario',
-        icon: 'error',
-        confirmButtonText: 'OK',
+        title: "Error",
+        text: error.message || "Hubo un error al enviar el comentario",
+        icon: "error",
+        confirmButtonText: "OK",
         customClass: {
-          confirmButton: 'bg-red-500 text-white px-4 py-2 rounded-md',
+          confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
         },
-      });
+      })
     }
-  };
+  }
 
   return (
     <>
@@ -193,8 +213,8 @@ const InfoCapitulo: React.FC = () => {
         </button>
       </div>
 
-      {/* Botón para iniciar el recorrido */}
-      <AyudaInfoCap />
+      {/* Tour start button */}
+      <TourInfoCap />
 
       <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
         {/* Display previous comments */}
@@ -227,7 +247,7 @@ const InfoCapitulo: React.FC = () => {
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={5}
             placeholder="Escribe tu comentario aquí..."
-            disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado}  // Disable textarea if input is blocked or button is disabled
+            disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado} // Disable textarea if input is blocked or button is disabled
           />
           <div className="flex flex-col md:flex-row justify-between items-center mt-1 md:mt-4">
             {/* Show a message if the button is disabled */}
@@ -244,12 +264,13 @@ const InfoCapitulo: React.FC = () => {
             {/* Submit button to send the comment */}
             <button
               id="enviar-button"
-              className={`px-4 py-2 rounded-md ml-auto ${inputBloqueado || isButtonDisabled() || isComentarioBloqueado
-                ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-blue-500 text-white hover:bg-blue-600'
-                }`}
+              className={`px-4 py-2 rounded-md ml-auto ${
+                inputBloqueado || isButtonDisabled() || isComentarioBloqueado
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
               onClick={handleEnviarComentario}
-              disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado}  // Disable the button based on the condition
+              disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado} // Disable the button based on the condition
             >
               Enviar Comentario
             </button>
@@ -257,7 +278,7 @@ const InfoCapitulo: React.FC = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default InfoCapitulo;
+export default InfoChapter

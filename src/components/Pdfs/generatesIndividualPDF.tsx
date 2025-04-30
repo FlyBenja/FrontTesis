@@ -23,7 +23,7 @@ interface EstudianteIndiviProps {
  * 
  * @returns void
  */
-const generaPDFIndividual = async (
+const generatesIndividualPDF = async (
   estudiante: EstudianteIndiviProps['estudiante'],
   selectedAño: number,
   selectedCurso: number
@@ -199,4 +199,4 @@ const generaPDFIndividual = async (
   doc.save(`Reporte_${student.name}.pdf`); // "Report for"
 };
 
-export default generaPDFIndividual;
+export default generatesIndividualPDF;

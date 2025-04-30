@@ -3,16 +3,16 @@ import React, { useState } from 'react';
 /**
  * Interface defining the properties required by the CrearCoordinador component.
  */
-interface CrearCoordinadorProps {
+interface CreateCoordinatorProps {
   isOpen: boolean; // Indicates if the modal is visible.
   onClose: () => void; // Function to close the modal.
-  onCreateCoordinador: (codigo: string, nombre: string, correo: string, sedeId: number) => void; // Function to create the coordinator.
+  CreateCoordinator: (codigo: string, nombre: string, correo: string, sedeId: number) => void; // Function to create the coordinator.
 }
 
 /**
  * It uses local state to manage form values and invokes a callback function when the form is submitted.
  */
-const CrearCoordinador: React.FC<CrearCoordinadorProps> = ({ isOpen, onClose, onCreateCoordinador }) => {
+const CreateCoordinator: React.FC<CreateCoordinatorProps> = ({ isOpen, onClose, CreateCoordinator }) => {
   // Local state to store form values for code, name, email, and department ID
   const [codigo, setCodigo] = useState<string>('');
   const [nombre, setNombre] = useState<string>('');
@@ -21,12 +21,12 @@ const CrearCoordinador: React.FC<CrearCoordinadorProps> = ({ isOpen, onClose, on
 
   /**
    * Handles the form submission. It checks if all fields are filled, 
-   * and if so, it invokes the onCreateCoordinador callback with the form values.
+   * and if so, it invokes the CreateCoordinator callback with the form values.
    * After submission, it resets the form and closes the modal.
    */
   const handleSubmit = () => {
     if (codigo && nombre && correo) {
-      onCreateCoordinador(codigo, nombre, correo, sedeId);
+      CreateCoordinator(codigo, nombre, correo, sedeId);
       setCodigo('');
       setNombre('');
       setCorreo('');
@@ -116,4 +116,4 @@ const CrearCoordinador: React.FC<CrearCoordinadorProps> = ({ isOpen, onClose, on
   );
 };
 
-export default CrearCoordinador;
+export default CreateCoordinator;

@@ -1,155 +1,181 @@
-import React, { useState, useEffect } from 'react';
-import { getRevisores } from '../../ts/ThesisCoordinatorandReviewer/GetReviewers';
-import { getDatosPerfil, PerfilData } from "../../ts/General/GetProfileData";
-import { activaUsuario } from '../../ts/General/ActivateUser';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import ActivaRevisores from '../../components/Switchers/ActivateReviewers';
-import CrearRevisor from '../../components/Modals/CreateReviewer';
-import Swal from 'sweetalert2';
+import type React from "react"
+import { useState, useEffect } from "react"
+import { getRevisores } from "../../ts/ThesisCoordinatorandReviewer/GetReviewers"
+import { getDatosPerfil, type PerfilData } from "../../ts/General/GetProfileData"
+import { activaUsuario } from "../../ts/General/ActivateUser"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import ActivaRevisores from "../../components/Switchers/ActivateReviewers"
+import CrearRevisor from "../../components/Modals/CreateReviewer"
+import Swal from "sweetalert2"
 
-const Revisores: React.FC = () => {
-  const [revisores, setRevisores] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedRevisor, setSelectedRevisor] = useState<any | null>(null);
-  const [userIdFromProfile, setUserIdFromProfile] = useState<number | null>(null); // State for user_id
+/**
+ * Component for managing thesis reviewers
+ */
+const Reviewers: React.FC = () => {
+  // State declarations
+  const [revisores, setRevisores] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [selectedRevisor, setSelectedRevisor] = useState<any | null>(null)
+  const [userIdFromProfile, setUserIdFromProfile] = useState<number | null>(null) // State for user_id
 
   // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const [revisoresPerPage, setRevisoresPerPage] = useState(5);
-  const [maxPageButtons, setMaxPageButtons] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [revisoresPerPage, setRevisoresPerPage] = useState(5)
+  const [maxPageButtons, setMaxPageButtons] = useState(10)
 
+  /**
+   * Fetch user profile and reviewers data when component mounts
+   */
   useEffect(() => {
-    fetchUserProfile(); // Fetch user profile on initial load
-    fetchRevisores(); // Fetch revisores once user profile is available
-  }, [userIdFromProfile]); // Add userIdFromProfile as dependency
+    fetchUserProfile() // Fetch user profile on initial load
+    fetchRevisores() // Fetch revisores once user profile is available
+  }, [userIdFromProfile]) // Add userIdFromProfile as dependency
 
-  // Fetch user profile data
+  /**
+   * Fetch user profile data
+   */
   const fetchUserProfile = async () => {
     try {
-      const perfilData: PerfilData = await getDatosPerfil();
-      setUserIdFromProfile(perfilData.user_id); // Set user_id in state
+      const perfilData: PerfilData = await getDatosPerfil()
+      setUserIdFromProfile(perfilData.user_id) // Set user_id in state
     } catch (err) {
-      setError('Error al obtener los datos del perfil');
-      setLoading(false);
+      setError("Error al obtener los datos del perfil")
+      setLoading(false)
     }
-  };
+  }
 
-  // Fetch revisores data
+  /**
+   * Fetch reviewers data
+   */
   const fetchRevisores = async () => {
-    if (userIdFromProfile === null) return; // Ensure user_id is available before fetching revisores
+    if (userIdFromProfile === null) return // Ensure user_id is available before fetching revisores
     try {
-      const data = await getRevisores();
-      const filteredRevisores = data.filter(revisor => revisor.user_id !== userIdFromProfile); // Exclude current user
-      setRevisores(filteredRevisores);
-      setLoading(false);
+      const data = await getRevisores()
+      const filteredRevisores = data.filter((revisor) => revisor.user_id !== userIdFromProfile) // Exclude current user
+      setRevisores(filteredRevisores)
+      setLoading(false)
     } catch (err: any) {
-      setError(err.message);
-      setLoading(false);
+      setError(err.message)
+      setLoading(false)
     }
-  };
+  }
 
   // Pagination logic
-  const indexOfLastRevisor = currentPage * revisoresPerPage;
-  const indexOfFirstRevisor = indexOfLastRevisor - revisoresPerPage;
-  const currentRevisores = revisores.slice(indexOfFirstRevisor, indexOfLastRevisor);
+  const indexOfLastRevisor = currentPage * revisoresPerPage
+  const indexOfFirstRevisor = indexOfLastRevisor - revisoresPerPage
+  const currentRevisores = revisores.slice(indexOfFirstRevisor, indexOfLastRevisor)
 
-  const totalPages = Math.ceil(revisores.length / revisoresPerPage);
+  const totalPages = Math.ceil(revisores.length / revisoresPerPage)
 
+  /**
+   * Handle pagination
+   */
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
+    setCurrentPage(pageNumber)
+  }
 
-  // Effect hook to handle window resize and adjust page settings accordingly
+  /**
+   * Adjust page configuration based on window size
+   */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setRevisoresPerPage(8); // Ajusta el número de elementos por página en pantallas pequeñas
-        setMaxPageButtons(5); // Ajusta la cantidad de botones de paginación en pantallas pequeñas
+        setRevisoresPerPage(8) // Ajusta el número de elementos por página en pantallas pequeñas
+        setMaxPageButtons(5) // Ajusta la cantidad de botones de paginación en pantallas pequeñas
       } else {
-        setRevisoresPerPage(5); // Ajusta el número de elementos por página en pantallas grandes
-        setMaxPageButtons(10); // Ajusta la cantidad de botones de paginación en pantallas grandes
+        setRevisoresPerPage(5) // Ajusta el número de elementos por página en pantallas grandes
+        setMaxPageButtons(10) // Ajusta la cantidad de botones de paginación en pantallas grandes
       }
-    };
+    }
 
-    handleResize();
+    handleResize()
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize)
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
-
+  /**
+   * Handle reviewer activation/deactivation
+   */
   const handleActiveChange = async (userId: number, newStatus: boolean) => {
     const updatedRevisores = revisores.map((revisor) =>
-      revisor.user_id === userId ? { ...revisor, active: newStatus } : revisor
-    );
-    setRevisores(updatedRevisores);
+      revisor.user_id === userId ? { ...revisor, active: newStatus } : revisor,
+    )
+    setRevisores(updatedRevisores)
 
     if (!newStatus) {
       const result = await Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'Este revisor no podrá iniciar sesión, ¿aún deseas desactivarlo?',
-        icon: 'warning',
+        title: "¿Estás seguro?",
+        text: "Este revisor no podrá iniciar sesión, ¿aún deseas desactivarlo?",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Sí, desactivar',
-        cancelButtonText: 'No, cancelar',
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#d33',
-      });
+        confirmButtonText: "Sí, desactivar",
+        cancelButtonText: "No, cancelar",
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#d33",
+      })
 
       if (!result.isConfirmed) {
-        setRevisores(revisores);
-        return;
+        setRevisores(revisores)
+        return
       }
     }
 
     try {
-      const response = await activaUsuario(userId, newStatus);
+      const response = await activaUsuario(userId, newStatus)
       Swal.fire({
-        title: 'Éxito',
+        title: "Éxito",
         text: response.message,
-        icon: 'success',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#28a745',
-      });
+        icon: "success",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#28a745",
+      })
     } catch (err) {
       setRevisores((prev) =>
-        prev.map((revisor) =>
-          revisor.user_id === userId ? { ...revisor, active: !newStatus } : revisor
-        )
-      );
-      const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
+        prev.map((revisor) => (revisor.user_id === userId ? { ...revisor, active: !newStatus } : revisor)),
+      )
+      const errorMessage = err instanceof Error ? err.message : "Error desconocido"
       Swal.fire({
-        title: 'Error',
+        title: "Error",
         text: errorMessage,
-        icon: 'error',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#d33',
-      });
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#d33",
+      })
     }
-  };
+  }
 
+  /**
+   * Open the reviewer creation/edit modal
+   */
   const openModal = (revisor: any | null = null) => {
-    setSelectedRevisor(revisor);
-    setShowModal(true);
-  };
+    setSelectedRevisor(revisor)
+    setShowModal(true)
+  }
 
+  /**
+   * Close the reviewer creation/edit modal
+   */
   const closeModal = () => {
-    setShowModal(false);
-    setSelectedRevisor(null);
-  };
+    setShowModal(false)
+    setSelectedRevisor(null)
+  }
 
+  /**
+   * Handle reviewer creation/edit completion
+   */
   const handleRevisorCreated = () => {
-    fetchRevisores(); // Recargar la lista después de crear/editar un revisor
-    closeModal();
-  };
+    fetchRevisores() // Recargar la lista después de crear/editar un revisor
+    closeModal()
+  }
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div>Cargando...</div>
+  if (error) return <div>Error: {error}</div>
 
   return (
     <>
@@ -184,7 +210,10 @@ const Revisores: React.FC = () => {
                     {revisor.carnet}
                   </td>
                   <td className="py-2 px-4 text-center flex items-center justify-center space-x-2">
-                    <button className="px-4 py-2 bg-yellow-300 text-black rounded-md" onClick={() => openModal(revisor)}>
+                    <button
+                      className="px-4 py-2 bg-yellow-300 text-black rounded-md"
+                      onClick={() => openModal(revisor)}
+                    >
                       Editar
                     </button>
                     <ActivaRevisores
@@ -212,7 +241,7 @@ const Revisores: React.FC = () => {
             <button
               key={i + 1}
               onClick={() => paginate(i + 1)}
-              className={`mx-1 px-3 py-1 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 hover:bg-blue-100'} dark:bg-boxdark dark:text-white`}
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === i + 1 ? "bg-blue-600 text-white" : "bg-white text-blue-600 hover:bg-blue-100"} dark:bg-boxdark dark:text-white`}
             >
               {i + 1}
             </button>
@@ -229,7 +258,7 @@ const Revisores: React.FC = () => {
 
       {showModal && <CrearRevisor onClose={handleRevisorCreated} revisor={selectedRevisor} />}
     </>
-  );
-};
+  )
+}
 
-export default Revisores;
+export default Reviewers

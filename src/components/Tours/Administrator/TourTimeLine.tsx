@@ -2,14 +2,14 @@ import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css'; 
 
 /**
- * AyudaTimeLine Component
+ * TourTimeLine Component
  * 
  * This component provides a guided tour feature to help users navigate through the timeline page. It uses 
  * the 'driver.js' library to create an interactive tour of the page elements. The tour highlights the 
  * key elements such as the back button, print report button, view tasks button, and timeline events.
  * 
  */
-const AyudaTimeLine = () => {
+const TourTimeLine = () => {
   /**
    * Start Tour Function
    * 
@@ -105,4 +105,4 @@ const AyudaTimeLine = () => {
   );
 };
 
-export default AyudaTimeLine;
+export default TourTimeLine;

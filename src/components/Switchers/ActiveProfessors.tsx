@@ -1,20 +1,20 @@
 import React from 'react';
 
 /**
- * Props for the ActivaCatedraticos component.
+ * Props for the ActiveProfessors component.
  */
-interface ActivaCatedraticosProps {
+interface ActiveProfessorsProps {
   enabled: boolean;
   onChange: () => void;
   uniqueId: string; // We add a uniqueId to make the input id unique
 }
 
 /**
- * ActivaCatedraticos is a toggle switch component used to enable or disable a feature
+ * ActiveProfessors is a toggle switch component used to enable or disable a feature
  * (e.g., activation of 'catedráticos'). It uses Tailwind CSS for styling and animation.
  *
  */
-const ActivaCatedraticos: React.FC<ActivaCatedraticosProps> = ({ enabled, onChange, uniqueId }) => {
+const ActiveProfessors: React.FC<ActiveProfessorsProps> = ({ enabled, onChange, uniqueId }) => {
   return (
     <div>
       {/* Label linked to the toggle input */}
@@ -48,4 +48,4 @@ const ActivaCatedraticos: React.FC<ActivaCatedraticosProps> = ({ enabled, onChan
   );
 };
 
-export default ActivaCatedraticos;
+export default ActiveProfessors;

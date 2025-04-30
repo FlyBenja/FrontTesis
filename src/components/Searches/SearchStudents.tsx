@@ -5,21 +5,21 @@ import { getEstudiantePorCarnet } from "../../ts/Administrator/GetStudentCard"
 import { getEstudiantes } from "../../ts/Administrator/GetStudents"
 
 /**
- * `BuscadorEstudiantes` is a component that allows searching for students by their student card number or by filtering 
+ * `SearchStudents` is a component that allows searching for students by their student card number or by filtering 
  * students based on selected year and course.
  * 
  */
-interface BuscadorEstudiantesProps {
+interface SearchStudentsProps {
   selectedAño: string // Selected year for student filtering
   selectedCurso: string // Selected course for student filtering
   onSearchResults: (estudiantes: any[]) => void // Callback to return search results
 }
 
 /**
- * `BuscadorEstudiantes` is a functional React component that allows searching for students either by their student card number
+ * `SearchStudents` is a functional React component that allows searching for students either by their student card number
  * or by filtering based on the selected year and course.
  */
-const BuscadorEstudiantes: React.FC<BuscadorEstudiantesProps> = ({ selectedAño, selectedCurso, onSearchResults }) => {
+const SearchStudents: React.FC<SearchStudentsProps> = ({ selectedAño, selectedCurso, onSearchResults }) => {
   const [searchCarnet, setSearchCarnet] = useState<string>("") // State to hold the value of the student card input
   const [isSearching, setIsSearching] = useState<boolean>(false) // State to track if a search is in progress
 
@@ -91,4 +91,4 @@ const BuscadorEstudiantes: React.FC<BuscadorEstudiantesProps> = ({ selectedAño,
   )
 }
 
-export default BuscadorEstudiantes
+export default SearchStudents

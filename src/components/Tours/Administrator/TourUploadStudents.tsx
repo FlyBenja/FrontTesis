@@ -6,7 +6,7 @@ import 'driver.js/dist/driver.css';
  * This tour walks the user through selecting a course, uploading an Excel file,
  * confirming the upload, and downloading a template if necessary.
  */
-const AyudaSubirEstudiantes = () => {
+const TourUploadStudents = () => {
   /**
    * Starts the guided tour by initializing the driver.js object and defining the steps.
    * Each step highlights an element and provides a description for the user.
@@ -101,4 +101,4 @@ const AyudaSubirEstudiantes = () => {
   );
 };
 
-export default AyudaSubirEstudiantes;
+export default TourUploadStudents;

@@ -4,9 +4,13 @@ import { getRevisionesPendientes } from "../../ts/ThesisCoordinatorandReviewer/G
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 
-const SolicitudRevisiones: React.FC = () => {
+/**
+ * Component for displaying pending thesis review requests
+ */
+const RequestReviews: React.FC = () => {
   const navigate = useNavigate()
 
+  // State declarations
   const [revisiones, setRevisiones] = useState<any[]>([]) // Datos de las revisiones
   const [searchCarnet, setSearchCarnet] = useState("") // Campo de búsqueda del carnet
   const [order, setOrder] = useState<"asc" | "desc">("asc") // Orden de las revisiones
@@ -18,7 +22,9 @@ const SolicitudRevisiones: React.FC = () => {
   const [revisionesPerPage, setRevisionesPerPage] = useState(5) // Default to 5 items per page
   const [maxPageButtons, setMaxPageButtons] = useState(10) // Default to 10 page buttons
 
-  // Obtener las revisiones pendientes desde la API
+  /**
+   * Fetch pending reviews from the API
+   */
   const fetchRevisiones = useCallback(async (order: "asc" | "desc", carnet: string) => {
     try {
       const revisions = await getRevisionesPendientes(order, carnet)
@@ -34,7 +40,9 @@ const SolicitudRevisiones: React.FC = () => {
     }
   }, [])
 
-  // Efecto para cargar las revisiones cuando cambia el carnet o el orden
+  /**
+   * Load reviews when carnet or order changes
+   */
   useEffect(() => {
     const carnetValue = searchCarnet.length >= 10 ? searchCarnet : "" // Validar formato del carnet (longitud >= 10)
     fetchRevisiones(order, carnetValue) // Ejecutar la API con carnet vacío o el carnet completo
@@ -47,16 +55,23 @@ const SolicitudRevisiones: React.FC = () => {
 
   const totalPages = Math.ceil(filteredRevisiones.length / revisionesPerPage)
 
+  /**
+   * Handle pagination
+   */
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
 
-  // Cambiar el orden de las revisiones
+  /**
+   * Change the sort order of reviews
+   */
   const handleChangeOrder = () => {
     setOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"))
   }
 
-  // Formatear la fecha de la solicitud
+  /**
+   * Format date to local format
+   */
   const formatDate = (date: string) => {
     const formattedDate = new Date(date)
     return (
@@ -70,17 +85,24 @@ const SolicitudRevisiones: React.FC = () => {
     )
   }
 
+  /**
+   * Navigate to student review details page
+   */
   const handleVerDetalle = (userId: number) => {
     navigate(`/coordinadortesis/revision-estudiante`, { state: { userId } })
   }
 
-  // Agregar console.log para mostrar la longitud del carnet ingresado
+  /**
+   * Handle search input change
+   */
   const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newCarnet = e.target.value
     setSearchCarnet(newCarnet) // Actualizar el estado
   }
 
-  // Effect hook to handle window resize and adjust page settings accordingly
+  /**
+   * Adjust page configuration based on window size
+   */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -199,5 +221,4 @@ const SolicitudRevisiones: React.FC = () => {
   )
 }
 
-export default SolicitudRevisiones
-
+export default RequestReviews

@@ -6,35 +6,44 @@ import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import EnviaComentarios from "../../components/Modals/SendComment"
 
-const RevisionEstudianteCreaComentarios: React.FC = () => {
+/**
+ * Component for reviewers to create comments on student theses
+ */
+const ReviewStudentCreateComments: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const [revisiones, setRevisiones] = useState<any[]>([])
+  const [reviews, setReviews] = useState<any[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [revisionThesisId, setRevisionThesisId] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const userId = location.state?.userId
 
+  /**
+   * Effect hook to fetch review data when the component mounts
+   */
   useEffect(() => {
     if (userId) {
-      const fetchRevisiones = async () => {
+      const fetchReviews = async () => {
         setIsLoading(true)
         try {
           const data = await getComentariosRevision(userId)
-          setRevisiones(data)
-          console.log("Revisiones data:", data) // For debugging
+          setReviews(data)
+          console.log("Reviews data:", data) // For debugging
         } catch (error) {
-          console.error("Error al obtener detalles de revisiones pendientes:", error)
+          console.error("Error getting pending review details:", error)
         } finally {
           setIsLoading(false)
         }
       }
 
-      fetchRevisiones()
+      fetchReviews()
     }
   }, [userId])
 
+  /**
+   * Handles downloading files
+   */
   const handleDownload = async (url: string, filename: string) => {
     try {
       const response = await fetch(url)
@@ -46,20 +55,29 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
       link.click()
       document.body.removeChild(link)
     } catch (error) {
-      console.error("Error al descargar el archivo:", error)
+      console.error("Error downloading the file:", error)
     }
   }
 
-  const handleCalificar = (revision_thesis_id: number) => {
+  /**
+   * Opens the modal to grade a review
+   */
+  const handleGrade = (revision_thesis_id: number) => {
     setRevisionThesisId(revision_thesis_id)
     setIsModalOpen(true)
   }
 
+  /**
+   * Closes the comment modal
+   */
   const closeModal = () => {
     setIsModalOpen(false)
     setRevisionThesisId(null)
   }
 
+  /**
+   * Formats a date string into short and long formats
+   */
   const formatDate = (dateString: string) => {
     if (!dateString) return { short: "Fecha no disponible", long: "Fecha no disponible" }
 
@@ -89,9 +107,9 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
     }
   }
 
-  // Get student info from the first revision (assuming all revisions are from the same student)
-  const studentInfo = revisiones.length > 0 ? revisiones[0].user : null
-  const campusInfo = revisiones.length > 0 ? revisiones[0].user.location : null
+  // Get student info from the first review (assuming all reviews are from the same student)
+  const studentInfo = reviews.length > 0 ? reviews[0].user : null
+  const campusInfo = reviews.length > 0 ? reviews[0].user.location : null
 
   return (
     <>
@@ -110,7 +128,7 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
-      ) : revisiones.length > 0 ? (
+      ) : reviews.length > 0 ? (
         <div className="space-y-6">
           {/* Student Information Card - Shown only once */}
           <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden">
@@ -169,31 +187,30 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
             </div>
           </div>
 
-          {/* Revisions List - Each revision shown separately */}
-          <h2 className="text-xl font-bold text-gray-800 dark:text-white mt-8 mb-4">
-            Revisiones ({revisiones.length})
-          </h2>
+          {/* Reviews List - Each review shown separately */}
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white mt-8 mb-4">Revisiones ({reviews.length})</h2>
 
           <div className="grid gap-6">
-            {revisiones.map((revision) => (
+            {reviews.map((review) => (
               <div
-                key={revision.revision_thesis_id}
+                key={review.revision_thesis_id}
                 className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg"
               >
                 {/* Header with status */}
                 <div
-                  className={`px-6 py-3 flex justify-between items-center ${revision.active_process ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30"}`}
+                  className={`px-6 py-3 flex justify-between items-center ${review.active_process ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30"}`}
                 >
                   <h2 className="text-lg font-bold text-gray-800 dark:text-white">
-                    Revisión #{revision.revision_thesis_id}
+                    Revisión #{review.revision_thesis_id}
                   </h2>
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${revision.active_process
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      review.active_process
                         ? "bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200"
                         : "bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200"
-                      }`}
+                    }`}
                   >
-                    {revision.active_process ? "En proceso" : "Finalizado"}
+                    {review.active_process ? "En proceso" : "Finalizado"}
                   </span>
                 </div>
 
@@ -204,7 +221,7 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Datos del Revisor</h3>
                       <div className="space-y-3">
-                        {revision.AssignedReviews.map((assignedReview: any) => (
+                        {review.AssignedReviews.map((assignedReview: any) => (
                           <div
                             key={assignedReview.assigned_review_id}
                             className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
@@ -224,24 +241,24 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Fecha de Revisión</h3>
                       <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                        {revision.approvaltheses &&
-                          revision.approvaltheses[0]?.status === "approved" &&
-                          revision.approvaltheses[0]?.date_approved ? (
+                        {review.approvaltheses &&
+                        review.approvaltheses[0]?.status === "approved" &&
+                        review.approvaltheses[0]?.date_approved ? (
                           <div>
                             <p className="text-base font-medium text-gray-800 dark:text-white">
-                              {formatDate(new Date(revision.approvaltheses[0].date_approved).toString()).short}
+                              {formatDate(new Date(review.approvaltheses[0].date_approved).toString()).short}
                             </p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {formatDate(new Date(revision.approvaltheses[0].date_approved).toString()).long}
+                              {formatDate(new Date(review.approvaltheses[0].date_approved).toString()).long}
                             </p>
                           </div>
                         ) : (
                           <div>
                             <p className="text-base font-medium text-gray-800 dark:text-white">
-                              {formatDate(revision.AssignedReviews[0]?.date_assigned || "").short}
+                              {formatDate(review.AssignedReviews[0]?.date_assigned || "").short}
                             </p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {formatDate(revision.AssignedReviews[0]?.date_assigned || "").long}
+                              {formatDate(review.AssignedReviews[0]?.date_assigned || "").long}
                             </p>
                           </div>
                         )}
@@ -255,11 +272,11 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
                       <MessageSquare className="mr-2 h-5 w-5" /> Comentarios
                     </h3>
 
-                    {revision.AssignedReviews.some(
+                    {review.AssignedReviews.some(
                       (review: any) => review.commentsRevisions && review.commentsRevisions.length > 0,
                     ) ? (
                       <div className="space-y-4">
-                        {revision.AssignedReviews.map((assignedReview: any) =>
+                        {review.AssignedReviews.map((assignedReview: any) =>
                           assignedReview.commentsRevisions && assignedReview.commentsRevisions.length > 0 ? (
                             <div key={`comments-${assignedReview.assigned_review_id}`} className="space-y-3">
                               {assignedReview.commentsRevisions.map((comment: any, index: number) => (
@@ -298,20 +315,20 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
 
                   {/* Actions */}
                   <div className="mt-6 flex flex-wrap gap-4">
-                    {revision.thesis_dir && (
+                    {review.thesis_dir && (
                       <button
                         className="flex items-center px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200"
                         onClick={() =>
-                          handleDownload(revision.thesis_dir, `tesis_${revision.AssignedReviews[0].user.user_id}.pdf`)
+                          handleDownload(review.thesis_dir, `tesis_${review.AssignedReviews[0].user.user_id}.pdf`)
                         }
                       >
                         <Download className="mr-2 h-4 w-4" /> Descargar Tesis
                       </button>
                     )}
-                    {revision.active_process ? (
+                    {review.active_process ? (
                       <button
                         className="flex items-center px-5 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors duration-200"
-                        onClick={() => handleCalificar(revision.revision_thesis_id)}
+                        onClick={() => handleGrade(review.revision_thesis_id)}
                       >
                         <CheckCircle className="mr-2 h-4 w-4" /> Calificar
                       </button>
@@ -344,5 +361,4 @@ const RevisionEstudianteCreaComentarios: React.FC = () => {
   )
 }
 
-export default RevisionEstudianteCreaComentarios
-
+export default ReviewStudentCreateComments

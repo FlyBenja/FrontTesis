@@ -2,7 +2,7 @@ import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 
 /**
- * AyudaSubirCatedratico component
+ * TourUploadProffesor component
  * This component renders a help button that launches a guided tour using Driver.js
  * for assisting users in uploading a professor Excel file.
  *
@@ -14,7 +14,7 @@ import 'driver.js/dist/driver.css';
  * All tooltips and button texts are in Spanish as per UI requirements.
  *
  */
-const AyudaSubirCatedratico = () => {
+const TourUploadProffesor = () => {
   /**
    * Starts the guided tour using Driver.js
    * It defines the steps and UI targets for the onboarding help system.
@@ -96,4 +96,4 @@ const AyudaSubirCatedratico = () => {
   );
 };
 
-export default AyudaSubirCatedratico;
+export default TourUploadProffesor;

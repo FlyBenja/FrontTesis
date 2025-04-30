@@ -16,7 +16,7 @@ interface ChartData {
  * for each task based on the selected course and the user's associated 'sede' (campus).
  * It fetches the required data dynamically from backend services and updates the chart accordingly.
  */
-const TareasEstudiantes: React.FC = () => {
+const TasksStudents: React.FC = () => {
   // State to store the chart data (series and categories)
   const [chartData, setChartData] = useState<ChartData>({
     series: [
@@ -148,4 +148,4 @@ const TareasEstudiantes: React.FC = () => {
   );
 };
 
-export default TareasEstudiantes;
+export default TasksStudents;

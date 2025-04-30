@@ -8,7 +8,7 @@ import { getDatosPerfil, PerfilData } from '../../ts/General/GetProfileData';
  * The report includes student task submissions and their completion status.
  * 
  */
-const generaPDFGeneral = async (
+const generatePDFGeneral = async (
   selectedAño: number,
   selectedCurso: number
 ) => {
@@ -191,4 +191,4 @@ const generaPDFGeneral = async (
   doc.save(`Reporte_General_Año_${selectedAño}.pdf`);
 };
 
-export default generaPDFGeneral;
+export default generatePDFGeneral;

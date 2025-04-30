@@ -3,11 +3,11 @@ import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css'; 
 
 /**
- * AyudaCapitulos Component
+ * TourChapters Component
  * This component provides a guided tour for the user to help them navigate the "Capítulos" section.
  * It includes steps for interacting with elements such as the back button, comments section, and send comment button.
  */
-const AyudaCapitulos: React.FC = () => {
+const TourChapters: React.FC = () => {
   // Function to start the guided tour
   const startTour = () => {
     const driverObj = driver({
@@ -114,4 +114,4 @@ const AyudaCapitulos: React.FC = () => {
   );
 };
 
-export default AyudaCapitulos;
+export default TourChapters;

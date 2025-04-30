@@ -2,12 +2,14 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { getTimeLineEstudiante } from "../../../ts/General/GetTimeLineStudent"
-import AyudaTimeLine from '../../../components/Tours/Administrator/TourTimeLine';
+import TourTimeLine from "../../../components/Tours/Administrator/TourTimeLine"
 import Swal from "sweetalert2"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFIndividual from "../../../components/Pdfs/generatesIndividualPDF"
 
-// Defining the structure of a single event in the timeline
+/**
+ * Interface for a single event in the timeline
+ */
 interface TimeLineEvent {
   user_id: number
   typeEvent: string
@@ -16,6 +18,10 @@ interface TimeLineEvent {
   date: string
 }
 
+/**
+ * Timeline Component
+ * Displays a chronological timeline of student activities
+ */
 const TimeLine: React.FC = () => {
   // Retrieving current location and navigation from React Router
   const location = useLocation()
@@ -30,7 +36,9 @@ const TimeLine: React.FC = () => {
   const studentName = estudiante ? estudiante.userName : "Desconocido"
   const userId = estudiante ? estudiante.id : null
 
-  // Fetching the timeline events when the component mounts or userId changes
+  /**
+   * Fetching the timeline events when the component mounts or userId changes
+   */
   useEffect(() => {
     // If no valid userId is provided, display an error alert
     if (!userId) {
@@ -67,7 +75,9 @@ const TimeLine: React.FC = () => {
     fetchTimeline()
   }, [userId])
 
-  // Function to show SweetAlert messages
+  /**
+   * Function to show SweetAlert messages
+   */
   const showAlert = (type: "success" | "error", title: string, text: string) => {
     const confirmButtonColor = type === "success" ? "#28a745" : "#dc3545"
     Swal.fire({
@@ -79,14 +89,18 @@ const TimeLine: React.FC = () => {
     })
   }
 
-  // Function to handle PDF generation when the "Imprimir Reporte" button is clicked
+  /**
+   * Function to handle PDF generation when the "Imprimir Reporte" button is clicked
+   */
   const handlePrintPDF = () => {
     if (estudiante && selectedAño) {
       generaPDFIndividual(estudiante, selectedAño, selectedCurso) // Llamamos a la función que genera el PDF
     }
   }
 
-  // Responsive design: adjust container styles on window resize
+  /**
+   * Responsive design: adjust container styles on window resize
+   */
   useEffect(() => {
     const handleResize = () => {
       // Podemos agregar ajustes responsivos específicos aquí si es necesario
@@ -116,7 +130,7 @@ const TimeLine: React.FC = () => {
         </button>
 
         {/* Botón para iniciar el recorrido */}
-        <AyudaTimeLine />
+        <TourTimeLine />
       </div>
 
       <div className="mx-auto max-w-6xl px-6 -my-3">
@@ -194,9 +208,7 @@ const TimeLine: React.FC = () => {
             </table>
           )}
         </div>
-        <div>
-          
-        </div>
+        <div></div>
       </div>
     </>
   )

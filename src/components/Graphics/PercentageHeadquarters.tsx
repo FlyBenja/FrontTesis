@@ -16,7 +16,7 @@ interface ChartData {
  * for a specific 'sede' (campus) based on the user's profile information.
  * It fetches the required data from backend services and renders it dynamically.
  */
-const PorcentajeSede: React.FC = () => {
+const PercentageHeadquarters: React.FC = () => {
     // State to store chart data including series and labels
     const [chartData, setChartData] = useState<ChartData>({
         series: [],
@@ -102,4 +102,4 @@ const PorcentajeSede: React.FC = () => {
     );
 };
 
-export default PorcentajeSede;
+export default PercentageHeadquarters;

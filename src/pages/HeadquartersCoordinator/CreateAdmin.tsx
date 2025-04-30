@@ -4,10 +4,12 @@ import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getAdmins } from "../../ts/HeadquartersCoordinator/GetAdmins"
 import { deleteAdmin } from "../../ts/HeadquartersCoordinator/DeleteAdmin"
 import Swal from "sweetalert2"
-import AyudaCrearAdmin from "../../components/Tours/HeadquartersCoordinator/TourCreateAdmin"
+import TourCreateAdmin from "../../components/Tours/HeadquartersCoordinator/TourCreateAdmin"
 import CrearAdminModal from "../../components/Modals/CreateAdmin"
 
-// Interface defining the structure of an Admin object
+/**
+ * Interface defining the structure of an Admin object
+ */
 interface Admin {
   id: number
   nombre: string
@@ -16,32 +18,39 @@ interface Admin {
   carnet: string
 }
 
-const CrearAdmin: React.FC = () => {
+/**
+ * Component for creating and managing administrators
+ */
+const CreateAdmin: React.FC = () => {
   // State for storing list of admins
   const [admins, setAdmins] = useState<Admin[]>([])
   // State to manage modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Paginación
+  // Pagination states
   const [currentPage, setCurrentPage] = useState(1)
   const [adminsPerPage, setAdminsPerPage] = useState(5)
   const [maxPageButtons, setMaxPageButtons] = useState(5)
 
-  // Effect hook to fetch "sedes" and admins when the component mounts
+  /**
+   * Effect hook to fetch admins and set up window resize listener when the component mounts
+   */
   useEffect(() => {
     // Fetch the data for admins
     fetchAdmins()
 
-    // Agregar el listener para el cambio de tamaño de la ventana
+    // Add listener for window resize
     window.addEventListener("resize", handleResize)
-    handleResize() // Llamar a handleResize al cargar para establecer los valores iniciales
+    handleResize() // Call handleResize on load to set initial values
 
     return () => {
-      window.removeEventListener("resize", handleResize) // Limpiar el listener al desmontar el componente
+      window.removeEventListener("resize", handleResize) // Clean up the listener when component unmounts
     }
   }, []) // Empty dependency array means it runs only once when the component mounts
 
-  // Function to fetch the list of admins
+  /**
+   * Function to fetch the list of admins
+   */
   const fetchAdmins = async () => {
     try {
       const data = await getAdmins()
@@ -61,7 +70,9 @@ const CrearAdmin: React.FC = () => {
     }
   }
 
-  // Función para manejar el cambio de tamaño de la ventana
+  /**
+   * Function to handle window resize
+   */
   const handleResize = () => {
     if (window.innerWidth < 768) {
       setAdminsPerPage(4)
@@ -72,18 +83,24 @@ const CrearAdmin: React.FC = () => {
     }
   }
 
-  // Paginación
+  // Pagination calculations
   const indexOfLastAdmin = currentPage * adminsPerPage
   const indexOfFirstAdmin = indexOfLastAdmin - adminsPerPage
   const currentAdmins = admins.slice(indexOfFirstAdmin, indexOfLastAdmin)
   const totalPages = Math.ceil(admins.length / adminsPerPage)
 
+  /**
+   * Function to handle pagination
+   */
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber)
     }
   }
 
+  /**
+   * Function to get the range of page numbers to display
+   */
   const getPageRange = () => {
     let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
     const end = Math.min(totalPages, start + maxPageButtons - 1)
@@ -95,14 +112,21 @@ const CrearAdmin: React.FC = () => {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i)
   }
 
-  // Function to open the modal
+  /**
+   * Function to open the modal
+   */
   const handleOpenModal = () => setIsModalOpen(true)
-  // Function to close the modal
+
+  /**
+   * Function to close the modal
+   */
   const handleCloseModal = () => {
     setIsModalOpen(false)
   }
 
-  // Function to handle admin deletion
+  /**
+   * Function to handle admin deletion
+   */
   const handleDeleteClick = (adminId: number) => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -160,8 +184,8 @@ const CrearAdmin: React.FC = () => {
                 Crear Nuevo Admin
               </button>
 
-              {/* Botón para iniciar los recorridos, alineado con el botón "Crear Admin" */}
-              <AyudaCrearAdmin />
+              {/* Button to start tours, aligned with the "Create Admin" button */}
+              <TourCreateAdmin />
             </div>
           </div>
 
@@ -226,10 +250,11 @@ const CrearAdmin: React.FC = () => {
                   <button
                     key={page}
                     onClick={() => paginate(page)}
-                    className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                    className={`mx-1 px-3 py-1 rounded-md border ${
+                      currentPage === page
                         ? "bg-blue-600 text-white"
                         : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                      }`}
+                    }`}
                   >
                     {page}
                   </button>
@@ -257,4 +282,4 @@ const CrearAdmin: React.FC = () => {
   )
 }
 
-export default CrearAdmin
+export default CreateAdmin

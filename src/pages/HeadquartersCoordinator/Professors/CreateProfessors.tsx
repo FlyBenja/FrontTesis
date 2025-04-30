@@ -4,86 +4,96 @@ import { createCatedratico } from '../../../ts/HeadquartersCoordinator/CreatePro
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import Swal from 'sweetalert2';
 
-const CrearCatedraticos = () => {
-  const [nombre, setNombre] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [carnet, setCarnet] = useState('');
-  const [sedeId, setSedeId] = useState<number | null>(null);
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [loading, setLoading] = useState(false);
+const CreateProfessor = () => {
+  // State variables for form inputs
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [code, setCode] = useState("")
+  const [headquarterId, setHeadquarterId] = useState<number | null>(null)
+  const [year, setYear] = useState<number>(new Date().getFullYear())
+  const [loading, setLoading] = useState(false)
 
+  /**
+   * Fetches the user's profile data to get the headquarters ID
+   */
   useEffect(() => {
-    const fetchDatosPerfil = async () => {
+    const fetchProfileData = async () => {
       try {
-        const { sede } = await getDatosPerfil();
-        setSedeId(sede);
+        const { sede } = await getDatosPerfil()
+        setHeadquarterId(sede)
       } catch (err) {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error al obtener la sede',
-        });
+          icon: "error",
+          title: "Error",
+          text: "Error al obtener la sede",
+        })
       }
-    };
-
-    fetchDatosPerfil();
-  }, []);
-
-  const validateForm = () => {
-    if (!nombre || !correo || !carnet || sedeId === null) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Campos obligatorios',
-        text: 'Por favor, complete todos los campos.',
-        confirmButtonColor: '#ffc107',
-      });
-      return false;
     }
-    return true;
-  };
 
+    fetchProfileData()
+  }, [])
+
+  /**
+   * Validates the form inputs before submission
+   */
+  const validateForm = () => {
+    if (!name || !email || !code || headquarterId === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Campos obligatorios",
+        text: "Por favor, complete todos los campos.",
+        confirmButtonColor: "#ffc107",
+      })
+      return false
+    }
+    return true
+  }
+
+  /**
+   * Handles form submission
+   */
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!validateForm()) {
-      return;
+      return
     }
 
-    setLoading(true);
+    setLoading(true)
 
     try {
       await createCatedratico({
-        email: correo,
-        name: nombre,
-        carnet: carnet,
-        sede_id: sedeId!,
+        email: email,
+        name: name,
+        carnet: code,
+        sede_id: headquarterId!,
         year: year,
-      });
+      })
 
-      setNombre('');
-      setCorreo('');
-      setCarnet('');
-      setYear(new Date().getFullYear());
+      setName("")
+      setEmail("")
+      setCode("")
+      setYear(new Date().getFullYear())
 
       Swal.fire({
-        icon: 'success',
-        title: 'Catedrático creado exitosamente',
-        text: 'El catedrático fue creado correctamente.',
-        confirmButtonColor: '#28a745',
-      });
+        icon: "success",
+        title: "Catedrático creado exitosamente",
+        text: "El catedrático fue creado correctamente.",
+        confirmButtonColor: "#28a745",
+      })
     } catch (err: any) {
-      // Mostrar el mensaje de error exacto que devuelve la API
-      const errorMessage = err.message || 'Hubo un error al crear el catedrático.';
+      // Show the exact error message returned by the API
+      const errorMessage = err.message || "Hubo un error al crear el catedrático."
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
+        icon: "error",
+        title: "Error",
         text: errorMessage,
-        confirmButtonColor: '#d33',
-      });
+        confirmButtonColor: "#d33",
+      })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <>
@@ -92,9 +102,7 @@ const CrearCatedraticos = () => {
         <div className="w-full max-w-md overflow-hidden">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-3 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white text-center">
-                Crear Catedrático Individual
-              </h3>
+              <h3 className="font-medium text-black dark:text-white text-center">Crear Catedrático Individual</h3>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="p-6.5 space-y-4">
@@ -102,8 +110,8 @@ const CrearCatedraticos = () => {
                   <label className="mb-2.5 block text-black dark:text-white">Nombre completo</label>
                   <input
                     type="text"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Ingresa el nombre completo"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     disabled={loading}
@@ -114,8 +122,8 @@ const CrearCatedraticos = () => {
                   <label className="mb-2.5 block text-black dark:text-white">Correo electrónico</label>
                   <input
                     type="email"
-                    value={correo}
-                    onChange={(e) => setCorreo(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Ingresa el correo electrónico"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     disabled={loading}
@@ -126,8 +134,8 @@ const CrearCatedraticos = () => {
                   <label className="mb-2.5 block text-black dark:text-white">Código</label>
                   <input
                     type="text"
-                    value={carnet}
-                    onChange={(e) => setCarnet(e.target.value)}
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
                     placeholder="Ingresa el Código del Catedrático"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     disabled={loading}
@@ -139,7 +147,7 @@ const CrearCatedraticos = () => {
                   className="flex w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90"
                   disabled={loading}
                 >
-                  {loading ? 'Creando...' : 'Crear Catedrático'}
+                  {loading ? "Creando..." : "Crear Catedrático"}
                 </button>
               </div>
             </form>
@@ -153,7 +161,7 @@ const CrearCatedraticos = () => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default CrearCatedraticos;
+export default CreateProfessor

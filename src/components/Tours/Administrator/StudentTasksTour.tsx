@@ -2,11 +2,11 @@ import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css'; 
 
 /**
- * The AyudaTareasEstudiante component provides an interactive guided tour for students' tasks page.
+ * The StudentTasksTour component provides an interactive guided tour for students' tasks page.
  * The tour highlights different sections such as "Back button", "Proposals", and "Chapters" with descriptive tooltips.
  *
  */
-const AyudaTareasEstudiante = () => {
+const StudentTasksTour = () => {
   /**
    * Starts the guided tour using driver.js.
    * It defines the steps and tooltips to guide the user through different sections.
@@ -91,4 +91,4 @@ const AyudaTareasEstudiante = () => {
   );
 };
 
-export default AyudaTareasEstudiante;
+export default StudentTasksTour;

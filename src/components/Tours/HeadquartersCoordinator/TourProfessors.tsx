@@ -3,12 +3,12 @@ import { driver } from "driver.js";
 import "driver.js/dist/driver.css"; 
 
 /**
- * AyudaCatedraticos component provides a guided tour for managing professors.
+ * TourProfessors component provides a guided tour for managing professors.
  * It helps users understand how to use the various sections for searching, listing,
  * and activating/deactivating professors.
  *
  */
-const AyudaCatedraticos: React.FC = () => {
+const TourProfessors: React.FC = () => {
   /**
    * Starts the guided tour using driver.js
    * This function configures the tour steps and initiates the tour when called.
@@ -92,4 +92,4 @@ const AyudaCatedraticos: React.FC = () => {
   );
 };
 
-export default AyudaCatedraticos;
+export default TourProfessors;

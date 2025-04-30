@@ -3,7 +3,9 @@ import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import { getDatosPerfil } from "../../../ts/General/GetProfileData"
 import { getBitacora } from "../../../ts/Administrator/GetBinnacle"
 
-// Type definition for a log entry
+/**
+ * Type definition for a log entry in the activity log
+ */
 type Log = {
   date: string
   username: string
@@ -12,7 +14,11 @@ type Log = {
   description: string
 }
 
-const Bitacora = () => {
+/**
+ * Activity Log Component
+ * Displays a chronological list of system activities with pagination
+ */
+const Binnacle = () => {
   // State variables to store logs, current page, selected sede, logs per page, and max page buttons
   const [logs, setLogs] = useState<Log[]>([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -21,7 +27,9 @@ const Bitacora = () => {
   const [maxPageButtons, setMaxPageButtons] = useState(10)
   const [isLoading, setIsLoading] = useState(true)
 
-  // useEffect hook to fetch sedeId and set up the responsive design
+  /**
+   * Effect hook to fetch sedeId and set up the responsive design
+   */
   useEffect(() => {
     const fetchSedeId = async () => {
       try {
@@ -29,7 +37,7 @@ const Bitacora = () => {
         const { sede } = await getDatosPerfil()
         setSedeId(sede)
       } catch (error) {
-        console.error("Error al obtener el perfil:", error)
+        console.error("Error getting profile:", error)
       }
     }
 
@@ -54,7 +62,9 @@ const Bitacora = () => {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // useEffect hook to fetch logs whenever the sedeId changes
+  /**
+   * Effect hook to fetch logs whenever the sedeId changes
+   */
   useEffect(() => {
     if (sedeId !== null) {
       const fetchLogs = async () => {
@@ -73,7 +83,7 @@ const Bitacora = () => {
             })),
           )
         } catch (error) {
-          console.error("Error al obtener los registros de la bitácora:", error)
+          console.error("Error getting activity log records:", error)
         } finally {
           setIsLoading(false)
         }
@@ -91,14 +101,20 @@ const Bitacora = () => {
   // Calculate total number of pages
   const totalPages = Math.ceil(logs.length / logsPerPage)
 
-  // Function to handle pagination
+  /**
+   * Function to handle pagination
+   * @param pageNumber - The page number to navigate to
+   */
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber)
     }
   }
 
-  // Function to get the range of pages to be displayed in pagination
+  /**
+   * Function to get the range of pages to be displayed in pagination
+   * @returns Array of page numbers to display
+   */
   const getPageRange = () => {
     let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
     const end = Math.min(totalPages, start + maxPageButtons - 1)
@@ -111,7 +127,11 @@ const Bitacora = () => {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i)
   }
 
-  // Function to format the date and time
+  /**
+   * Function to format the date and time
+   * @param dateTime - The date time string to format
+   * @returns Formatted date and time string
+   */
   const formatDateTime = (dateTime: string) => {
     const dateObj = new Date(dateTime)
     const formattedDate = dateObj.toLocaleDateString("es-ES", {
@@ -127,7 +147,11 @@ const Bitacora = () => {
     return `${formattedDate} - ${formattedTime}`
   }
 
-  // Function to get action badge color
+  /**
+   * Function to get action badge color based on action type
+   * @param action - The action string to determine color for
+   * @returns CSS class string for the badge
+   */
   const getActionColor = (action: string) => {
     const actionLower = action.toLowerCase()
     if (actionLower.includes("crear") || actionLower.includes("agregar"))
@@ -146,7 +170,6 @@ const Bitacora = () => {
       {/* Header section */}
       <div className="mb-8">
         <Breadcrumb pageName="Bitácora de Actividades" />
-       
       </div>
 
       {/* Loading state */}
@@ -349,5 +372,4 @@ const Bitacora = () => {
   )
 }
 
-export default Bitacora
-
+export default Binnacle

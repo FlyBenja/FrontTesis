@@ -1,36 +1,36 @@
 import { useEffect, useState } from "react"
-// Importing functions to get data
 import { getDatosPerfil, type PerfilData } from "../../ts/General/GetProfileData.ts"
 import { getStudentsSede } from "../../ts/Administrator/GetStudentsSede.ts"
-// Importing necessary components
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb.tsx"
 import CardDataStats from "../../components/Cards/CardDataStats.tsx"
-import TareasEstudiantes from "../../components/Graphics/TasksStudents"
-import PorcentajeSede from "../../components/Graphics/PercentageHeadquarters"
+import TasksStudents from "../../components/Graphics/TasksStudents"
+import PercentageHeadquarters from "../../components/Graphics/PercentageHeadquarters"
 
-const Graficas: React.FC = () => {
-  // State to store the total number of students, total students per sede, and revision data
+const Graphics: React.FC = () => {
+  // State to store the total number of students, total students per headquarters, and revision data
   const [totalStudents, setTotalStudents] = useState<number | null>(null)
-  const [totalStudentsSede, setTotalStudentsSede] = useState<number | null>(null)
+  const [totalStudentsHeadquarters, setTotalStudentsHeadquarters] = useState<number | null>(null)
   const [totalApprovedRevisions, setTotalApprovedRevisions] = useState<number | null>(null)
   const [totalInRevisions, setTotalInRevisions] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  // Effect hook to fetch data when the component mounts
+  /**
+   * Effect hook to fetch data when the component mounts
+   */
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
       try {
         // Fetching profile data
-        const perfilData: PerfilData = await getDatosPerfil()
-        const sedeId = perfilData.sede // Getting the 'sede' id from the profile data
+        const profileData: PerfilData = await getDatosPerfil()
+        const headquartersId = profileData.sede // Getting the 'sede' id from the profile data
 
-        if (sedeId) {
+        if (headquartersId) {
           // Fetching students data for the specific 'sede'
-          const studentsData = await getStudentsSede(sedeId)
+          const studentsData = await getStudentsSede(headquartersId)
           setTotalStudents(studentsData.totalStudents)
-          setTotalStudentsSede(studentsData.totalStudentsSede)
+          setTotalStudentsHeadquarters(studentsData.totalStudentsSede)
           setTotalApprovedRevisions(studentsData.totalApprovedRevisions)
           setTotalInRevisions(studentsData.totalInRevisions)
         }
@@ -47,8 +47,10 @@ const Graficas: React.FC = () => {
   }, [])
 
   // Calculate percentages for display
-  const studentSedePercentage =
-    totalStudentsSede && totalStudents ? ((totalStudentsSede / (totalStudents || 1)) * 100).toFixed(2) : "0"
+  const studentHeadquartersPercentage =
+    totalStudentsHeadquarters && totalStudents
+      ? ((totalStudentsHeadquarters / (totalStudents || 1)) * 100).toFixed(2)
+      : "0"
 
   const approvedRevisionsPercentage =
     totalApprovedRevisions && totalInRevisions
@@ -91,7 +93,7 @@ const Graficas: React.FC = () => {
             <CardDataStats
               title="Total Estudiantes"
               total={totalStudents ? totalStudents.toLocaleString() : "0"}
-              rate={studentSedePercentage}
+              rate={studentHeadquartersPercentage}
               levelDown={false}
             >
               <svg
@@ -206,7 +208,7 @@ const Graficas: React.FC = () => {
                 <div className="p-4 border-b border-stroke dark:border-strokedark">
                   <h3 className="font-semibold text-black dark:text-white">Porcentaje por Sede</h3>
                 </div>
-                <PorcentajeSede />
+                <PercentageHeadquarters />
               </div>
             </div>
             <div className="col-span-12 xl:col-span-6 transition-transform duration-300 hover:scale-[1.01]">
@@ -214,7 +216,7 @@ const Graficas: React.FC = () => {
                 <div className="p-4 border-b border-stroke dark:border-strokedark">
                   <h3 className="font-semibold text-black dark:text-white">Tareas de Estudiantes</h3>
                 </div>
-                <TareasEstudiantes />
+                <TasksStudents />
               </div>
             </div>
           </div>
@@ -234,7 +236,7 @@ const Graficas: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="inline-block h-3 w-3 rounded-full bg-primary"></span>
               <span className="text-sm font-medium text-black dark:text-white">
-                Estudiantes activos: {totalStudentsSede || 0}
+                Estudiantes activos: {totalStudentsHeadquarters || 0}
               </span>
             </div>
           </div>
@@ -244,5 +246,4 @@ const Graficas: React.FC = () => {
   )
 }
 
-export default Graficas
-
+export default Graphics

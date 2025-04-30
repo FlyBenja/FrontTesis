@@ -3,11 +3,11 @@ import { driver } from "driver.js";
 import "driver.js/dist/driver.css"; 
 
 /**
- * AyudaEstudiantes component provides a guided tour for the student list page.
+ * TourStudents component provides a guided tour for the student list page.
  * It highlights key elements like search, filtering, and actions like printing reports.
  * 
  */
-const AyudaEstudiantes: React.FC = () => {
+const TourStudents: React.FC = () => {
   /**
    * Starts the guided tour by initializing driver.js with the desired settings.
    * The tour will highlight various elements on the page and provide descriptions.
@@ -120,4 +120,4 @@ const AyudaEstudiantes: React.FC = () => {
   );
 };
 
-export default AyudaEstudiantes;
+export default TourStudents;

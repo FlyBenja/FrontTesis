@@ -1,21 +1,21 @@
 import React from 'react';
 
 /**
- * Props for the ActivaRevisores component.
+ * Props for the ActivateReviewers component.
  */
-interface ActivaRevisoresProps {
+interface ActivateReviewersProps {
   enabled: boolean;
   onChange: () => void;
   uniqueId: string; // Agregamos un uniqueId para hacer único el id del input
 }
 
 /**
- * ActivaRevisores is a toggle switch component that represents a binary on/off state.
+ * ActivateReviewers is a toggle switch component that represents a binary on/off state.
  * The toggle is styled using Tailwind CSS classes.
  * It supports a unique identifier for each instance to avoid duplicated IDs in the DOM.
  *
  */
-const ActivaRevisores: React.FC<ActivaRevisoresProps> = ({ enabled, onChange, uniqueId }) => {
+const ActivateReviewers: React.FC<ActivateReviewersProps> = ({ enabled, onChange, uniqueId }) => {
   return (
     <div>
       {/* Label container for the toggle switch */}
@@ -49,4 +49,4 @@ const ActivaRevisores: React.FC<ActivaRevisoresProps> = ({ enabled, onChange, un
   );
 };
 
-export default ActivaRevisores;
+export default ActivateReviewers;

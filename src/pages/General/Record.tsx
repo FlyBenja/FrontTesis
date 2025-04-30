@@ -1,64 +1,52 @@
 import { useState, useEffect, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
-import { getRevisionesCordinador } from "../../ts/ThesisCoordinatorandReviewer/GetRevisionsCoordinator"
-import { getDatosPerfil } from "../../ts/General/GetProfileData"
+import { getRevisionesAprobadas } from "../../ts/ThesisCoordinatorandReviewer/GetApprovedReviews" // Importa la API
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 
-const MisAsignaciones: React.FC = () => {
+/**
+ * Component for displaying approved thesis reviews
+ */
+const Record: React.FC = () => {
   const navigate = useNavigate()
 
-  const [userId, setUserId] = useState<number | null>(null)
-  const [revisiones, setRevisiones] = useState<any[]>([])
-  const [searchCarnet, setSearchCarnet] = useState("")
-  const [order, setOrder] = useState<"asc" | "desc">("asc")
-  const [filteredRevisiones, setFilteredRevisiones] = useState(revisiones)
-  const [isCarnetSearch, setIsCarnetSearch] = useState(false)
+  // State declarations
+  const [revisiones, setRevisiones] = useState<any[]>([]) // Datos de las revisiones
+  const [searchCarnet, setSearchCarnet] = useState("") // Campo de búsqueda del carnet
+  const [order, setOrder] = useState<"asc" | "desc">("asc") // Orden de las revisiones
+  const [filteredRevisiones, setFilteredRevisiones] = useState(revisiones) // Revisión filtrada
+  const [isCarnetSearch, setIsCarnetSearch] = useState(false) // Nuevo estado para rastrear si se buscó por carnet
 
   // State hooks for pagination
   const [currentPage, setCurrentPage] = useState(1)
-  const [revisionesPerPage, setRevisionesPerPage] = useState(5)
-  const [maxPageButtons, setMaxPageButtons] = useState(10)
+  const [revisionesPerPage, setRevisionesPerPage] = useState(5) // Default to 5 items per page
+  const [maxPageButtons, setMaxPageButtons] = useState(10) // Default to 10 page buttons
 
-  useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const perfil = await getDatosPerfil()
-        setUserId(perfil.user_id)
-      } catch (error) {
-        console.error("Error obteniendo el user_id:", error)
-      }
+  /**
+   * Fetch approved reviews from the API
+   */
+  const fetchRevisiones = useCallback(async (order: "asc" | "desc", carnet: string) => {
+    try {
+      const revisions = await getRevisionesAprobadas(order, carnet)
+      setRevisiones(revisions)
+      setFilteredRevisiones(revisions) // Inicializa el estado de revisiones filtradas
+
+      // Actualizar el estado de búsqueda por carnet
+      setIsCarnetSearch(carnet.length >= 10)
+    } catch (error) {
+      setRevisiones([])
+      setFilteredRevisiones([])
+      setIsCarnetSearch(carnet.length >= 10)
     }
-    fetchUserId()
   }, [])
 
-  // Obtener las revisiones del coordinador
-  const fetchRevisiones = useCallback(
-    async (order: "asc" | "desc", carnet: string) => {
-      try {
-        if (userId !== null) {
-          const revisions = await getRevisionesCordinador(userId, order, carnet)
-          setRevisiones(revisions)
-          setFilteredRevisiones(revisions)
-          setIsCarnetSearch(carnet.length >= 10)
-        }
-      } catch (error) {
-        console.error(error)
-        setRevisiones([])
-        setFilteredRevisiones([])
-        setIsCarnetSearch(carnet.length >= 10)
-      }
-    },
-    [userId],
-  )
-
-  // Efecto para cargar las revisiones cuando cambia el carnet, el orden o el userId
+  /**
+   * Load reviews when carnet or order changes
+   */
   useEffect(() => {
-    if (userId !== null) {
-      const carnetValue = searchCarnet.length >= 10 ? searchCarnet : ""
-      fetchRevisiones(order, carnetValue)
-    }
-  }, [order, searchCarnet, userId, fetchRevisiones])
+    const carnetValue = searchCarnet.length >= 10 ? searchCarnet : "" // Validar formato del carnet (longitud >= 10)
+    fetchRevisiones(order, carnetValue) // Ejecutar la API con carnet vacío o el carnet completo
+  }, [order, searchCarnet, fetchRevisiones]) // Depende de searchCarnet y order
 
   // Pagination logic
   const indexOfLastRevision = currentPage * revisionesPerPage
@@ -67,16 +55,23 @@ const MisAsignaciones: React.FC = () => {
 
   const totalPages = Math.ceil(filteredRevisiones.length / revisionesPerPage)
 
+  /**
+   * Handle pagination
+   */
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
 
-  // Cambiar el orden de las revisiones
+  /**
+   * Change the sort order of reviews
+   */
   const handleChangeOrder = () => {
     setOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"))
   }
 
-  // Formatear la fecha de la solicitud
+  /**
+   * Format date to local format
+   */
   const formatDate = (date: string) => {
     const formattedDate = new Date(date)
     return (
@@ -90,24 +85,32 @@ const MisAsignaciones: React.FC = () => {
     )
   }
 
+  /**
+   * Navigate to review details page
+   */
   const handleVerDetalle = (userId: number) => {
-    navigate(`/coordinadortesis/mis-asignaciones/detalle-comentario`, { state: { userId } })
+    navigate(`/coordinadortesis/historial/detalle`, { state: { userId } })
   }
 
+  /**
+   * Handle search input change
+   */
   const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newCarnet = e.target.value
-    setSearchCarnet(newCarnet)
+    setSearchCarnet(newCarnet) // Actualizar el estado
   }
 
-  // Effect hook to handle window resize and adjust page settings accordingly
+  /**
+   * Adjust page configuration based on window size
+   */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setRevisionesPerPage(8)
-        setMaxPageButtons(5)
+        setRevisionesPerPage(8) // Ajusta el número de elementos por página en pantallas pequeñas
+        setMaxPageButtons(5) // Ajusta la cantidad de botones de paginación en pantallas pequeñas
       } else {
-        setRevisionesPerPage(5)
-        setMaxPageButtons(10)
+        setRevisionesPerPage(5) // Ajusta el número de elementos por página en pantallas grandes
+        setMaxPageButtons(10) // Ajusta la cantidad de botones de paginación en pantallas grandes
       }
     }
 
@@ -122,7 +125,7 @@ const MisAsignaciones: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Mis Revisiones Asignadas" />
+      <Breadcrumb pageName="Nuevas solicitudes de revisión" />
       <div className="mx-auto max-w-5xl px-1 py-1">
         <div className="mb-4 flex items-center space-x-2">
           <input
@@ -163,8 +166,8 @@ const MisAsignaciones: React.FC = () => {
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">
                       {formatDate(revision.date_revision)}
                     </td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold hidden md:table-cell">
-                      {revision.approval_status}
+                    <td className="py-2 px-4 text-center text-black dark:text-white bg-green-300 dark:bg-green-500 font-semibold hidden md:table-cell">
+                      Aprobado
                     </td>
                     <td className="py-2 px-4 text-center">
                       <button
@@ -179,9 +182,7 @@ const MisAsignaciones: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={6} className="py-4 text-center text-gray-500 dark:text-gray-400">
-                    {isCarnetSearch && searchCarnet.length >= 10
-                      ? "No existe carnet del Estudiante"
-                      : "No hay solicitudes de revisión"}
+                    {isCarnetSearch ? "No existe carnet del Estudiante" : "No hay solicitudes de revisión"}
                   </td>
                 </tr>
               )}
@@ -220,5 +221,4 @@ const MisAsignaciones: React.FC = () => {
   )
 }
 
-export default MisAsignaciones
-
+export default Record

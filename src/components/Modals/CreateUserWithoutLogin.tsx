@@ -5,7 +5,7 @@ import { createUserSinLogin } from '../../ts/Administrator/CreateUserWithoutLogi
 /**
  * Props for the ModalCreateUserSinLogin component.
  */
-interface CrearUsuarioProps {
+interface CreateUserWithoutLoginProps {
   /** Callback function to close the modal */
   onClose: () => void;
   /** Optional user object for editing an existing user */
@@ -16,7 +16,7 @@ interface CrearUsuarioProps {
  * Modal component for creating or editing a user without login.
  * 
  */
-const ModalCreateUserSinLogin: React.FC<CrearUsuarioProps> = ({ onClose, usuario }) => {
+const CreateUserWithoutLogin: React.FC<CreateUserWithoutLoginProps> = ({ onClose, usuario }) => {
   // States for email, name, and carnet
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -156,4 +156,4 @@ const ModalCreateUserSinLogin: React.FC<CrearUsuarioProps> = ({ onClose, usuario
   );
 };
 
-export default ModalCreateUserSinLogin;
+export default CreateUserWithoutLogin;

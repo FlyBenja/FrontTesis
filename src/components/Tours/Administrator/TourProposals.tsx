@@ -6,7 +6,7 @@ import 'driver.js/dist/driver.css';
  * It walks the user through the main elements like the "Back" button, proposal selection,
  * approval button, and PDF viewer.
  */
-const AyudaPropuestas = () => {
+const TourProposals = () => {
   /**
    * Starts the guided tour by setting up the steps for the user.
    * Each step highlights a specific element and provides a description.
@@ -98,4 +98,4 @@ const AyudaPropuestas = () => {
   );
 };
 
-export default AyudaPropuestas;
+export default TourProposals;

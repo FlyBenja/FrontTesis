@@ -17,13 +17,8 @@ interface CreateAdminModalProps {
  * Displays a form where users can input the admin's name, email, and "carnet".
  * On successful submission, it calls the `createAdmin` service and shows an alert.
  *
- * @component
- * @param {boolean} isOpen - Whether the modal is currently open.
- * @param {Function} onClose - Function to close the modal.
- * @param {Function} onAdminCreated - Function to trigger after a successful admin creation.
- * @returns {JSX.Element | null} The modal element if open, otherwise null.
  */
-const CrearAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdminCreated }) => {
+const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdminCreated }) => {
   // States for managing form inputs
   const [adminUserName, setAdminUserName] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
@@ -35,7 +30,6 @@ const CrearAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdminC
    * Sends the input data to the createAdmin service and handles
    * UI feedback such as alerts and form reset.
    *
-   * @param {React.FormEvent} e - The form event.
    */
   const handleCreateAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,4 +142,4 @@ const CrearAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdminC
   );
 };
 
-export default CrearAdmin;
+export default CreateAdmin;

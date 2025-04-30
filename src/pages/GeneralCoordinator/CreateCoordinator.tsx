@@ -1,103 +1,120 @@
-import React, { useState, useEffect } from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb.tsx';
-import AyudaCoordinador from '../../components/Tours/GeneralCoordinator/TourCoordinator.tsx';
-import ModalCrearCoordinador from '../../components/Modals/CreateCoordinator.tsx'; // Importa el nuevo componente ModalCrearCoordinador
+import type React from "react"
+import { useState, useEffect } from "react"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import TourCoordinator from "../../components/Tours/GeneralCoordinator/TourCoordinator"
+import CreateCoordinatorModal from "../../components/Modals/CreateCoordinator"
 
-// Interface defining the structure of a Coordinador object
-interface Coordinador {
-  id: number;
-  nombre: string;
-  correo: string;
+// Interface defining the structure of a Coordinator object
+interface Coordinator {
+  id: number
+  nombre: string
+  correo: string
 }
 
-const CrearCoordinador: React.FC = () => {
-  // State for storing list of coordinadores
-  const [coordinadores, setCoordinadores] = useState<Coordinador[]>([]);
+const CreateCoordinator: React.FC = () => {
+  // State for storing list of coordinators
+  const [coordinators, setCoordinators] = useState<Coordinator[]>([])
   // State to manage modal visibility
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Paginación
-  const [currentPage, setCurrentPage] = useState(1);
-  const [coordinadoresPerPage, setCoordinadoresPerPage] = useState(5);
-  const [maxPageButtons, setMaxPageButtons] = useState(5);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1)
+  const [coordinatorsPerPage, setCoordinatorsPerPage] = useState(5)
+  const [maxPageButtons, setMaxPageButtons] = useState(5)
 
-  // Effect hook to fetch coordinadores when the component mounts
+  /**
+   * Effect hook to fetch coordinators when the component mounts
+   * and handle window resize events
+   */
   useEffect(() => {
-    // Function to simulate fetching coordinadores
-    const fetchCoordinadores = () => {
-      const mockCoordinadores = [
-        { id: 1, nombre: 'Coordinador 1', correo: 'coordinador1@example.com' },
-        { id: 2, nombre: 'Coordinador 2', correo: 'coordinador2@example.com' },
-        { id: 3, nombre: 'Coordinador 3', correo: 'coordinador3@example.com' },
-      ];
-      const sortedCoordinadores = mockCoordinadores.sort((a, b) => a.id - b.id);
-      setCoordinadores(sortedCoordinadores);
-    };
+    // Function to simulate fetching coordinators
+    const fetchCoordinators = () => {
+      const mockCoordinators = [
+        { id: 1, nombre: "Coordinador 1", correo: "coordinador1@example.com" },
+        { id: 2, nombre: "Coordinador 2", correo: "coordinador2@example.com" },
+        { id: 3, nombre: "Coordinador 3", correo: "coordinador3@example.com" },
+      ]
+      const sortedCoordinators = mockCoordinators.sort((a, b) => a.id - b.id)
+      setCoordinators(sortedCoordinators)
+    }
 
-    fetchCoordinadores();
+    fetchCoordinators()
 
-    window.addEventListener('resize', handleResize);
-    handleResize();
+    window.addEventListener("resize", handleResize)
+    handleResize()
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
-  // Function to handle window resize
+  /**
+   * Function to handle window resize
+   * Adjusts the number of items per page and max page buttons based on screen size
+   */
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setCoordinadoresPerPage(4);
-      setMaxPageButtons(5);
+      setCoordinatorsPerPage(4)
+      setMaxPageButtons(5)
     } else {
-      setCoordinadoresPerPage(5);
-      setMaxPageButtons(10);
+      setCoordinatorsPerPage(5)
+      setMaxPageButtons(10)
     }
-  };
+  }
 
-  // Paginación
-  const indexOfLastCoordinador = currentPage * coordinadoresPerPage;
-  const indexOfFirstCoordinador = indexOfLastCoordinador - coordinadoresPerPage;
-  const currentCoordinadores = coordinadores.slice(indexOfFirstCoordinador, indexOfLastCoordinador);
-  const totalPages = Math.ceil(coordinadores.length / coordinadoresPerPage);
+  // Pagination calculations
+  const indexOfLastCoordinator = currentPage * coordinatorsPerPage
+  const indexOfFirstCoordinator = indexOfLastCoordinator - coordinatorsPerPage
+  const currentCoordinators = coordinators.slice(indexOfFirstCoordinator, indexOfLastCoordinator)
+  const totalPages = Math.ceil(coordinators.length / coordinatorsPerPage)
 
+  /**
+   * Function to handle pagination
+   */
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+      setCurrentPage(pageNumber)
     }
-  };
+  }
 
+  /**
+   * Function to get the range of page numbers to display in pagination
+   */
   const getPageRange = () => {
-    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    let end = Math.min(totalPages, start + maxPageButtons - 1);
+    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
+    const end = Math.min(totalPages, start + maxPageButtons - 1)
 
     if (end - start + 1 < maxPageButtons) {
-      start = Math.max(1, end - maxPageButtons + 1);
+      start = Math.max(1, end - maxPageButtons + 1)
     }
 
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  };
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+  }
 
   // Function to open the modal
-  const handleOpenModal = () => setIsModalOpen(true);
+  const handleOpenModal = () => setIsModalOpen(true)
   // Function to close the modal
-  const handleCloseModal = () => setIsModalOpen(false);
+  const handleCloseModal = () => setIsModalOpen(false)
 
-  // Function to handle coordinador creation
-  const handleCreateCoordinador = (nombre: string, correo: string) => {
-    const newCoordinador = {
-      id: coordinadores.length + 1,
-      nombre,
-      correo,
-    };
-    setCoordinadores([...coordinadores, newCoordinador]);
-    handleCloseModal();
-  };
+  /**
+   * Function to handle coordinator creation
+   */
+  const handleCreateCoordinator = (name: string, email: string) => {
+    const newCoordinator = {
+      id: coordinators.length + 1,
+      nombre: name,
+      correo: email,
+    }
+    setCoordinators([...coordinators, newCoordinator])
+    handleCloseModal()
+  }
 
-  // Function to handle coordinador deletion
-  const handleDeleteClick = (coordinadorId: number) => {
-    setCoordinadores(coordinadores.filter((coordinador) => coordinador.id !== coordinadorId));
-  };
+  /**
+   * Function to handle coordinator deletion
+   */
+  const handleDeleteClick = (coordinatorId: number) => {
+    setCoordinators(coordinators.filter((coordinator) => coordinator.id !== coordinatorId))
+  }
 
   return (
     <>
@@ -116,8 +133,8 @@ const CrearCoordinador: React.FC = () => {
                 Crear Nuevo Coordinador
               </button>
 
-              {/* Botón para iniciar los recorridos */}
-              <AyudaCoordinador />
+              {/* Help tour button */}
+              <TourCoordinator />
             </div>
           </div>
 
@@ -134,22 +151,18 @@ const CrearCoordinador: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentCoordinadores.length > 0 ? (
-                  currentCoordinadores.map((coordinador) => (
+                {currentCoordinators.length > 0 ? (
+                  currentCoordinators.map((coordinator) => (
                     <tr
-                      key={coordinador.id}
+                      key={coordinator.id}
                       className="border-t border-gray-200 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-meta-4 transition-colors duration-150"
                     >
-                      <td className="py-2 px-4 text-left text-black dark:text-white">
-                        {coordinador.nombre}
-                      </td>
-                      <td className="py-2 px-4 text-center text-black dark:text-white">
-                        {coordinador.correo}
-                      </td>
+                      <td className="py-2 px-4 text-left text-black dark:text-white">{coordinator.nombre}</td>
+                      <td className="py-2 px-4 text-center text-black dark:text-white">{coordinator.correo}</td>
                       <td className="py-2 px-4 text-center">
                         <button
                           id="delete-coordinador"
-                          onClick={() => handleDeleteClick(coordinador.id)}
+                          onClick={() => handleDeleteClick(coordinator.id)}
                           className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
                         >
                           <svg
@@ -183,10 +196,7 @@ const CrearCoordinador: React.FC = () => {
           </div>
 
           {/* Pagination */}
-          <div
-            id="pagination"
-            className="mt-4 flex justify-center"
-          >
+          <div id="pagination" className="mt-4 flex justify-center">
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -198,10 +208,11 @@ const CrearCoordinador: React.FC = () => {
               <button
                 key={page}
                 onClick={() => paginate(page)}
-                className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white'
-                  }`}
+                className={`mx-1 px-3 py-1 rounded-md border ${
+                  currentPage === page
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+                }`}
               >
                 {page}
               </button>
@@ -217,14 +228,14 @@ const CrearCoordinador: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal para crear nuevo coordinador */}
-      <ModalCrearCoordinador
+      {/* Modal for creating new coordinator */}
+      <CreateCoordinatorModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        onCreateCoordinador={handleCreateCoordinador}
+        CreateCoordinator={handleCreateCoordinator}
       />
     </>
-  );
-};
+  )
+}
 
-export default CrearCoordinador;
+export default CreateCoordinator

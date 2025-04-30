@@ -5,9 +5,9 @@ import { asignaRevisor } from '../../ts/ThesisCoordinatorandReviewer/AssignRevie
 import { getRevisores } from '../../ts/ThesisCoordinatorandReviewer/GetReviewers'; 
 
 /**
- * Interface to define the props passed to the AsignaRevisor component.
+ * Interface to define the props passed to the AssignReviewer component.
  */
-interface AsignaRevisorProps {
+interface AssignReviewerProps {
   onClose: () => void;
   revisionThesisId: number;
 }
@@ -21,10 +21,10 @@ interface Revisor {
 }
 
 /**
- * It uses the `getRevisores` function to fetch the list of reviewers and the `asignaRevisor` function to assign the selected reviewer to a thesis.
+ * It uses the `getRevisores` function to fetch the list of reviewers and the `AssignReviewer` function to assign the selected reviewer to a thesis.
  * After assigning the reviewer, it shows a success message and navigates to another page. In case of an error, it displays an error message.
  */
-const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose, revisionThesisId }) => {
+const AssignReviewer: React.FC<AssignReviewerProps> = ({ onClose, revisionThesisId }) => {
   const [selectedRevisor, setSelectedRevisor] = useState<string>(''); // State to store the selected reviewer
   const [revisores, setRevisores] = useState<Revisor[]>([]); // State to store the list of reviewers
   const [loading, setLoading] = useState<boolean>(true); // State to track loading status
@@ -155,4 +155,4 @@ const AsignaRevisor: React.FC<AsignaRevisorProps> = ({ onClose, revisionThesisId
   );
 };
 
-export default AsignaRevisor;
+export default AssignReviewer;

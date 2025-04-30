@@ -8,8 +8,11 @@ import { useNavigate } from "react-router-dom"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFGeneral from "../../../components/Pdfs/generatePDFGeneral"
 import BuscadorEstudiantes from "../../../components/Searches/SearchStudents"
-import AyudaEstudiantes from "../../../components/Tours/Administrator/TourStudents"
+import TourStudents from "../../../components/Tours/Administrator/TourStudents"
 
+/**
+ * Interface for student data
+ */
 interface Estudiante {
   id: number
   userName: string
@@ -19,12 +22,19 @@ interface Estudiante {
   fotoPerfil: string
 }
 
+/**
+ * Interface for course data
+ */
 interface Curso {
   course_id: number
   courseName: string
 }
 
-const ListarEstudiantes: React.FC = () => {
+/**
+ * List Students Component
+ * Displays a list of students with filtering and pagination
+ */
+const ListStudents: React.FC = () => {
   // State variables for managing students data, years, courses, etc.
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]) // List of students
   const [years, setYears] = useState<number[]>([]) // List of available years
@@ -36,6 +46,9 @@ const ListarEstudiantes: React.FC = () => {
   const [maxPageButtons, setMaxPageButtons] = useState(10) // Maximum number of page buttons to show
   const navigate = useNavigate() // To navigate to other pages
 
+  /**
+   * Effect hook to fetch initial data
+   */
   useEffect(() => {
     // Fetch initial data such as profile, years, and courses
     const fetchInitialData = async () => {
@@ -64,7 +77,9 @@ const ListarEstudiantes: React.FC = () => {
     fetchInitialData() // Call the function to fetch data on initial render
   }, []) // Empty dependency array ensures it runs only once on mount
 
-  // Fetch students based on selected year, course, and campus
+  /**
+   * Fetch students based on selected year, course, and campus
+   */
   const fetchEstudiantes = async (sedeId: number, courseId: string, nameYear: string) => {
     try {
       const estudiantesRecuperados = await getEstudiantes(sedeId, Number.parseInt(courseId), Number.parseInt(nameYear))
@@ -74,7 +89,10 @@ const ListarEstudiantes: React.FC = () => {
     }
   }
 
-  // Fetch courses based on selected year and campus
+  /**
+   * Fetch courses based on selected year and campus
+   * @param sedeId - Campus ID
+   */
   const fetchCursos = async (sedeId: number) => {
     try {
       const añoSeleccionado = selectedAño ? Number.parseInt(selectedAño) : new Date().getFullYear() // Set selected year or current year
@@ -85,7 +103,10 @@ const ListarEstudiantes: React.FC = () => {
     }
   }
 
-  // Handle change of selected year from dropdown
+  /**
+   * Handle change of selected year from dropdown
+   * @param e - Change event from select
+   */
   const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const añoSeleccionado = e.target.value // Get selected year
     setSelectedAño(añoSeleccionado) // Update state with selected year
@@ -99,7 +120,10 @@ const ListarEstudiantes: React.FC = () => {
     }
   }
 
-  // Handle change of selected course from dropdown
+  /**
+   * Handle change of selected course from dropdown
+   * @param e - Change event from select
+   */
   const handleCursoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCurso(e.target.value) // Update state with selected course
     const perfil = await getDatosPerfil() // Fetch profile data
@@ -108,7 +132,10 @@ const ListarEstudiantes: React.FC = () => {
     }
   }
 
-  // Handle click on student row to navigate to the student's timeline
+  /**
+   * Handle click on student row to navigate to the student's timeline
+   * @param estudiante - Student data to pass to timeline
+   */
   const handleStudentClick = (estudiante: Estudiante) => {
     navigate(`/administrador/time-line`, {
       state: {
@@ -119,12 +146,19 @@ const ListarEstudiantes: React.FC = () => {
     })
   }
 
-  // Handle print PDF for the selected year and course
+  /**
+   * Handle print PDF for the selected year and course
+   * @param selectedAño - Selected year
+   * @param selectedCurso - Selected course
+   */
   const handlePrintPDF = (selectedAño: number, selectedCurso: number) => {
     generaPDFGeneral(selectedAño, selectedCurso) // Generate PDF report
   }
 
-  // Handle search results from the BuscadorEstudiantes component
+  /**
+   * Handle search results from the BuscadorEstudiantes component
+   * @param resultados - Search results array
+   */
   const handleSearchResults = (resultados: Estudiante[]) => {
     setEstudiantes(resultados)
     setCurrentPage(1) // Reset to first page when search results change
@@ -136,14 +170,20 @@ const ListarEstudiantes: React.FC = () => {
   const currentEstudiantes = estudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante) // Slice students for current page
   const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage) // Total number of pages
 
-  // Pagination function to set the current page
+  /**
+   * Pagination function to set the current page
+   * @param pageNumber - Page number to navigate to
+   */
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber) // Update current page
     }
   }
 
-  // Get page range for pagination buttons
+  /**
+   * Get page range for pagination buttons
+   * @returns Array of page numbers to display
+   */
   const getPageRange = () => {
     const range: number[] = []
     const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage) // Calculate total pages
@@ -157,7 +197,12 @@ const ListarEstudiantes: React.FC = () => {
     return range
   }
 
-  // Render the student's profile photo or an initial if no photo is available
+  /**
+   * Render the student's profile photo or an initial if no photo is available
+   * @param profilePhoto - URL of profile photo
+   * @param userName - Student's name
+   * @returns JSX element for profile photo
+   */
   const renderProfilePhoto = (profilePhoto: string, userName: string) => {
     if (profilePhoto) {
       return <img src={profilePhoto || "/placeholder.svg"} alt={userName} className="w-10 h-10 rounded-full" /> // Render photo if available
@@ -171,7 +216,9 @@ const ListarEstudiantes: React.FC = () => {
     }
   }
 
-  // Adjust number of students per page and pagination buttons on window resize
+  /**
+   * Adjust number of students per page and pagination buttons on window resize
+   */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -187,7 +234,6 @@ const ListarEstudiantes: React.FC = () => {
     window.addEventListener("resize", handleResize) // Add resize event listener
     return () => window.removeEventListener("resize", handleResize) // Cleanup event listener
   }, [])
-
 
   return (
     <>
@@ -210,7 +256,7 @@ const ListarEstudiantes: React.FC = () => {
             >
               Imprimir Reporte
             </button>
-            <AyudaEstudiantes />
+            <TourStudents />
           </div>
         </div>
 
@@ -297,10 +343,11 @@ const ListarEstudiantes: React.FC = () => {
             <button
               key={page}
               onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                ? "bg-blue-600 text-white"
-                : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                }`}
+              className={`mx-1 px-3 py-1 rounded-md border ${
+                currentPage === page
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+              }`}
             >
               {page}
             </button>
@@ -318,4 +365,4 @@ const ListarEstudiantes: React.FC = () => {
   )
 }
 
-export default ListarEstudiantes
+export default ListStudents

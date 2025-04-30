@@ -4,21 +4,21 @@ import { getCatedraticos } from '../../ts/HeadquartersCoordinator/GetProfessor';
 import { getCatedraticoPorCarnet } from '../../ts/HeadquartersCoordinator/GetProfessorCard';
 
 /**
- * Props for the BusquedaCatedratico component.
+ * Props for the SearchProfessor component.
  */
-interface BusquedaCatedraticoProps {
+interface SearchProfessorProps {
   onSearchResults: (catedraticos: any[]) => void;
 }
 
 /**
- * BusquedaCatedratico component allows searching for professors by their ID (carnet) or by name.
+ * SearchProfessor component allows searching for professors by their ID (carnet) or by name.
  * 
  * This component performs an asynchronous search operation to fetch professor data from an API based on the input provided.
  * It utilizes a debounced search to minimize the number of requests when typing.
  * 
- * <BusquedaCatedratico onSearchResults={handleSearchResults} />
+ * <SearchProfessor onSearchResults={handleSearchResults} />
  */
-const BusquedaCatedratico: React.FC<BusquedaCatedraticoProps> = ({
+const SearchProfessor: React.FC<SearchProfessorProps> = ({
   onSearchResults,
 }) => {
   const [searchCarnet, setSearchCarnet] = useState<string>(''); // State for search input value
@@ -86,4 +86,4 @@ const BusquedaCatedratico: React.FC<BusquedaCatedraticoProps> = ({
   );
 };
 
-export default BusquedaCatedratico;
+export default SearchProfessor;

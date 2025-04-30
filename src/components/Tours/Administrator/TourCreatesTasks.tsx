@@ -2,11 +2,11 @@ import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css'; 
 
 /**
- * `AyudaTareas` is a React functional component that provides a guided tour for a task management page.
+ * `TourCreatesTasks` is a React functional component that provides a guided tour for a task management page.
  * It allows users to see the step-by-step guidance for various task-related actions on the page.
  * 
  */
-const AyudaTareas = () => {
+const TourCreatesTasks = () => {
   /**
    * Starts the guided tour by initializing driver.js and setting the steps.
    * Each step corresponds to a UI element with a popover description to guide the user.
@@ -106,4 +106,4 @@ const AyudaTareas = () => {
   );
 };
 
-export default AyudaTareas;
+export default TourCreatesTasks;

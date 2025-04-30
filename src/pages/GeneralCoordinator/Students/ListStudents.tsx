@@ -8,9 +8,12 @@ import type React from "react"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFGeneral from "../../../components/Pdfs/generatePDFGeneral"
 import BuscadorEstudiantes from "../../../components/Searches/SearchStudents"
-import AyudaEstudiantes from "../../../components/Tours/Administrator/TourStudents"
+import TourStudents from "../../../components/Tours/Administrator/TourStudents"
 
-interface Estudiante {
+/**
+ * Interface for student data
+ */
+interface Student {
   id: number
   userName: string
   carnet: string
@@ -19,134 +22,161 @@ interface Estudiante {
   fotoPerfil: string
 }
 
-interface Curso {
+/**
+ * Interface for course data
+ */
+interface Course {
   course_id: number
   courseName: string
 }
 
-const ListarEstudiantes: React.FC = () => {
+/**
+ * Component for listing and managing students
+ */
+const ListStudents: React.FC = () => {
   // State variables for managing students data, years, courses, etc.
-  const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]) // List of students
+  const [students, setStudents] = useState<Student[]>([]) // List of students
   const [years, setYears] = useState<number[]>([]) // List of available years
-  const [selectedAño, setSelectedAño] = useState<string>("") // Selected year
+  const [selectedYear, setSelectedYear] = useState<string>("") // Selected year
   const [currentPage, setCurrentPage] = useState(1) // Current page for pagination
-  const [cursos, setCursos] = useState<Curso[]>([]) // List of available courses
-  const [selectedCurso, setSelectedCurso] = useState<string>("") // Selected course
-  const [estudiantesPerPage, setEstudiantesPerPage] = useState(4) // Number of students per page
+  const [courses, setCourses] = useState<Course[]>([]) // List of available courses
+  const [selectedCourse, setSelectedCourse] = useState<string>("") // Selected course
+  const [studentsPerPage, setStudentsPerPage] = useState(4) // Number of students per page
   const [maxPageButtons, setMaxPageButtons] = useState(10) // Maximum number of page buttons to show
   const navigate = useNavigate() // To navigate to other pages
 
+  /**
+   * Effect hook to fetch initial data on component mount
+   */
   useEffect(() => {
     // Fetch initial data such as profile, years, and courses
     const fetchInitialData = async () => {
-      const perfil = await getDatosPerfil() // Fetch profile data
-      const yearsRecuperados = await getYears() // Fetch available years
-      setYears(yearsRecuperados.map((yearObj) => yearObj.year)) // Set years in state
+      const profile = await getDatosPerfil() // Fetch profile data
+      const retrievedYears = await getYears() // Fetch available years
+      setYears(retrievedYears.map((yearObj) => yearObj.year)) // Set years in state
 
       // Set the current year if it exists in the list
       const currentYear = new Date().getFullYear().toString()
-      if (yearsRecuperados.map((yearObj) => yearObj.year.toString()).includes(currentYear)) {
-        setSelectedAño(currentYear) // Set current year as selected
+      if (retrievedYears.map((yearObj) => yearObj.year.toString()).includes(currentYear)) {
+        setSelectedYear(currentYear) // Set current year as selected
       }
 
       // Set the course based on the current month (June onwards -> course_id = 2, else course_id = 1)
       const currentMonth = new Date().getMonth()
       const initialCourseId = currentMonth >= 6 ? "2" : "1"
-      setSelectedCurso(initialCourseId)
+      setSelectedCourse(initialCourseId)
 
       // Fetch students and courses for the selected year and course if profile and year are available
-      if (perfil.sede && currentYear) {
-        fetchEstudiantes(perfil.sede, initialCourseId, currentYear) // Fetch students
-        fetchCursos(perfil.sede) // Fetch courses
+      if (profile.sede && currentYear) {
+        fetchStudents(profile.sede, initialCourseId, currentYear) // Fetch students
+        fetchCourses(profile.sede) // Fetch courses
       }
     }
 
     fetchInitialData() // Call the function to fetch data on initial render
   }, []) // Empty dependency array ensures it runs only once on mount
 
-  // Fetch students based on selected year, course, and campus
-  const fetchEstudiantes = async (sedeId: number, courseId: string, nameYear: string) => {
+  /**
+   * Fetch students based on selected year, course, and campus
+   */
+  const fetchStudents = async (campusId: number, courseId: string, year: string) => {
     try {
-      const estudiantesRecuperados = await getEstudiantes(sedeId, Number.parseInt(courseId), Number.parseInt(nameYear))
-      setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : []) // Set students in state
+      const retrievedStudents = await getEstudiantes(campusId, Number.parseInt(courseId), Number.parseInt(year))
+      setStudents(Array.isArray(retrievedStudents) ? retrievedStudents : []) // Set students in state
     } catch {
-      setEstudiantes([]) // Set empty list in case of error
+      setStudents([]) // Set empty list in case of error
     }
   }
 
-  // Fetch courses based on selected year and campus
-  const fetchCursos = async (sedeId: number) => {
+  /**
+   * Fetch courses based on selected year and campus
+   */
+  const fetchCourses = async (campusId: number) => {
     try {
-      const añoSeleccionado = selectedAño ? Number.parseInt(selectedAño) : new Date().getFullYear() // Set selected year or current year
-      const cursosRecuperados = await getCursos(sedeId, añoSeleccionado) // Fetch courses
-      setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []) // Set courses in state
+      const selectedYearValue = selectedYear ? Number.parseInt(selectedYear) : new Date().getFullYear() // Set selected year or current year
+      const retrievedCourses = await getCursos(campusId, selectedYearValue) // Fetch courses
+      setCourses(Array.isArray(retrievedCourses) ? retrievedCourses : []) // Set courses in state
     } catch (error) {
-      setCursos([]) // Set empty list in case of error
+      setCourses([]) // Set empty list in case of error
     }
   }
 
-  // Handle change of selected year from dropdown
-  const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const añoSeleccionado = e.target.value // Get selected year
-    setSelectedAño(añoSeleccionado) // Update state with selected year
-    const perfil = await getDatosPerfil() // Fetch profile data
-    if (perfil.sede && añoSeleccionado) {
-      const cursosRecuperados = await getCursos(perfil.sede, Number.parseInt(añoSeleccionado)) // Fetch courses for selected year
-      setCursos(Array.isArray(cursosRecuperados) ? cursosRecuperados : []) // Set courses in state
+  /**
+   * Handle change of selected year from dropdown
+   */
+  const handleYearChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedYear = e.target.value // Get selected year
+    setSelectedYear(selectedYear) // Update state with selected year
+    const profile = await getDatosPerfil() // Fetch profile data
+    if (profile.sede && selectedYear) {
+      const retrievedCourses = await getCursos(profile.sede, Number.parseInt(selectedYear)) // Fetch courses for selected year
+      setCourses(Array.isArray(retrievedCourses) ? retrievedCourses : []) // Set courses in state
     }
-    if (perfil.sede && añoSeleccionado && selectedCurso) {
-      fetchEstudiantes(perfil.sede, selectedCurso, añoSeleccionado) // Fetch students for selected year and course
-    }
-  }
-
-  // Handle change of selected course from dropdown
-  const handleCursoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCurso(e.target.value) // Update state with selected course
-    const perfil = await getDatosPerfil() // Fetch profile data
-    if (perfil.sede && selectedAño && e.target.value) {
-      fetchEstudiantes(perfil.sede, e.target.value, selectedAño) // Fetch students for selected year and course
+    if (profile.sede && selectedYear && selectedCourse) {
+      fetchStudents(profile.sede, selectedCourse, selectedYear) // Fetch students for selected year and course
     }
   }
 
-  // Handle click on student row to navigate to the student's timeline
-  const handleStudentClick = (estudiante: Estudiante) => {
+  /**
+   * Handle change of selected course from dropdown
+   */
+  const handleCourseChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCourse(e.target.value) // Update state with selected course
+    const profile = await getDatosPerfil() // Fetch profile data
+    if (profile.sede && selectedYear && e.target.value) {
+      fetchStudents(profile.sede, e.target.value, selectedYear) // Fetch students for selected year and course
+    }
+  }
+
+  /**
+   * Handle click on student row to navigate to the student's timeline
+   */
+  const handleStudentClick = (student: Student) => {
     navigate(`/administrador/time-line`, {
       state: {
-        estudiante,
-        selectedAño,
-        selectedCurso,
+        estudiante: student,
+        selectedAño: selectedYear,
+        selectedCurso: selectedCourse,
       },
     })
   }
 
-  // Handle print PDF for the selected year and course
-  const handlePrintPDF = (selectedAño: number, selectedCurso: number) => {
-    generaPDFGeneral(selectedAño, selectedCurso) // Generate PDF report
+  /**
+   * Handle print PDF for the selected year and course
+   */
+  const handlePrintPDF = (selectedYear: number, selectedCourse: number) => {
+    generaPDFGeneral(selectedYear, selectedCourse) // Generate PDF report
   }
 
-  // Handle search results from the BuscadorEstudiantes component
-  const handleSearchResults = (resultados: Estudiante[]) => {
-    setEstudiantes(resultados)
+  /**
+   * Handle search results from the BuscadorEstudiantes component
+   */
+  const handleSearchResults = (results: Student[]) => {
+    setStudents(results)
     setCurrentPage(1) // Reset to first page when search results change
   }
 
   // Pagination logic
-  const indexOfLastEstudiante = currentPage * estudiantesPerPage // Index of last student on current page
-  const indexOfFirstEstudiante = indexOfLastEstudiante - estudiantesPerPage // Index of first student on current page
-  const currentEstudiantes = estudiantes.slice(indexOfFirstEstudiante, indexOfLastEstudiante) // Slice students for current page
-  const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage) // Total number of pages
+  const indexOfLastStudent = currentPage * studentsPerPage // Index of last student on current page
+  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage // Index of first student on current page
+  const currentStudents = students.slice(indexOfFirstStudent, indexOfLastStudent) // Slice students for current page
+  const totalPages = Math.ceil(students.length / studentsPerPage) // Total number of pages
 
-  // Pagination function to set the current page
+  /**
+   * Pagination function to set the current page
+   */
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber) // Update current page
     }
   }
 
-  // Get page range for pagination buttons
+  /**
+   * Get page range for pagination buttons
+   */
   const getPageRange = () => {
     const range: number[] = []
-    const totalPages = Math.ceil(estudiantes.length / estudiantesPerPage) // Calculate total pages
+    const totalPages = Math.ceil(students.length / studentsPerPage) // Calculate total pages
     const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2)) // Calculate start page
     const endPage = Math.min(totalPages, startPage + maxPageButtons - 1) // Calculate end page
 
@@ -157,7 +187,9 @@ const ListarEstudiantes: React.FC = () => {
     return range
   }
 
-  // Render the student's profile photo or an initial if no photo is available
+  /**
+   * Render the student's profile photo or an initial if no photo is available
+   */
   const renderProfilePhoto = (profilePhoto: string, userName: string) => {
     if (profilePhoto) {
       return <img src={profilePhoto || "/placeholder.svg"} alt={userName} className="w-10 h-10 rounded-full" /> // Render photo if available
@@ -171,14 +203,16 @@ const ListarEstudiantes: React.FC = () => {
     }
   }
 
-  // Adjust number of students per page and pagination buttons on window resize
+  /**
+   * Effect hook to adjust UI based on screen size
+   */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setEstudiantesPerPage(8) // Set more students per page on smaller screens
+        setStudentsPerPage(8) // Set more students per page on smaller screens
         setMaxPageButtons(5) // Set fewer page buttons
       } else {
-        setEstudiantesPerPage(10) // Set default students per page
+        setStudentsPerPage(10) // Set default students per page
         setMaxPageButtons(10) // Set default page buttons
       }
     }
@@ -188,7 +222,6 @@ const ListarEstudiantes: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize) // Cleanup event listener
   }, [])
 
-
   return (
     <>
       <Breadcrumb pageName="Listar Estudiantes" />
@@ -196,8 +229,8 @@ const ListarEstudiantes: React.FC = () => {
         <div className="mb-4 flex flex-wrap items-center space-x-2">
           <div className="flex items-center flex-grow">
             <BuscadorEstudiantes
-              selectedAño={selectedAño}
-              selectedCurso={selectedCurso}
+              selectedAño={selectedYear}
+              selectedCurso={selectedCourse}
               onSearchResults={handleSearchResults}
             />
           </div>
@@ -206,19 +239,19 @@ const ListarEstudiantes: React.FC = () => {
             <button
               id="print-report"
               className="px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
-              onClick={() => handlePrintPDF(Number(selectedAño), Number(selectedCurso))}
+              onClick={() => handlePrintPDF(Number(selectedYear), Number(selectedCourse))}
             >
               Imprimir Reporte
             </button>
-            <AyudaEstudiantes />
+            <TourStudents />
           </div>
         </div>
 
         <div className="mb-4 flex gap-4">
           <select
             id="select-year"
-            value={selectedAño}
-            onChange={handleAñoChange}
+            value={selectedYear}
+            onChange={handleYearChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           >
             <option value="">Seleccionar año</option>
@@ -230,14 +263,14 @@ const ListarEstudiantes: React.FC = () => {
           </select>
           <select
             id="select-course"
-            value={selectedCurso}
-            onChange={handleCursoChange}
+            value={selectedCourse}
+            onChange={handleCourseChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
           >
             <option value="">Seleccionar curso</option>
-            {cursos.map((curso) => (
-              <option key={curso.course_id} value={curso.course_id.toString()}>
-                {curso.courseName}
+            {courses.map((course) => (
+              <option key={course.course_id} value={course.course_id.toString()}>
+                {course.courseName}
               </option>
             ))}
           </select>
@@ -256,21 +289,23 @@ const ListarEstudiantes: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentEstudiantes.length > 0 ? (
-                currentEstudiantes.map((est) => (
+              {currentStudents.length > 0 ? (
+                currentStudents.map((student) => (
                   <tr
-                    key={est.id}
-                    onClick={() => handleStudentClick(est)}
+                    key={student.id}
+                    onClick={() => handleStudentClick(student)}
                     className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
                   >
-                    <td className="py-2 px-4 text-center">{renderProfilePhoto(est.fotoPerfil, est.userName)}</td>
+                    <td className="py-2 px-4 text-center">
+                      {renderProfilePhoto(student.fotoPerfil, student.userName)}
+                    </td>
                     <td className="py-2 px-4 text-center text-black dark:text-white relative group">
-                      {est.userName}
+                      {student.userName}
                       <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
                         Ir Hacia TimeLine Estudiante
                       </div>
                     </td>
-                    <td className="py-2 px-4 text-center">{est.carnet}</td>
+                    <td className="py-2 px-4 text-center">{student.carnet}</td>
                   </tr>
                 ))
               ) : (
@@ -297,10 +332,11 @@ const ListarEstudiantes: React.FC = () => {
             <button
               key={page}
               onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                ? "bg-blue-600 text-white"
-                : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                }`}
+              className={`mx-1 px-3 py-1 rounded-md border ${
+                currentPage === page
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+              }`}
             >
               {page}
             </button>
@@ -318,4 +354,4 @@ const ListarEstudiantes: React.FC = () => {
   )
 }
 
-export default ListarEstudiantes
+export default ListStudents

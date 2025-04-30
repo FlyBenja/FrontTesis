@@ -7,10 +7,12 @@ import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import ActivaCatedraticos from "../../../components/Switchers/ActiveProfessors"
 import Swal from "sweetalert2"
 import BusquedaCatedratico from "../../../components/Searches/SearchProfessor"
-import AyudaCatedraticos from "../../../components/Tours/HeadquartersCoordinator/TourProfessors"
+import TourProfessors from "../../../components/Tours/HeadquartersCoordinator/TourProfessors"
 
-// Interface to define the structure of a professor's data
-interface Catedratico {
+/**
+ * Interface to define the structure of a professor's data
+ */
+interface Professor {
   user_id: number // Unique identifier for the professor
   email: string // Professor's email address
   userName: string // Professor's name
@@ -19,23 +21,25 @@ interface Catedratico {
   active: boolean // Status if the professor is active or not
 }
 
-const ListarCatedraticos: React.FC = () => {
+const ListProfessors: React.FC = () => {
   // State hooks for managing various aspects of the component
-  const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]) // List of professors
+  const [professors, setProfessors] = useState<Professor[]>([]) // List of professors
   const [currentPage, setCurrentPage] = useState(1) // Current page number for pagination
-  const [catedraticosPerPage, setCatedraticosPerPage] = useState(5) // Number of professors per page for pagination
+  const [professorsPerPage, setProfessorsPerPage] = useState(5) // Number of professors per page for pagination
   const [maxPageButtons, setMaxPageButtons] = useState(10) // Maximum number of page buttons to display in pagination
 
-  // Effect hook to handle window resize and adjust page settings accordingly
+  /**
+   * Effect hook to handle window resize and adjust page settings accordingly
+   */
   useEffect(() => {
     const handleResize = () => {
       // If screen width is less than 768px, display 8 items per page and 5 page buttons
       if (window.innerWidth < 768) {
-        setCatedraticosPerPage(8)
+        setProfessorsPerPage(8)
         setMaxPageButtons(5)
       } else {
         // Otherwise, display 5 items per page and 10 page buttons
-        setCatedraticosPerPage(10)
+        setProfessorsPerPage(10)
         setMaxPageButtons(10)
       }
     }
@@ -46,39 +50,47 @@ const ListarCatedraticos: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize) // Clean up the event listener on unmount
   }, [])
 
-  // Effect hook to fetch the profile data and professors data when the component is mounted
+  /**
+   * Effect hook to fetch the profile data and professors data when the component is mounted
+   */
   useEffect(() => {
-    const fetchPerfil = async () => {
+    const fetchProfile = async () => {
       try {
-        const perfil = await getDatosPerfil() // Fetch profile data
-        if (perfil.sede) {
-          fetchCatedraticos(perfil.sede) // If profile has 'sede', fetch the professors for that sede
+        const profile = await getDatosPerfil() // Fetch profile data
+        if (profile.sede) {
+          fetchProfessors(profile.sede) // If profile has 'sede', fetch the professors for that sede
         }
       } catch {
-        setCatedraticos([]) // If there's an error, set empty list of professors
+        setProfessors([]) // If there's an error, set empty list of professors
       }
     }
 
-    fetchPerfil() // Call the fetchPerfil function
+    fetchProfile() // Call the fetchProfile function
   }, [])
 
-  // Function to fetch the list of professors based on the sede ID
-  const fetchCatedraticos = async (sedeId: number) => {
+  /**
+   * Function to fetch the list of professors based on the sede ID
+   */
+  const fetchProfessors = async (headquartersId: number) => {
     try {
-      const catedraticosRecuperados = await getCatedraticos(sedeId) // Fetch professors based on the sede ID
-      setCatedraticos(Array.isArray(catedraticosRecuperados) ? catedraticosRecuperados : []) // Update the state if the response is an array
+      const retrievedProfessors = await getCatedraticos(headquartersId) // Fetch professors based on the sede ID
+      setProfessors(Array.isArray(retrievedProfessors) ? retrievedProfessors : []) // Update the state if the response is an array
     } catch {
-      setCatedraticos([]) // If there's an error, set empty list of professors
+      setProfessors([]) // If there's an error, set empty list of professors
     }
   }
 
-  // Handle search results from the BusquedaCatedratico component
-  const handleSearchResults = (resultados: Catedratico[]) => {
-    setCatedraticos(resultados)
+  /**
+   * Handle search results from the SearchProfessor component
+   */
+  const handleSearchResults = (results: Professor[]) => {
+    setProfessors(results)
     setCurrentPage(1) // Reset to first page when search results change
   }
 
-  // Function to handle the activation/deactivation of a professor
+  /**
+   * Function to handle the activation/deactivation of a professor
+   */
   const handleActiveChange = async (userId: number, newStatus: boolean) => {
     if (!newStatus) {
       // If deactivating a professor, show confirmation alert
@@ -99,34 +111,38 @@ const ListarCatedraticos: React.FC = () => {
     }
 
     // Update the professor's active status in the state
-    const updatedCatedraticos = catedraticos.map((cat) =>
-      cat.user_id === userId ? { ...cat, active: newStatus } : cat,
+    const updatedProfessors = professors.map((prof) =>
+      prof.user_id === userId ? { ...prof, active: newStatus } : prof,
     )
-    setCatedraticos(updatedCatedraticos)
+    setProfessors(updatedProfessors)
 
     try {
       await activaUsuario(userId, newStatus) // Call the API to update the professor's status
     } catch {
-      setCatedraticos((prev) => prev.map((cat) => (cat.user_id === userId ? { ...cat, active: !newStatus } : cat))) // If there's an error, revert the professor's status in the state
+      setProfessors((prev) => prev.map((prof) => (prof.user_id === userId ? { ...prof, active: !newStatus } : prof))) // If there's an error, revert the professor's status in the state
     }
   }
 
   // Pagination calculations
-  const indexOfLastCatedratico = currentPage * catedraticosPerPage // Index of the last professor on the current page
-  const indexOfFirstCatedratico = indexOfLastCatedratico - catedraticosPerPage // Index of the first professor on the current page
-  const currentCatedraticos = catedraticos.slice(indexOfFirstCatedratico, indexOfLastCatedratico) // Slice the professors list based on the current page and page size
+  const indexOfLastProfessor = currentPage * professorsPerPage // Index of the last professor on the current page
+  const indexOfFirstProfessor = indexOfLastProfessor - professorsPerPage // Index of the first professor on the current page
+  const currentProfessors = professors.slice(indexOfFirstProfessor, indexOfLastProfessor) // Slice the professors list based on the current page and page size
 
   // Total number of pages required for pagination
-  const totalPages = Math.ceil(catedraticos.length / catedraticosPerPage)
+  const totalPages = Math.ceil(professors.length / professorsPerPage)
 
-  // Function to handle pagination (navigate to a specific page)
+  /**
+   * Function to handle pagination (navigate to a specific page)
+   */
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber) // Set the current page
     }
   }
 
-  // Function to render the profile photo of the professor
+  /**
+   * Function to render the profile photo of the professor
+   */
   const renderProfilePhoto = (profilePhoto: string | null, userName: string) =>
     profilePhoto ? (
       <img src={profilePhoto || "/placeholder.svg"} alt={userName} className="w-10 h-10 rounded-full" />
@@ -136,7 +152,9 @@ const ListarCatedraticos: React.FC = () => {
       </div>
     )
 
-  // Function to get the page range for pagination buttons
+  /**
+   * Function to get the page range for pagination buttons
+   */
   const getPageRange = () => {
     let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2)) // Calculate the start page
     const end = Math.min(totalPages, start + maxPageButtons - 1) // Calculate the end page
@@ -157,9 +175,9 @@ const ListarCatedraticos: React.FC = () => {
             <BusquedaCatedratico onSearchResults={handleSearchResults} />
           </div>
 
-          {/* Botón para iniciar el recorrido */}
+          {/* Help tour button */}
           <div className="flex items-center">
-            <AyudaCatedraticos />
+            <TourProfessors />
           </div>
         </div>
 
@@ -170,26 +188,26 @@ const ListarCatedraticos: React.FC = () => {
           >
             <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
               <tr>
-                <th className="py-2 px-4 text-left">Foto</th>
-                <th className="py-2 px-4 text-center">Nombre</th>
-                <th className="py-2 px-4 text-center">Código</th>
-                <th className="py-2 px-4 text-right">Activo</th>
+                <th className="py-2 px-4 text-left">Photo</th>
+                <th className="py-2 px-4 text-center">Name</th>
+                <th className="py-2 px-4 text-center">Code</th>
+                <th className="py-2 px-4 text-right">Active</th>
               </tr>
             </thead>
             <tbody>
-              {currentCatedraticos.length > 0 ? (
-                currentCatedraticos.map((cat) => (
-                  <tr key={cat.user_id} className="border-t border-gray-200 dark:border-strokedark">
+              {currentProfessors.length > 0 ? (
+                currentProfessors.map((prof) => (
+                  <tr key={prof.user_id} className="border-t border-gray-200 dark:border-strokedark">
                     <td className="py-2 px-4 text-center">
-                      {renderProfilePhoto(cat.profilePhoto, cat.userName)} {/* Render professor's photo */}
+                      {renderProfilePhoto(prof.profilePhoto, prof.userName)} {/* Render professor's photo */}
                     </td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{cat.userName}</td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{cat.professorCode}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{prof.userName}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{prof.professorCode}</td>
                     <td className="py-2 px-4 flex justify-end" id="active-switcher">
                       <ActivaCatedraticos
-                        enabled={cat.active}
-                        onChange={() => handleActiveChange(cat.user_id, !cat.active)} // Toggle professor's active status
-                        uniqueId={cat.user_id.toString()}
+                        enabled={prof.active}
+                        onChange={() => handleActiveChange(prof.user_id, !prof.active)} // Toggle professor's active status
+                        uniqueId={prof.user_id.toString()}
                       />
                     </td>
                   </tr>
@@ -206,7 +224,7 @@ const ListarCatedraticos: React.FC = () => {
         </div>
 
         {/* Pagination */}
-        {catedraticos.length > catedraticosPerPage && (
+        {professors.length > professorsPerPage && (
           <div id="pagination" className="mt-4 flex justify-center">
             <button
               onClick={() => paginate(currentPage - 1)}
@@ -219,10 +237,11 @@ const ListarCatedraticos: React.FC = () => {
               <button
                 key={page}
                 onClick={() => paginate(page)}
-                className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                  }`}
+                className={`mx-1 px-3 py-1 rounded-md border ${
+                  currentPage === page
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+                }`}
               >
                 {page}
               </button>
@@ -241,4 +260,4 @@ const ListarCatedraticos: React.FC = () => {
   )
 }
 
-export default ListarCatedraticos
+export default ListProfessors

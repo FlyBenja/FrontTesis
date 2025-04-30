@@ -5,9 +5,13 @@ import { getDatosPerfil } from "../../ts/General/GetProfileData"
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 
-const MisAsignaciones: React.FC = () => {
+/**
+ * Component for displaying thesis reviews assigned to a coordinator
+ */
+const MyAssignments: React.FC = () => {
   const navigate = useNavigate()
 
+  // State declarations
   const [userId, setUserId] = useState<number | null>(null)
   const [revisiones, setRevisiones] = useState<any[]>([])
   const [searchCarnet, setSearchCarnet] = useState("")
@@ -20,6 +24,9 @@ const MisAsignaciones: React.FC = () => {
   const [revisionesPerPage, setRevisionesPerPage] = useState(5)
   const [maxPageButtons, setMaxPageButtons] = useState(10)
 
+  /**
+   * Fetch user profile data when component mounts
+   */
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -32,7 +39,9 @@ const MisAsignaciones: React.FC = () => {
     fetchUserId()
   }, [])
 
-  // Obtener las revisiones del coordinador
+  /**
+   * Fetch coordinator's reviews from the API
+   */
   const fetchRevisiones = useCallback(
     async (order: "asc" | "desc", carnet: string) => {
       try {
@@ -52,7 +61,9 @@ const MisAsignaciones: React.FC = () => {
     [userId],
   )
 
-  // Efecto para cargar las revisiones cuando cambia el carnet, el orden o el userId
+  /**
+   * Load reviews when carnet, order, or userId changes
+   */
   useEffect(() => {
     if (userId !== null) {
       const carnetValue = searchCarnet.length >= 10 ? searchCarnet : ""
@@ -67,16 +78,23 @@ const MisAsignaciones: React.FC = () => {
 
   const totalPages = Math.ceil(filteredRevisiones.length / revisionesPerPage)
 
+  /**
+   * Handle pagination
+   */
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
 
-  // Cambiar el orden de las revisiones
+  /**
+   * Change the sort order of reviews
+   */
   const handleChangeOrder = () => {
     setOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"))
   }
 
-  // Formatear la fecha de la solicitud
+  /**
+   * Format date to local format
+   */
   const formatDate = (date: string) => {
     const formattedDate = new Date(date)
     return (
@@ -90,16 +108,24 @@ const MisAsignaciones: React.FC = () => {
     )
   }
 
+  /**
+   * Navigate to review details page
+   */
   const handleVerDetalle = (userId: number) => {
-    navigate(`/cordinador/mis-asignaciones/detalle`, { state: { userId } })
+    navigate(`/coordinadortesis/mis-asignaciones/detalle-comentario`, { state: { userId } })
   }
 
+  /**
+   * Handle search input change
+   */
   const handleChangeSearchCarnet = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newCarnet = e.target.value
     setSearchCarnet(newCarnet)
   }
 
-  // Effect hook to handle window resize and adjust page settings accordingly
+  /**
+   * Adjust page configuration based on window size
+   */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -152,9 +178,9 @@ const MisAsignaciones: React.FC = () => {
             </thead>
             <tbody>
               {currentRevisiones.length > 0 ? (
-                currentRevisiones.map((revision, index) => (
-                  <tr key={index} className="border-t border-gray-200 dark:border-strokedark">
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{index + 1}</td>
+                currentRevisiones.map((revision) => (
+                  <tr key={revision.revision_thesis_id} className="border-t border-gray-200 dark:border-strokedark">
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{revision.revision_thesis_id}</td>
                     <td className="py-2 px-4 text-center text-black dark:text-white">{revision.user.name}</td>
                     {/* Estas columnas se ocultan en pantallas pequeñas */}
                     <td className="py-2 px-4 text-center text-black dark:text-white hidden md:table-cell">
@@ -220,5 +246,4 @@ const MisAsignaciones: React.FC = () => {
   )
 }
 
-export default MisAsignaciones
-
+export default MyAssignments

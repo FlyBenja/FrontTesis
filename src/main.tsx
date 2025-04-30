@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import Login from './pages/General/Login';
-import CambiaContra from './pages/General/SwitchAgainst';
-import RecuperarContra from './pages/General/RecoverAgainst';
+import CambiaContra from './pages/General/ChangePassword';
+import RecuperarContra from './pages/General/RecoverPassword';
 import './css/style.css';
 import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';

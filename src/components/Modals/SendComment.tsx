@@ -4,17 +4,17 @@ import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import { enviaComentario } from '../../ts/ThesisCoordinatorandReviewer/SendComments';
 
 /**
- * Props for the EnviaComentarios component
+ * Props for the SendComment component
  */
-interface EnviaComentariosProps {
+interface SendCommentProps {
   onClose: () => void;
   revision_thesis_id: number;
 }
 
 /**
- * EnviaComentarios component for sending a comment on a thesis revision.
+ * SendComment component for sending a comment on a thesis revision.
  */
-const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_thesis_id }) => {
+const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }) => {
   const [titulo, setTitulo] = useState('');  // Title of the comment
   const [comentario, setComentario] = useState('');  // The content of the comment
   const [status, setStatus] = useState<string>('');  // Status of the comment (approved or rejected)
@@ -140,4 +140,4 @@ const EnviaComentarios: React.FC<EnviaComentariosProps> = ({ onClose, revision_t
   );
 };
 
-export default EnviaComentarios;
+export default SendComment;

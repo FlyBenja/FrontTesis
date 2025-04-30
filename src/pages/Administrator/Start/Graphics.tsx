@@ -1,15 +1,17 @@
 import type React from "react"
 import { useEffect, useState } from "react"
-// Importing functions to get data
 import { getDatosPerfil, type PerfilData } from "../../../ts/General/GetProfileData.ts"
 import { getStudentsSede } from "../../../ts/Administrator/GetStudentsSede.ts"
-// Importing necessary components
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb.tsx"
 import CardDataStats from "../../../components/Cards/CardDataStats.tsx"
 import TareasEstudiantes from "../../../components/Graphics/TasksStudents"
 import PorcentajeSede from "../../../components/Graphics/PercentageHeadquarters"
 
-const Graficas: React.FC = () => {
+/**
+ * Charts Component
+ * Displays statistical data and charts for students and revisions
+ */
+const Graphics: React.FC = () => {
   // State to store the total number of students, total students per sede, and revision data
   const [totalStudents, setTotalStudents] = useState<number | null>(null)
   const [totalStudentsSede, setTotalStudentsSede] = useState<number | null>(null)
@@ -17,7 +19,9 @@ const Graficas: React.FC = () => {
   const [totalInRevisions, setTotalInRevisions] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  // Effect hook to fetch data when the component mounts
+  /**
+   * Effect hook to fetch data when the component mounts
+   */
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
@@ -244,5 +248,4 @@ const Graficas: React.FC = () => {
   )
 }
 
-export default Graficas
-
+export default Graphics

@@ -9,7 +9,10 @@ import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import Swal from "sweetalert2"
 import type React from "react"
 
-const InfoCurso: React.FC = () => {
+/**
+ * Component for displaying course information and tasks
+ */
+const CourseInfo: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -19,6 +22,9 @@ const InfoCurso: React.FC = () => {
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0)
   const [loading, setLoading] = useState(true)
 
+  /**
+   * Fetch tasks for the course when component mounts or courseId changes
+   */
   useEffect(() => {
     const fetchTareas = async () => {
       setLoading(true)
@@ -39,8 +45,10 @@ const InfoCurso: React.FC = () => {
           })
           .filter((tarea) => tarea.typeTask_id !== 1)
 
-        // Ordenar tareas: primero las no entregadas
-        const tareasOrdenadas = tareasCombinadas.sort((a, b) => Number(a.submission_complete) - Number(b.submission_complete))
+        // Sort tasks: not submitted first
+        const tareasOrdenadas = tareasCombinadas.sort(
+          (a, b) => Number(a.submission_complete) - Number(b.submission_complete),
+        )
 
         setTareas(tareasOrdenadas)
       } catch (error) {
@@ -63,6 +71,9 @@ const InfoCurso: React.FC = () => {
     }
   }, [courseId])
 
+  /**
+   * Show initial warning message when component mounts
+   */
   useEffect(() => {
     Swal.fire({
       icon: "warning",
@@ -72,9 +83,12 @@ const InfoCurso: React.FC = () => {
       customClass: {
         confirmButton: "bg-red-600 text-white",
       },
-    });
-  }, []);
+    })
+  }, [])
 
+  /**
+   * Format date to DD/MM/YYYY
+   */
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
     return `${date.getUTCDate().toString().padStart(2, "0")}/${(date.getUTCMonth() + 1)
@@ -82,6 +96,9 @@ const InfoCurso: React.FC = () => {
       .padStart(2, "0")}/${date.getUTCFullYear()}`
   }
 
+  /**
+   * Format time to 24-hour format with AM/PM
+   */
   const formatTime24Hour = (timeStr: string) => {
     const [hours, minutes, seconds] = timeStr.split(":").map(Number)
     const amPm = hours < 12 ? "AM" : "PM"
@@ -90,6 +107,9 @@ const InfoCurso: React.FC = () => {
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")} ${amPm}`
   }
 
+  /**
+   * Navigate to chapter information page
+   */
   const handleNavigateToCapitulo = (
     task_id: number,
     submissionComplete: boolean,
@@ -114,6 +134,9 @@ const InfoCurso: React.FC = () => {
     })
   }
 
+  /**
+   * Handle task submission
+   */
   const handleEntregarTarea = async (task_id: number) => {
     try {
       const perfil = await getDatosPerfil()
@@ -150,6 +173,9 @@ const InfoCurso: React.FC = () => {
     }
   }
 
+  /**
+   * Check if the submit button should be disabled based on task deadline
+   */
   const isButtonDisabled = (endTask: string, endTime: string | undefined): boolean => {
     const currentDate = new Date()
     const endDate = new Date(endTask)
@@ -169,10 +195,16 @@ const InfoCurso: React.FC = () => {
     return formattedCurrentDateTime > formattedEndDateTime
   }
 
+  /**
+   * Navigate to next task
+   */
   const handleNextTask = () => {
     setCurrentTaskIndex((prevIndex) => (prevIndex + 1) % tareas.length)
   }
 
+  /**
+   * Navigate to previous task
+   */
   const handlePreviousTask = () => {
     setCurrentTaskIndex((prevIndex) => (prevIndex - 1 + tareas.length) % tareas.length)
   }
@@ -196,7 +228,6 @@ const InfoCurso: React.FC = () => {
       <div className="max-w-5xl mx-auto">
         <div className="bg-white dark:bg-boxdark rounded-xl shadow-lg overflow-hidden">
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            
             <p className="text-gray-500 dark:text-gray-400 mt-1">
               {tareas.length > 0 ? `${tareas.length} tareas disponibles` : "No hay tareas disponibles"}
             </p>
@@ -287,10 +318,11 @@ const InfoCurso: React.FC = () => {
                       disabled={
                         currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
                       }
-                      className={`px-4 py-2.5 rounded-lg font-medium text-white flex items-center justify-center ${currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
+                      className={`px-4 py-2.5 rounded-lg font-medium text-white flex items-center justify-center ${
+                        currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-green-600 hover:bg-green-700 transition-colors"
-                        }`}
+                      }`}
                     >
                       {currentTarea.submission_complete ? (
                         <>
@@ -318,10 +350,11 @@ const InfoCurso: React.FC = () => {
                         )
                       }
                       disabled={!currentTarea.submission_complete}
-                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${!currentTarea.submission_complete
+                      className={`px-4 py-2.5 rounded-lg font-medium flex items-center justify-center ${
+                        !currentTarea.submission_complete
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-purple-600 text-white hover:bg-purple-700 transition-colors"
-                        }`}
+                      }`}
                     >
                       <MessageSquare className="mr-2 h-5 w-5" /> Comentarios
                     </button>
@@ -372,5 +405,4 @@ const InfoCurso: React.FC = () => {
   )
 }
 
-export default InfoCurso
-
+export default CourseInfo

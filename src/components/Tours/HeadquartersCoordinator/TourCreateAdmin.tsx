@@ -2,13 +2,13 @@ import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 
 /**
- * AyudaCrearAdmin component
+ * TourCreateAdmin component
  * 
  * This component renders a help button that triggers a guided tour
  * explaining how to manage administrators within the system.
  * 
  */
-const AyudaCrearAdmin = () => {
+const TourCreateAdmin = () => {
     /**
      * Starts the guided tour for the admin management interface
      */
@@ -89,4 +89,4 @@ const AyudaCrearAdmin = () => {
     );
 };
 
-export default AyudaCrearAdmin;
+export default TourCreateAdmin;

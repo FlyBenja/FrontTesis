@@ -105,7 +105,7 @@ interface ChartOneState {
   }[];
 }
 
-const TotalRevisionesPorSede: React.FC = () => {
+const TotalReviewsPerHeadquarters: React.FC = () => {
   const [state, setState] = useState<ChartOneState>({
     series: [
       {
@@ -210,4 +210,4 @@ const TotalRevisionesPorSede: React.FC = () => {
   );
 };
 
-export default TotalRevisionesPorSede;
+export default TotalReviewsPerHeadquarters;

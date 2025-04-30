@@ -1,41 +1,44 @@
 import { useState, useEffect } from "react"
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
-import AyudaSedes from '../../components/Tours/GeneralCoordinator/TourSedes';
-import CrearSedes from "../../components/Modals/CreateHeadquarters"
+import Headquarters from "../../components/Tours/GeneralCoordinator/TourHeadquarters"
+import CreateHeadquartersModal from "../../components/Modals/CreateHeadquarters"
 
-// Interface defining the structure of a Sede object
-interface Sede {
+// Interface defining the structure of a Headquarters object
+interface Headquarters {
   id: number
   nombre: string
   direccion: string
 }
 
-const CrearSede: React.FC = () => {
-  // State for storing list of sedes
-  const [sedes, setSedes] = useState<Sede[]>([])
+const CreateHeadquarters: React.FC = () => {
+  // State for storing list of headquarters
+  const [headquarters, setHeadquarters] = useState<Headquarters[]>([])
   // State to manage modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Paginación
+  // Pagination states
   const [currentPage, setCurrentPage] = useState(1)
-  const [sedesPerPage, setSedesPerPage] = useState(5)
+  const [headquartersPerPage, setHeadquartersPerPage] = useState(5)
   const [maxPageButtons, setMaxPageButtons] = useState(5)
 
-  // Effect hook to fetch sedes when the component mounts
+  /**
+   * Effect hook to fetch headquarters when the component mounts
+   * and handle window resize events
+   */
   useEffect(() => {
-    // Function to simulate fetching sedes
-    const fetchSedes = () => {
-      const mockSedes = [
+    // Function to simulate fetching headquarters
+    const fetchHeadquarters = () => {
+      const mockHeadquarters = [
         { id: 1, nombre: "Sede 1", direccion: "Dirección 1" },
         { id: 2, nombre: "Sede 2", direccion: "Dirección 2" },
         { id: 3, nombre: "Sede 3", direccion: "Dirección 3" },
       ]
-      const sortedSedes = mockSedes.sort((a, b) => a.id - b.id)
-      setSedes(sortedSedes)
+      const sortedHeadquarters = mockHeadquarters.sort((a, b) => a.id - b.id)
+      setHeadquarters(sortedHeadquarters)
     }
 
-    fetchSedes()
+    fetchHeadquarters()
 
     window.addEventListener("resize", handleResize)
     handleResize()
@@ -45,29 +48,38 @@ const CrearSede: React.FC = () => {
     }
   }, [])
 
-  // Function to handle window resize
+  /**
+   * Function to handle window resize
+   * Adjusts the number of items per page and max page buttons based on screen size
+   */
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setSedesPerPage(4)
+      setHeadquartersPerPage(4)
       setMaxPageButtons(3)
     } else {
-      setSedesPerPage(5)
+      setHeadquartersPerPage(5)
       setMaxPageButtons(5)
     }
   }
 
-  // Paginación
-  const indexOfLastSede = currentPage * sedesPerPage
-  const indexOfFirstSede = indexOfLastSede - sedesPerPage
-  const currentSedes = sedes.slice(indexOfFirstSede, indexOfLastSede)
-  const totalPages = Math.ceil(sedes.length / sedesPerPage)
+  // Pagination calculations
+  const indexOfLastHeadquarters = currentPage * headquartersPerPage
+  const indexOfFirstHeadquarters = indexOfLastHeadquarters - headquartersPerPage
+  const currentHeadquarters = headquarters.slice(indexOfFirstHeadquarters, indexOfLastHeadquarters)
+  const totalPages = Math.ceil(headquarters.length / headquartersPerPage)
 
+  /**
+   * Function to handle pagination
+   */
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber)
     }
   }
 
+  /**
+   * Function to get the range of page numbers to display in pagination
+   */
   const getPageRange = () => {
     let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
     const end = Math.min(totalPages, start + maxPageButtons - 1)
@@ -84,20 +96,24 @@ const CrearSede: React.FC = () => {
   // Function to close the modal
   const handleCloseModal = () => setIsModalOpen(false)
 
-  // Function to handle sede creation
-  const handleCreateSede = (nombre: string, direccion: string) => {
-    const newSede = {
-      id: sedes.length + 1,
-      nombre,
-      direccion,
+  /**
+   * Function to handle headquarters creation
+   */
+  const handleCreateHeadquarters = (name: string, address: string) => {
+    const newHeadquarters = {
+      id: headquarters.length + 1,
+      nombre: name,
+      direccion: address,
     }
-    setSedes([...sedes, newSede])
+    setHeadquarters([...headquarters, newHeadquarters])
     handleCloseModal()
   }
 
-  // Function to handle sede deletion
-  const handleDeleteClick = (sedeId: number) => {
-    setSedes(sedes.filter((sede) => sede.id !== sedeId))
+  /**
+   * Function to handle headquarters deletion
+   */
+  const handleDeleteClick = (headquartersId: number) => {
+    setHeadquarters(headquarters.filter((sede) => sede.id !== headquartersId))
   }
 
   return (
@@ -107,9 +123,7 @@ const CrearSede: React.FC = () => {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-4">
         <div id="tabla-sedes" className="bg-white dark:bg-boxdark rounded-xl shadow-lg p-6 transition-all duration-300">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-              Sedes Registradas
-            </h3>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">Sedes Registradas</h3>
             <div className="flex items-center space-x-3">
               <button
                 id="boton-crear-sede"
@@ -128,8 +142,8 @@ const CrearSede: React.FC = () => {
                 Crear Nueva Sede
               </button>
 
-              {/* Botón para iniciar los recorridos */}
-              <AyudaSedes />
+              {/* Help tour button */}
+              <Headquarters />
             </div>
           </div>
 
@@ -146,18 +160,14 @@ const CrearSede: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentSedes.length > 0 ? (
-                  currentSedes.map((sede) => (
+                {currentHeadquarters.length > 0 ? (
+                  currentHeadquarters.map((sede) => (
                     <tr
                       key={sede.id}
                       className="border-t border-gray-200 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-meta-4 transition-colors duration-150"
                     >
-                      <td className="py-2 px-4 text-left text-black dark:text-white">
-                        {sede.nombre}
-                      </td>
-                      <td className="py-2 px-4 text-center text-black dark:text-white">
-                        {sede.direccion}
-                      </td>
+                      <td className="py-2 px-4 text-left text-black dark:text-white">{sede.nombre}</td>
+                      <td className="py-2 px-4 text-center text-black dark:text-white">{sede.direccion}</td>
                       <td className="py-2 px-4 text-center">
                         <button
                           id="delete-sede"
@@ -223,10 +233,11 @@ const CrearSede: React.FC = () => {
                   <button
                     key={page}
                     onClick={() => paginate(page)}
-                    className={`relative inline-flex items-center px-4 py-2 border ${currentPage === page
-                      ? "z-10 bg-blue-50 dark:bg-blue-900 border-blue-500 dark:border-blue-500 text-blue-600 dark:text-blue-200"
-                      : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                      } text-sm font-medium`}
+                    className={`relative inline-flex items-center px-4 py-2 border ${
+                      currentPage === page
+                        ? "z-10 bg-blue-50 dark:bg-blue-900 border-blue-500 dark:border-blue-500 text-blue-600 dark:text-blue-200"
+                        : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    } text-sm font-medium`}
                   >
                     {page}
                   </button>
@@ -258,10 +269,14 @@ const CrearSede: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal para crear nueva sede */}
-      <CrearSedes isOpen={isModalOpen} onClose={handleCloseModal} onCreateSede={handleCreateSede} />
+      {/* Modal for creating new headquarters */}
+      <CreateHeadquartersModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onCreateSede={handleCreateHeadquarters}
+      />
     </>
   )
 }
 
-export default CrearSede
+export default CreateHeadquarters

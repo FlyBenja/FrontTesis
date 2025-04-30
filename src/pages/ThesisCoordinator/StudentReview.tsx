@@ -1,57 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { getRevisionDetallePendi } from '../../ts/ThesisCoordinatorandReviewer/GetRevisionDetailPend';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import AsignaRevisor from '../../components/Modals/AssignReviewer';
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import { getRevisionDetallePendi } from "../../ts/ThesisCoordinatorandReviewer/GetRevisionDetailPend"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import AsignaRevisor from "../../components/Modals/AssignReviewer"
 
-const RevisionEstudiante: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRevisionId, setSelectedRevisionId] = useState<number | null>(null);
-  const [revisiones, setRevisiones] = useState<any[]>([]);
+/**
+ * Component for displaying student thesis review details
+ */
+const StudentReview: React.FC = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedRevisionId, setSelectedRevisionId] = useState<number | null>(null)
+  const [revisiones, setRevisiones] = useState<any[]>([])
 
-  const userId = location.state?.userId;
+  const userId = location.state?.userId
 
+  /**
+   * Fetch review details when component mounts or userId changes
+   */
   useEffect(() => {
     if (userId) {
       const fetchRevisiones = async () => {
         try {
-          const data = await getRevisionDetallePendi(userId);
-          setRevisiones(data);
+          const data = await getRevisionDetallePendi(userId)
+          setRevisiones(data)
         } catch (error) {
-          console.error('Error al obtener detalles de revisiones pendientes:', error);
+          console.error("Error al obtener detalles de revisiones pendientes:", error)
         }
-      };
+      }
 
-      fetchRevisiones();
+      fetchRevisiones()
     }
-  }, [userId]);
+  }, [userId])
 
+  /**
+   * Open the reviewer assignment modal
+   */
   const handleOpenModal = (revisionId: number) => {
-    setSelectedRevisionId(revisionId);
-    setIsModalOpen(true);
-  };
+    setSelectedRevisionId(revisionId)
+    setIsModalOpen(true)
+  }
 
+  /**
+   * Close the reviewer assignment modal
+   */
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedRevisionId(null);
-  };
+    setIsModalOpen(false)
+    setSelectedRevisionId(null)
+  }
 
+  /**
+   * Handle thesis PDF download
+   */
   const handleDownload = async (url: string, filename: string) => {
     try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const link = document.createElement("a")
+      link.href = URL.createObjectURL(blob)
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     } catch (error) {
-      console.error("Error al descargar el archivo:", error);
+      console.error("Error al descargar el archivo:", error)
     }
-  };
+  }
 
   return (
     <>
@@ -73,7 +89,7 @@ const RevisionEstudiante: React.FC = () => {
               <div className="flex items-center">
                 {revision.user.profilePhoto ? (
                   <img
-                    src={revision.user.profilePhoto}
+                    src={revision.user.profilePhoto || "/placeholder.svg"}
                     alt="Foto de perfil"
                     className="w-24 h-24 rounded-full"
                   />
@@ -99,8 +115,8 @@ const RevisionEstudiante: React.FC = () => {
                 <p className="text-gray-700 dark:text-gray-300">
                   Fecha de revisión: {new Date(revision.date_revision).toLocaleDateString()}
                 </p>
-                <p className={`text-sm font-semibold ${revision.active_process ? 'text-green-500' : 'text-red-500'}`}>
-                  Estado: {revision.active_process ? 'En proceso' : 'Finalizado'}
+                <p className={`text-sm font-semibold ${revision.active_process ? "text-green-500" : "text-red-500"}`}>
+                  Estado: {revision.active_process ? "En proceso" : "Finalizado"}
                 </p>
               </div>
 
@@ -118,12 +134,7 @@ const RevisionEstudiante: React.FC = () => {
               {revision.thesis_dir && (
                 <div className="mt-4">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Vista previa del PDF</h3>
-                  <iframe
-                    src={revision.thesis_dir}
-                    width="100%"
-                    height="400"
-                    className="mt-2"
-                  ></iframe>
+                  <iframe src={revision.thesis_dir} width="100%" height="400" className="mt-2"></iframe>
                 </div>
               )}
 
@@ -143,9 +154,11 @@ const RevisionEstudiante: React.FC = () => {
         )}
       </div>
 
-      {isModalOpen && selectedRevisionId && <AsignaRevisor revisionThesisId={selectedRevisionId} onClose={handleCloseModal} />}
+      {isModalOpen && selectedRevisionId && (
+        <AsignaRevisor revisionThesisId={selectedRevisionId} onClose={handleCloseModal} />
+      )}
     </>
-  );
-};
+  )
+}
 
-export default RevisionEstudiante;
+export default StudentReview

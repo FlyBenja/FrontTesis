@@ -29,6 +29,11 @@ import Profile from './pages/General/Profile';
 import PasswordSettings from './pages/General/Password';
 import Calendar from './pages/General/Calendar';
 import DefaultLayout from './layout/DefaultLayout';
+import MyAssignments from './pages/General/MyAssignments';
+import AssignmentDetails from './pages/General/ReviewStudentGetComments';
+import AssignmentCommentDetails from './pages/General/ReviewStudentCreateComments';
+import Record from './pages/General/Record';
+import RecordDetails from './pages/General/ReviewStudentGetComments';
 
 // Student
 import Start from './pages/Students/Start';
@@ -48,15 +53,10 @@ import AssignPG from './pages/HeadquartersCoordinator/AssignPG';
 
 // Thesis Coordinator
 import ThesisGraphics from './pages/ThesisCoordinator/Graphics';
-import MyAssignments from './pages/ThesisCoordinator/MyAssignments';
-import AssignmentDetails from './pages/General/ReviewStudentGetComments';
-import AssignmentCommentDetails from './pages/General/ReviewStudentCreateComments';
 import RequestReviews from './pages/ThesisCoordinator/RequestReviews';
 import StudentReview from './pages/ThesisCoordinator/StudentReview';
 import Reviewers from './pages/ThesisCoordinator/Reviewers';
 import Assignments from './pages/ThesisCoordinator/Assignments';
-import Record from './pages/ThesisCoordinator/Record';
-import RecordDetails from './pages/General/ReviewStudentGetComments';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);

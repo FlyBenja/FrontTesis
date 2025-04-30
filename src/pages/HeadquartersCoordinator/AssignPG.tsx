@@ -1,41 +1,55 @@
-import React, { useState, useEffect } from "react";
-import { getDatosPerfil } from "../../ts/General/GetProfileData";
-import { getCursos } from "../../ts/General/GetCourses";
-import { crearAsignacionSedeCurso } from "../../ts/HeadquartersCoordinator/CreatePG";
-import AyudaAsignarPG from '../../components/Tours/HeadquartersCoordinator/TourAssignPG';
-import Swal from "sweetalert2";
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import type React from "react"
+import { useState, useEffect } from "react"
+import { getDatosPerfil } from "../../ts/General/GetProfileData"
+import { getCursos } from "../../ts/General/GetCourses"
+import { crearAsignacionSedeCurso } from "../../ts/HeadquartersCoordinator/CreatePG"
+import TourAssignPG from "../../components/Tours/HeadquartersCoordinator/TourAssignPG"
+import Swal from "sweetalert2"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 
-const AsignarPG: React.FC = () => {
-  const [sedeId, setSedeId] = useState<number | null>(null);
-  const [sedeNombre, setSedeNombre] = useState<string>("");
-  const [pg1, setPg1] = useState(false);
-  const [pg2, setPg2] = useState(false);
-  const [pg1Disabled, setPg1Disabled] = useState(false);
-  const [pg2Disabled, setPg2Disabled] = useState(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+/**
+ * Component for assigning graduation projects to headquarters
+ */
+const AssignPG: React.FC = () => {
+  // State for headquarters ID and name
+  const [sedeId, setSedeId] = useState<number | null>(null)
+  const [sedeNombre, setSedeNombre] = useState<string>("")
 
+  // State for PG1 and PG2 checkboxes
+  const [pg1, setPg1] = useState(false)
+  const [pg2, setPg2] = useState(false)
+
+  // State for disabled checkboxes (when already assigned)
+  const [pg1Disabled, setPg1Disabled] = useState(false)
+  const [pg2Disabled, setPg2Disabled] = useState(false)
+
+  // State for button disabled status
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+
+  /**
+   * Fetch profile data and course information on component mount
+   */
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const perfil = await getDatosPerfil();
-        setSedeId(perfil.sede);
-        setSedeNombre(perfil.NombreSede);
+        const perfil = await getDatosPerfil()
+        setSedeId(perfil.sede)
+        setSedeNombre(perfil.NombreSede)
 
         if (perfil.sede) {
-          const currentYear = new Date().getFullYear();
-          const cursos = await getCursos(perfil.sede, currentYear);
+          const currentYear = new Date().getFullYear()
+          const cursos = await getCursos(perfil.sede, currentYear)
 
-          const pg1Available = cursos.some((curso) => curso.course_id === 1);
-          const pg2Available = cursos.some((curso) => curso.course_id === 2);
+          const pg1Available = cursos.some((curso) => curso.course_id === 1)
+          const pg2Available = cursos.some((curso) => curso.course_id === 2)
 
-          setPg1(pg1Available);
-          setPg2(pg2Available);
-          setPg1Disabled(pg1Available);
-          setPg2Disabled(pg2Available);
+          setPg1(pg1Available)
+          setPg2(pg2Available)
+          setPg1Disabled(pg1Available)
+          setPg2Disabled(pg2Available)
 
-          // Habilita el botón solo si hay al menos un curso NO asignado
-          setIsButtonDisabled(pg1Available && pg2Available);
+          // Enable button only if at least one course is NOT assigned
+          setIsButtonDisabled(pg1Available && pg2Available)
         }
       } catch (error: any) {
         Swal.fire({
@@ -45,29 +59,32 @@ const AsignarPG: React.FC = () => {
           confirmButtonText: "OK",
           confirmButtonColor: "#DC3545",
           customClass: { confirmButton: "text-white" },
-        });
+        })
       }
-    };
+    }
 
-    fetchPerfil();
-  }, []);
+    fetchPerfil()
+  }, [])
 
+  /**
+   * Handle form submission to assign courses to headquarters
+   */
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!sedeId) return;
+    e.preventDefault()
+    if (!sedeId) return
 
     try {
-      const currentYear = new Date().getFullYear();
-      let payload = null;
+      const currentYear = new Date().getFullYear()
+      let payload = null
 
       if (pg1 && !pg1Disabled && !pg2) {
-        payload = { course_id: 1, sede_id: sedeId, year_id: currentYear, courseActive: true };
+        payload = { course_id: 1, sede_id: sedeId, year_id: currentYear, courseActive: true }
       } else if (pg2 && !pg2Disabled && !pg1) {
-        payload = { course_id: 2, sede_id: sedeId, year_id: currentYear, courseActive: true };
+        payload = { course_id: 2, sede_id: sedeId, year_id: currentYear, courseActive: true }
       }
 
       if (payload) {
-        await crearAsignacionSedeCurso(payload);
+        await crearAsignacionSedeCurso(payload)
         Swal.fire({
           icon: "success",
           title: "¡Asignación completada!",
@@ -75,12 +92,12 @@ const AsignarPG: React.FC = () => {
           confirmButtonText: "OK",
           confirmButtonColor: "#4CAF50",
           customClass: { confirmButton: "text-white" },
-        });
+        })
 
-        // Actualiza la lista de cursos asignados después de la asignación
-        setPg1Disabled(payload.course_id === 1 || pg1Disabled);
-        setPg2Disabled(payload.course_id === 2 || pg2Disabled);
-        setIsButtonDisabled(pg1Disabled && pg2Disabled);
+        // Update the list of assigned courses after assignment
+        setPg1Disabled(payload.course_id === 1 || pg1Disabled)
+        setPg2Disabled(payload.course_id === 2 || pg2Disabled)
+        setIsButtonDisabled(pg1Disabled && pg2Disabled)
       } else {
         Swal.fire({
           icon: "warning",
@@ -89,7 +106,7 @@ const AsignarPG: React.FC = () => {
           confirmButtonText: "OK",
           confirmButtonColor: "#F59E0B",
           customClass: { confirmButton: "text-white" },
-        });
+        })
       }
     } catch (error: any) {
       Swal.fire({
@@ -99,18 +116,20 @@ const AsignarPG: React.FC = () => {
         confirmButtonText: "OK",
         confirmButtonColor: "#DC3545",
         customClass: { confirmButton: "text-white" },
-      });
+      })
     }
-  };
+  }
 
   return (
     <>
       <Breadcrumb pageName="Asignar PG" />
       <div className="p-6 max-w-xl mx-auto bg-white dark:bg-boxdark rounded-xl shadow-md mt-25">
         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center">
-          {/* Botón para iniciar el recorrido */}
-          <AyudaAsignarPG />
-          <h2 className="text-2xl font-bold text-center mb-2 text-black dark:text-white ml-9">Asignar PG1 y PG2 a {sedeNombre}</h2>
+          {/* Tour start button */}
+          <TourAssignPG />
+          <h2 className="text-2xl font-bold text-center mb-2 text-black dark:text-white ml-9">
+            Asignar PG1 y PG2 a {sedeNombre}
+          </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -155,7 +174,7 @@ const AsignarPG: React.FC = () => {
         </form>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default AsignarPG;
+export default AssignPG

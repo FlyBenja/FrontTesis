@@ -2,12 +2,12 @@ import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css'; 
 
 /**
- * AyudaInfoCap component provides a guided tour for the information capture section.
+ * TourInfoCap component provides a guided tour for the information capture section.
  * It helps users understand how to navigate through various elements like
  * navigating back, viewing comments, and sending new comments.
  *
  */
-const AyudaInfoCap = () => {
+const TourInfoCap = () => {
     /**
      * Starts the guided tour using driver.js.
      * This function configures the steps and starts the tour when called.
@@ -108,4 +108,4 @@ const AyudaInfoCap = () => {
     );
 };
 
-export default AyudaInfoCap;
+export default TourInfoCap;

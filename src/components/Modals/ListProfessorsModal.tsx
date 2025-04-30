@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';  
-import { getCatedraticosActivos } from '../../ts/HeadquartersCoordinator/GetProfessorActive';  
-import { getDatosPerfil } from '../../ts/General/GetProfileData';  
-import { asignarCatedraticoComision } from '../../ts/HeadquartersCoordinator/AssignsProfessorCommission';  
-import Swal from 'sweetalert2'; 
+import React, { useState, useEffect } from 'react';
+import { getCatedraticosActivos } from '../../ts/HeadquartersCoordinator/GetProfessorActive';
+import { getDatosPerfil } from '../../ts/General/GetProfileData';
+import { asignarCatedraticoComision } from '../../ts/HeadquartersCoordinator/AssignsProfessorCommission';
+import Swal from 'sweetalert2';
 
 // Defining the TypeScript interface for the professor (catedrático) data structure
 interface Catedratico {
@@ -12,8 +12,8 @@ interface Catedratico {
   active: boolean;
 }
 
-// Defining the props for the ListarCatedraticosModal component
-interface ListarCatedraticosModalProps {
+// Defining the props for the ListProfessorsModal component
+interface ListProfessorsModalProps {
   onClose: () => void;  // Function to close the modal
   selectedRow: number | null;  // Selected row (role) for the professor
   groupId: number | null;  // Group ID where the professor is being assigned
@@ -29,13 +29,13 @@ const ROLES_CODIGOS: { [key: string]: number } = {
 };
 
 /**
- * The ListarCatedraticosModal component renders a modal for listing active professors 
+ * The ListProfessorsModal component renders a modal for listing active professors 
  * and assigning them to a role within a group.
  *
- * @param {ListarCatedraticosModalProps} props - The props for the modal component.
+ * @param {ListProfessorsModalProps} props - The props for the modal component.
  * @returns {JSX.Element} - The rendered JSX element for the modal.
  */
-const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClose, selectedRow, groupId }) => {
+const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedRow, groupId }) => {
   // State for managing the list of professors, selected professor, and loading state
   const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
   const [selectedCatedratico, setSelectedCatedratico] = useState<Catedratico | null>(null);
@@ -154,11 +154,10 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
           {catedraticos.map((catedratico) => (
             <li
               key={catedratico.user_id}
-              className={`p-4 flex items-center justify-between ${
-                selectedCatedratico?.user_id === catedratico.user_id
+              className={`p-4 flex items-center justify-between ${selectedCatedratico?.user_id === catedratico.user_id
                   ? 'bg-blue-100 dark:bg-blue-900'
                   : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-              }`}
+                }`}
               onClick={() => handleSelect(catedratico)}
             >
               <div className="flex items-center">
@@ -181,9 +180,8 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
         <div className="mt-6 text-center">
           <button
             onClick={handleAssign}
-            className={`px-4 py-2 bg-primary text-white rounded-lg w-full ${
-              !selectedCatedratico ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'
-            }`}
+            className={`px-4 py-2 bg-primary text-white rounded-lg w-full ${!selectedCatedratico ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'
+              }`}
             disabled={!selectedCatedratico}
           >
             Asignar
@@ -202,4 +200,4 @@ const ListarCatedraticosModal: React.FC<ListarCatedraticosModalProps> = ({ onClo
   );
 };
 
-export default ListarCatedraticosModal;
+export default ListProfessors;

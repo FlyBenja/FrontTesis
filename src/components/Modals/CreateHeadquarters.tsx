@@ -5,7 +5,7 @@ import React, { useState } from 'react';
  * - `onClose`: Callback function to close the modal.
  * - `onCreateSede`: Callback function to handle the creation of a new sede (campus).
  */
-interface ModalCrearSedeProps {
+interface CreateHeadquartersProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateSede: (nombre: string, direccion: string) => void;
@@ -16,7 +16,7 @@ interface ModalCrearSedeProps {
  * The modal can be closed using the `onClose` callback and can trigger the creation of a new sede 
  * through the `onCreateSede` callback when the user submits the form.
  */
-const CrearSedes: React.FC<ModalCrearSedeProps> = ({ isOpen, onClose, onCreateSede }) => {
+const CreateHeadquarters: React.FC<CreateHeadquartersProps> = ({ isOpen, onClose, onCreateSede }) => {
   // State hooks to manage the form input values
   const [sedeNombre, setSedeNombre] = useState(''); // State for the 'nombre' of the sede
   const [sedeDireccion, setSedeDireccion] = useState(''); // State for the 'direccion' of the sede
@@ -100,4 +100,4 @@ const CrearSedes: React.FC<ModalCrearSedeProps> = ({ isOpen, onClose, onCreateSe
   );
 };
 
-export default CrearSedes;
+export default CreateHeadquarters;

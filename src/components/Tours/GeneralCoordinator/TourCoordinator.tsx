@@ -5,7 +5,7 @@ import 'driver.js/dist/driver.css';
  * This component provides a guided tour for the coordinator management interface.
  * The tour walks the user through the coordinator table, creation button, and deletion functionality.
  */
-const AyudaCoordinador = () => {
+const TourCoordinator = () => {
   /**
    * Starts the guided tour by initializing the driver.js object and defining the steps.
    * Each step highlights an element and provides a description to guide the user.
@@ -87,4 +87,4 @@ const AyudaCoordinador = () => {
   );
 };
 
-export default AyudaCoordinador;
+export default TourCoordinator;

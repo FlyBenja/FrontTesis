@@ -5,7 +5,7 @@ import 'driver.js/dist/driver.css';
  * This component provides a guided tour for the "Asignar PG" (Assign Graduation Projects) page.
  * The tour highlights key elements such as selecting a campus, enabling PG I/II checkboxes, and assigning PGs.
  */
-const AyudaAsignarPG = () => {
+const TourAssignPG = () => {
     /**
      * Starts the guided tour by initializing the driver.js object and defining the steps.
      * Each step highlights an element and provides a description to guide the user.
@@ -98,4 +98,4 @@ const AyudaAsignarPG = () => {
     );
 };
 
-export default AyudaAsignarPG;
+export default TourAssignPG;
