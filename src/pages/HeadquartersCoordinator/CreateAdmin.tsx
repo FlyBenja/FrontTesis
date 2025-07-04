@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getAdmins } from "../../ts/HeadquartersCoordinator/GetAdmins"
 import { deleteAdmin } from "../../ts/HeadquartersCoordinator/DeleteAdmin"
+import { getDatosPerfil } from '../../ts/General/GetProfileData';
 import Swal from "sweetalert2"
 import TourCreateAdmin from "../../components/Tours/HeadquartersCoordinator/TourCreateAdmin"
 import CrearAdminModal from "../../components/Modals/CreateAdmin"
@@ -53,7 +54,11 @@ const CreateAdmin: React.FC = () => {
    */
   const fetchAdmins = async () => {
     try {
-      const data = await getAdmins()
+      // Fetch user profile data
+      const perfil = await getDatosPerfil();
+      // Get the current 'sede' (campus) from the profile data
+      const sedeId = perfil.sede;
+      const data = await getAdmins(sedeId)
       // Transform the data to match the Admin interface
       const transformedAdmins: Admin[] = data.map((admin) => ({
         id: admin.user_id,
@@ -75,11 +80,11 @@ const CreateAdmin: React.FC = () => {
    */
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setAdminsPerPage(4)
-      setMaxPageButtons(5)
+      setAdminsPerPage(10)
+      setMaxPageButtons(3)
     } else {
-      setAdminsPerPage(5)
-      setMaxPageButtons(10)
+      setAdminsPerPage(10)
+      setMaxPageButtons(5)
     }
   }
 
@@ -171,112 +176,109 @@ const CreateAdmin: React.FC = () => {
     <>
       <Breadcrumb pageName="Crear Admin a Sede" />
 
-      <div className="mx-auto max-w-6xl px-6 py-3">
-        <div id="tabla-admins" className="bg-white dark:bg-boxdark rounded-lg shadow-md p-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-black dark:text-white">Administradores Registrados</h3>
-            <div className="flex items-center ml-auto space-x-2">
-              <button
-                id="boton-crear-admin"
-                onClick={handleOpenModal}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              >
-                Crear Nuevo Admin
-              </button>
-
-              {/* Button to start tours, aligned with the "Create Admin" button */}
-              <TourCreateAdmin />
-            </div>
+      <div className="mx-auto max-w-5xl px-1 py-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+            Administradores Registrados
+          </h3>
+          <div className="flex items-center space-x-3">
+            <button
+              id="boton-crear-admin"
+              onClick={handleOpenModal}
+              className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center shadow-md hover:shadow-lg"
+            >
+              Crear Nuevo
+            </button>
+            <TourCreateAdmin />
           </div>
+        </div>
 
-          {admins.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-200 dark:border-strokedark">
-                <thead>
-                  <tr className="bg-gray-200 dark:bg-gray-700">
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">No.</th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Nombre</th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Correo</th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Sede</th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Código</th>
-                    <th className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">Acción</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentAdmins.map((admin) => (
-                    <tr key={admin.id} className="hover:bg-gray-100 dark:hover:bg-gray-800">
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.id}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.nombre}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.email}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.sede}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        {admin.carnet}
-                      </td>
-                      <td className="border border-gray-300 dark:border-strokedark px-4 py-2 text-center">
-                        <button
-                          onClick={() => handleDeleteClick(admin.id || 0)}
-                          className="ml-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-                          id="delete-admin"
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Pagination controls */}
-              <div className="mt-4 flex justify-center">
-                {/* Previous page button */}
-                <button
-                  onClick={() => paginate(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-                >
-                  &#8592;
-                </button>
-
-                {/* Page number buttons */}
-                {getPageRange().map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => paginate(page)}
-                    className={`mx-1 px-3 py-1 rounded-md border ${
-                      currentPage === page
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                    }`}
+        <div className="overflow-x-auto">
+          <table
+            id="tabla-admins"
+            className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark"
+          >
+            <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
+              <tr>
+                <th className="py-2 px-4 text-center hidden sm:table-cell">No.</th>
+                <th className="py-2 px-4 text-left">Nombre</th>
+                <th className="py-2 px-4 text-center hidden sm:table-cell">Correo</th>
+                <th className="py-2 px-4 text-center">Sede</th>
+                <th className="py-2 px-4 text-center hidden sm:table-cell">Código</th>
+                <th className="py-2 px-4 text-center">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentAdmins.length > 0 ? (
+                currentAdmins.map((admin) => (
+                  <tr
+                    key={admin.id}
+                    className="border-t border-gray-200 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-meta-4 transition-colors duration-150"
                   >
-                    {page}
-                  </button>
-                ))}
+                    <td className="py-2 px-4 text-center text-black dark:text-white hidden sm:table-cell">
+                      {admin.id}
+                    </td>
+                    <td className="py-2 px-4 text-left text-black dark:text-white">{admin.nombre}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white hidden sm:table-cell">
+                      {admin.email}
+                    </td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white">{admin.sede}</td>
+                    <td className="py-2 px-4 text-center text-black dark:text-white hidden sm:table-cell">
+                      {admin.carnet}
+                    </td>
+                    <td className="py-2 px-4 text-center">
+                      <button
+                        id="delete-admin"
+                        onClick={() => handleDeleteClick(admin.id || 0)}
+                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="py-4 text-center text-gray-500 dark:text-gray-400">
+                    No hay administradores registrados
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-                {/* Next page button */}
-                <button
-                  onClick={() => paginate(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-                >
-                  &#8594;
-                </button>
-              </div>
-            </div>
-          ) : (
-            <p className="text-gray-600 dark:text-gray-400">No hay administradores registrados.</p>
-          )}
+        <div id="pagination" className="mt-4 flex justify-center">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+          >
+            &#8592;
+          </button>
+          {getPageRange().map((page) => (
+            <button
+              key={page}
+              onClick={() => paginate(page)}
+              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
+                ? "bg-blue-600 text-white"
+                : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+                }`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+          >
+            &#8594;
+          </button>
         </div>
       </div>
 
-      {/* Componente modal para crear un nuevo administrador */}
+      {/* Modal para crear administrador */}
       <CrearAdminModal isOpen={isModalOpen} onClose={handleCloseModal} onAdminCreated={fetchAdmins} />
     </>
   )

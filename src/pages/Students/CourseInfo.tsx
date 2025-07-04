@@ -79,7 +79,7 @@ const CourseInfo: React.FC = () => {
       icon: "warning",
       title: "Aviso",
       text: "En este apartado, únicamente se debe confirmar la entrega de la tarea, sin que sea necesario cargar ningún archivo.",
-      confirmButtonText: "DE ACUERDO",
+      confirmButtonText: 'Aceptar',
       customClass: {
         confirmButton: "bg-red-600 text-white",
       },

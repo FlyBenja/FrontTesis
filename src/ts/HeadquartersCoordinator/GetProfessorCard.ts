@@ -25,7 +25,7 @@ export const getCatedraticoPorCarnet = async (
 
     // Make the GET request to the API with the carnet to get the professor data
     const response = await axios.get(
-      `https://api.onlineproject.online/api/professors/search?carnet=${carnet}`, // API endpoint with the carnet as a query parameter
+      `http://localhost:3000/api/professors/search?carnet=${carnet}`, // API endpoint with the carnet as a query parameter
       {
         headers: {
           'Authorization': `Bearer ${token}`,  // Include the authentication token in the request headers

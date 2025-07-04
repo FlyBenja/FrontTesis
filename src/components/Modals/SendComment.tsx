@@ -32,7 +32,7 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
         title: 'Error',
         text: 'Todos los campos son obligatorios.',
         icon: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: 'Aceptar',
         confirmButtonColor: '#dc3545',
       });
       return;
@@ -52,7 +52,7 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
         title: 'Éxito',
         text: 'Comentario enviado correctamente',
         icon: 'success',
-        confirmButtonText: 'OK',
+        confirmButtonText: 'Aceptar',
         confirmButtonColor: '#28a745',
       }).then(() => {
         onClose();  // Close the modal
@@ -64,7 +64,7 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
         title: 'Error',
         text: 'No se pudo enviar el comentario.',
         icon: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: 'Aceptar',
         confirmButtonColor: '#dc3545',
       });
     }

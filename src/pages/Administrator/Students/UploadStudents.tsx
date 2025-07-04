@@ -90,7 +90,7 @@ const UploadStudents = () => {
       // Finding the selected course in the list of courses
       const selectedCourseObj = courses.find((course) => course.courseName === selectedCourse)
       if (!selectedCourseObj) {
-        throw new Error("Selected course not found") // Throw an error if the course is not found
+        throw new Error("Curso seleccionado no encontrado") // Throw an error if the course is not found
       }
 
       // Calling the bulk upload function
@@ -101,7 +101,7 @@ const UploadStudents = () => {
         course_id: selectedCourseObj.course_id, // Passing the selected course ID
       })
 
-      showAlert("success", "Bulk upload completed", "Students have been uploaded successfully.") // Show success alert
+      showAlert("success", "Carga masiva completada", "Los estudiantes se han cargado correctamente.") // Show success alert
       handleReset() // Reset the form after successful upload
     } catch (error) {
       if (error instanceof Error) {
@@ -191,9 +191,8 @@ const UploadStudents = () => {
               />
 
               <button
-                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${
-                  fileSelected && selectedCourse ? "opacity-100 cursor-pointer" : "opacity-50 cursor-not-allowed"
-                }`}
+                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${fileSelected && selectedCourse ? "opacity-100 cursor-pointer" : "opacity-50 cursor-not-allowed"
+                  }`}
                 onClick={handleUpload} // Upload the file when clicked
                 disabled={!fileSelected || !selectedCourse} // Disable button if no file or course selected
                 id="confirm-submit" // ID for the tour

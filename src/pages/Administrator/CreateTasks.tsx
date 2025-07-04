@@ -124,8 +124,6 @@ const CreateTasks: React.FC = () => {
 
   /**
    * Format time from 24-hour format to 12-hour format
-   * @param {string} timeStr - The time string in 24-hour format
-   * @returns {string} The formatted time string in 12-hour format
    */
   const formatTime24Hour = (timeStr: string) => {
     const [hours, minutes, seconds] = timeStr.split(":").map(Number) // Split time string into hours, minutes, and seconds
@@ -140,7 +138,6 @@ const CreateTasks: React.FC = () => {
 
   /**
    * Function to change the current page
-   * @param {number} page - The page number to navigate to
    */
   const paginate = (page: number) => {
     if (page < 1) page = 1 // Ensure page is not less than 1
@@ -150,7 +147,6 @@ const CreateTasks: React.FC = () => {
 
   /**
    * Function to get the range of page numbers for pagination buttons
-   * @returns {number[]} Array of page numbers to display
    */
   const getPageRange = () => {
     let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2)) // Calculate start page number
@@ -165,8 +161,6 @@ const CreateTasks: React.FC = () => {
 
   /**
    * Function to format a date string to a readable format
-   * @param {string} dateStr - The date string to format
-   * @returns {string} The formatted date string
    */
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr) // Create a Date object from the string
@@ -256,10 +250,10 @@ const CreateTasks: React.FC = () => {
                   <p className="text-sm text-gray-500 dark:text-gray-400">{task.description}</p>
                   <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
                     <p>
-                      Start Date/Time: {formatDate(task.taskStart)} - {formatTime24Hour(task.startTime)}
+                      Fecha/Hora de Inicio: {formatDate(task.taskStart)} - {formatTime24Hour(task.startTime)}
                     </p>
                     <p>
-                      End Date/Time: {formatDate(task.endTask)} - {formatTime24Hour(task.endTime)}
+                      Fecha/Hora Final: {formatDate(task.endTask)} - {formatTime24Hour(task.endTime)}
                     </p>
                   </div>
                 </div>
@@ -298,11 +292,10 @@ const CreateTasks: React.FC = () => {
                 <button
                   key={page}
                   onClick={() => paginate(page)}
-                  className={`mx-1 px-3 py-1 rounded-md border ${
-                    currentPage === page
+                  className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
                       ? "bg-blue-600 text-white"
                       : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                  }`}
+                    }`}
                 >
                   {page}
                 </button>

@@ -2,7 +2,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { getDatosPerfil } from "../../ts/General/GetProfileData"
 import { getEstudiantePorCarnet } from "../../ts/Administrator/GetStudentCard"
-import { getEstudiantes } from "../../ts/Administrator/GetStudents"
+import { getStudents } from "../../ts/General/GetStudents"
 
 /**
  * `SearchStudents` is a component that allows searching for students by their student card number or by filtering 
@@ -54,7 +54,7 @@ const SearchStudents: React.FC<SearchStudentsProps> = ({ selectedAño, selectedC
         // If the input is empty or has less than 12 characters, show all students
         if (perfil.sede && selectedCurso && selectedAño) {
           // Fetch students based on the selected course, year, and the profile's campus
-          const estudiantes = await getEstudiantes(
+          const estudiantes = await getStudents(
             perfil.sede,
             Number.parseInt(selectedCurso), // Convert selectedCurso to a number
             Number.parseInt(selectedAño), // Convert selectedAño to a number
@@ -67,7 +67,7 @@ const SearchStudents: React.FC<SearchStudentsProps> = ({ selectedAño, selectedC
         onSearchResults(estudianteEncontrado ? [estudianteEncontrado] : []) // Return the found student or an empty array
       }
     } catch (error) {
-      console.error("Error al buscar el estudiante:", error) // Log the error if something goes wrong
+      
       onSearchResults([]) // Return an empty list in case of an error
     } finally {
       setIsSearching(false) // Set the search state to false once the search is complete

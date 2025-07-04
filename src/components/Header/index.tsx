@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { getSedes } from '../../ts/GeneralCoordinator/GetHeadquarters';
 import DropdownNotification from './DropdownNotification';
 import DropdownUser from './DropdownUser';
 import LogoIcon from '../../images/logo/logo-icon.svg';
@@ -15,15 +17,63 @@ const Header = (props: {
   // Extract role from localStorage
   const role = localStorage.getItem('userRole');
 
+  const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string; address: string }[]>([]);
+  const hasFetched = useRef(false);
+  const [selectedSede, setSelectedSede] = useState<string>('');
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // Define role-based routes
   const roleRoutes: { [key: string]: string } = {
     '1': '/estudiantes/inicio',
     '2': '/catedratico/graficas',
     '3': '/administrador/graficas',
     '4': '/coordinadorsede/graficas',
-    '5': '/decano/graficas',
+    '5': '/coordinadorgeneral/graficas',
     '6': '/coordinadortesis/graficas',
     '7': '/revisortesis/graficas',
+  };
+
+  useEffect(() => {
+    const fetchSedes = async () => {
+      try {
+        const data = await getSedes();
+        setSedes(data);
+        hasFetched.current = true; // We mark that the request has already been made
+      } catch (error) {
+        console.error('Error al obtener las sedes:', error);
+      }
+    };
+
+    if (!hasFetched.current) {
+      fetchSedes();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sedes.length > 0) {
+      const storedSede = localStorage.getItem('selectedSedeId');
+      if (storedSede && sedes.some(s => s.sede_id.toString() === storedSede)) {
+        setSelectedSede(storedSede);
+      } else {
+        setSelectedSede(sedes[0].sede_id.toString());
+        localStorage.setItem('selectedSedeId', sedes[0].sede_id.toString());
+      }
+    }
+  }, [sedes]);
+
+  // In the onChange of the select:
+  const handleSedeChange = (value: string) => {
+    setSelectedSede(value);
+    localStorage.setItem('selectedSedeId', value);
+
+    if (location.pathname === '/coordinadorgeneral/graficas') {
+      // Reload the current page
+      window.location.reload();
+    } else {
+      // Navigate to the desired page
+      navigate('/coordinadorgeneral/graficas');
+    }
   };
 
   return (
@@ -64,40 +114,50 @@ const Header = (props: {
           {/* <!-- Hamburger Toggle BTN --> */}
 
           {/* <!-- Logo --> */}
-          <Link className="block flex-shrink-0 lg:hidden" to={roleRoutes[role || '1']}>
-            <img src={LogoIcon} alt="Logo" width={120} />
+          <Link className="block flex-shrink-0 lg:hidden ml-[-25px]" to={roleRoutes[role || '1']}>
+            <img src={LogoIcon || "/placeholder.svg"} alt="Logo" width={120} />
           </Link>
           {/* <!-- Logo --> */}
         </div>
 
-        {/* <!-- Sede selector for role 5 (Decano) --> */}
+        {/* <!-- Sede selector for role 5 (Coordinador General) --> */}
         {role === '5' && (
-          <div className="mb-6 w-full max-w-xs">
-            <label
-              htmlFor="sede"
-              className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2"
-            >
-              Seleccione una sede
-            </label>
-            <select
-              id="sede"
-              className="w-full px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition"
-              defaultValue={1}
-            >
-              {[...Array(10)].map((_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  Departamento {i + 1}
-                </option>
-              ))}
-            </select>
+          <div
+            className="flex-1 max-w-xs mx-auto sm:mx-7 sm:max-w-sm md:max-w-md"
+            style={{
+              position: 'relative',
+              left: window.innerWidth <= 640 ? '-8px' : '-10px',  // move 20px to the left on mobile
+              top: window.innerWidth <= 640 ? '-7.5px' : '1px',   // go up 10px on mobile
+            }}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+              <label
+                htmlFor="sede"
+                className="text-sm font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap"
+              >
+                Seleccione sede:
+              </label>
+              <select
+                id="sede"
+                className="w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition"
+                value={selectedSede}
+                onChange={(e) => handleSedeChange(e.target.value)}
+              >
+                {sedes.map((sede) => (
+                  <option key={sede.sede_id} value={sede.sede_id}>
+                    {sede.nameSede}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         )}
-        {/* <!-- Sede selector for role 5 (Decano) --> */}
 
-        <div className="hidden sm:block"></div>
+        {/* <!-- Spacer when role is not 5 --> */}
+        {role !== '5' && <div className="hidden sm:block flex-1"></div>}
 
         {/* <!-- Right side items --> */}
-        <div className="flex items-center gap-3 2xsm:gap-7">
+        <div className="flex items-center gap-2 2xsm:gap-4 md:gap-3">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {/* <!-- Dark Mode Switcher --> */}
             <DarkModeSwitcher />

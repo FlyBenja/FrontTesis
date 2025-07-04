@@ -22,18 +22,18 @@ interface AdminsResponse {
   admins: Admin[];  // An array of admin objects
 }
 
-// Asynchronous function to fetch the list of admins
-export const getAdmins = async (): Promise<Admin[]> => {
+// Asynchronous function to fetch the list of admins by sede_id
+export const getAdmins = async (sede_id: number): Promise<Admin[]> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
-    
+
     if (!token) {
       throw new Error('Token de autenticación no encontrado');  // If token is not found, throw an error
     }
 
     // Make the GET request to the specified URL to retrieve the list of admins
-    const response = await axios.get<AdminsResponse>('https://api.onlineproject.online/api/admins', {
+    const response = await axios.get<AdminsResponse>(`http://localhost:3000/api/admins/${sede_id}`, {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the token in the authorization header
         'Content-Type': 'application/json',   // Set content type to JSON

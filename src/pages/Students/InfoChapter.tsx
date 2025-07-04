@@ -264,11 +264,10 @@ const InfoChapter: React.FC = () => {
             {/* Submit button to send the comment */}
             <button
               id="enviar-button"
-              className={`px-4 py-2 rounded-md ml-auto ${
-                inputBloqueado || isButtonDisabled() || isComentarioBloqueado
+              className={`px-4 py-2 rounded-md ml-auto ${inputBloqueado || isButtonDisabled() || isComentarioBloqueado
                   ? "bg-gray-400 text-white cursor-not-allowed"
                   : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
+                }`}
               onClick={handleEnviarComentario}
               disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado} // Disable the button based on the condition
             >

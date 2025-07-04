@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react"
-import { getCursos } from "../../ts/General/GetCourses"
 import { getYears } from "../../ts/General/GetYears"
-import { getDatosPerfil } from "../../ts/General/GetProfileData"
 import { getTareas } from "../../ts/General/GetTasks"
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
@@ -59,9 +57,11 @@ const CreateTasks: React.FC = () => {
   useEffect(() => {
     const fetchCoursesAndUpdateTasks = async () => {
       if (selectedYear) {
-        const profile = await getDatosPerfil() // Fetch user profile
-        const retrievedCourses = await getCursos(profile.sede, Number(selectedYear)) // Fetch courses based on selected year and profile data
-        setCourses(Array.isArray(retrievedCourses) ? retrievedCourses : []) // Set courses to state
+        // Set static courses
+        setCourses([
+          { course_id: 1, courseName: "Proyecto De Graduación I" },
+          { course_id: 2, courseName: "Proyecto De Graduación II" },
+        ])
 
         const currentMonth = new Date().getMonth() + 1 // Get current month
         setSelectedCourse(currentMonth > 6 ? "2" : "1") // Set selected course based on the current month
@@ -77,8 +77,9 @@ const CreateTasks: React.FC = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       if (selectedCourse && selectedYear) {
-        const profile = await getDatosPerfil() // Fetch user profile
-        const retrievedTasks = await getTareas(profile.sede, Number(selectedCourse), Number(selectedYear))
+        // Obtener la sede-id desde localStorage en lugar de la API
+        const selectedSedeId = Number(localStorage.getItem("selectedSedeId"))
+        const retrievedTasks = await getTareas(selectedSedeId, Number(selectedCourse), Number(selectedYear))
 
         // Sort tasks in descending order by task_id
         const sortedTasks = retrievedTasks.sort((a: Task, b: Task) => {

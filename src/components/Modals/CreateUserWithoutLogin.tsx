@@ -54,7 +54,7 @@ const CreateUserWithoutLogin: React.FC<CreateUserWithoutLoginProps> = ({ onClose
         title: 'Éxito', // Success
         text: 'Usuario creado correctamente', // User created successfully
         icon: 'success',
-        confirmButtonText: 'OK',
+        confirmButtonText: 'Aceptar',
         confirmButtonColor: '#28a745',
       }).then(() => onClose());
     } catch (error) {
@@ -63,7 +63,7 @@ const CreateUserWithoutLogin: React.FC<CreateUserWithoutLoginProps> = ({ onClose
         title: 'Error', // Error
         text: error instanceof Error ? error.message : 'Error desconocido', // Unknown error
         icon: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: 'Aceptar',
         confirmButtonColor: '#dc3545',
       });
     } finally {

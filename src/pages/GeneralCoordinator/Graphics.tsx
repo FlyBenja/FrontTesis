@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { getDatosPerfil, type PerfilData } from "../../ts/General/GetProfileData.ts"
 import { getStudentsSede } from "../../ts/Administrator/GetStudentsSede.ts"
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb.tsx"
@@ -22,13 +21,12 @@ const Graphics: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true)
       try {
-        // Fetching profile data
-        const profileData: PerfilData = await getDatosPerfil()
-        const headquartersId = profileData.sede // Getting the 'sede' id from the profile data
+        // Obtener la sede-id desde localStorage en lugar de la API
+        const selectedSedeId = Number(localStorage.getItem("selectedSedeId"))
 
-        if (headquartersId) {
+        if (selectedSedeId) {
           // Fetching students data for the specific 'sede'
-          const studentsData = await getStudentsSede(headquartersId)
+          const studentsData = await getStudentsSede(selectedSedeId)
           setTotalStudents(studentsData.totalStudents)
           setTotalStudentsHeadquarters(studentsData.totalStudentsSede)
           setTotalApprovedRevisions(studentsData.totalApprovedRevisions)
@@ -36,7 +34,6 @@ const Graphics: React.FC = () => {
         }
       } catch (error) {
         // Error handling
-        console.error("Error fetching data:", error)
       } finally {
         setIsLoading(false)
       }

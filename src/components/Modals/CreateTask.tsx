@@ -33,13 +33,13 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
     // State variables for the component
     const [cursos, setCursos] = useState<any[]>([]);  // List of courses
     const [form, setForm] = useState<FormState>({
-        selectedCurso: '', 
-        selectedTipoTarea: ' ', 
-        title: '', 
-        description: '', 
-        taskStart: '', 
-        endTask: '', 
-        startTime: '', 
+        selectedCurso: '',
+        selectedTipoTarea: ' ',
+        title: '',
+        description: '',
+        taskStart: '',
+        endTask: '',
+        startTime: '',
         endTime: '',
     });  // Form state for storing user input
     const [loading, setLoading] = useState<boolean>(true);  // Loading state to show a loading indicator
@@ -122,7 +122,6 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
      * Handle input changes in the form.
      * This will update the corresponding field in the form state.
      * 
-     * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>} e
      */
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;  // Destructure name and value from the event
@@ -134,7 +133,6 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
      * This will either create or update a task based on the mode ('create' or 'edit').
      * It also performs validation and displays alerts if any fields are missing or invalid.
      * 
-     * @param {React.FormEvent} e
      */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();  // Prevent default form submission behavior
@@ -248,114 +246,171 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
     };
 
     return (
-        <div className="tarea-form-container">
-            <form onSubmit={handleSubmit}>
-                <h2>{mode === 'create' ? 'Crear Tarea' : 'Editar Tarea'}</h2>
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-gray-500 bg-opacity-50 overflow-auto p-4">
+            <div className="bg-white dark:bg-boxdark rounded-2xl shadow-lg p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px]">
+                <h3 className="text-xl font-semibold text-black dark:text-white mb-4 text-center">
+                    {mode === 'create' ? 'Crear Tarea' : 'Editar Tarea'}
+                </h3>
 
-                {/* Select Course */}
-                <div>
-                    <label htmlFor="curso">Curso</label>
-                    <select id="curso" name="selectedCurso" value={form.selectedCurso} onChange={handleChange} required>
-                        <option value="">Seleccione un curso</option>
-                        {cursos.map((curso) => (
-                            <option key={curso.course_id} value={curso.course_id}>
-                                {curso.course_name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label className="block text-sm font-medium text-black dark:text-white mb-1">
+                                Curso
+                            </label>
+                            <select
+                                name="selectedCurso"
+                                value={form.selectedCurso}
+                                onChange={handleChange}
+                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm
+                   bg-white text-black
+                   dark:bg-boxdark dark:text-white dark:border-gray-600"
+                                required
+                                disabled={mode === 'edit'}
+                            >
+                                <option value="">Seleccionar curso</option>
+                                {cursos.map(({ course_id, courseName }) => (
+                                    <option key={course_id} value={course_id}>
+                                        {courseName}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
-                {/* Select Task Type */}
-                <div>
-                    <label htmlFor="tipo-tarea">Tipo de Tarea</label>
-                    <select id="tipo-tarea" name="selectedTipoTarea" value={form.selectedTipoTarea} onChange={handleChange} required>
-                        <option value=" ">Seleccione un tipo de tarea</option>
-                        {/* Include options for task types here */}
-                    </select>
-                </div>
+                        <div>
+                            <label className="block text-sm font-medium text-black dark:text-white mb-1">
+                                Tipo de Tarea
+                            </label>
+                            <select
+                                name="selectedTipoTarea"
+                                value={form.selectedTipoTarea}
+                                onChange={handleChange}
+                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm
+                   bg-white text-black
+                   dark:bg-boxdark dark:text-white dark:border-gray-600"
+                                required
+                                disabled={mode === 'edit'}
+                            >
+                                <option value="">Seleccionar curso</option>
+                                <option value="1">Propuesta de Tesis</option>
+                                <option value="2">Entrega de Capítulos</option>
+                            </select>
+                        </div>
+                    </div>
 
-                {/* Task Title */}
-                <div>
-                    <label htmlFor="title">Título de la tarea</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={form.title}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium text-black dark:text-white mb-1">
+                            Título de la Tarea
+                        </label>
+                        <input
+                            type="text"
+                            name="title"
+                            value={form.title}
+                            onChange={handleChange}
+                            className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm
+                 bg-white text-black
+                 dark:bg-boxdark dark:text-white dark:border-gray-600"
+                            required
+                        />
+                    </div>
 
-                {/* Task Description */}
-                <div>
-                    <label htmlFor="description">Descripción de la tarea</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        value={form.description}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium text-black dark:text-white mb-1">
+                            Descripción de la Tarea
+                        </label>
+                        <textarea
+                            name="description"
+                            value={form.description}
+                            onChange={handleChange}
+                            rows={3}
+                            className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm
+                 bg-white text-black
+                 dark:bg-boxdark dark:text-white dark:border-gray-600"
+                            required
+                        />
+                    </div>
 
-                {/* Task Start Date */}
-                <div>
-                    <label htmlFor="taskStart">Fecha Inicial</label>
-                    <input
-                        type="date"
-                        id="taskStart"
-                        name="taskStart"
-                        value={form.taskStart}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-black dark:text-white mb-1">
+                                Fecha Inicial
+                            </label>
+                            <input
+                                type="date"
+                                name="taskStart"
+                                value={form.taskStart}
+                                onChange={handleChange}
+                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm
+                   bg-white text-black
+                   dark:bg-boxdark dark:text-white dark:border-gray-600"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-black dark:text-white mb-1">
+                                Fecha Final
+                            </label>
+                            <input
+                                type="date"
+                                name="endTask"
+                                value={form.endTask}
+                                onChange={handleChange}
+                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm
+                   bg-white text-black
+                   dark:bg-boxdark dark:text-white dark:border-gray-600"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-black dark:text-white mb-1">
+                                Hora de Inicio
+                            </label>
+                            <input
+                                type="time"
+                                name="startTime"
+                                value={form.startTime}
+                                onChange={handleChange}
+                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm
+                   bg-white text-black
+                   dark:bg-boxdark dark:text-white dark:border-gray-600"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-black dark:text-white mb-1">
+                                Hora de Finalización
+                            </label>
+                            <input
+                                type="time"
+                                name="endTime"
+                                value={form.endTime}
+                                onChange={handleChange}
+                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm
+                   bg-white text-black
+                   dark:bg-boxdark dark:text-white dark:border-gray-600"
+                                required
+                            />
+                        </div>
+                    </div>
 
-                {/* Task End Date */}
-                <div>
-                    <label htmlFor="endTask">Fecha Final</label>
-                    <input
-                        type="date"
-                        id="endTask"
-                        name="endTask"
-                        value={form.endTask}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                {/* Task Start Time */}
-                <div>
-                    <label htmlFor="startTime">Hora de inicio</label>
-                    <input
-                        type="time"
-                        id="startTime"
-                        name="startTime"
-                        value={form.startTime}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                {/* Task End Time */}
-                <div>
-                    <label htmlFor="endTime">Hora de finalización</label>
-                    <input
-                        type="time"
-                        id="endTime"
-                        name="endTime"
-                        value={form.endTime}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Cargando...' : mode === 'create' ? 'Crear' : 'Actualizar'}
-                </button>
-                <button type="button" onClick={onClose}>Cancelar</button>
-            </form>
+                    <div className="flex justify-end mt-5">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-4 py-1.5 mr-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 text-sm"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm"
+                            disabled={loading}
+                        >
+                            {loading ? 'Cargando...' : mode === 'create' ? 'Crear' : 'Actualizar'}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

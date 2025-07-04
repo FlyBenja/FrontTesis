@@ -5,17 +5,14 @@ export const getStudentsSede = async (sedeId: number): Promise<{ totalStudents: 
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
-    
+
     // If no token is found, throw an error indicating authentication failure
     if (!token) {
       throw new Error('Token de autenticación no encontrado');
     }
 
-    // Define the URL for the GET request, using the provided sedeId
-    const url = `https://api.onlineproject.online/api/graphics/data/${sedeId}`;
-    
     // Make the GET request to the API with the appropriate headers
-    const response = await axios.get(url, {
+    const response = await axios.get(`http://localhost:3000/api/graphics/data/${sedeId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

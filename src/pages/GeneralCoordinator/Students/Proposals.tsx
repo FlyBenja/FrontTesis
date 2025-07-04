@@ -2,16 +2,9 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { getPropuesta } from '../../../ts/General/GetProposal';
-import { aprobarPropuesta } from '../../../ts/Administrator/ApproveProposal';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import Swal from "sweetalert2"
 import TourProposals from '../../../components/Tours/Administrator/TourProposals';
-
-// Define TypeScript interfaces for the expected data structure
-interface Proposal {
-  id: number
-  titulo: string
-}
 
 interface LocationState {
   tarea: string
@@ -25,17 +18,9 @@ const Proposals: React.FC = () => {
   const { estudiante } = location.state as LocationState // Retrieve student data from location state
   const userId = estudiante ? estudiante.id : null // Get the student's ID
 
-  // State management using React's useState hook
-  const [proposals] = useState<Proposal[]>([
-    { id: 1, titulo: "Propuesta 1" },
-    { id: 2, titulo: "Propuesta 2" },
-    { id: 3, titulo: "Propuesta 3" },
-  ])
-  const [selectedProposal, setSelectedProposal] = useState<number | null>(null) // Selected proposal ID
-  const [approvedProposal, setApprovedProposal] = useState<number | null>(null) // Approved proposal ID
   const [pdfUrl, setPdfUrl] = useState<string | null>(null) // URL for the proposal PDF
   const [noProposals, setNoProposals] = useState<boolean>(false) // Flag for no proposals uploaded
-  const [thesisSubmissionsId, setThesisSubmissionsId] = useState<number | null>(null) // Thesis submission ID
+
 
   /**
    * Fetches proposal data from the server
@@ -47,17 +32,7 @@ const Proposals: React.FC = () => {
 
       // If proposal data is returned, update the state
       if (proposalData) {
-        setPdfUrl(proposalData.file_path) // Set PDF URL
-        setThesisSubmissionsId(proposalData.thesisSubmissions_id) // Set thesis submission ID
-
-        // If proposal is not approved, reset the approval state
-        if (proposalData.approved_proposal === 0) {
-          setApprovedProposal(null)
-        } else {
-          // If proposal is approved, update the state with the proposal ID
-          setApprovedProposal(proposalData.approved_proposal)
-          setSelectedProposal(proposalData.approved_proposal)
-        }
+        setPdfUrl(proposalData.file_path)
       } else {
         // If no proposal is found, update state to indicate this
         setNoProposals(true)
@@ -94,57 +69,6 @@ const Proposals: React.FC = () => {
     }
   }, [userId])
 
-  /**
-   * Handles proposal selection
-   */
-  const handleSelectProposal = (id: number) => {
-    // Allow selection only if the proposal is not approved
-    if (approvedProposal === null) {
-      setSelectedProposal(id)
-    }
-  }
-
-  /**
-   * Handles approval of the selected proposal
-   */
-  const handleApproveProposal = async () => {
-    // Ensure selected proposal and thesis submission ID are not null
-    if (selectedProposal !== null && thesisSubmissionsId !== null && userId !== null) {
-      const approvedProposalValue = selectedProposal // Store selected proposal ID for approval
-
-      try {
-        // Call API to approve the proposal
-        await aprobarPropuesta(thesisSubmissionsId, userId, approvedProposalValue)
-
-        // Show success message
-        Swal.fire({
-          icon: "success",
-          title: "Propuesta Aprobada",
-          text: `La propuesta ${selectedProposal} ha sido aprobada correctamente.`,
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: "bg-green-600 text-white",
-          },
-        })
-
-        // Update state after successful approval
-        setApprovedProposal(selectedProposal)
-        setSelectedProposal(null) // Reset selected proposal after approval
-      } catch (error: any) {
-        // Show error message if approval fails
-        Swal.fire({
-          icon: "error",
-          title: "Error al aprobar la propuesta",
-          text: error?.response?.data?.message || "No se pudo aprobar la propuesta.",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: "bg-red-600 text-white",
-          },
-        })
-      }
-    }
-  }
-
   return (
     <>
       <Breadcrumb pageName="Propuestas del Estudiante" /> {/* Breadcrumb component for navigation */}
@@ -171,50 +95,6 @@ const Proposals: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* Section to select a proposal */}
-            <div id="select-proposal">
-              {" "}
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-4">Seleccione una Propuesta</h3>
-              <div className="space-y-3">
-                {/* Render each proposal */}
-                {proposals.map((proposal) => (
-                  <div
-                    key={proposal.id}
-                    className={`flex items-center p-3 rounded-lg cursor-pointer transition ${approvedProposal === proposal.id
-                      ? "bg-green-500 text-white" // Highlight approved proposal
-                      : selectedProposal === proposal.id
-                        ? "bg-blue-500 text-white" // Highlight selected proposal
-                        : "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
-                      }`}
-                    onClick={() => handleSelectProposal(proposal.id)}
-                  >
-                    {/* Radio button to select proposal */}
-                    <input
-                      type="radio"
-                      checked={selectedProposal === proposal.id}
-                      onChange={() => handleSelectProposal(proposal.id)}
-                      className="mr-2 cursor-pointer"
-                      disabled={approvedProposal !== null} // Disable selection if proposal is already approved
-                    />
-                    <label className="cursor-pointer">{proposal.titulo}</label>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4">
-                {/* Button to approve proposal */}
-                <button
-                  id="approve-button"
-                  className={`w-full px-4 py-3 rounded-md text-white transition ${selectedProposal === null || [1, 2, 3].includes(approvedProposal ?? 0)
-                    ? "bg-gray-400 cursor-not-allowed" // Disable button when no proposal is selected or proposal is approved
-                    : "bg-blue-500 hover:bg-blue-600"
-                    }`}
-                  onClick={handleApproveProposal}
-                  disabled={selectedProposal === null || [1, 2, 3].includes(approvedProposal ?? 0)}
-                >
-                  Aprobar Propuesta
-                </button>
-              </div>
-            </div>
 
             {/* Section to display PDF if available */}
             {pdfUrl && (

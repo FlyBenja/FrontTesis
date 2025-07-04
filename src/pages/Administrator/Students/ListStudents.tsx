@@ -2,7 +2,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { getDatosPerfil } from "../../../ts/General/GetProfileData"
 import { getYears } from "../../../ts/General/GetYears"
-import { getEstudiantes } from "../../../ts/Administrator/GetStudents"
+import { getStudents } from "../../../ts/General/GetStudents"
 import { getCursos } from "../../../ts/General/GetCourses"
 import { useNavigate } from "react-router-dom"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
@@ -82,7 +82,7 @@ const ListStudents: React.FC = () => {
    */
   const fetchEstudiantes = async (sedeId: number, courseId: string, nameYear: string) => {
     try {
-      const estudiantesRecuperados = await getEstudiantes(sedeId, Number.parseInt(courseId), Number.parseInt(nameYear))
+      const estudiantesRecuperados = await getStudents(sedeId, Number.parseInt(courseId), Number.parseInt(nameYear))
       setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : []) // Set students in state
     } catch {
       setEstudiantes([]) // Set empty list in case of error

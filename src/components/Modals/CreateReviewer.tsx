@@ -58,7 +58,7 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
         title: 'Éxito', // Success title
         text: `Revisor ${revisor ? 'actualizado' : 'creado'} correctamente`, // Success message
         icon: 'success',
-        confirmButtonText: 'OK', // Confirmation button text
+        confirmButtonText: 'Aceptar', // Confirmation button text
         confirmButtonColor: '#28a745', // Green success button color
       }).then(() => onClose()); // Close modal after successful operation
     } catch (error) {
@@ -67,7 +67,7 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
         title: 'Error', // Error title
         text: error instanceof Error ? error.message : 'Error desconocido', // Error message
         icon: 'error',
-        confirmButtonText: 'OK', // Confirmation button text
+        confirmButtonText: 'Aceptar', // Confirmation button text
         confirmButtonColor: '#dc3545', // Red error button color
       });
     } finally {

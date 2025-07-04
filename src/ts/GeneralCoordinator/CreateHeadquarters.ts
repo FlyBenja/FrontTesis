@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Asynchronous function to create a 'sede' (location or department)
-export const createSede = async (nameSede: string): Promise<void> => {
+export const createSede = async (nameSede: string, address: string): Promise<void> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
@@ -12,8 +12,8 @@ export const createSede = async (nameSede: string): Promise<void> => {
 
     // Make the POST request to the specified URL to create the 'sede'
     await axios.post(
-      'https://api.onlineproject.online/api/sedes',  // API endpoint for creating a 'sede'
-      { nameSede },  // The payload containing the name of the 'sede'
+      'http://localhost:3000/api/sedes',  // API endpoint for creating a 'sede'
+      { nameSede, address },  // The payload containing the name of the 'sede'
       {
         headers: {
           'Authorization': `Bearer ${token}`,  // Include the token in the authorization header

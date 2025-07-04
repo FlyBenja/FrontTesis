@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { getDatosPerfil } from '../../../ts/General/GetProfileData';
-import { getTareasSede, Tarea } from '../../../ts/General/GetTasksHeadquarters';
-import { getTareasEstudiante, TareaEstudiante, } from '../../../ts/Students/GetTasksStudent';
-import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import Swal from 'sweetalert2';
-import AyudaTareasEstudiante from '../../../components/Tours/Administrator/StudentTasksTour';
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import { getTareasSede, type Tarea } from "../../../ts/General/GetTasksHeadquarters"
+import { getTareasEstudiante, type TareaEstudiante } from "../../../ts/Students/GetTasksStudent"
+import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
+import Swal from "sweetalert2"
+import AyudaTareasEstudiante from "../../../components/Tours/Administrator/StudentTasksTour"
 
 const TasksStudent: React.FC = () => {
   // React Router hooks to navigate and get the current location
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate()
+  const location = useLocation()
 
   // State hooks to store tasks data and student data
-  const [tareas, setTareas] = useState<Tarea[]>([]); // Tasks for the current sede
-  const [sedeId, setSedeId] = useState<number | null>(null); // Sede ID for the current session
-  const [tareasEstudiante, setTareasEstudiante] = useState<TareaEstudiante[]>(
-    [],
-  ); // Tasks for the specific student
+  const [tareas, setTareas] = useState<Tarea[]>([]) // Tasks for the current sede
+  const [sedeId, setSedeId] = useState<number | null>(null) // Sede ID for the current session
+  const [tareasEstudiante, setTareasEstudiante] = useState<TareaEstudiante[]>([]) // Tasks for the specific student
 
   // Destructuring student and year from location state
   const { estudiante, selectedAño } = location.state || {}
@@ -28,8 +26,9 @@ const TasksStudent: React.FC = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const { sede } = await getDatosPerfil() // Fetch the current headquarters
-        setSedeId(sede) // Set the headquarters ID in state
+        // Obtener la sede-id desde localStorage en lugar de la API
+        const selectedSedeId = Number(localStorage.getItem("selectedSedeId"))
+        setSedeId(selectedSedeId) // Set the headquarters ID in state
       } catch (err) { }
     }
 
@@ -103,11 +102,11 @@ const TasksStudent: React.FC = () => {
 
     // Navigate based on task type
     if (task.typeTask_id === 1) {
-      navigate("/administrador/propuestas", {
+      navigate("/coordinadorgeneral/propuestas", {
         state: { tarea: task, estudiante, selectedAño },
       }) // Navigate to proposals if task type is 1
     } else {
-      navigate("/administrador/capitulo", {
+      navigate("/coordinadorgeneral/capitulo", {
         state: { tarea: task, estudiante, selectedAño },
       }) // Navigate to chapter if task type is not 1
     }

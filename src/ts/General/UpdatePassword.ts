@@ -12,7 +12,7 @@ export const updatePassword = async (oldPassword: string, newPassword: string): 
 
     // Make the PUT request to update the password
     const response = await axios.put(
-      'https://api.onlineproject.online/auth/updatePassword',
+      'http://localhost:3000/auth/updatePassword',
       JSON.stringify({ currentPassword: oldPassword, newPassword }), // Ensure to use 'currentPassword' instead of 'oldPassword'
       {
         headers: {

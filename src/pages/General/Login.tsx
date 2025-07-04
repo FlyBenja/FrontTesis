@@ -54,7 +54,7 @@ const Login: React.FC = () => {
     }
 
     try {
-      const response = await axios.post("https://api.onlineproject.online/auth/login", { email, password })
+      const response = await axios.post("http://localhost:3000/auth/login", { email, password })
       localStorage.setItem("authToken", response.data.token)
       localStorage.setItem("userRole", response.data.rol)
 

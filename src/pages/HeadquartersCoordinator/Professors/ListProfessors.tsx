@@ -188,10 +188,10 @@ const ListProfessors: React.FC = () => {
           >
             <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
               <tr>
-                <th className="py-2 px-4 text-left">Photo</th>
-                <th className="py-2 px-4 text-center">Name</th>
-                <th className="py-2 px-4 text-center">Code</th>
-                <th className="py-2 px-4 text-right">Active</th>
+                <th className="py-2 px-4 text-left">Foto</th>
+                <th className="py-2 px-4 text-center">Nombre</th>
+                <th className="py-2 px-4 text-center">Código</th>
+                <th className="py-2 px-4 text-right">Activo</th>
               </tr>
             </thead>
             <tbody>

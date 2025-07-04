@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Asynchronous function to fetch the list of 'sedes' (locations or departments)
-export const getSedes = async (): Promise<{ sede_id: number; nameSede: string }[]> => {
+export const getSedes = async (): Promise<{ sede_id: number; nameSede: string; address: string }[]> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
@@ -12,7 +12,7 @@ export const getSedes = async (): Promise<{ sede_id: number; nameSede: string }[
     }
 
     // Make the GET request to the specified URL to get the list of 'sedes'
-    const response = await axios.get('https://api.onlineproject.online/api/sedes', {
+    const response = await axios.get('http://localhost:3000/api/sedes', {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the token in the Authorization header
         'Content-Type': 'application/json',   // Set Content-Type to JSON

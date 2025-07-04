@@ -1,13 +1,16 @@
+import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { getTimeLineEstudiante } from "../../../ts/General/GetTimeLineStudent"
-import type React from "react"
-import TourTimeLine from '../../../components/Tours/Administrator/TourTimeLine';
+import TourTimeLine from "../../../components/Tours/Administrator/TourTimeLine"
+import ModalNota from "../../../components/Modals/UpdateNote"
 import Swal from "sweetalert2"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFIndividual from "../../../components/Pdfs/generatesIndividualPDF"
 
-// Defining the structure of a single event in the timeline
+/**
+ * Interface for a single event in the timeline
+ */
 interface TimeLineEvent {
   user_id: number
   typeEvent: string
@@ -16,6 +19,10 @@ interface TimeLineEvent {
   date: string
 }
 
+/**
+ * Timeline Component
+ * Displays a chronological timeline of student activities
+ */
 const TimeLine: React.FC = () => {
   // Retrieving current location and navigation from React Router
   const location = useLocation()
@@ -24,6 +31,7 @@ const TimeLine: React.FC = () => {
   // Setting state for pagination, events, and loading indicator
   const [events, setEvents] = useState<TimeLineEvent[]>([])
   const [loading, setLoading] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
 
   // Extracting student data and selected year/course from the location state
   const { estudiante, selectedAño, selectedCurso } = location.state || {}
@@ -31,7 +39,7 @@ const TimeLine: React.FC = () => {
   const userId = estudiante ? estudiante.id : null
 
   /**
-   * Fetches the timeline events when the component mounts or userId changes
+   * Fetching the timeline events when the component mounts or userId changes
    */
   useEffect(() => {
     // If no valid userId is provided, display an error alert
@@ -50,7 +58,7 @@ const TimeLine: React.FC = () => {
         // Sorting events by date in descending order and formatting the date
         setEvents(
           logs
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Descending order
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Orden descendente
             .map((log) => ({
               user_id: log.user_id,
               typeEvent: log.typeEvent,
@@ -84,11 +92,11 @@ const TimeLine: React.FC = () => {
   }
 
   /**
-   * Function to handle PDF generation when the "Print Report" button is clicked
+   * Function to handle PDF generation when the "Imprimir Reporte" button is clicked
    */
   const handlePrintPDF = () => {
     if (estudiante && selectedAño) {
-      generaPDFIndividual(estudiante, selectedAño, selectedCurso) // Call the function that generates the PDF
+      generaPDFIndividual(estudiante, selectedAño, selectedCurso) // Llamamos a la función que genera el PDF
     }
   }
 
@@ -97,7 +105,7 @@ const TimeLine: React.FC = () => {
    */
   useEffect(() => {
     const handleResize = () => {
-      // We can add specific responsive adjustments here if needed
+      // Podemos agregar ajustes responsivos específicos aquí si es necesario
     }
 
     handleResize()
@@ -114,7 +122,7 @@ const TimeLine: React.FC = () => {
     <>
       <Breadcrumb pageName="TimeLine" />
       <div className="mb-4 flex items-center justify-between sm:justify-start gap-4">
-        {/* Back button */}
+        {/* Botón de regresar */}
         <button
           id="back-button"
           className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
@@ -123,8 +131,15 @@ const TimeLine: React.FC = () => {
           <span className="mr-2">←</span> Regresar
         </button>
 
-        {/* Help tour button */}
+        {/* Botón para iniciar el recorrido */}
         <TourTimeLine />
+
+        <button
+          onClick={() => setModalOpen(true)}
+          className="ml-[-15px] md:ml-[270px] px-17 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+        >
+          Calificar
+        </button>
       </div>
 
       <div className="mx-auto max-w-6xl px-6 -my-3">
@@ -202,8 +217,16 @@ const TimeLine: React.FC = () => {
             </table>
           )}
         </div>
-        <div></div>
       </div>
+      {/* Modal de calificación */}
+      {userId && selectedCurso && (
+        <ModalNota
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          studentId={userId}
+          courseId={selectedCurso}
+        />
+      )}
     </>
   )
 }

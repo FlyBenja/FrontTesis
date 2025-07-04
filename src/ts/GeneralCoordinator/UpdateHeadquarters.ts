@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 // Asynchronous function to update the name of a 'sede' (location or department)
-export const updateSede = async (sede_id: number, nameSede: string): Promise<string> => {
+export const updateSede = async (sede_id: number, nameSede: string, address: string): Promise<string> => {
   try {
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
-    
+
     // Check if the token is missing
     if (!token) {
       throw new Error('Token de autenticación no encontrado');  // Throw an error if the token is not found
@@ -13,8 +13,8 @@ export const updateSede = async (sede_id: number, nameSede: string): Promise<str
 
     // Make the PUT request to update the 'sede' with the new name
     const response = await axios.put(
-      `https://api.onlineproject.online/api/sedes/${sede_id}`,  // URL with the 'sede_id' parameter
-      JSON.stringify({ nameSede }),  // The name of the 'sede' to update
+      `http://localhost:3000/api/sedes/${sede_id}`,  // URL with the 'sede_id' parameter
+      JSON.stringify({ nameSede, address }),  // The name of the 'sede' to update
       {
         headers: {
           'Authorization': `Bearer ${token}`,  // Include the token in the Authorization header
@@ -24,7 +24,7 @@ export const updateSede = async (sede_id: number, nameSede: string): Promise<str
     );
 
     // Return the success message received in the response
-    return response.data; 
+    return response.data;
   } catch (error: any) {
     // Error handling
     if (axios.isAxiosError(error)) {

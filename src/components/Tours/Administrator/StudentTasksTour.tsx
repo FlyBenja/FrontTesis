@@ -84,7 +84,7 @@ const StudentTasksTour = () => {
         </svg>
         {/* Tooltip */}
         <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-          Iniciar recorrido de ayuda // 'Start help tour' tooltip text
+          Iniciar recorrido de ayuda
         </span>
       </button>
     </div>

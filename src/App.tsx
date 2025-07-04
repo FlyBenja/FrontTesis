@@ -21,6 +21,7 @@ import AdminTimeLineCoordinator from './pages/GeneralCoordinator/Students/TimeLi
 import StudentTasksCoordinator from './pages/GeneralCoordinator/Students/TasksStudent';
 import ProposalsCoordinator from './pages/GeneralCoordinator/Students/Proposals';
 import ChaptersCoordinator from './pages/GeneralCoordinator/Students/Chapters';
+import GraphicsCoorSede from './pages/GeneralCoordinator/Graphics';
 
 // General Pages
 import Graphics from './pages/Administrator/Start/Graphics';
@@ -149,6 +150,7 @@ function App() {
         {/* General Coordinator */}
         {role === 5 && (
           <>
+            <Route path="graficas" element={<GraphicsCoorSede />} />
             <Route path="crear-sedes" element={<CreateHeadquarters />} />
             <Route path="crear-coordinador" element={<CreateCoordinator />} />
             <Route path="listado-estudiantes" element={<ListStudentsCoordinator />} />

@@ -22,7 +22,7 @@ export const getTotalesRevision = async (): Promise<TotalesRevisionResponse> => 
     }
 
     // URL de la API
-    const url = 'https://api.onlineproject.online/api/revision-thesis/statistics';
+    const url = 'http://localhost:3000/api/revision-thesis/statistics';
 
     // Realizar la solicitud GET
     const response = await axios.get<TotalesRevisionResponse>(url, {

@@ -11,21 +11,28 @@ interface Estudiante {
 }
 
 // Function to fetch students based on their campus (sede), course, and year
-export const getEstudiantes = async (
+export const getStudents = async (
   sedeId: number,       // ID of the campus (sede) where the students are located
   courseId: number,     // ID of the course the students are enrolled in
   nameYear: number      // Year to filter the students by
 ): Promise<Estudiante[]> => {
   try {
+    // Extract role from localStorage
+    const role = localStorage.getItem('userRole');
+
+    if (role === '5') {
+      // Obtener la sede-id desde localStorage en lugar de la API
+      const selectedSedeId = Number(localStorage.getItem("selectedSedeId"))
+      sedeId = selectedSedeId
+    }
     // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('authToken');
     if (!token) {
       throw new Error('Token de autenticación no encontrado');  // If the token is not found, throw an error
     }
-
     // Make the GET request to the specified URL to fetch the students
     const response = await axios.get(
-      `https://api.onlineproject.online/api/sedes/${sedeId}/cursos/${courseId}/estudiantes/${nameYear}`,
+      `http://localhost:3000/api/sedes/${sedeId}/cursos/${courseId}/estudiantes/${nameYear}`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,  // Include the authorization token in the request headers
@@ -33,7 +40,6 @@ export const getEstudiantes = async (
         },
       }
     );
-
     // Check if the response contains the "users" property and if "users" is an array
     if (response.data && Array.isArray(response.data.users)) {
       // Map through the users and return the student data in the Estudiante structure

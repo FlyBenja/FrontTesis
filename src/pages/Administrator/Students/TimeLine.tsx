@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { getTimeLineEstudiante } from "../../../ts/General/GetTimeLineStudent"
 import TourTimeLine from "../../../components/Tours/Administrator/TourTimeLine"
+import ModalNota from "../../../components/Modals/UpdateNote"
 import Swal from "sweetalert2"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFIndividual from "../../../components/Pdfs/generatesIndividualPDF"
@@ -30,6 +31,7 @@ const TimeLine: React.FC = () => {
   // Setting state for pagination, events, and loading indicator
   const [events, setEvents] = useState<TimeLineEvent[]>([])
   const [loading, setLoading] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
 
   // Extracting student data and selected year/course from the location state
   const { estudiante, selectedAño, selectedCurso } = location.state || {}
@@ -131,6 +133,13 @@ const TimeLine: React.FC = () => {
 
         {/* Botón para iniciar el recorrido */}
         <TourTimeLine />
+
+        <button
+          onClick={() => setModalOpen(true)}
+          className="ml-[-15px] md:ml-[270px] px-17 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+        >
+          Calificar
+        </button>
       </div>
 
       <div className="mx-auto max-w-6xl px-6 -my-3">
@@ -208,8 +217,16 @@ const TimeLine: React.FC = () => {
             </table>
           )}
         </div>
-        <div></div>
       </div>
+      {/* Modal de calificación */}
+      {userId && selectedCurso && (
+        <ModalNota
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          studentId={userId}
+          courseId={selectedCurso}
+        />
+      )}
     </>
   )
 }
