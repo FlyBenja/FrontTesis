@@ -1,152 +1,184 @@
-import React, { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import { creaRevisor } from '../../ts/ThesisCoordinatorandReviewer/CreateReviewers';
-import { updateRevisor } from '../../ts/ThesisCoordinatorandReviewer/UpdateReviewers';
+import type React from "react"
+import { useState, useEffect } from "react"
+import Swal from "sweetalert2"
+import { creaRevisor } from "../../ts/ThesisCoordinatorandReviewer/CreateReviewers"
+import { updateRevisor } from "../../ts/ThesisCoordinatorandReviewer/UpdateReviewers"
 
-/**
- * Interface for the `CrearRevisor` component props
- */
 interface CreateReviewerProps {
-  onClose: () => void;
-  revisor?: any | null;
+  onClose: () => void
+  revisor?: any | null
 }
 
-/**
- * Component to create or edit a reviewer.
- * 
- * If a reviewer (`revisor`) is passed as a prop, the component will be used to edit that reviewer.
- * Otherwise, it will be used to create a new reviewer.
- * 
- */
 const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => {
-  const [email, setEmail] = useState(''); // State to hold the email input
-  const [name, setName] = useState(''); // State to hold the name input
-  const [carnet, setCarnet] = useState(''); // State to hold the carnet (ID) input
-  const [isLoading, setIsLoading] = useState(false); // State to manage the loading state
+  const [email, setEmail] = useState("")
+  const [name, setName] = useState("")
+  const [carnet, setCarnet] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Effect hook to populate fields if editing an existing reviewer
   useEffect(() => {
     if (revisor) {
-      setEmail(revisor.email || ''); // Set email if editing
-      setName(revisor.name || ''); // Set name if editing
-      setCarnet(revisor.carnet || ''); // Set carnet if editing
+      setEmail(revisor.email || "")
+      setName(revisor.name || "")
+      setCarnet(revisor.carnet || "")
     } else {
-      setEmail(''); // Clear email if creating new reviewer
-      setName(''); // Clear name if creating new reviewer
-      setCarnet(''); // Clear carnet if creating new reviewer
+      setEmail("")
+      setName("")
+      setCarnet("")
     }
-  }, [revisor]);
+  }, [revisor])
 
-  /**
-   * Function to handle saving the reviewer, either creating or updating
-   */
-  const handleSave = async () => {
-    if (!email || !name || !carnet) return; // Validation to ensure all fields are filled
-    setIsLoading(true); // Set loading state to true while saving
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault()
 
+    if (!email || !name || !carnet) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Por favor complete todos los campos.",
+        confirmButtonColor: "#ef4444",
+      })
+      return
+    }
+
+    setIsLoading(true)
     try {
       if (revisor) {
-        // Update the existing reviewer if `revisor` is passed
-        await updateRevisor(revisor.user_id, { email, name, codigo: carnet });
+        await updateRevisor(revisor.user_id, { email, name, codigo: carnet })
       } else {
-        // Create a new reviewer if no `revisor` is passed
-        await creaRevisor({ email, name, codigo: carnet });
+        await creaRevisor({ email, name, codigo: carnet })
       }
 
-      // Success message with SweetAlert2
       Swal.fire({
-        title: 'Éxito', // Success title
-        text: `Revisor ${revisor ? 'actualizado' : 'creado'} correctamente`, // Success message
-        icon: 'success',
-        confirmButtonText: 'Aceptar', // Confirmation button text
-        confirmButtonColor: '#28a745', // Green success button color
-      }).then(() => onClose()); // Close modal after successful operation
+        title: "¡Éxito!",
+        text: `Revisor ${revisor ? "actualizado" : "creado"} correctamente`,
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#10b981",
+      })
+      onClose()
     } catch (error) {
-      // Error handling with SweetAlert2
       Swal.fire({
-        title: 'Error', // Error title
-        text: error instanceof Error ? error.message : 'Error desconocido', // Error message
-        icon: 'error',
-        confirmButtonText: 'Aceptar', // Confirmation button text
-        confirmButtonColor: '#dc3545', // Red error button color
-      });
+        title: "Error",
+        text: error instanceof Error ? error.message : "Error desconocido",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#ef4444",
+      })
     } finally {
-      setIsLoading(false); // Reset loading state after operation
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative p-8 bg-white dark:bg-boxdark rounded-xl shadow-lg w-full max-w-xl">
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-800 dark:text-gray-100 text-2xl leading-none"
-          aria-label="close"
-        >
-          &#10005;
-        </button>
-        <h2 className="text-xl font-bold mb-6 text-black dark:text-white">
-          {revisor ? 'Editar Revisor' : 'Crear Revisor'} {/* Title of the form */}
-        </h2>
-
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-gray-700 dark:text-white">Correo:</label>
-            <input
-              type="email"
-              id="email"
-              className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="ejemplo@miumg.edu.gt" // Placeholder text
-            />
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-auto p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
           </div>
-          <div>
-            <label htmlFor="name" className="block text-gray-700 dark:text-white">Nombre:</label>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
+            {revisor ? "Editar Revisor" : "Crear Revisor"}
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {revisor ? "Actualiza la información del revisor" : "Ingresa los datos del nuevo revisor"}
+          </p>
+        </div>
+
+        <form onSubmit={handleSave}>
+          {/* Form Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                📧 Correo Electrónico
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                placeholder="ejemplo@miumg.edu.gt"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">🎫 Carnet</label>
+              <input
+                type="text"
+                value={carnet}
+                onChange={(e) => setCarnet(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                placeholder="Carnet del revisor"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              👤 Nombre Completo
+            </label>
             <input
               type="text"
-              id="name"
-              className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nombre del revisor" // Placeholder text
+              className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                         bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                         focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-gray-600
+                         transition-all duration-200 outline-none"
+              placeholder="Nombre completo del revisor"
+              required
             />
           </div>
-          <div>
-            <label htmlFor="carnet" className="block text-gray-700 dark:text-white">Carnet:</label>
-            <input
-              type="text"
-              id="carnet"
-              className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
-              value={carnet}
-              onChange={(e) => setCarnet(e.target.value)}
-              placeholder="Carnet del revisor" // Placeholder text
-            />
-          </div>
-        </div>
 
-        <div className="mt-6 flex justify-between space-x-4">
-          <button
-            className="px-6 py-2 bg-red-500 text-white rounded-lg w-full"
-            onClick={onClose}
-          >
-            Cancelar {/* Cancel button text */}
-          </button>
-          <button
-            className={`px-6 py-2 bg-blue-500 text-white rounded-lg w-full ${!(email && name && carnet) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
-            onClick={handleSave}
-            disabled={!(email && name && carnet) || isLoading} // Disable button if fields are empty or loading
-          >
-            {isLoading ? (
-              <div className="animate-spin h-5 w-5 border-t-2 border-white rounded-full mx-auto"></div> // Spinner when loading
-            ) : (
-              revisor ? 'Actualizar' : 'Crear Revisor' // Button text changes based on operation
-            )}
-          </button>
-        </div>
+          {/* Action Buttons */}
+          <div className="flex justify-end mt-5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-1.5 mr-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
+                         text-gray-700 dark:text-gray-300 font-medium rounded-md transition-all duration-200 text-sm
+                         border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-500"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="px-4 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700
+                         text-white font-medium rounded-md transition-all duration-200 transform hover:scale-105 text-sm
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                         shadow-lg hover:shadow-xl"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Cargando...
+                </div>
+              ) : revisor ? (
+                "Actualizar"
+              ) : (
+                "Crear Revisor"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CreateReviewer;
+export default CreateReviewer

@@ -1,158 +1,176 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { asignaRevisor } from '../../ts/ThesisCoordinatorandReviewer/AssignReviewer';
-import { getRevisores } from '../../ts/ThesisCoordinatorandReviewer/GetReviewers'; 
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import Swal from "sweetalert2"
+import { asignaRevisor } from "../../ts/ThesisCoordinatorandReviewer/AssignReviewer"
+import { getRevisores } from "../../ts/ThesisCoordinatorandReviewer/GetReviewers"
 
-/**
- * Interface to define the props passed to the AssignReviewer component.
- */
 interface AssignReviewerProps {
-  onClose: () => void;
-  revisionThesisId: number;
+  onClose: () => void
+  revisionThesisId: number
 }
 
-/**
- * Interface to define the structure of a reviewer object.
- */
 interface Revisor {
-  user_id: number;
-  name: string;
+  user_id: number
+  name: string
 }
 
-/**
- * It uses the `getRevisores` function to fetch the list of reviewers and the `AssignReviewer` function to assign the selected reviewer to a thesis.
- * After assigning the reviewer, it shows a success message and navigates to another page. In case of an error, it displays an error message.
- */
 const AssignReviewer: React.FC<AssignReviewerProps> = ({ onClose, revisionThesisId }) => {
-  const [selectedRevisor, setSelectedRevisor] = useState<string>(''); // State to store the selected reviewer
-  const [revisores, setRevisores] = useState<Revisor[]>([]); // State to store the list of reviewers
-  const [loading, setLoading] = useState<boolean>(true); // State to track loading status
-  const [error, setError] = useState<string | null>(null); // State to track error message
-  const navigate = useNavigate();
+  const [selectedRevisor, setSelectedRevisor] = useState<string>("")
+  const [revisores, setRevisores] = useState<Revisor[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const navigate = useNavigate()
 
-  /**
-   * Fetches the list of reviewers when the component mounts.
-   * Sets the reviewers data or error message based on the response.
-   */
   useEffect(() => {
     const fetchRevisores = async () => {
       try {
-        const revisoresList = await getRevisores(); // Fetch reviewers from API
-        setRevisores(revisoresList); // Save the reviewers in the state
+        const revisoresList = await getRevisores()
+        setRevisores(revisoresList)
       } catch (err) {
-        setError('Error al cargar los revisores.'); // Set error message if the fetch fails
+        setError("Error al cargar los revisores.")
       } finally {
-        setLoading(false); // Set loading to false after the fetch
+        setLoading(false)
       }
-    };
+    }
 
-    fetchRevisores(); // Call the function to fetch reviewers
-  }, []);
+    fetchRevisores()
+  }, [])
 
-  /**
-   * Handles the save action when the "Asignar" button is clicked.
-   * Assigns the selected reviewer to the thesis and shows a success or error message.
-   */
-  const handleSave = async () => {
-    if (!selectedRevisor) return; // Ensure a reviewer is selected
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault()
 
+    if (!selectedRevisor) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Por favor seleccione un revisor.",
+        confirmButtonColor: "#ef4444",
+      })
+      return
+    }
+
+    setSubmitting(true)
     try {
-      // Call the API to assign the reviewer to the thesis
       await asignaRevisor({
         revision_thesis_id: revisionThesisId,
         user_id: Number(selectedRevisor),
-      });
+      })
 
-      // Show success message using SweetAlert
       Swal.fire({
-        title: 'Éxito',
-        text: `Revisor asignado correctamente`,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#28a745', // Green color
-        customClass: {
-          confirmButton: 'text-white bg-green-600',
-        },
+        title: "¡Éxito!",
+        text: "Revisor asignado correctamente",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#10b981",
       }).then(() => {
-        onClose();  // Close the modal
-        navigate('/coordinadortesis/solicitud-revisiones'); // Navigate to the 'solicitudes' page
-      });
+        onClose()
+        navigate("/coordinadortesis/solicitud-revisiones")
+      })
     } catch (error) {
-      let errorMessage = 'Error desconocido';
+      let errorMessage = "Error desconocido"
       if (error instanceof Error) {
-        errorMessage = error.message; // Set error message if the error is of type Error
+        errorMessage = error.message
       }
-      // Show error message using SweetAlert
+
       Swal.fire({
-        title: 'Error',
+        title: "Error",
         text: errorMessage,
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#dc3545', // Red color
-        customClass: {
-          confirmButton: 'text-white bg-red-600',
-        },
-      });
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#ef4444",
+      })
+    } finally {
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
-    // Modal container for assigning a reviewer
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative p-6 bg-white dark:bg-boxdark rounded shadow-lg w-full max-w-lg">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-800 dark:text-gray-100 text-2xl leading-none"
-          aria-label="close"
-        >
-          &#10005;
-        </button>
-        {/* Modal title */}
-        <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Asignar Revisor</h2>
-        <div className="mt-4">
-          <label htmlFor="revisor" className="block text-gray-700 dark:text-white">Selecciona un revisor:</label>
-          {/* Show loading or error message */}
-          {loading ? (
-            <p className="text-gray-500">Cargando revisores...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : (
-            // Dropdown to select a reviewer
-            <select
-              id="revisor"
-              className="mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded w-full bg-white dark:bg-gray-800 text-black dark:text-white"
-              value={selectedRevisor}
-              onChange={(e) => setSelectedRevisor(e.target.value)}
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-auto p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">Asignar Revisor</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Selecciona un revisor para la tesis</p>
+        </div>
+
+        <form onSubmit={handleSave}>
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              👨‍🏫 Selecciona un revisor
+            </label>
+            {loading ? (
+              <div className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+                Cargando revisores...
+              </div>
+            ) : error ? (
+              <div className="w-full px-3 py-1.5 border-2 border-red-200 dark:border-red-600 rounded-md text-sm bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
+                {error}
+              </div>
+            ) : (
+              <select
+                value={selectedRevisor}
+                onChange={(e) => setSelectedRevisor(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                required
+              >
+                <option value="">Seleccione un revisor</option>
+                {revisores.map((revisor) => (
+                  <option key={revisor.user_id} value={revisor.user_id}>
+                    {revisor.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end mt-5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-1.5 mr-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
+                         text-gray-700 dark:text-gray-300 font-medium rounded-md transition-all duration-200 text-sm
+                         border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-500"
             >
-              <option value="">Seleccione un revisor</option>
-              {revisores.map((revisor) => (
-                <option key={revisor.user_id} value={revisor.user_id}>{revisor.name}</option>
-              ))}
-            </select>
-          )}
-        </div>
-        <div className="mt-4 flex justify-end space-x-2">
-          {/* Cancel button */}
-          <button
-            className="px-6 py-2 bg-red-500 text-white rounded-lg w-full"
-            onClick={onClose}
-          >
-            Cancelar
-          </button>
-          {/* Save button (disabled if no reviewer is selected) */}
-          <button
-            className={`px-6 py-2 bg-blue-500 text-white rounded-lg w-full ${!selectedRevisor ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
-            onClick={handleSave}
-            disabled={!selectedRevisor}
-          >
-            Asignar
-          </button>
-        </div>
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={!selectedRevisor || submitting}
+              className="px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700
+                         text-white font-medium rounded-md transition-all duration-200 transform hover:scale-105 text-sm
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                         shadow-lg hover:shadow-xl"
+            >
+              {submitting ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Asignando...
+                </div>
+              ) : (
+                "Asignar"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AssignReviewer;
+export default AssignReviewer

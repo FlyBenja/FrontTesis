@@ -1,182 +1,220 @@
-import React, { useState, useEffect } from 'react';
-import { createHeadquartersCoordinator } from '../../ts/GeneralCoordinator/CreateHeadquartersCoordinator';
-import { getSedes } from '../../ts/GeneralCoordinator/GetHeadquarters';
-import Swal from 'sweetalert2';
+import type React from "react"
+import { useState, useEffect } from "react"
+import { createHeadquartersCoordinator } from "../../ts/GeneralCoordinator/CreateHeadquartersCoordinator"
+import { getSedes } from "../../ts/GeneralCoordinator/GetHeadquarters"
+import Swal from "sweetalert2"
 
 interface Sede {
-  sede_id: number;
-  nameSede: string;
-  address: string;
+  sede_id: number
+  nameSede: string
+  address: string
 }
 
 interface CreateCoordinatorProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onCreated: () => void;  // Avisar que se creó exitosamente
+  isOpen: boolean
+  onClose: () => void
+  onCreated: () => void
 }
 
 const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onClose, onCreated }) => {
-  const [codigo, setCodigo] = useState<string>('');
-  const [nombre, setNombre] = useState<string>('');
-  const [correo, setCorreo] = useState<string>('');
-  const [sedeId, setSedeId] = useState<number | null>(null);
-  const [sedes, setSedes] = useState<Sede[]>([]);
+  const [codigo, setCodigo] = useState<string>("")
+  const [nombre, setNombre] = useState<string>("")
+  const [correo, setCorreo] = useState<string>("")
+  const [sedeId, setSedeId] = useState<number | null>(null)
+  const [sedes, setSedes] = useState<Sede[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchSedes = async () => {
       try {
-        const data = await getSedes();
-        setSedes(data);
-        setSedeId(null);
+        const data = await getSedes()
+        setSedes(data)
+        setSedeId(null)
       } catch (error: any) {
         Swal.fire({
-          icon: 'error',
-          title: 'Error al cargar sedes',
-          text: error.message || 'No se pudieron cargar las sedes',
-          confirmButtonColor: '#FF5A5F',
-          confirmButtonText: 'Aceptar',
-        });
+          icon: "error",
+          title: "Error al cargar sedes",
+          text: error.message || "No se pudieron cargar las sedes",
+          confirmButtonColor: "#ef4444",
+          confirmButtonText: "Aceptar",
+        })
       }
-    };
+    }
 
     if (isOpen) {
-      fetchSedes();
-      // Limpiar campos cuando se abra el modal
-      setCodigo('');
-      setNombre('');
-      setCorreo('');
-      setSedeId(null);
+      fetchSedes()
+      setCodigo("")
+      setNombre("")
+      setCorreo("")
+      setSedeId(null)
     }
-  }, [isOpen]);
+  }, [isOpen])
 
-  const handleSubmit = async () => {
-    if (codigo && nombre && correo && sedeId) {
-      try {
-        await createHeadquartersCoordinator(nombre, correo, codigo, sedeId);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Coordinador creado',
-          text: `El coordinador ${nombre} ha sido creado exitosamente.`,
-          confirmButtonColor: '#28a745',
-          confirmButtonText: 'Aceptar',
-        });
-
-        // Avisar al padre que se creó correctamente para refrescar lista
-        onCreated();
-
-        // Cerrar modal y limpiar campos
-        onClose();
-      } catch (error: any) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al crear coordinador',
-          text: error.message || 'No se pudo crear el coordinador',
-          confirmButtonColor: '#FF5A5F',
-          confirmButtonText: 'Aceptar',
-        });
-      }
-    } else {
+    if (!codigo || !nombre || !correo || !sedeId) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Campos incompletos',
-        text: 'Por favor completa todos los campos antes de continuar.',
-        confirmButtonColor: '#FFA500',
-        confirmButtonText: 'Aceptar',
-      });
+        icon: "error",
+        title: "Error",
+        text: "Por favor complete todos los campos.",
+        confirmButtonColor: "#ef4444",
+      })
+      return
     }
-  };
 
-  if (!isOpen) return null;
+    setLoading(true)
+    try {
+      await createHeadquartersCoordinator(nombre, correo, codigo, sedeId)
+      Swal.fire({
+        icon: "success",
+        title: "¡Coordinador creado!",
+        text: `El coordinador ${nombre} ha sido creado exitosamente.`,
+        confirmButtonColor: "#10b981",
+        confirmButtonText: "Aceptar",
+      })
+      onCreated()
+      onClose()
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Error al crear coordinador",
+        text: error.message || "No se pudo crear el coordinador",
+        confirmButtonColor: "#ef4444",
+        confirmButtonText: "Aceptar",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white dark:bg-boxdark p-6 rounded-lg shadow-md w-96">
-        <h3 className="text-xl font-semibold mb-4 text-black dark:text-white">Crear Coordinador</h3>
-
-        {/* Nombre */}
-        <div className="mb-4">
-          <label htmlFor="nombre" className="block text-sm font-semibold text-black dark:text-white">
-            Nombre
-          </label>
-          <input
-            id="nombre"
-            type="text"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-auto p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">Crear Coordinador</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Registra un nuevo coordinador de sede</p>
         </div>
 
-        {/* Correo */}
-        <div className="mb-4">
-          <label htmlFor="correo" className="block text-sm font-semibold text-black dark:text-white">
-            Correo
-          </label>
-          <input
-            id="correo"
-            type="email"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          {/* Form Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                👤 Nombre Completo
+              </label>
+              <input
+                type="text"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                placeholder="Ingrese el nombre completo"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">🎫 Código</label>
+              <input
+                type="text"
+                value={codigo}
+                onChange={(e) => setCodigo(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                placeholder="Ingrese el código"
+                required
+              />
+            </div>
+          </div>
 
-        {/* Código */}
-        <div className="mb-4">
-          <label htmlFor="codigo" className="block text-sm font-semibold text-black dark:text-white">
-            Código
-          </label>
-          <input
-            id="codigo"
-            type="text"
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                📧 Correo Electrónico
+              </label>
+              <input
+                type="email"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                placeholder="ejemplo@miumg.edu.gt"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">🏢 Sede</label>
+              <select
+                value={sedeId ?? ""}
+                onChange={(e) => setSedeId(Number(e.target.value))}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                required
+              >
+                <option value="">Seleccione una sede</option>
+                {sedes.map((sede) => (
+                  <option key={sede.sede_id} value={sede.sede_id}>
+                    {sede.nameSede}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-        {/* Sede */}
-        <div className="mb-4">
-          <label htmlFor="sede" className="block text-sm font-semibold text-black dark:text-white">
-            Sede
-          </label>
-          <select
-            id="sede"
-            value={sedeId ?? ''}
-            onChange={(e) => setSedeId(Number(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" disabled>
-              Seleccione una sede
-            </option>
-            {sedes.map((sede) => (
-              <option key={sede.sede_id} value={sede.sede_id}>
-                {sede.nameSede}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Botones */}
-        <div className="flex justify-between items-center">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-300 text-black dark:bg-boxdark dark:text-white rounded-md hover:bg-gray-400"
-          >
-            Cancelar
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          >
-            Crear Coordinador
-          </button>
-        </div>
+          {/* Action Buttons */}
+          <div className="flex justify-end mt-5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-1.5 mr-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
+                         text-gray-700 dark:text-gray-300 font-medium rounded-md transition-all duration-200 text-sm
+                         border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-500"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-1.5 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700
+                         text-white font-medium rounded-md transition-all duration-200 transform hover:scale-105 text-sm
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                         shadow-lg hover:shadow-xl"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Cargando...
+                </div>
+              ) : (
+                "Crear Coordinador"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CreateCoordinatorModal;
+export default CreateCoordinatorModal

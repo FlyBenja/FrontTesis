@@ -16,7 +16,7 @@ interface CoordinatorType {
   sede_id: number
 }
 
-const CreateCoordinator: React.FC = () => {
+const CreateCoordinatorSede: React.FC = () => {
   const [coordinators, setCoordinators] = useState<CoordinatorType[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false)
@@ -156,14 +156,14 @@ const CreateCoordinator: React.FC = () => {
             <button
               id="boton-crear-coordinador"
               onClick={handleOpenModal}
-              className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center shadow-md hover:shadow-lg"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center"
             >
-              Crear Nuevo
+              Crear Nuevo <span className="ml-2">👤</span>
             </button>
             <button
               id="boton-asignar-coordinador"
               onClick={handleOpenAssignModal}
-              className="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center shadow-md hover:shadow-lg"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center shadow-md hover:shadow-lg"
             >
               Asignar
             </button>
@@ -265,4 +265,4 @@ const CreateCoordinator: React.FC = () => {
   )
 }
 
-export default CreateCoordinator
+export default CreateCoordinatorSede

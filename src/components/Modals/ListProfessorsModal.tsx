@@ -1,203 +1,213 @@
-import React, { useState, useEffect } from 'react';
-import { getCatedraticosActivos } from '../../ts/HeadquartersCoordinator/GetProfessorActive';
-import { getDatosPerfil } from '../../ts/General/GetProfileData';
-import { asignarCatedraticoComision } from '../../ts/HeadquartersCoordinator/AssignsProfessorCommission';
-import Swal from 'sweetalert2';
+import type React from "react"
+import { useState, useEffect } from "react"
+import { getCatedraticosActivos } from "../../ts/HeadquartersCoordinator/GetProfessorActive"
+import { getDatosPerfil } from "../../ts/General/GetProfileData"
+import { asignarCatedraticoComision } from "../../ts/HeadquartersCoordinator/AssignsProfessorCommission"
+import Swal from "sweetalert2"
 
-// Defining the TypeScript interface for the professor (catedrático) data structure
 interface Catedratico {
-  user_id: number;
-  userName: string;
-  profilePhoto: string | null;
-  active: boolean;
+  user_id: number
+  userName: string
+  profilePhoto: string | null
+  active: boolean
 }
 
-// Defining the props for the ListProfessorsModal component
 interface ListProfessorsModalProps {
-  onClose: () => void;  // Function to close the modal
-  selectedRow: number | null;  // Selected row (role) for the professor
-  groupId: number | null;  // Group ID where the professor is being assigned
+  onClose: () => void
+  selectedRow: number | null
+  groupId: number | null
 }
 
-// Mapping role names to role codes for easier reference
 const ROLES_CODIGOS: { [key: string]: number } = {
   Presidente: 1,
   Secretario: 2,
-  'Vocal 1': 3,
-  'Vocal 2': 4,
-  'Vocal 3': 5,
-};
+  "Vocal 1": 3,
+  "Vocal 2": 4,
+  "Vocal 3": 5,
+}
 
-/**
- * The ListProfessorsModal component renders a modal for listing active professors 
- * and assigning them to a role within a group.
- *
- * @param {ListProfessorsModalProps} props - The props for the modal component.
- * @returns {JSX.Element} - The rendered JSX element for the modal.
- */
 const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedRow, groupId }) => {
-  // State for managing the list of professors, selected professor, and loading state
-  const [catedraticos, setCatedraticos] = useState<Catedratico[]>([]);
-  const [selectedCatedratico, setSelectedCatedratico] = useState<Catedratico | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [catedraticos, setCatedraticos] = useState<Catedratico[]>([])
+  const [selectedCatedratico, setSelectedCatedratico] = useState<Catedratico | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
-  // useEffect to fetch active professors when the component mounts
   useEffect(() => {
     const fetchCatedraticos = async () => {
       try {
-        const perfil = await getDatosPerfil();  // Get profile data
-        const year = new Date().getFullYear();  // Get the current year
+        const perfil = await getDatosPerfil()
+        const year = new Date().getFullYear()
         if (perfil.sede) {
-          const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year);  // Fetch active professors based on the profile's "sede" and the current year
-          setCatedraticos(catedraticosRecuperados);  // Set the fetched professors to the state
+          const catedraticosRecuperados = await getCatedraticosActivos(perfil.sede, year)
+          setCatedraticos(catedraticosRecuperados)
         }
       } catch (error) {
-        // If an error occurs, it is handled here but not logged to the console as per request
+        // Error handling
       } finally {
-        setLoading(false);  // Set loading state to false after the fetch attempt (either success or failure)
+        setLoading(false)
       }
-    };
+    }
 
-    fetchCatedraticos();  // Call the fetch function when the component mounts
-  }, []);  // Empty dependency array means this effect runs only once after the initial render
+    fetchCatedraticos()
+  }, [])
 
-  /**
-   * Handles selecting a professor when clicked.
-   *
-   * @param {Catedratico} catedratico - The professor object to select.
-   */
   const handleSelect = (catedratico: Catedratico) => {
-    setSelectedCatedratico(catedratico);
-  };
+    setSelectedCatedratico(catedratico)
+  }
 
-  /**
-   * Handles assigning the selected professor to the role/committee.
-   * 
-   * Displays a success or error alert depending on the result.
-   */
   const handleAssign = async () => {
     if (selectedCatedratico && selectedRow && groupId) {
       try {
-        // Assign the selected professor to the group with the corresponding role
         await asignarCatedraticoComision(groupId, {
           user_id: selectedCatedratico.user_id,
           rol_comision_id: selectedRow,
-        });
+        })
 
-        // Show success alert using SweetAlert2
         Swal.fire({
-          icon: 'success',
-          title: 'Catedrático asignado',
+          icon: "success",
+          title: "¡Catedrático asignado!",
           text: `El catedrático ${selectedCatedratico.userName} ha sido asignado correctamente.`,
-          confirmButtonText: 'Aceptar',
-          confirmButtonColor: '#28a745',
-          customClass: { confirmButton: 'text-white' },
-        });
-
-        onClose();  // Close the modal after assignment
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#10b981",
+        })
+        onClose()
       } catch (error: any) {
-        // If an error occurs during assignment, show an error alert
         Swal.fire({
-          icon: 'error',
-          title: 'Error al asignar catedrático',
+          icon: "error",
+          title: "Error al asignar catedrático",
           text: error.message,
-          confirmButtonText: 'Aceptar',
-          confirmButtonColor: '#d33',
-          customClass: { confirmButton: 'text-white' },
-        });
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#ef4444",
+        })
       }
     }
-  };
-
-  // If data is still loading, show a loading message
-  if (loading) {
-    return <div className="text-center">Cargando...</div>;
   }
 
-  // If there are no active professors, show a message
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 text-center">
+          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Cargando catedráticos...</p>
+        </div>
+      </div>
+    )
+  }
+
   if (catedraticos.length === 0) {
     return (
-      <div className="relative bg-gray-100 dark:bg-boxdark">
-        <div className="absolute top-40 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
-          <p className="text-xl text-black dark:text-white font-semibold">
-            No hay catedráticos activos.
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 text-center max-w-md">
+          <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No hay catedráticos activos</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            No se encontraron catedráticos disponibles para asignar.
           </p>
           <button
             onClick={onClose}
-            className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg"
+            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
           >
             Cerrar
           </button>
         </div>
       </div>
-    );
+    )
   }
 
-  // Determine the role text based on the selected row (role)
-  const roleText = selectedRow ? Object.keys(ROLES_CODIGOS).find(key => ROLES_CODIGOS[key] === selectedRow) : '';
+  const roleText = selectedRow ? Object.keys(ROLES_CODIGOS).find((key) => ROLES_CODIGOS[key] === selectedRow) : ""
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative p-6 bg-white dark:bg-boxdark rounded shadow-lg w-full max-w-lg" style={{ height: '540px', top: '40px' }}>
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-800 dark:text-gray-100 text-2xl leading-none"
-          aria-label="close"
-        >
-          &#10005;
-        </button>
-        <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Listado de Catedráticos Activos</h2>
-        {roleText && (
-          <p className="text-center text-black dark:text-white mb-4">Por favor seleccione {roleText}</p>
-        )}
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700 overflow-y-auto" style={{ maxHeight: '300px' }}>
-          {catedraticos.map((catedratico) => (
-            <li
-              key={catedratico.user_id}
-              className={`p-4 flex items-center justify-between ${selectedCatedratico?.user_id === catedratico.user_id
-                  ? 'bg-blue-100 dark:bg-blue-900'
-                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                }`}
-              onClick={() => handleSelect(catedratico)}
-            >
-              <div className="flex items-center">
-                {catedratico.profilePhoto ? (
-                  <img
-                    src={catedratico.profilePhoto}
-                    alt={catedratico.userName}
-                    className="w-10 h-10 rounded-full mr-4"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-full mr-4">
-                    {catedratico.userName.charAt(0)}
-                  </div>
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-auto p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">Listado de Catedráticos Activos</h3>
+          {roleText && <p className="text-sm text-gray-600 dark:text-gray-400">Por favor seleccione {roleText}</p>}
+        </div>
+
+        {/* Professors List */}
+        <div className="mb-4">
+          <div className="max-h-80 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg">
+            {catedraticos.map((catedratico) => (
+              <div
+                key={catedratico.user_id}
+                className={`p-4 flex items-center justify-between cursor-pointer transition-colors ${
+                  selectedCatedratico?.user_id === catedratico.user_id
+                    ? "bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500"
+                    : "hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                } ${catedraticos.indexOf(catedratico) !== catedraticos.length - 1 ? "border-b border-gray-200 dark:border-gray-600" : ""}`}
+                onClick={() => handleSelect(catedratico)}
+              >
+                <div className="flex items-center">
+                  {catedratico.profilePhoto ? (
+                    <img
+                      src={catedratico.profilePhoto || "/placeholder.svg"}
+                      alt={catedratico.userName}
+                      className="w-10 h-10 rounded-full mr-4 object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-full mr-4 font-semibold">
+                      {catedratico.userName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="text-gray-900 dark:text-white font-medium">{catedratico.userName}</span>
+                </div>
+                {selectedCatedratico?.user_id === catedratico.user_id && (
+                  <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 )}
-                <span className="text-black dark:text-white font-semibold">{catedratico.userName}</span>
               </div>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-6 text-center">
+            ))}
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-4">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
+                       text-gray-700 dark:text-gray-300 font-medium rounded-md transition-all duration-200 text-sm
+                       border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-500"
+          >
+            Cerrar
+          </button>
           <button
             onClick={handleAssign}
-            className={`px-4 py-2 bg-primary text-white rounded-lg w-full ${!selectedCatedratico ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'
-              }`}
             disabled={!selectedCatedratico}
+            className="flex-1 px-4 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700
+                       text-white font-medium rounded-md transition-all duration-200 transform hover:scale-105 text-sm
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                       shadow-lg hover:shadow-xl"
           >
             Asignar
           </button>
         </div>
-        <div className="mt-4 text-center">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg w-full"
-          >
-            Cerrar
-          </button>
-        </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ListProfessors;
+export default ListProfessors

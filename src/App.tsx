@@ -14,7 +14,8 @@ import SubmitReview from './pages/Administrator/SubmitReview';
 
 // General Coordinator
 import CreateHeadquarters from './pages/GeneralCoordinator/CreateHeadquarters';
-import CreateCoordinator from './pages/GeneralCoordinator/CreateCoordinator';
+import CreateCoordinatorSede from './pages/GeneralCoordinator/CreateCoordinatorHeadquarters';
+import CreateCoordinatorTesis from './pages/GeneralCoordinator/CreateThesisCoordinator';
 import CreateTasksCoordinator from './pages/GeneralCoordinator/CreateTasks';
 import ListStudentsCoordinator from './pages/GeneralCoordinator/Students/ListStudents';
 import AdminTimeLineCoordinator from './pages/GeneralCoordinator/Students/TimeLine';
@@ -75,9 +76,9 @@ function App() {
     if (localStorage.length === 0) {
       Swal.fire({
         icon: 'warning',
-        title: 'Access Denied',
-        text: 'Please log in to continue.',
-        confirmButtonText: 'Understood',
+        title: 'Acceso Denegado',
+        text: 'Favor de iniciar sesión para continuar.',
+        confirmButtonText: 'Entendido',
         customClass: {
           confirmButton: 'bg-red-600 text-white',
         },
@@ -152,13 +153,14 @@ function App() {
           <>
             <Route path="graficas" element={<GraphicsCoorSede />} />
             <Route path="crear-sedes" element={<CreateHeadquarters />} />
-            <Route path="crear-coordinador" element={<CreateCoordinator />} />
+            <Route path="crear-coordinador-sede" element={<CreateCoordinatorSede />} />
+            <Route path="crear-coordinador-tesis" element={<CreateCoordinatorTesis />} />
             <Route path="listado-estudiantes" element={<ListStudentsCoordinator />} />
             <Route path="time-line" element={<AdminTimeLineCoordinator />} />
             <Route path="tareas-estudiante" element={<StudentTasksCoordinator />} />
             <Route path="propuestas" element={<ProposalsCoordinator />} />
             <Route path="capitulo" element={<ChaptersCoordinator />} />
-            <Route path="crear-tareas" element={<CreateTasksCoordinator />} />
+            <Route path="ver-tareas" element={<CreateTasksCoordinator />} />
             <Route path="historial" element={<Record />} />
           </>
         )}

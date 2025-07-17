@@ -154,11 +154,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Crear Sedes --> */}
 
-              {/* <!-- Menu Item Asignar Coordinador --> */}
+              {/* <!-- Menu Item Asignar Coordinador Sede --> */}
               <li>
                 <NavLink
-                  to="/coordinadorgeneral/crear-coordinador"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadorgeneral/crear-coordinador' &&
+                  to="/coordinadorgeneral/crear-coordinador-sede"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadorgeneral/crear-coordinador-sede' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                   onClick={() => setSidebarOpen(false)} // Cerrar sidebar
@@ -179,7 +179,34 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Coordinador Sede
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Asignar Coordinador --> */}
+              {/* <!-- Menu Item Asignar Coordinador Sede --> */}
+
+              {/* <!-- Menu Item Asignar Coordinador Tesis --> */}
+              <li>
+                <NavLink
+                  to="/coordinadorgeneral/crear-coordinador-tesis"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadorgeneral/crear-coordinador-tesis' &&
+                    'bg-graydark dark:bg-meta-4'
+                    }`}
+                  onClick={() => setSidebarOpen(false)} // Cerrar sidebar
+                >
+                  <svg
+                    className="fill-current"
+                    width="23"
+                    height="23"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Coordinador Tesis
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Asignar Coordinador Tesis --> */}
 
               {/* <!-- Menu Item Estudiantes --> */}
               <li>
@@ -211,7 +238,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Tareas --> */}
               <li>
                 <NavLink
-                  to="/coordinadorgeneral/crear-tareas"
+                  to="/coordinadorgeneral/ver-tareas"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-lg text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadorgeneral/crear-tareas' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}

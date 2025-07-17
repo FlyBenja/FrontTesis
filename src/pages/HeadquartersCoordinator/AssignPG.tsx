@@ -77,9 +77,9 @@ const AssignPG: React.FC = () => {
       const currentYear = new Date().getFullYear()
       let payload = null
 
-      if (pg1 && !pg1Disabled && !pg2) {
+      if (pg1 && !pg1Disabled) {
         payload = { course_id: 1, sede_id: sedeId, year_id: currentYear, courseActive: true }
-      } else if (pg2 && !pg2Disabled && !pg1) {
+      } else if (pg2 && !pg2Disabled) {
         payload = { course_id: 2, sede_id: sedeId, year_id: currentYear, courseActive: true }
       }
 
@@ -94,15 +94,15 @@ const AssignPG: React.FC = () => {
           customClass: { confirmButton: "text-white" },
         })
 
-        // Update the list of assigned courses after assignment
-        setPg1Disabled(payload.course_id === 1 || pg1Disabled)
-        setPg2Disabled(payload.course_id === 2 || pg2Disabled)
+        // Actualizar estado
+        if (payload.course_id === 1) setPg1Disabled(true)
+        if (payload.course_id === 2) setPg2Disabled(true)
         setIsButtonDisabled(pg1Disabled && pg2Disabled)
       } else {
         Swal.fire({
           icon: "warning",
-          title: "Selección inválida",
-          text: "Por favor, seleccione solo un curso a la vez para asignar.",
+          title: "Nada que asignar",
+          text: "Ambos cursos ya están asignados o no se seleccionó ninguno nuevo.",
           confirmButtonText: "OK",
           confirmButtonColor: "#F59E0B",
           customClass: { confirmButton: "text-white" },

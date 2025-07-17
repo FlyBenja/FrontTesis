@@ -4,7 +4,7 @@ import { getYears } from "../../../ts/General/GetYears"
 import { getStudents } from "../../../ts/General/GetStudents"
 import { useNavigate } from "react-router-dom"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
-import generaPDFGeneral from "../../../components/Pdfs/generatePDFGeneral"
+import generaPDFGeneral from "../../../components/Pdfs/GeneralCoordinator/generatePDFGeneral"
 import BuscadorEstudiantes from "../../../components/Searches/SearchStudents"
 import TourStudents from "../../../components/Tours/Administrator/TourStudents"
 

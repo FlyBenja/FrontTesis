@@ -48,9 +48,6 @@ const DropdownUser = () => {
   useEffect(() => {
     getDatosPerfil()
       .then((perfil) => {
-        if (!perfil.userName) {
-          throw new Error('Sesión inválida');
-        }
         setUserName(perfil.userName);
         setRoleName(perfil.roleName);
         setProfilePhoto(perfil.profilePhoto);

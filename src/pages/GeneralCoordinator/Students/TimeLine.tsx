@@ -138,7 +138,7 @@ const TimeLine: React.FC = () => {
           onClick={() => setModalOpen(true)}
           className="ml-[-15px] md:ml-[270px] px-17 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
         >
-          Calificar
+          Nota
         </button>
       </div>
 

@@ -313,7 +313,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Catedraticos --> */}
 
               {/* <!-- Menu Item Comisiones --> */}
-              {(new Date().getMonth() + 1) >= 7 && (new Date().getMonth() + 1) <= 12 && (
+              {/* {(new Date().getMonth() + 1) >= 7 && (new Date().getMonth() + 1) <= 12 && (
                 <SidebarLinkGroup activeCondition={pathname === '/coordinadorsede/ui' || pathname.includes('ui')}>
                   {(handleClick, open) => {
                     return (
@@ -405,7 +405,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     );
                   }}
                 </SidebarLinkGroup>
-              )}
+              )} */}
               {/* <!-- Menu Item Comisiones --> */}
 
               {/* <!-- Menu Item Crear Administradores --> */}

@@ -1,143 +1,170 @@
-import React, { useState } from 'react';
-import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
-import { enviaComentario } from '../../ts/ThesisCoordinatorandReviewer/SendComments';
+import type React from "react"
+import { useState } from "react"
+import Swal from "sweetalert2"
+import { useNavigate } from "react-router-dom"
+import { enviaComentario } from "../../ts/ThesisCoordinatorandReviewer/SendComments"
 
-/**
- * Props for the SendComment component
- */
 interface SendCommentProps {
-  onClose: () => void;
-  revision_thesis_id: number;
+  onClose: () => void
+  revision_thesis_id: number
 }
 
-/**
- * SendComment component for sending a comment on a thesis revision.
- */
 const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }) => {
-  const [titulo, setTitulo] = useState('');  // Title of the comment
-  const [comentario, setComentario] = useState('');  // The content of the comment
-  const [status, setStatus] = useState<string>('');  // Status of the comment (approved or rejected)
-  const navigate = useNavigate();  // Hook for navigation
+  const [titulo, setTitulo] = useState("")
+  const [comentario, setComentario] = useState("")
+  const [status, setStatus] = useState<string>("")
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
-  /**
-   * Handles saving the comment.
-   * Validates the input and sends the comment to the server using the enviaComentario function.
-   * Displays success or error alerts based on the result.
-   */
-  const handleSave = async () => {
-    // Validate if the fields are filled
-    if (!titulo || !comentario || status === '') {
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!titulo || !comentario || status === "") {
       Swal.fire({
-        title: 'Error',
-        text: 'Todos los campos son obligatorios.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#dc3545',
-      });
-      return;
+        title: "Error",
+        text: "Todos los campos son obligatorios.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#ef4444",
+      })
+      return
     }
 
+    setLoading(true)
     try {
-      // Call the function to send the comment
       await enviaComentario({
         revision_thesis_id: revision_thesis_id,
         title: titulo,
         comment: comentario,
-        status: Number(status),  // Convert the status to number
-      });
+        status: Number(status),
+      })
 
-      // Show success alert and redirect
       Swal.fire({
-        title: 'Éxito',
-        text: 'Comentario enviado correctamente',
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#28a745',
+        title: "¡Éxito!",
+        text: "Comentario enviado correctamente",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#10b981",
       }).then(() => {
-        onClose();  // Close the modal
-        navigate('/coordinadortesis/mis-asignaciones');  // Redirect to the desired page
-      });
+        onClose()
+        navigate("/coordinadortesis/mis-asignaciones")
+      })
     } catch (error) {
-      // Show error alert if something goes wrong
       Swal.fire({
-        title: 'Error',
-        text: 'No se pudo enviar el comentario.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#dc3545',
-      });
+        title: "Error",
+        text: "No se pudo enviar el comentario.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#ef4444",
+      })
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative p-8 bg-white dark:bg-boxdark rounded-xl shadow-lg w-full max-w-xl">
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-800 dark:text-gray-100 text-2xl leading-none"
-          aria-label="close"
-        >
-          &#10005;
-        </button>
-        <h2 className="text-xl font-bold mb-6 text-black dark:text-white">Enviar Comentario</h2>
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-auto p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">Enviar Comentario</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Proporciona retroalimentación sobre la tesis</p>
+        </div>
 
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="titulo" className="block text-gray-700 dark:text-white">Título:</label>
-            <input
-              type="text"
-              id="titulo"
-              className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}  // Update the title
-              placeholder="Título del comentario"
-            />
+        <form onSubmit={handleSave}>
+          {/* Form Fields */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">✏️ Título</label>
+              <input
+                type="text"
+                value={titulo}
+                onChange={(e) => setTitulo(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                placeholder="Título del comentario"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">💬 Comentario</label>
+              <textarea
+                value={comentario}
+                onChange={(e) => setComentario(e.target.value)}
+                rows={4}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none resize-none"
+                placeholder="Escriba su comentario aquí"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">📊 Estado</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
+                           bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 focus:bg-white dark:focus:bg-gray-600
+                           transition-all duration-200 outline-none"
+                required
+              >
+                <option value="">Seleccione una opción</option>
+                <option value="1">✅ Aprobado</option>
+                <option value="0">❌ Rechazado</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label htmlFor="comentario" className="block text-gray-700 dark:text-white">Comentario:</label>
-            <textarea
-              id="comentario"
-              className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
-              rows={4}
-              value={comentario}
-              onChange={(e) => setComentario(e.target.value)}  // Update the comment content
-              placeholder="Escriba su comentario aquí"
-            />
-          </div>
-          <div>
-            <label htmlFor="status" className="block text-gray-700 dark:text-white">Estado:</label>
-            <select
-              id="status"
-              className="mt-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg w-full bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}  // Update the status
+
+          {/* Action Buttons */}
+          <div className="flex justify-end mt-5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-1.5 mr-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
+                         text-gray-700 dark:text-gray-300 font-medium rounded-md transition-all duration-200 text-sm
+                         border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-500"
             >
-              <option value="">Seleccione una opción</option>
-              <option value="1">Aprobado</option>
-              <option value="0">Rechazado</option>
-            </select>
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-1.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700
+                         text-white font-medium rounded-md transition-all duration-200 transform hover:scale-105 text-sm
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                         shadow-lg hover:shadow-xl"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Enviando...
+                </div>
+              ) : (
+                "Enviar"
+              )}
+            </button>
           </div>
-        </div>
-
-        <div className="mt-6 flex justify-between space-x-4">
-          <button
-            className="px-6 py-2 bg-red-500 text-white rounded-lg w-full"
-            onClick={onClose}  // Close the modal without saving
-          >
-            Cancelar
-          </button>
-          <button
-            className={`px-6 py-2 bg-blue-500 text-white rounded-lg w-full ${!(titulo && comentario && status) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'}`}
-            onClick={handleSave}  // Trigger the save function
-            disabled={!(titulo && comentario && status)}  // Disable the button if fields are empty
-          >
-            Enviar
-          </button>
-        </div>
+        </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SendComment;
+export default SendComment

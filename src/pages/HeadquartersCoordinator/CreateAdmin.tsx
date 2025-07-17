@@ -185,9 +185,9 @@ const CreateAdmin: React.FC = () => {
             <button
               id="boton-crear-admin"
               onClick={handleOpenModal}
-              className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center shadow-md hover:shadow-lg"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center"
             >
-              Crear Nuevo
+              Crear Nuevo <span className="ml-2">👤</span>
             </button>
             <TourCreateAdmin />
           </div>
