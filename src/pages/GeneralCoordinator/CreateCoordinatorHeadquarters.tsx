@@ -3,10 +3,11 @@ import { getHeadquartersCoordinator } from "../../ts/GeneralCoordinator/GetHeadq
 import { removeHeadquartersCoordinator } from "../../ts/GeneralCoordinator/RemoveHeadquartersCoordinator"
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
-import TourCoordinator from "../../components/Tours/GeneralCoordinator/TourCoordinator"
+import TourCoordinatorHeadquarters from "../../components/Tours/GeneralCoordinator/TourCoordinatorHeadquarters"
 import CreateCoordinatorModal from "../../components/Modals/CreateCoordinator"
 import AssignCoordinatorModal from "../../components/Modals/AssignCoordinator"
 import Swal from "sweetalert2"
+import { Users, UserPlus, MapPin, Trash2, ChevronLeft, ChevronRight } from "lucide-react" // Import Lucide React icons
 
 interface CoordinatorType {
   id: number
@@ -20,24 +21,20 @@ const CreateCoordinatorSede: React.FC = () => {
   const [coordinators, setCoordinators] = useState<CoordinatorType[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false)
-
   const [currentPage, setCurrentPage] = useState(1)
   const [coordinatorsPerPage, setCoordinatorsPerPage] = useState(5)
   const [maxPageButtons, setMaxPageButtons] = useState(5)
 
-  // Función para cargar coordinadores desde la API
   const fetchCoordinators = async () => {
     try {
       const data = await getHeadquartersCoordinator()
-
       const transformedData: CoordinatorType[] = data.map((item) => ({
         id: item.user_id,
         nombre: item.name,
         correo: item.email,
         sede: item.location?.nameSede || "Sin sede",
-        sede_id: item.sede_id || 0, // Add sede_id
+        sede_id: item.sede_id || 0,
       }))
-
       const sortedCoordinators = transformedData.sort((a, b) => a.id - b.id)
       setCoordinators(sortedCoordinators)
     } catch (error) {
@@ -47,10 +44,8 @@ const CreateCoordinatorSede: React.FC = () => {
 
   useEffect(() => {
     fetchCoordinators()
-
     window.addEventListener("resize", handleResize)
     handleResize()
-
     return () => {
       window.removeEventListener("resize", handleResize)
     }
@@ -58,10 +53,10 @@ const CreateCoordinatorSede: React.FC = () => {
 
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setCoordinatorsPerPage(10)
+      setCoordinatorsPerPage(8) // Adjusted for smaller screens
       setMaxPageButtons(3)
     } else {
-      setCoordinatorsPerPage(10)
+      setCoordinatorsPerPage(5) // Adjusted for larger screens
       setMaxPageButtons(5)
     }
   }
@@ -78,59 +73,55 @@ const CreateCoordinatorSede: React.FC = () => {
   }
 
   const getPageRange = () => {
-    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
-    const end = Math.min(totalPages, start + maxPageButtons - 1)
+    const range: number[] = []
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
+    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1)
 
-    if (end - start + 1 < maxPageButtons) {
-      start = Math.max(1, end - maxPageButtons + 1)
+    if (endPage - startPage + 1 < maxPageButtons) {
+      startPage = Math.max(1, endPage - maxPageButtons + 1)
     }
 
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+    for (let i = startPage; i <= endPage; i++) {
+      range.push(i)
+    }
+    return range
   }
 
   const handleOpenModal = () => setIsModalOpen(true)
   const handleCloseModal = () => setIsModalOpen(false)
-
   const handleOpenAssignModal = () => setIsAssignModalOpen(true)
   const handleCloseAssignModal = () => setIsAssignModalOpen(false)
 
-  // Cuando se cree un coordinador, recargamos la lista
   const handleCreateCoordinator = async () => {
     await fetchCoordinators()
     handleCloseModal()
   }
 
-  // When a coordinator is assigned, reload the list
   const handleAssignCoordinator = async () => {
     await fetchCoordinators()
   }
 
   const handleDeleteClick = async (coordinatorId: number, sedeId: number) => {
     try {
-      // Confirm deletion
       const result = await Swal.fire({
         title: "¿Estás seguro?",
         text: "Esta acción removerá al coordinador de la sede",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
+        confirmButtonColor: "#ef4444",
+        cancelButtonColor: "#6b7280",
         confirmButtonText: "Sí, remover",
         cancelButtonText: "Cancelar",
       })
-
       if (result.isConfirmed) {
         await removeHeadquartersCoordinator(coordinatorId, sedeId)
-
         Swal.fire({
-          icon: 'success',
-          title: 'Coordinador removido',
-          text: 'El coordinador ha sido removido exitosamente.',
-          confirmButtonColor: '#28a745',
-          confirmButtonText: 'Aceptar',
-        });
-
-        // Refresh the list
+          icon: "success",
+          title: "¡Coordinador removido!",
+          text: "El coordinador ha sido removido exitosamente.",
+          confirmButtonColor: "#10b981",
+          confirmButtonText: "Aceptar",
+        })
         await fetchCoordinators()
       }
     } catch (error: any) {
@@ -138,7 +129,7 @@ const CreateCoordinatorSede: React.FC = () => {
         icon: "error",
         title: "Error al eliminar",
         text: error.message || "No se pudo eliminar el coordinador",
-        confirmButtonColor: "#FF5A5F",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "Aceptar",
       })
     }
@@ -147,115 +138,132 @@ const CreateCoordinatorSede: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="Crear Coordinador" />
-      <div className="mx-auto max-w-5xl px-1 py-1">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-          <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-            Coordinadores Registrados
-          </h3>
-          <div className="flex items-center space-x-3">
-            <button
-              id="boton-crear-coordinador"
-              onClick={handleOpenModal}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center"
-            >
-              Crear Nuevo <span className="ml-2">👤</span>
-            </button>
-            <button
-              id="boton-asignar-coordinador"
-              onClick={handleOpenAssignModal}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center shadow-md hover:shadow-lg"
-            >
-              Asignar
-            </button>
-            <TourCoordinator />
+      <div className="mx-auto max-w-7xl px-4 py-6">
+        {/* Header and Table Container */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 mb-6">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-6 rounded-t-3xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white">Coordinadores Registrados</h3>
+                  <p className="text-blue-100 text-sm">Gestiona los coordinadores de sede</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  id="boton-crear-coordinador"
+                  onClick={handleOpenModal}
+                  className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center gap-2 transition-all duration-200 backdrop-blur-sm border border-white/20"
+                >
+                  <UserPlus className="h-5 w-5" />
+                  <span>Crear Nuevo</span>
+                </button>
+                <button
+                  id="boton-asignar-coordinador"
+                  onClick={handleOpenAssignModal}
+                  className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center gap-2 transition-all duration-200 backdrop-blur-sm border border-white/20"
+                >
+                  <MapPin className="h-5 w-5" />
+                  <span>Asignar</span>
+                </button>
+                <TourCoordinatorHeadquarters />
+              </div>
+            </div>
+          </div>
+          {/* Table */}
+          <div className="p-8">
+            <div className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+              <table id="tabla-coordinadores" className="min-w-full bg-white dark:bg-gray-800">
+                <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
+                  <tr>
+                    <th className="py-3 px-4 text-left rounded-tl-xl">Nombre</th>
+                    <th className="py-3 px-4 text-center hidden sm:table-cell">Correo</th>
+                    <th className="py-3 px-4 text-center">Sede</th>
+                    <th className="py-3 px-4 text-center rounded-tr-xl">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentCoordinators.length > 0 ? (
+                    currentCoordinators.map((coordinator) => (
+                      <tr
+                        key={coordinator.id}
+                        className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+                      >
+                        <td className="py-3 px-4 text-left text-gray-900 dark:text-white font-medium">
+                          {coordinator.nombre}
+                        </td>
+                        <td className="py-3 px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
+                          {coordinator.correo}
+                        </td>
+                        <td className="py-3 px-4 text-center text-gray-900 dark:text-white">{coordinator.sede}</td>
+                        <td className="py-3 px-4 text-center">
+                          <button
+                            id="delete-coordinador"
+                            onClick={() => handleDeleteClick(coordinator.id, coordinator.sede_id)}
+                            className="px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg inline-flex items-center gap-1"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Remover
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="py-12 text-center text-gray-500 dark:text-gray-400">
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                            <Users className="w-8 h-8 text-gray-400" />
+                          </div>
+                          <p className="text-lg font-medium">No hay coordinadores registrados</p>
+                          <p className="text-sm">Crea tu primer coordinador para comenzar</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div id="pagination" className="mt-8 flex justify-center items-center space-x-2">
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                {getPageRange().map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => paginate(page)}
+                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${
+                      currentPage === page
+                        ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                        : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
-
-        <div className="overflow-x-auto">
-          <table
-            id="tabla-coordinadores"
-            className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark"
-          >
-            <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
-              <tr>
-                <th className="py-2 px-4 text-left">Nombre</th>
-                <th className="py-2 px-4 text-center hidden sm:table-cell">Correo</th>
-                <th className="py-2 px-4 text-center">Sede</th>
-                <th className="py-2 px-4 text-center">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentCoordinators.length > 0 ? (
-                currentCoordinators.map((coordinator) => (
-                  <tr
-                    key={coordinator.id}
-                    className="border-t border-gray-200 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-meta-4 transition-colors duration-150"
-                  >
-                    <td className="py-2 px-4 text-left text-black dark:text-white">{coordinator.nombre}</td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white hidden sm:table-cell">
-                      {coordinator.correo}
-                    </td>
-                    <td className="py-2 px-4 text-left text-black dark:text-white">{coordinator.sede}</td>
-                    <td className="py-2 px-4 text-center">
-                      <button
-                        id="delete-coordinador"
-                        onClick={() => handleDeleteClick(coordinator.id, coordinator.sede_id)}
-                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
-                      >
-                        Remover
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={4} className="py-4 text-center text-gray-500 dark:text-gray-400">
-                    No hay coordinadores registrados
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div id="pagination" className="mt-4 flex justify-center">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8592;
-          </button>
-          {getPageRange().map((page) => (
-            <button
-              key={page}
-              onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                ? "bg-blue-600 text-white"
-                : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8594;
-          </button>
-        </div>
       </div>
-
-      {/* Modal para crear coordinador */}
-      <CreateCoordinatorModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onCreated={handleCreateCoordinator}
-      />
-
-      {/* Modal para asignar coordinador */}
+      <CreateCoordinatorModal isOpen={isModalOpen} onClose={handleCloseModal} onCreated={handleCreateCoordinator} />
       <AssignCoordinatorModal
         isOpen={isAssignModalOpen}
         onClose={handleCloseAssignModal}

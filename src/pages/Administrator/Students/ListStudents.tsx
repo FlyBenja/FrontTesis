@@ -9,6 +9,7 @@ import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFGeneral from "../../../components/Pdfs/generatePDFGeneral"
 import BuscadorEstudiantes from "../../../components/Searches/SearchStudents"
 import TourStudents from "../../../components/Tours/Administrator/TourStudents"
+import { Users, ChevronLeft, ChevronRight, Printer } from "lucide-react" // Import Lucide React icons
 
 /**
  * Interface for student data
@@ -237,37 +238,36 @@ const ListStudents: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Listar Estudiantes" />
-      <div className="mx-auto max-w-5xl px-1 py-1">
-        <div className="mb-4 flex flex-wrap items-center space-x-2">
-          <div className="flex items-center flex-grow">
+      <Breadcrumb pageName="Listar Estudiantes 🧑‍🎓" />
+      <div className="mx-auto max-w-6xl px-4 py-6">
+        <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex-grow w-full md:w-auto">
             <BuscadorEstudiantes
               selectedAño={selectedAño}
               selectedCurso={selectedCurso}
               onSearchResults={handleSearchResults}
             />
           </div>
-
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <button
               id="print-report"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+              className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={() => handlePrintPDF(Number(selectedAño), Number(selectedCurso))}
             >
-              Imprimir Reporte
+              <Printer className="h-5 w-5 mr-2" /> Imprimir Reporte
             </button>
             <TourStudents />
           </div>
         </div>
 
-        <div className="mb-4 flex gap-4">
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
           <select
             id="select-year"
             value={selectedAño}
             onChange={handleAñoChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+            className="w-full sm:w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-300 shadow-sm"
           >
-            <option value="">Seleccionar año</option>
+            <option value="">Seleccionar año 📅</option>
             {years.map((year) => (
               <option key={year} value={year.toString()}>
                 {year}
@@ -278,9 +278,9 @@ const ListStudents: React.FC = () => {
             id="select-course"
             value={selectedCurso}
             onChange={handleCursoChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+            className="w-full sm:w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-300 shadow-sm"
           >
-            <option value="">Seleccionar curso</option>
+            <option value="">Seleccionar curso 📚</option>
             {cursos.map((curso) => (
               <option key={curso.course_id} value={curso.course_id.toString()}>
                 {curso.courseName}
@@ -289,16 +289,13 @@ const ListStudents: React.FC = () => {
           </select>
         </div>
 
-        <div className="overflow-x-auto">
-          <table
-            id="student-table"
-            className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark"
-          >
-            <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
+        <div className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+          <table id="student-table" className="min-w-full bg-white dark:bg-gray-800">
+            <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
               <tr>
-                <th className="py-2 px-4 text-left">Foto</th>
-                <th className="py-2 px-4 text-center">Nombre Estudiante</th>
-                <th className="py-2 px-4 text-center">Carnet</th>
+                <th className="py-3 px-4 text-left rounded-tl-xl">Foto</th>
+                <th className="py-3 px-4 text-center">Nombre Estudiante</th>
+                <th className="py-3 px-4 text-center rounded-tr-xl">Carnet</th>
               </tr>
             </thead>
             <tbody>
@@ -307,22 +304,23 @@ const ListStudents: React.FC = () => {
                   <tr
                     key={est.id}
                     onClick={() => handleStudentClick(est)}
-                    className="border-t border-gray-200 dark:border-strokedark cursor-pointer hover:bg-gray-100 dark:hover:bg-meta-4 relative group"
+                    className="border-t border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 group"
                   >
-                    <td className="py-2 px-4 text-center">{renderProfilePhoto(est.fotoPerfil, est.userName)}</td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white relative group">
+                    <td className="py-3 px-4 text-center">{renderProfilePhoto(est.fotoPerfil, est.userName)}</td>
+                    <td className="py-3 px-4 text-center text-gray-900 dark:text-white relative">
                       {est.userName}
-                      <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded-lg px-1 py-1 -top-10 left-[60%] transform -translate-x-1/2 w-40 dark:bg-white dark:text-gray-800">
-                        Ir Hacia TimeLine Estudiante
+                      <div className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded-md px-2 py-1 -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap dark:bg-gray-200 dark:text-gray-800 shadow-md">
+                        Ir Hacia TimeLine Estudiante ➡️
                       </div>
                     </td>
-                    <td className="py-2 px-4 text-center">{est.carnet}</td>
+                    <td className="py-3 px-4 text-center text-gray-700 dark:text-gray-300">{est.carnet}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-2 px-4 text-center">
-                    No se encontraron estudiantes
+                  <td colSpan={3} className="py-8 text-center text-gray-500 dark:text-gray-400">
+                    <Users className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                    <p className="text-lg font-medium">No se encontraron estudiantes. 😔</p>
                   </td>
                 </tr>
               )}
@@ -331,35 +329,37 @@ const ListStudents: React.FC = () => {
         </div>
 
         {/* Pagination */}
-        <div id="pagination" className="mt-4 flex justify-center">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8592;
-          </button>
-          {getPageRange().map((page) => (
+        {totalPages > 1 && (
+          <div id="pagination" className="mt-8 flex justify-center items-center space-x-2">
             <button
-              key={page}
-              onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${
-                currentPage === page
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-              }`}
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
             >
-              {page}
+              <ChevronLeft className="h-5 w-5" />
             </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8594;
-          </button>
-        </div>
+            {getPageRange().map((page) => (
+              <button
+                key={page}
+                onClick={() => paginate(page)}
+                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${
+                  currentPage === page
+                    ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                    : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        )}
       </div>
     </>
   )

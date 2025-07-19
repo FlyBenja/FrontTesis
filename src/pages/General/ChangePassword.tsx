@@ -2,190 +2,224 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { FaLock } from "react-icons/fa"
 import { updatePassword } from "../../ts/General/UpdatePassword.ts"
+import { FaArrowLeft } from "react-icons/fa"
 import type React from "react"
 import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 import umgLogo from "../../images/Login/logo3.png"
 import ofiLogo from "../../images/Login/sistemas1_11zon.png"
 
-// Initialize SweetAlert with React content
 const MySwal = withReactContent(Swal)
 
-/**
- * Component for changing user password
- */
 const ChangePassword: React.FC = () => {
-  // State variables to handle the form data and loading status
   const navigate = useNavigate()
-  const [oldPassword, setOldPassword] = useState<string>("") // State for old password
-  const [newPassword, setNewPassword] = useState<string>("") // State for new password
-  const [confirmPassword, setConfirmPassword] = useState<string>("") // State for confirming new password
-  const [loading, setLoading] = useState<boolean>(false) // State for loading status
+  const [oldPassword, setOldPassword] = useState<string>("")
+  const [newPassword, setNewPassword] = useState<string>("")
+  const [confirmPassword, setConfirmPassword] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
 
-  /**
-   * Function to retrieve authentication token from localStorage
-   */
   const getAuthToken = (): string | null => {
     return localStorage.getItem("authToken")
   }
 
-  /**
-   * Handle form submission
-   * Validates passwords and submits the change request
-   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault() // Prevent default form submission behavior
-    setLoading(true) // Set loading to true while processing the form
+    e.preventDefault()
+    setLoading(true)
 
-    // Check if the new password and confirmation match
     if (newPassword !== confirmPassword) {
-      setLoading(false) // Reset loading state
+      setLoading(false)
       MySwal.fire({
         icon: "error",
-        title: "Contraseñas no coinciden", // Alert for mismatched passwords
+        title: "Contraseñas no coinciden",
         text: "Por favor, asegúrate de que la nueva contraseña y la confirmación sean idénticas.",
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#ef4444",
       })
       return
     }
 
     if (newPassword.length < 4) {
+      setLoading(false)
       Swal.fire({
         icon: "error",
         title: "Contraseña inválida",
         text: "La nueva contraseña debe tener al menos 4 caracteres.",
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#ef4444",
       })
       return
     }
 
-    // Retrieve auth token from localStorage
     const token = getAuthToken()
     if (!token) {
-      setLoading(false) // Reset loading state
+      setLoading(false)
       MySwal.fire({
         icon: "error",
-        title: "Autenticación requerida", // Alert for missing authentication token
+        title: "Autenticación requerida",
         text: "No se encontró un token de autenticación. Por favor, inicia sesión nuevamente.",
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#ef4444",
       })
       return
     }
 
     try {
-      // Call the updatePassword function to change the password
       const response: any = await updatePassword(oldPassword, newPassword)
-      const successMessage = response?.message || "Contraseña cambiada exitosamente." // Default success message
+      const successMessage = response?.message || "Contraseña cambiada exitosamente."
 
-      // Clear localStorage and redirect to the home page
       localStorage.clear()
-      setLoading(false) // Reset loading state
+      setLoading(false)
       MySwal.fire({
         icon: "success",
-        title: "Contraseña actualizada", // Alert for successful password change
+        title: "¡Contraseña actualizada!",
         text: successMessage,
-        confirmButtonColor: "#28a745",
+        confirmButtonColor: "#10b981",
       }).then(() => {
-        navigate("/") // Redirect to the homepage after success
+        navigate("/")
       })
     } catch (error: any) {
-      // Handle errors if the password change process fails
       const errorMessage =
         error?.message ||
         (error.response && error.response.data?.message) ||
-        "Ocurrió un error inesperado al intentar cambiar la contraseña." // Default error message
-
-      setLoading(false) // Reset loading state
+        "Ocurrió un error inesperado al intentar cambiar la contraseña."
+      setLoading(false)
       MySwal.fire({
         icon: "error",
-        title: "Error al cambiar la contraseña", // Alert for error during password change
+        title: "Error al cambiar la contraseña",
         text: errorMessage,
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#ef4444",
       })
     }
   }
 
-  // Prevent going back to the previous page using the browser's back button
   if (window.history && window.history.pushState) {
-    window.history.pushState(null, "", window.location.href) // Push the current URL to history
+    window.history.pushState(null, "", window.location.href)
     window.addEventListener("popstate", () => {
-      navigate("/") // Redirect to homepage if the user tries to go back
+      navigate("/")
     })
+  }
+
+  const handleGoBack = () => {
+    navigate(-1)
   }
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-no-repeat bg-cover"
-      style={{ backgroundImage: `url(${ofiLogo})` }} // Background image for the page
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: `url(${ofiLogo})` }}
     >
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <div className="mb-4 text-center">
-          <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-24 mx-auto" /> {/* Logo for the page */}
-          <h1 className="my-3 text-xl font-semibold text-gray-700">Cambia tu Contraseña</h1> {/* Page heading */}
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+
+      <div className="relative z-10 w-full max-w-md mx-4">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 dark:border-gray-700/50">
+          {/* Header */}
+          <div className="text-center mb-8">
+            {/* Back Button */}
+            <button
+              onClick={handleGoBack}
+              className="absolute top-6 left-6 flex items-center gap-2 text-gray-600 dark:text-gray-400 
+                                     hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm font-medium"
+            >
+              <FaArrowLeft className="w-4 h-4" />
+              Regresar
+            </button>
+            <div className="inline-block p-2 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl mb-4">
+              <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-20 h-auto" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Cambiar Contraseña</h1>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Actualiza tu contraseña de acceso</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Current Password */}
+            <div className="space-y-2">
+              <label htmlFor="oldPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                🔐 Contraseña Actual
+              </label>
+              <div className="relative">
+                <input
+                  id="oldPassword"
+                  type="password"
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-sm
+                             bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                             focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 focus:bg-white dark:focus:bg-gray-600
+                             transition-all duration-200 outline-none"
+                  placeholder="Ingresa tu contraseña actual"
+                  required
+                />
+                <div className="absolute inset-y-0 right-4 flex items-center text-gray-400">
+                  <FaLock className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+
+            {/* New Password */}
+            <div className="space-y-2">
+              <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                🆕 Nueva Contraseña
+              </label>
+              <div className="relative">
+                <input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-sm
+                             bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                             focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 focus:bg-white dark:focus:bg-gray-600
+                             transition-all duration-200 outline-none"
+                  placeholder="Ingresa tu nueva contraseña"
+                  required
+                />
+                <div className="absolute inset-y-0 right-4 flex items-center text-gray-400">
+                  <FaLock className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                ✅ Confirmar Contraseña
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-sm
+                             bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                             focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 focus:bg-white dark:focus:bg-gray-600
+                             transition-all duration-200 outline-none"
+                  placeholder="Confirma tu nueva contraseña"
+                  required
+                />
+                <div className="absolute inset-y-0 right-4 flex items-center text-gray-400">
+                  <FaLock className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700
+                         text-white font-medium rounded-xl transition-all duration-200 transform text-sm
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                         shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Cambiando contraseña...
+                </div>
+              ) : (
+                "🔄 Cambiar Contraseña"
+              )}
+            </button>
+          </form>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-1">
-            <label htmlFor="oldPassword" className="block text-sm font-medium text-gray-700">
-              Contraseña Actual {/* Label for old password field */}
-            </label>
-            <div className="relative">
-              <input
-                id="oldPassword"
-                type="password"
-                value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)} // Handle old password change
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Ingresa tu contraseña actual" // Placeholder text
-              />
-              <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-                <FaLock /> {/* Lock icon for password field */}
-              </span>
-            </div>
-          </div>
-          <div className="space-y-1">
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
-              Nueva Contraseña {/* Label for new password field */}
-            </label>
-            <div className="relative">
-              <input
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)} // Handle new password change
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Nueva contraseña" // Placeholder text
-              />
-              <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-                <FaLock /> {/* Lock icon for new password field */}
-              </span>
-            </div>
-          </div>
-          <div className="space-y-1">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-              Confirmar Contraseña {/* Label for confirm password field */}
-            </label>
-            <div className="relative">
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)} // Handle confirm password change
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Confirmar nueva contraseña" // Placeholder text
-              />
-              <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-                <FaLock /> {/* Lock icon for confirm password field */}
-              </span>
-            </div>
-          </div>
-          <button
-            type="submit"
-            className={`w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 ${loading ? "cursor-not-allowed opacity-50" : ""}`}
-            disabled={loading} // Disable button if loading
-          >
-            {loading ? "Cargando..." : "Cambiar Contraseña"} {/* Button text based on loading state */}
-          </button>
-        </form>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { FaEnvelope } from "react-icons/fa"
+import { FaEnvelope, FaArrowLeft } from "react-icons/fa"
 import { recuperaContraCorreo } from "../../ts/General/RecoverAgainstMail"
 import type React from "react"
 import Swal from "sweetalert2"
@@ -8,131 +8,137 @@ import withReactContent from "sweetalert2-react-content"
 import umgLogo from "../../images/Login/logo3.png"
 import ofiLogo from "../../images/Login/sistemas1_11zon.png"
 
-// Initialize SweetAlert with React content
 const MySwal = withReactContent(Swal)
 
-/**
- * Component for password recovery via email
- */
 const RecoverPassword: React.FC = () => {
-  // State variables to handle the form data and loading status
   const navigate = useNavigate()
-  const [email, setEmail] = useState<string>("") // State for email
-  const [loading, setLoading] = useState<boolean>(false) // State for loading status
+  const [email, setEmail] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
 
-  /**
-   * Function to validate the email format
-   */
   const validateEmail = (email: string) => {
-    // Regular expression to validate email format and domain
     const emailRegex = /^[a-zA-Z0-9._%+-]+@miumg\.edu\.gt$/
     return emailRegex.test(email)
   }
 
-  /**
-   * Handle form submission
-   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault() // Prevent default form submission behavior
+    e.preventDefault()
 
-    // Validate the email before proceeding
     if (!validateEmail(email)) {
       MySwal.fire({
         icon: "error",
-        title: "Correo no válido", // Alert for invalid email
+        title: "Correo no válido",
         text: "Por favor, ingresa un correo electrónico válido con el dominio @miumg.edu.gt",
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#ef4444",
       })
       return
     }
 
-    setLoading(true) // Set loading to true while processing the form
-
+    setLoading(true)
     try {
-      // API call to send recovery email
-      const successMessage = await recuperaContraCorreo(email) // API call
-
-      setLoading(false) // Reset loading state
+      const successMessage = await recuperaContraCorreo(email)
+      setLoading(false)
       MySwal.fire({
         icon: "success",
-        title: "Correo enviado", // Alert for successful email sending
-        text: successMessage, // Use success message from API
-        confirmButtonColor: "#28a745",
+        title: "¡Correo enviado!",
+        text: successMessage,
+        confirmButtonColor: "#10b981",
       }).then(() => {
-        navigate(-1) // Redirect to homepage after success
+        navigate(-1)
       })
     } catch (error: any) {
-      // Handle errors if the email submission fails
       const errorMessage =
         error?.message ||
         (error.response && error.response.data?.message) ||
-        "Ocurrió un error inesperado al intentar recuperar la contraseña." // Default error message
-
-      setLoading(false) // Reset loading state
+        "Ocurrió un error inesperado al intentar recuperar la contraseña."
+      setLoading(false)
       MySwal.fire({
         icon: "error",
-        title: "Error al recuperar contraseña", // Alert for error during password recovery
+        title: "Error al recuperar contraseña",
         text: errorMessage,
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#ef4444",
       })
     }
   }
 
-  /**
-   * Handle the "Regresar" button action
-   */
   const handleGoBack = () => {
-    navigate(-1) // Go back to the previous page
+    navigate(-1)
   }
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-no-repeat bg-cover"
-      style={{ backgroundImage: `url(${ofiLogo})` }} // Background image for the page
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: `url(${ofiLogo})` }}
     >
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md relative">
-        {/* "Regresar" button inside the logo container */}
-        <button
-          onClick={handleGoBack} // Navigate back when the button is clicked
-          className="absolute top-4 left-4 text-blue-600 font-medium hover:text-blue-800"
-        >
-          <span className="mr-2">←</span>Regresar
-        </button>
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
 
-        <div className="mb-4 text-center">
-          <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-24 mx-auto" /> {/* Logo for the page */}
-          <h1 className="my-3 text-xl font-semibold text-gray-700">Recuperar Contraseña</h1> {/* Page heading */}
-          <p className="mt-4 text-sm text-gray-600 text-center">
-            Al momento de enviar al correo electrónico se enviará una nueva contraseña temporal.
-          </p>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-1">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Correo Electrónico {/* Label for email field */}
-            </label>
-            <div className="relative">
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)} // Handle email change
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Ingresa tu correo electrónico" // Placeholder text
-              />
-              <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-                <FaEnvelope /> {/* Envelope icon for email field */}
-              </span>
-            </div>
-          </div>
+      <div className="relative z-10 w-full max-w-md mx-4">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 dark:border-gray-700/50">
+          {/* Back Button */}
           <button
-            type="submit"
-            className={`w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 ${loading ? "cursor-not-allowed opacity-50" : ""}`}
-            disabled={loading} // Disable button if loading
+            onClick={handleGoBack}
+            className="absolute top-6 left-6 flex items-center gap-2 text-gray-600 dark:text-gray-400 
+                       hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 text-sm font-medium"
           >
-            {loading ? "Enviando..." : "Enviar"} {/* Button text based on loading state */}
+            <FaArrowLeft className="w-4 h-4" />
+            Regresar
           </button>
-        </form>
+
+          {/* Header */}
+          <div className="text-center mb-8 mt-8">
+            <div className="inline-block p-2 bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl mb-4">
+              <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-20 h-auto" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Recuperar Contraseña</h1>
+            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+              Al enviar el correo electrónico se enviará una nueva contraseña temporal a tu cuenta.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                📧 Correo Electrónico
+              </label>
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-sm
+                             bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
+                             focus:border-green-500 focus:ring-4 focus:ring-green-500/20 focus:bg-white dark:focus:bg-gray-600
+                             transition-all duration-200 outline-none"
+                  placeholder="tu.correo@miumg.edu.gt"
+                  required
+                />
+                <div className="absolute inset-y-0 right-4 flex items-center text-gray-400">
+                  <FaEnvelope className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700
+                         text-white font-medium rounded-xl transition-all duration-200 transform text-sm
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                         shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-500/20"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Enviando...
+                </div>
+              ) : (
+                "📤 Enviar Contraseña"
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )

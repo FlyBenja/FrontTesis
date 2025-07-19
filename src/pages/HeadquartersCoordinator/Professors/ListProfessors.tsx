@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react"
 import { getDatosPerfil } from "../../../ts/General/GetProfileData"
 import { getCatedraticos } from "../../../ts/HeadquartersCoordinator/GetProfessor"
-import { activaUsuario } from "../../../ts/General/ActivateUser"
+import { activaUsuario } from "../../../ts/HeadquartersCoordinator/ActivateProfessor"
 import type React from "react"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import ActivaCatedraticos from "../../../components/Switchers/ActiveProfessors"
 import Swal from "sweetalert2"
 import BusquedaCatedratico from "../../../components/Searches/SearchProfessor"
 import TourProfessors from "../../../components/Tours/HeadquartersCoordinator/TourProfessors"
+import { ChevronLeft, ChevronRight, UserX } from "lucide-react" // Import Lucide React icons
 
 /**
  * Interface to define the structure of a professor's data
@@ -22,78 +23,56 @@ interface Professor {
 }
 
 const ListProfessors: React.FC = () => {
-  // State hooks for managing various aspects of the component
-  const [professors, setProfessors] = useState<Professor[]>([]) // List of professors
-  const [currentPage, setCurrentPage] = useState(1) // Current page number for pagination
-  const [professorsPerPage, setProfessorsPerPage] = useState(5) // Number of professors per page for pagination
-  const [maxPageButtons, setMaxPageButtons] = useState(10) // Maximum number of page buttons to display in pagination
+  const [professors, setProfessors] = useState<Professor[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [professorsPerPage, setProfessorsPerPage] = useState(5)
+  const [maxPageButtons, setMaxPageButtons] = useState(10)
 
-  /**
-   * Effect hook to handle window resize and adjust page settings accordingly
-   */
   useEffect(() => {
     const handleResize = () => {
-      // If screen width is less than 768px, display 8 items per page and 5 page buttons
       if (window.innerWidth < 768) {
         setProfessorsPerPage(8)
         setMaxPageButtons(5)
       } else {
-        // Otherwise, display 5 items per page and 10 page buttons
         setProfessorsPerPage(10)
         setMaxPageButtons(10)
       }
     }
-
-    handleResize() // Call it once on mount to set the initial values
-    window.addEventListener("resize", handleResize) // Add resize event listener to handle changes
-
-    return () => window.removeEventListener("resize", handleResize) // Clean up the event listener on unmount
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  /**
-   * Effect hook to fetch the profile data and professors data when the component is mounted
-   */
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const profile = await getDatosPerfil() // Fetch profile data
+        const profile = await getDatosPerfil()
         if (profile.sede) {
-          fetchProfessors(profile.sede) // If profile has 'sede', fetch the professors for that sede
+          fetchProfessors(profile.sede)
         }
       } catch {
-        setProfessors([]) // If there's an error, set empty list of professors
+        setProfessors([])
       }
     }
-
-    fetchProfile() // Call the fetchProfile function
+    fetchProfile()
   }, [])
 
-  /**
-   * Function to fetch the list of professors based on the sede ID
-   */
   const fetchProfessors = async (headquartersId: number) => {
     try {
-      const retrievedProfessors = await getCatedraticos(headquartersId) // Fetch professors based on the sede ID
-      setProfessors(Array.isArray(retrievedProfessors) ? retrievedProfessors : []) // Update the state if the response is an array
+      const retrievedProfessors = await getCatedraticos(headquartersId)
+      setProfessors(Array.isArray(retrievedProfessors) ? retrievedProfessors : [])
     } catch {
-      setProfessors([]) // If there's an error, set empty list of professors
+      setProfessors([])
     }
   }
 
-  /**
-   * Handle search results from the SearchProfessor component
-   */
   const handleSearchResults = (results: Professor[]) => {
     setProfessors(results)
-    setCurrentPage(1) // Reset to first page when search results change
+    setCurrentPage(1)
   }
 
-  /**
-   * Function to handle the activation/deactivation of a professor
-   */
   const handleActiveChange = async (userId: number, newStatus: boolean) => {
     if (!newStatus) {
-      // If deactivating a professor, show confirmation alert
       const result = await Swal.fire({
         title: "¿Estás seguro?",
         text: "Este catedrático no podrá iniciar sesión, ¿aún deseas desactivarlo?",
@@ -104,109 +83,102 @@ const ListProfessors: React.FC = () => {
         confirmButtonColor: "#28a745",
         cancelButtonColor: "#d33",
       })
-
       if (!result.isConfirmed) {
-        return // If user cancels, do nothing
+        return
       }
     }
-
-    // Update the professor's active status in the state
     const updatedProfessors = professors.map((prof) =>
       prof.user_id === userId ? { ...prof, active: newStatus } : prof,
     )
     setProfessors(updatedProfessors)
-
     try {
-      await activaUsuario(userId, newStatus) // Call the API to update the professor's status
+      await activaUsuario(userId, newStatus)
+      Swal.fire({
+        icon: "success",
+        title: "Estado Actualizado",
+        text: `El catedrático ha sido ${newStatus ? "activado" : "desactivado"} correctamente.`,
+        confirmButtonColor: "#28a745",
+      })
     } catch {
-      setProfessors((prev) => prev.map((prof) => (prof.user_id === userId ? { ...prof, active: !newStatus } : prof))) // If there's an error, revert the professor's status in the state
+      setProfessors((prev) => prev.map((prof) => (prof.user_id === userId ? { ...prof, active: !newStatus } : prof)))
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al actualizar el estado del catedrático.",
+        confirmButtonColor: "#d33",
+      })
     }
   }
 
-  // Pagination calculations
-  const indexOfLastProfessor = currentPage * professorsPerPage // Index of the last professor on the current page
-  const indexOfFirstProfessor = indexOfLastProfessor - professorsPerPage // Index of the first professor on the current page
-  const currentProfessors = professors.slice(indexOfFirstProfessor, indexOfLastProfessor) // Slice the professors list based on the current page and page size
-
-  // Total number of pages required for pagination
+  const indexOfLastProfessor = currentPage * professorsPerPage
+  const indexOfFirstProfessor = indexOfLastProfessor - professorsPerPage
+  const currentProfessors = professors.slice(indexOfFirstProfessor, indexOfLastProfessor)
   const totalPages = Math.ceil(professors.length / professorsPerPage)
 
-  /**
-   * Function to handle pagination (navigate to a specific page)
-   */
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber) // Set the current page
+      setCurrentPage(pageNumber)
     }
   }
 
-  /**
-   * Function to render the profile photo of the professor
-   */
   const renderProfilePhoto = (profilePhoto: string | null, userName: string) =>
     profilePhoto ? (
-      <img src={profilePhoto || "/placeholder.svg"} alt={userName} className="w-10 h-10 rounded-full" />
+      <img
+        src={profilePhoto || "/placeholder.svg"}
+        alt={userName}
+        className="w-10 h-10 rounded-full object-cover border-2 border-blue-400 shadow-sm"
+      />
     ) : (
-      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white">
+      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg shadow-md">
         {userName.charAt(0).toUpperCase()}
       </div>
     )
 
-  /**
-   * Function to get the page range for pagination buttons
-   */
   const getPageRange = () => {
-    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2)) // Calculate the start page
-    const end = Math.min(totalPages, start + maxPageButtons - 1) // Calculate the end page
-
+    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
+    const end = Math.min(totalPages, start + maxPageButtons - 1)
     if (end - start + 1 < maxPageButtons) {
-      start = Math.max(1, end - maxPageButtons + 1) // Adjust start page if the range is less than the max page buttons
+      start = Math.max(1, end - maxPageButtons + 1)
     }
-
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i) // Return the page numbers as an array
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
   }
 
   return (
     <>
-      <Breadcrumb pageName="Listar Catedráticos" />
-      <div className="mx-auto max-w-5xl px-1 py-1">
-        <div className="flex justify-between items-center w-full">
-          <div className="flex items-center space-x-2">
+      <Breadcrumb pageName="Listar Catedráticos 🧑‍🏫" />
+      <div className="mx-auto max-w-6xl px-4 py-6">
+        <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
+          <div className="flex-grow w-full md:w-auto">
             <BusquedaCatedratico onSearchResults={handleSearchResults} />
           </div>
-
-          {/* Help tour button */}
           <div className="flex items-center">
             <TourProfessors />
           </div>
         </div>
-
-        <div className="overflow-x-auto">
-          <table
-            id="professors-table"
-            className="min-w-full bg-white border rounded-lg dark:bg-boxdark dark:border-strokedark"
-          >
-            <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
+        <div className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+          <table id="professors-table" className="min-w-full bg-white dark:bg-gray-800">
+            <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
               <tr>
-                <th className="py-2 px-4 text-left">Foto</th>
-                <th className="py-2 px-4 text-center">Nombre</th>
-                <th className="py-2 px-4 text-center">Código</th>
-                <th className="py-2 px-4 text-right">Activo</th>
+                <th className="py-3 px-4 text-left rounded-tl-xl">Foto</th>
+                <th className="py-3 px-4 text-center">Nombre</th>
+                <th className="py-3 px-4 text-center">Código</th>
+                <th className="py-3 px-4 text-right rounded-tr-xl">Activo</th>
               </tr>
             </thead>
             <tbody>
               {currentProfessors.length > 0 ? (
                 currentProfessors.map((prof) => (
-                  <tr key={prof.user_id} className="border-t border-gray-200 dark:border-strokedark">
-                    <td className="py-2 px-4 text-center">
-                      {renderProfilePhoto(prof.profilePhoto, prof.userName)} {/* Render professor's photo */}
-                    </td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{prof.userName}</td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white">{prof.professorCode}</td>
-                    <td className="py-2 px-4 flex justify-end" id="active-switcher">
+                  <tr
+                    key={prof.user_id}
+                    className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    <td className="py-3 px-4 text-center">{renderProfilePhoto(prof.profilePhoto, prof.userName)}</td>
+                    <td className="py-3 px-4 text-center text-gray-900 dark:text-white">{prof.userName}</td>
+                    <td className="py-3 px-4 text-center text-gray-700 dark:text-gray-300">{prof.professorCode}</td>
+                    <td className="py-3 px-4 flex justify-end" id="active-switcher">
                       <ActivaCatedraticos
                         enabled={prof.active}
-                        onChange={() => handleActiveChange(prof.user_id, !prof.active)} // Toggle professor's active status
+                        onChange={() => handleActiveChange(prof.user_id, !prof.active)}
                         uniqueId={prof.user_id.toString()}
                       />
                     </td>
@@ -214,8 +186,9 @@ const ListProfessors: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="py-4 text-center text-gray-500 dark:text-gray-400">
-                    No se encontraron catedráticos.
+                  <td colSpan={4} className="py-8 text-center text-gray-500 dark:text-gray-400">
+                    <UserX className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                    <p className="text-lg font-medium">No se encontraron catedráticos. 😔</p>
                   </td>
                 </tr>
               )}
@@ -223,24 +196,23 @@ const ListProfessors: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        {professors.length > professorsPerPage && (
-          <div id="pagination" className="mt-4 flex justify-center">
+        {totalPages > 1 && (
+          <div id="pagination" className="mt-8 flex justify-center items-center space-x-2">
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+              className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
             >
-              &#8592;
+              <ChevronLeft className="h-5 w-5" />
             </button>
             {getPageRange().map((page) => (
               <button
                 key={page}
                 onClick={() => paginate(page)}
-                className={`mx-1 px-3 py-1 rounded-md border ${
+                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${
                   currentPage === page
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
+                    ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                    : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
                 }`}
               >
                 {page}
@@ -249,9 +221,9 @@ const ListProfessors: React.FC = () => {
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
+              className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
             >
-              &#8594;
+              <ChevronRight className="h-5 w-5" />
             </button>
           </div>
         )}

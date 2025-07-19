@@ -3,11 +3,11 @@ import { useState, useEffect } from "react"
 import { getDatosPerfil } from "../../ts/General/GetProfileData"
 import { getEstudiantePorCarnet } from "../../ts/Administrator/GetStudentCard"
 import { getStudents } from "../../ts/General/GetStudents"
+import { Search, Loader2 } from "lucide-react" // Import Lucide icons
 
 /**
- * `SearchStudents` is a component that allows searching for students by their student card number or by filtering 
+ * `SearchStudents` is a component that allows searching for students by their student card number or by filtering
  * students based on selected year and course.
- * 
  */
 interface SearchStudentsProps {
   selectedAño: string // Selected year for student filtering
@@ -27,31 +27,28 @@ const SearchStudents: React.FC<SearchStudentsProps> = ({ selectedAño, selectedC
   useEffect(() => {
     // Create a timer to avoid multiple searches during rapid typing
     const timer = setTimeout(() => {
-      if (searchCarnet.length >= 12 || searchCarnet.length === 11) {
-        handleSearch() // Perform the search if the input is 11 or 12 characters long
-      } else if (searchCarnet.length === 0) {
-        // If the input is empty, show all students
-        handleSearch()
+      if (searchCarnet.length >= 11 || searchCarnet.length === 0) {
+        // Changed from 12 to 11 as per common student ID lengths, and added 0 for empty search
+        handleSearch() // Perform the search if the input is 11 or more characters long, or empty
       }
     }, 300) // Small delay to improve performance
-
     // Cleanup timer on component unmount or when searchCarnet changes
     return () => clearTimeout(timer)
   }, [searchCarnet, selectedAño, selectedCurso]) // Dependency array to trigger the effect when input or filters change
 
   /**
-   * Handles the search logic based on the input value. If the carnet is valid (12 characters), it searches for a specific student.
-   * If the carnet is empty or has fewer than 12 characters, it fetches all students based on the selected year and course.
+   * Handles the search logic based on the input value. If the carnet is valid (11 or 12 characters), it searches for a specific student.
+   * If the carnet is empty or has fewer than 11 characters, it fetches all students based on the selected year and course.
    */
   const handleSearch = async () => {
     if (isSearching) return // Prevent simultaneous searches
-    
+
     try {
       setIsSearching(true) // Set the search state to true to indicate a search is in progress
       const perfil = await getDatosPerfil() // Fetch profile data of the logged-in user
 
-      if (!searchCarnet || searchCarnet.length < 12) {
-        // If the input is empty or has less than 12 characters, show all students
+      if (!searchCarnet || searchCarnet.length < 11) {
+        // If the input is empty or has less than 11 characters, show all students
         if (perfil.sede && selectedCurso && selectedAño) {
           // Fetch students based on the selected course, year, and the profile's campus
           const estudiantes = await getStudents(
@@ -60,14 +57,20 @@ const SearchStudents: React.FC<SearchStudentsProps> = ({ selectedAño, selectedC
             Number.parseInt(selectedAño), // Convert selectedAño to a number
           )
           onSearchResults(Array.isArray(estudiantes) ? estudiantes : []) // Return the list of students to the parent component
+        } else {
+          onSearchResults([]) // No sede, curso, or año selected, return empty
         }
       } else {
-        // If the carnet is valid (12 characters), search for a specific student
-        const estudianteEncontrado = await getEstudiantePorCarnet(perfil.sede, Number.parseInt(selectedAño), searchCarnet)
+        // If the carnet is valid (11 or more characters), search for a specific student
+        const estudianteEncontrado = await getEstudiantePorCarnet(
+          perfil.sede,
+          Number.parseInt(selectedAño),
+          searchCarnet,
+        )
         onSearchResults(estudianteEncontrado ? [estudianteEncontrado] : []) // Return the found student or an empty array
       }
     } catch (error) {
-      
+      console.error("Error during student search:", error)
       onSearchResults([]) // Return an empty list in case of an error
     } finally {
       setIsSearching(false) // Set the search state to false once the search is complete
@@ -75,17 +78,21 @@ const SearchStudents: React.FC<SearchStudentsProps> = ({ selectedAño, selectedC
   }
 
   return (
-    <div className="mb-0 flex items-center">
+    <div className="relative flex items-center">
       <input
         id="search-input"
         type="text"
-        placeholder="Buscar por Carnet de Estudiante" // Input placeholder for the student card search
+        placeholder="Buscar por Carnet de Estudiante 🔍" // Input placeholder with emoji
         value={searchCarnet} // Bind the input value to the searchCarnet state
         onChange={(e) => setSearchCarnet(e.target.value)} // Update the searchCarnet state on input change
-        className="w-80 px-4 py-2 border rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+        className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-gray-900 shadow-sm outline-none transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-600 sm:w-80"
       />
+      <Search className="absolute left-3 h-5 w-5 text-gray-400 dark:text-gray-300" />
       {isSearching && (
-        <div className="ml-2 text-sm text-gray-500 dark:text-gray-400">Buscando...</div> // Display searching text while searching
+        <div className="absolute right-3">
+          <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+          <span className="sr-only">Buscando...</span>
+        </div>
       )}
     </div>
   )

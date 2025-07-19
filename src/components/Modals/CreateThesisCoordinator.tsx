@@ -1,36 +1,36 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import Swal from "sweetalert2"
-import { creaRevisor } from "../../ts/ThesisCoordinatorandReviewer/CreateReviewers"
-import { updateRevisor } from "../../ts/ThesisCoordinatorandReviewer/UpdateReviewers"
+import { createThesisCoordinator } from "../../ts/GeneralCoordinator/CreateThesisCoordinator"
+import { updateThesisCoordinator } from "../../ts/GeneralCoordinator/UpdateThesisCoordinator"
 
-interface CreateReviewerProps {
+interface CreateThesisCoordinatorModalProps {
   onClose: () => void
-  revisor?: any | null
+  coordinator?: any | null
 }
 
-const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => {
+const CreateThesisCoordinatorModal: React.FC<CreateThesisCoordinatorModalProps> = ({ onClose, coordinator }) => {
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
-  const [carnet, setCarnet] = useState("")
+  const [Código, setCódigo] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (revisor) {
-      setEmail(revisor.email || "")
-      setName(revisor.name || "")
-      setCarnet(revisor.carnet || "")
+    if (coordinator) {
+      setEmail(coordinator.email || "")
+      setName(coordinator.name || "")
+      setCódigo(coordinator.Código || "")
     } else {
       setEmail("")
       setName("")
-      setCarnet("")
+      setCódigo("")
     }
-  }, [revisor])
+  }, [coordinator])
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!email || !name || !carnet) {
+    if (!email || !name || !Código) {
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -42,15 +42,15 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
 
     setIsLoading(true)
     try {
-      if (revisor) {
-        await updateRevisor(revisor.user_id, { email, name, codigo: carnet })
+      if (coordinator) {
+        await updateThesisCoordinator(coordinator.user_id, name, email, Código)
       } else {
-        await creaRevisor({ email, name, codigo: carnet })
+        await createThesisCoordinator(name, email, Código)
       }
 
       Swal.fire({
         title: "¡Éxito!",
-        text: `Revisor ${revisor ? "actualizado" : "creado"} correctamente`,
+        text: `Coordinador ${coordinator ? "actualizado" : "creado"} correctamente`,
         icon: "success",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#10b981",
@@ -85,10 +85,10 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
             </svg>
           </div>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
-            {revisor ? "Editar Revisor" : "Crear Revisor"}
+            {coordinator ? "Editar Coordinador de Tesis" : "Crear Coordinador de Tesis"}
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {revisor ? "Actualiza la información del revisor" : "Ingresa los datos del nuevo revisor"}
+            {coordinator ? "Actualiza la información del coordinador de tesis" : "Ingresa los datos del nuevo coordinador de tesis"}
           </p>
         </div>
 
@@ -112,16 +112,16 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">🎫 Carnet</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">🎫 Código</label>
               <input
                 type="text"
-                value={carnet}
-                onChange={(e) => setCarnet(e.target.value)}
+                value={Código}
+                onChange={(e) => setCódigo(e.target.value)}
                 className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
                            bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
                            focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-gray-600
                            transition-all duration-200 outline-none"
-                placeholder="Carnet del revisor"
+                placeholder="Código del coordinador"
                 required
               />
             </div>
@@ -139,7 +139,7 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
                          bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
                          focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-gray-600
                          transition-all duration-200 outline-none"
-              placeholder="Nombre completo del revisor"
+              placeholder="Nombre completo del coordinador"
               required
             />
           </div>
@@ -168,10 +168,10 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   Cargando...
                 </div>
-              ) : revisor ? (
+              ) : coordinator ? (
                 "Actualizar"
               ) : (
-                "Crear Revisor"
+                "Crear Coordinador"
               )}
             </button>
           </div>
@@ -181,4 +181,4 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
   )
 }
 
-export default CreateReviewer
+export default CreateThesisCoordinatorModal

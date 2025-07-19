@@ -6,86 +6,62 @@ import { getTareasEstudiante, type TareaEstudiante } from "../../../ts/Students/
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import Swal from "sweetalert2"
 import AyudaTareasEstudiante from "../../../components/Tours/Administrator/StudentTasksTour"
+import { ArrowLeft, FileText, BookOpen, Clock, CalendarDays, XCircle } from "lucide-react" // Import Lucide React icons
 
 const TasksStudent: React.FC = () => {
-  // React Router hooks to navigate and get the current location
   const navigate = useNavigate()
   const location = useLocation()
-
-  // State hooks to store tasks data and student data
-  const [tareas, setTareas] = useState<Tarea[]>([]) // Tasks for the current sede
-  const [sedeId, setSedeId] = useState<number | null>(null) // Sede ID for the current session
-  const [tareasEstudiante, setTareasEstudiante] = useState<TareaEstudiante[]>([]) // Tasks for the specific student
-
-  // Destructuring student and year from location state
+  const [tareas, setTareas] = useState<Tarea[]>([])
+  const [sedeId, setSedeId] = useState<number | null>(null)
+  const [tareasEstudiante, setTareasEstudiante] = useState<TareaEstudiante[]>([])
   const { estudiante, selectedAño } = location.state || {}
 
-  /**
-   * Fetch profile data to get the current headquarters ID
-   */
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        // Obtener la sede-id desde localStorage en lugar de la API
         const selectedSedeId = Number(localStorage.getItem("selectedSedeId"))
-        setSedeId(selectedSedeId) // Set the headquarters ID in state
-      } catch (err) { }
+        setSedeId(selectedSedeId)
+      } catch (err) {}
     }
-
     fetchProfileData()
-  }, []) // This effect runs once when the component mounts
+  }, [])
 
-  /**
-   * Fetch tasks for the specific headquarters and selected year
-   */
   useEffect(() => {
     const fetchTasks = async () => {
       if (sedeId !== null && selectedAño) {
         try {
-          const retrievedTasks = await getTareasSede(sedeId, selectedAño) // Fetch tasks for the headquarters and year
-          setTareas(retrievedTasks) // Set tasks in state
-        } catch (err) { }
+          const retrievedTasks = await getTareasSede(sedeId, selectedAño)
+          setTareas(retrievedTasks)
+        } catch (err) {}
       }
     }
-
     fetchTasks()
-  }, [sedeId, selectedAño]) // This effect runs when either sedeId or selectedAño changes
+  }, [sedeId, selectedAño])
 
-  /**
-   * Fetch tasks specific to the student
-   */
   useEffect(() => {
     const fetchStudentTasks = async () => {
       if (estudiante && selectedAño && sedeId !== null) {
-        const studentTasksData = await getTareasEstudiante(estudiante.id, selectedAño, sedeId) // Fetch tasks for the student
-        setTareasEstudiante(studentTasksData) // Set student tasks in state
+        const studentTasksData = await getTareasEstudiante(estudiante.id, selectedAño, sedeId)
+        setTareasEstudiante(studentTasksData)
       }
     }
-
     fetchStudentTasks()
-  }, [estudiante, selectedAño, sedeId]) // This effect runs when student, year, or sedeId changes
+  }, [estudiante, selectedAño, sedeId])
 
-  // Sort the tasks with typeTask_id of 1 first
   const sortedTasks = tareas.sort((a, b) => {
     if (a.typeTask_id === 1 && b.typeTask_id !== 1) {
-      return -1 // Place tasks with typeTask_id 1 before others
+      return -1
     }
     if (a.typeTask_id !== 1 && b.typeTask_id === 1) {
-      return 1 // Place tasks with typeTask_id 1 before others
+      return 1
     }
-    return 0 // Keep the order the same for tasks with the same typeTask_id
+    return 0
   })
 
-  /**
-   * Handle task navigation and validation before proceeding
-   */
   const handleNavigate = (task: Tarea) => {
-    // Find the student-specific task from studentTasks
     const studentTask = tareasEstudiante.find((t) => t.task_id === task.task_id)
 
-    // If task type is not 1, validate if it is submitted by the student
     if (studentTask && task.typeTask_id !== 1) {
-      // If task is not submitted, show a warning and prevent navigation
       if (!studentTask.submission_complete) {
         Swal.fire({
           icon: "warning",
@@ -100,21 +76,17 @@ const TasksStudent: React.FC = () => {
       }
     }
 
-    // Navigate based on task type
     if (task.typeTask_id === 1) {
       navigate("/coordinadorgeneral/propuestas", {
         state: { tarea: task, estudiante, selectedAño },
-      }) // Navigate to proposals if task type is 1
+      })
     } else {
       navigate("/coordinadorgeneral/capitulo", {
         state: { tarea: task, estudiante, selectedAño },
-      }) // Navigate to chapter if task type is not 1
+      })
     }
   }
 
-  /**
-   * Format date to dd/mm/yyyy format
-   */
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
     return `${date.getUTCDate().toString().padStart(2, "0")}/${(date.getUTCMonth() + 1)
@@ -122,9 +94,6 @@ const TasksStudent: React.FC = () => {
       .padStart(2, "0")}/${date.getUTCFullYear()}`
   }
 
-  /**
-   * Format time to 12-hour AM/PM format
-   */
   const formatTime24Hour = (timeStr: string) => {
     const [hours, minutes, seconds] = timeStr.split(":").map(Number)
     const amPm = hours < 12 ? "AM" : "PM"
@@ -135,84 +104,104 @@ const TasksStudent: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Tareas del Estudiante" />
-
-      <div className="mb-4 flex items-center justify-between sm:justify-start gap-4">
-        {/* Back button */}
+      <Breadcrumb pageName="Tareas del Estudiante 📝" />
+      <div className="mb-6 flex items-center justify-between sm:justify-start gap-4">
         <button
           id="back-button"
-          className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
+          className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
           onClick={() => navigate(-1)}
         >
-          <span className="mr-2">←</span> Regresar
+          <ArrowLeft className="h-5 w-5 mr-2" /> Regresar
         </button>
-
-        {/* Help tour button */}
         <AyudaTareasEstudiante />
       </div>
-      <div className="mx-auto max-w-5xl px-4 py-4">
-        {/* If no tasks are found, show a message */}
+      <div className="mx-auto max-w-6xl px-4 py-6">
         {sortedTasks.length === 0 ? (
-          <table className="min-w-full table-auto">
-            <tbody>
-              <tr>
-                <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
-                  No Se Encontrarón Tareas Creadas.
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center">
+            <XCircle className="h-20 w-20 mb-6 text-red-500" />
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              ¡No Se Encontraron Tareas Creadas! 😔
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Parece que no hay tareas asignadas para este estudiante en el año seleccionado.
+            </p>
+          </div>
         ) : (
           <>
-            {/* Display tasks with typeTask_id = 1 (Proposals) */}
-            <div id="proposals-section">
-              {" "}
-              {sortedTasks
-                .filter((task) => task.typeTask_id === 1)
-                .map((task) => (
-                  <div
-                    key={task.task_id}
-                    className="mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-blue-100 dark:bg-boxdark"
-                    onClick={() => handleNavigate(task)}
-                  >
-                    <h3 className="text-lg font-bold text-black dark:text-white">{task.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{task.description}</p>
-                    <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
-                      <p>
-                        Fecha/Hora de Inicio: {formatDate(task.taskStart)} - {formatTime24Hour(task.startTime)}
-                      </p>
-                      <p>
-                        Fecha/Hora Final: {formatDate(task.endTask)} - {formatTime24Hour(task.endTime)}
-                      </p>
+            <div id="proposals-section" className="mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                <FileText className="h-6 w-6 mr-3 text-blue-500" /> Propuestas
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sortedTasks
+                  .filter((task) => task.typeTask_id === 1)
+                  .map((task) => (
+                    <div
+                      key={task.task_id}
+                      className="p-6 rounded-2xl shadow-lg cursor-pointer bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-900 border border-blue-200 dark:border-gray-700 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                      onClick={() => handleNavigate(task)}
+                    >
+                      <h3 className="text-xl font-bold text-blue-800 dark:text-blue-300 mb-2">{task.title}</h3>
+                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">{task.description}</p>
+                      <div className="flex flex-col space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <p className="flex items-center">
+                          <CalendarDays className="h-4 w-4 mr-2 text-gray-500" />
+                          Inicio: {formatDate(task.taskStart)}
+                        </p>
+                        <p className="flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-gray-500" />
+                          Hora Inicio: {formatTime24Hour(task.startTime)}
+                        </p>
+                        <p className="flex items-center">
+                          <CalendarDays className="h-4 w-4 mr-2 text-gray-500" />
+                          Fin: {formatDate(task.endTask)}
+                        </p>
+                        <p className="flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-gray-500" />
+                          Hora Fin: {formatTime24Hour(task.endTime)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
             </div>
 
-            {/* Display tasks with typeTask_id !== 1 (Chapters) */}
             <div id="chapters-section">
-              {" "}
-              <h3 className="text-lg font-bold text-black dark:text-white mb-4">Capítulos</h3>
-              {sortedTasks
-                .filter((task) => task.typeTask_id !== 1)
-                .map((task) => (
-                  <div
-                    key={task.task_id}
-                    className="mb-6 p-4 rounded-lg shadow-md cursor-pointer bg-white dark:bg-boxdark"
-                    onClick={() => handleNavigate(task)}
-                  >
-                    <h3 className="text-lg font-bold text-black dark:text-white">{task.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{task.description}</p>
-                    <div className="mt-2 flex space-x-4 text-sm text-gray-500 dark:text-gray-300">
-                      <p>
-                        Fecha/Hora de Inicio: {formatDate(task.taskStart)} - {formatTime24Hour(task.startTime)}
-                      </p>
-                      <p>
-                        Fecha/Hora Final: {formatDate(task.endTask)} - {formatTime24Hour(task.endTime)}
-                      </p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                <BookOpen className="h-6 w-6 mr-3 text-green-500" /> Capítulos
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sortedTasks
+                  .filter((task) => task.typeTask_id !== 1)
+                  .map((task) => (
+                    <div
+                      key={task.task_id}
+                      className="p-6 rounded-2xl shadow-lg cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                      onClick={() => handleNavigate(task)}
+                    >
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{task.title}</h3>
+                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">{task.description}</p>
+                      <div className="flex flex-col space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <p className="flex items-center">
+                          <CalendarDays className="h-4 w-4 mr-2 text-gray-500" />
+                          Inicio: {formatDate(task.taskStart)}
+                        </p>
+                        <p className="flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-gray-500" />
+                          Hora Inicio: {formatTime24Hour(task.startTime)}
+                        </p>
+                        <p className="flex items-center">
+                          <CalendarDays className="h-4 w-4 mr-2 text-gray-500" />
+                          Fin: {formatDate(task.endTask)}
+                        </p>
+                        <p className="flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-gray-500" />
+                          Hora Fin: {formatTime24Hour(task.endTime)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
             </div>
           </>
         )}

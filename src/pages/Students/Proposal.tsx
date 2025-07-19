@@ -7,6 +7,7 @@ import { getPropuesta } from "../../ts/General/GetProposal"
 import { getTareasSede, type Tarea } from "../../ts/General/GetTasksHeadquarters"
 import Swal from "sweetalert2"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import { FileText, XCircle } from "lucide-react" // Import Lucide React icons
 
 /**
  * Component for uploading and managing thesis proposals
@@ -16,14 +17,17 @@ const Proposal: React.FC = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null) // State for storing the selected PDF file
   const [pdfUrl, setPdfUrl] = useState<string | null>(null) // State for storing the PDF URL (for preview)
   const [loading, setLoading] = useState(false) // State for managing the loading state during file upload
-  const [isButtonsDisabled, setIsButtonsDisabled] = useState(false) // State for disabling buttons when a proposal is approved
-  const [checkbox1Checked, setCheckbox1Checked] = useState(false) // State for controlling the first checkbox (Propuesta 1)
-  const [checkbox2Checked, setCheckbox2Checked] = useState(false) // State for controlling the second checkbox (Propuesta 2)
-  const [checkbox3Checked, setCheckbox3Checked] = useState(false) // State for controlling the third checkbox (Propuesta 3)
   const [approvalMessage, setApprovalMessage] = useState("Pendiente Aprobar") // State for the approval status message
   const [approvedProposal, setApprovedProposal] = useState<number>(0) // State for tracking the approval status of the proposal
   const [taskId, setTaskId] = useState<number | null>(null) // State for storing the task ID
   const [sedeId, setSedeId] = useState<number | null>(null) // State for storing the site ID (Sede)
+  const [noProposalUploaded, setNoProposalUploaded] = useState<boolean>(false) // Flag for no proposals uploaded
+
+  const propuestas = [
+    { id: 1, titulo: "Propuesta 1" },
+    { id: 2, titulo: "Propuesta 2" },
+    { id: 3, titulo: "Propuesta 3" },
+  ]
 
   /**
    * Effect hook to fetch initial data when the component mounts
@@ -35,17 +39,16 @@ const Proposal: React.FC = () => {
         const user_id = perfilData?.user_id // Extract user_id from profile data
         const sede = perfilData?.sede // Extract sede (site) from profile data
         setSedeId(sede) // Set the site ID state
-
         if (user_id) {
           fetchPropuesta(user_id) // Fetch proposal data if user_id exists
         } else {
           throw new Error("No se pudo obtener el ID del usuario.")
         }
       } catch (error: any) {
-        throw new Error("No se pudieron obtener los datos iniciales.")
+        console.error("Error fetching initial data:", error)
+        // Optionally show an alert for initial data fetch failure
       }
     }
-
     fetchInitialData()
   }, []) // Empty dependency array ensures this effect runs once when the component mounts
 
@@ -65,11 +68,11 @@ const Proposal: React.FC = () => {
             setTaskId(null) // Clear task ID if no task for proposal is found
           }
         } catch (error: any) {
+          console.error("Error fetching tasks:", error)
           setTaskId(null) // Clear task ID if an error occurs
         }
       }
     }
-
     fetchTareas()
   }, [sedeId]) // The effect depends on the sedeId, so it runs when sedeId changes
 
@@ -83,34 +86,29 @@ const Proposal: React.FC = () => {
         setPdfUrl(propuestaData.file_path) // Set the PDF URL for preview
         const approvalStatus = propuestaData.approved_proposal // Get the approval status of the proposal
         setApprovedProposal(approvalStatus) // Set the approval status
-
-        // Set checkbox states and approval message based on the approval status
+        setNoProposalUploaded(false)
+        // Set approval message based on the approval status
         if (approvalStatus === 0) {
           setApprovalMessage("Pendiente Aprobar")
-          setCheckbox1Checked(false)
-          setCheckbox2Checked(false)
-          setCheckbox3Checked(false)
         } else if (approvalStatus === 1) {
           setApprovalMessage("Propuesta 1 Aprobada")
-          setCheckbox1Checked(true)
-          setCheckbox2Checked(false)
-          setCheckbox3Checked(false)
         } else if (approvalStatus === 2) {
           setApprovalMessage("Propuesta 2 Aprobada")
-          setCheckbox1Checked(false)
-          setCheckbox2Checked(true)
-          setCheckbox3Checked(false)
         } else if (approvalStatus === 3) {
           setApprovalMessage("Propuesta 3 Aprobada")
-          setCheckbox1Checked(false)
-          setCheckbox2Checked(false)
-          setCheckbox3Checked(true)
         }
-
-        setIsButtonsDisabled(approvalStatus !== 0) // Disable buttons if the proposal is already approved
+      } else {
+        setPdfUrl(null)
+        setApprovedProposal(0)
+        setApprovalMessage("Pendiente Aprobar")
+        setNoProposalUploaded(true) // No proposal found
       }
     } catch (error) {
-      throw new Error("No se pudo obtener la propuesta.")
+      console.error("Error fetching proposal:", error)
+      setPdfUrl(null)
+      setApprovedProposal(0)
+      setApprovalMessage("Pendiente Aprobar")
+      setNoProposalUploaded(true) // Error fetching means no proposal found or accessible
     }
   }
 
@@ -151,18 +149,14 @@ const Proposal: React.FC = () => {
       })
       return
     }
-
     setLoading(true)
-
     try {
       const perfilData = await getDatosPerfil()
       const user_id = perfilData?.user_id
       if (!user_id) {
         throw new Error("No se pudo recuperar el ID del usuario.")
       }
-
       const propuestaExistente = await getPropuesta(user_id)
-
       if (propuestaExistente && propuestaExistente.approved_proposal === 0) {
         await updatePropuesta({
           file: pdfFile,
@@ -194,10 +188,9 @@ const Proposal: React.FC = () => {
           },
         })
       }
-
       setPdfFile(null)
       setPdfUrl(null)
-      fetchPropuesta(user_id)
+      fetchPropuesta(user_id) // Re-fetch to update status
     } catch (error: any) {
       Swal.fire({
         icon: "error",
@@ -225,68 +218,80 @@ const Proposal: React.FC = () => {
 
   return (
     <>
-      {taskId === null ? ( // Check if taskId is null, meaning there is no task for proposals
-        <div className="relative bg-gray-100 dark:bg-boxdark">
-          <div className="absolute top-50 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
-            <p className="text-xl text-black dark:text-white font-semibold">No Existe Tarea Para Subir Propuestas.</p>
+      <Breadcrumb pageName="Subir Propuesta 📄" /> {/* Breadcrumb navigation component */}
+      <div className="mx-auto max-w-6xl px-4 py-6">
+        {taskId === null || noProposalUploaded ? (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-6 flex flex-col items-center justify-center text-center">
+            <XCircle className="h-20 w-20 mb-6 text-red-500" />
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              {taskId === null ? "¡No Existe Tarea Para Subir Propuestas! 😔" : "¡No Has Subido Tu Propuesta Aún! 😔"}
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              {taskId === null
+                ? "Por favor, contacta a tu administrador para habilitar la tarea de propuestas."
+                : "Por favor, sube tu documento de propuesta para comenzar."}
+            </p>
           </div>
-        </div>
-      ) : (
-        <>
-          <Breadcrumb pageName="Propuesta" /> {/* Breadcrumb navigation component */}
-          <div className="max-w-7xl mx-auto p-0 space-y-8">
-            <div className="flex justify-center items-center space-x-8">
-              <div className="flex space-x-4">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 text-blue-600 focus:ring-blue-500"
-                    checked={checkbox1Checked}
-                    disabled
-                  />
-                  <span className="text-gray-800 dark:text-white">Propuesta 1</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 text-blue-600 focus:ring-blue-500"
-                    checked={checkbox2Checked}
-                    disabled
-                  />
-                  <span className="text-gray-800 dark:text-white">Propuesta 2</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 text-blue-600 focus:ring-blue-500"
-                    checked={checkbox3Checked}
-                    disabled
-                  />
-                  <span className="text-gray-800 dark:text-white">Propuesta 3</span>
-                </label>
+        ) : (
+          <>
+            {/* Section to display proposal status */}
+            <div id="proposal-status" className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                <FileText className="h-6 w-6 mr-3 text-blue-500" /> Estado de la Propuesta
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {propuestas.map((propuesta) => (
+                  <div
+                    key={propuesta.id}
+                    className={`flex items-center p-4 rounded-xl transition-all duration-300 border ${
+                      approvedProposal === propuesta.id
+                        ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-500"
+                        : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      checked={approvedProposal === propuesta.id}
+                      onChange={() => {}} // No action on change, only reflects status
+                      className="mr-2 cursor-default"
+                      disabled // Always disabled for student view
+                    />
+                    <label className="cursor-default">{propuesta.titulo}</label>
+                  </div>
+                ))}
               </div>
-              <span
-                className={
-                  approvalMessage.includes("Aprobada") ? "text-green-600 font-semibold" : "text-red-600 font-semibold"
-                }
-              >
-                {approvalMessage}
-              </span>
+              <div className="text-center">
+                <span
+                  className={`text-2xl font-semibold ${
+                    approvalMessage.includes("Aprobada") ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {approvalMessage}
+                </span>
+              </div>
             </div>
 
-            <div className="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
+            {/* Section to upload PDF */}
+            <div className="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800 mb-8">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Subir PDF de Propuesta</h2>
                 <button
                   onClick={handleDownloadTemplate}
-                  className={`px-4 py-2 rounded-lg text-white ${approvedProposal !== 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-gray-700"}`}
+                  className={`px-6 py-2 rounded-full text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                    approvedProposal !== 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                  }`}
                   disabled={approvedProposal !== 0} // Block if the proposal is approved
                 >
                   Descargar Plantilla
                 </button>
               </div>
-
-              <label className="flex flex-col items-center justify-center w-full h-32 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
+              <label
+                className={`flex flex-col items-center justify-center w-full h-32 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 transition-all ${
+                  approvedProposal !== 0
+                    ? "cursor-not-allowed opacity-70"
+                    : "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                }`}
+              >
                 <div className="flex flex-col items-center">
                   <svg
                     className="w-8 h-8 text-gray-500 dark:text-gray-300 mb-1"
@@ -312,7 +317,6 @@ const Proposal: React.FC = () => {
                   disabled={approvedProposal !== 0} // Block if the proposal is approved
                 />
               </label>
-
               {pdfFile && (
                 <div className="mt-4 flex justify-between items-center">
                   <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -320,30 +324,45 @@ const Proposal: React.FC = () => {
                   </p>
                 </div>
               )}
-
               <div className="flex justify-between items-center mt-4">
                 <button
                   onClick={handleUpload}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  disabled={isButtonsDisabled || loading || approvedProposal !== 0} // Block if the proposal is approved
+                  className={`w-full px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-300 ${
+                    approvedProposal !== 0 || loading
+                      ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
+                      : "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
+                  }`}
+                  disabled={approvedProposal !== 0 || loading} // Block if the proposal is approved or loading
                 >
                   {loading ? "Subiendo..." : "Subir Propuesta"}
                 </button>
               </div>
             </div>
-          </div>
-          {pdfUrl && (
-            <div className="p-6 max-w-5xl mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Vista previa del PDF:</h3>
-              <iframe
-                src={pdfUrl}
-                title="Vista previa del PDF"
-                className="w-full h-[40rem] border-2 border-gray-200 dark:border-gray-600"
-              ></iframe>
-            </div>
-          )}
-        </>
-      )}
+
+            {/* Section to display PDF if available */}
+            {pdfUrl && (
+              <div
+                id="pdf-viewer"
+                className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-gray-700"
+              >
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                  <FileText className="h-6 w-6 mr-3 text-blue-500" /> Visualización de Documento PDF
+                </h3>
+                <div className="relative pt-[75%] md:pt-[56.25%]">
+                  {" "}
+                  {/* 4:3 aspect ratio for mobile, 16:9 for desktop */}
+                  <iframe
+                    src={pdfUrl}
+                    title="Vista PDF"
+                    className="absolute top-0 left-0 w-full h-full rounded-lg shadow-inner border border-gray-300 dark:border-gray-600"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </>
   )
 }

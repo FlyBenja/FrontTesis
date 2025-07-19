@@ -7,6 +7,8 @@ import { enviaComentario } from "../../../ts/General/SendComment"
 import { getComentarios, type ComentarioData } from "../../../ts/General/GetComment"
 import { updateComentStats } from "../../../ts/Administrator/UpdateComentStat"
 import TourChapters from "../../../components/Tours/Administrator/TourChapters"
+import { ArrowLeft, MessageSquare, Calendar } from "lucide-react"
+
 
 /**
  * Interface for comment data with active status
@@ -27,6 +29,7 @@ const Chapters: React.FC = () => {
   const navigate = useNavigate() // Hook for navigating between pages
   const location = useLocation() // Hook to get the state from the URL
   const { tarea, estudiante } = location.state || {} // Destructure task and student from the location state
+
   const [comentario, setComentario] = useState<string>("") // State to store the new comment
   const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]) // State to store previous comments
 
@@ -38,26 +41,17 @@ const Chapters: React.FC = () => {
    * Function to check if the "Enviar Comentario" button should be disabled due to the deadline
    */
   const isButtonDisabled = (): boolean => {
+    if (!tarea || !tarea.endTask || !tarea.endTime) return true // Ensure tarea and its properties exist
+
     const currentDate = new Date() // Current date and time
     const endDate = new Date(tarea.endTask) // Task end date
-    const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) // Current date without time
 
-    // Get the current hour, minute, and second
-    const currentHour = currentDate.getHours()
-    const currentMinutes = currentDate.getMinutes()
-    const currentSeconds = currentDate.getSeconds()
-
-    // Format the current time as HH:mm:ss
-    const formattedCurrentTime = `${currentHour.toString().padStart(2, "0")}:${currentMinutes
-      .toString()
-      .padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
     // Combine date and time into a format like YYYY-MM-DD HH:mm:ss
-    const formattedCurrentDateTime = `${currentDateOnly.toISOString().split("T")[0]} ${formattedCurrentTime}`
+    const formattedCurrentDateTime = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")} ${currentDate.getHours().toString().padStart(2, "0")}:${currentDate.getMinutes().toString().padStart(2, "0")}:${currentDate.getSeconds().toString().padStart(2, "0")}`
+    const formattedEndDateTime = `${endDate.getFullYear()}-${(endDate.getMonth() + 1).toString().padStart(2, "0")}-${endDate.getDate().toString().padStart(2, "0")} ${tarea.endTime}`
 
-    const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate())) // Remove the time from the end date
-    const formattedEndDateTime = `${endDateOnly.toISOString().split("T")[0]} ${tarea.endTime || ""}`
+    if (isNaN(endDate.getTime())) return true // If the end date is invalid, disable the button
 
-    if (isNaN(endDateOnly.getTime())) return true // If the end date is invalid, disable the button
     return formattedCurrentDateTime > formattedEndDateTime // Disable if the current date is later than the deadline
   }
 
@@ -77,10 +71,8 @@ const Chapters: React.FC = () => {
   useEffect(() => {
     const cargarComentarios = async () => {
       if (!tarea || !estudiante) return // If there is no task or student, do not load comments
-
       const taskId = tarea.task_id // Get the task ID
       const userId = estudiante.id // Get the student ID
-
       try {
         // Get the comments from the API
         const comentarios: ComentarioData = await getComentarios(taskId, userId)
@@ -97,7 +89,6 @@ const Chapters: React.FC = () => {
         console.error("Error loading comments:", error)
       }
     }
-
     cargarComentarios()
   }, [tarea, estudiante])
 
@@ -115,7 +106,6 @@ const Chapters: React.FC = () => {
     try {
       // Call the API to update the comment status
       await updateComentStats(comentId)
-
       // After updating, fetch the comment list again
       if (tarea && estudiante) {
         const updatedComentarios: ComentarioData = await getComentarios(tarea.task_id, estudiante.id)
@@ -128,7 +118,6 @@ const Chapters: React.FC = () => {
         }))
         setComentariosPrevios(comentariosFormateados)
       }
-
       Swal.fire({
         title: estaBloqueado ? "Comentarios activados" : "Comentario bloqueado",
         text: estaBloqueado
@@ -171,16 +160,13 @@ const Chapters: React.FC = () => {
       })
       return
     }
-
     const taskId = tarea.task_id
     const user_id = estudiante.id
-
     const commentData = {
       comment: comentario,
       role: "teacher",
       user_id: user_id,
     }
-
     try {
       await enviaComentario(taskId, commentData)
       // Update the list of previous comments with the new comment
@@ -219,84 +205,95 @@ const Chapters: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName={`Detalle del ${tarea?.title}`} />
-
-      <div className="mb-4 flex justify-between">
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+      <Breadcrumb pageName={`Detalle del ${tarea?.title} 📚`} />
+      <div className="mb-6 flex justify-between items-center">
+        <div className="flex items-center gap-4">
           <button
             id="back-button"
-            className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-md text-sm sm:text-base"
+            className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
             onClick={() => navigate(-1)}
           >
-            <span className="mr-2">←</span> Regresar
+            <ArrowLeft className="h-5 w-5 mr-2" /> Regresar
           </button>
-
-          {/* Botón para iniciar el recorrido */}
           <TourChapters />
         </div>
 
-        {/* Botón para bloquear comentarios */}
-        <div className="mt-4">
-          <button
-            id="bloquear-button"
-            className={`px-4 py-2 rounded-md ${
-              isComentarioBloqueado
-                ? "bg-green-500 text-white hover:bg-green-600"
-                : "bg-red-500 text-white hover:bg-red-600"
+        <button
+          id="bloquear-button"
+          className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 ${isComentarioBloqueado
+              ? "bg-green-600 text-white hover:bg-green-700"
+              : "bg-red-600 text-white hover:bg-red-700"
             }`}
-            onClick={() => handleDesactivarComentario(comentariosPrevios[0]?.id, isComentarioBloqueado)}
-          >
-            {isComentarioBloqueado ? "Activar Comentario" : "Bloquear Comentarios"}
-          </button>
-        </div>
+          onClick={() => handleDesactivarComentario(comentariosPrevios[0]?.id, isComentarioBloqueado)}
+          disabled={comentariosPrevios.length === 0}
+        >
+          {isComentarioBloqueado ? "Activar Comentario" : "Bloquear Comentarios"}
+        </button>
       </div>
-
-      <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
+      <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
         {/* Display the previous comments */}
-        <div id="comentarios-previos" className="w-full md:w-1/2 h-72 bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
-          <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Comentarios Previos</h4>
-          <ul className="space-y-4">
-            {comentariosPrevios.map((comentario, index) => (
-              <li key={`${comentario.id}-${index}`} className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md">
-                <p className="text-sm text-gray-700 dark:text-gray-300">{comentario.texto}</p>
-                <span className="block text-xs text-gray-500 dark:text-gray-400">{comentario.role}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">{comentario.fecha}</span>
-              </li>
-            ))}
-          </ul>
+        <div
+          id="comentarios-previos"
+          className="w-full md:w-1/2 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl overflow-y-auto max-h-[600px]"
+        >
+          <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <MessageSquare className="h-6 w-6 mr-3 text-blue-500" /> Comentarios Previos
+          </h4>
+          {comentariosPrevios.length > 0 ? (
+            <ul className="space-y-5">
+              {comentariosPrevios.map((comentario, index) => (
+                <li
+                  key={`${comentario.id}-${index}`}
+                  className="p-5 bg-gray-50 dark:bg-gray-700 rounded-xl shadow-md border border-gray-200 dark:border-gray-600 transition-all duration-300 hover:shadow-lg"
+                >
+                  <p className="text-base text-gray-800 dark:text-gray-200 mb-2">{comentario.texto}</p>
+                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                    <span className="font-medium">Rol: {comentario.role}</span>
+                    <span className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1 text-gray-500" /> {comentario.fecha}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400 text-center">
+              <MessageSquare className="h-12 w-12 mb-4 text-gray-400" />
+              <p className="text-lg font-medium">No hay comentarios previos para este capítulo. 📝</p>
+            </div>
+          )}
         </div>
-
         {/* Form to submit a new comment */}
-        <div id="enviar-comentario" className="w-full md:w-1/2 h-72 p-4 bg-white dark:bg-boxdark rounded-lg">
-          <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Enviar Comentario</h4>
+        <div
+          id="enviar-comentario"
+          className="w-full md:w-1/2 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl flex flex-col"
+        >
+          <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <MessageSquare className="h-6 w-6 mr-3 text-blue-500" /> Enviar Comentario
+          </h4>
           <textarea
             id="textarea-comentario"
             disabled={isButtonDisabled() || isComentarioBloqueado}
             value={comentario}
             onChange={handleComentarioChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={5}
+            className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white placeholder:text-gray-400 flex-grow"
+            rows={8}
             placeholder="Escribe tu comentario aquí..."
           />
-          <div className="flex flex-col md:flex-row justify-between items-center mt-1 md:mt-4">
-            {isButtonDisabled() && (
-              <div className="mb-2 md:mb-0">
-                <p className="text-red-500 text-sm">Tarea llegó a fecha límite.</p>
-              </div>
-            )}
-            {isComentarioBloqueado && (
-              <div className="mb-2 md:mb-0">
-                <p className="text-red-500 text-sm">Has bloqueado los comentarios.</p>
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-2">
+            {(isButtonDisabled() || isComentarioBloqueado) && (
+              <div className="text-red-500 text-sm font-medium">
+                {isButtonDisabled() && <p>Tarea llegó a fecha límite.</p>}
+                {isComentarioBloqueado && <p>Has bloqueado los comentarios.</p>}
               </div>
             )}
             <button
               id="enviar-button"
-              disabled={isButtonDisabled() || isComentarioBloqueado}
-              className={`px-4 py-2 rounded-md ${
-                isButtonDisabled() || isComentarioBloqueado
-                  ? "bg-gray-400 text-white cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              } ${!(isButtonDisabled() || isComentarioBloqueado) && "ml-auto"}`}
+              disabled={isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""}
+              className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 ${isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""
+                  ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                } ${!(isButtonDisabled() || isComentarioBloqueado) && "md:ml-auto"}`}
               onClick={handleEnviarComentario}
             >
               Enviar Comentario

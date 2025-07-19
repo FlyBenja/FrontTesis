@@ -5,6 +5,7 @@ import { getCursos } from "../../../ts/General/GetCourses"
 import { getDatosPerfil } from "../../../ts/General/GetProfileData"
 import { cargaMasiva } from "../../../ts/Administrator/MassiveLoadStudents"
 import TourUploadStudents from "../../../components/Tours/Administrator/TourUploadStudents"
+import { UploadCloud, Download, FileText, Loader2, XCircle } from "lucide-react"
 
 /**
  * Main component for uploading students in bulk
@@ -37,7 +38,6 @@ const UploadStudents = () => {
         setLoading(false) // Setting loading state to false after fetching is done
       }
     }
-
     fetchCourses() // Calling the fetch function
   }, []) // Empty dependency array to run only once on mount
 
@@ -81,9 +81,7 @@ const UploadStudents = () => {
       showAlert("error", "¡Error!", "Archivo o curso no seleccionado.") // Show error if no file or course is selected
       return
     }
-
     setApiLoading(true) // Start loading state
-
     try {
       // Fetching user profile data again to get the 'sede'
       const { sede } = await getDatosPerfil()
@@ -92,7 +90,6 @@ const UploadStudents = () => {
       if (!selectedCourseObj) {
         throw new Error("Curso seleccionado no encontrado") // Throw an error if the course is not found
       }
-
       // Calling the bulk upload function
       await cargaMasiva({
         archivo: fileSelected,
@@ -100,7 +97,6 @@ const UploadStudents = () => {
         rol_id: 1, // Assuming role 1 is the student role
         course_id: selectedCourseObj.course_id, // Passing the selected course ID
       })
-
       showAlert("success", "Carga masiva completada", "Los estudiantes se han cargado correctamente.") // Show success alert
       handleReset() // Reset the form after successful upload
     } catch (error) {
@@ -133,42 +129,57 @@ const UploadStudents = () => {
 
   // Displaying a loading message while fetching courses
   if (loading) {
-    return <div className="text-center">Loading...</div>
+    return (
+      <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm">
+        <div className="flex flex-col items-center text-white text-xl">
+          <Loader2 className="animate-spin h-12 w-12 text-blue-400 mb-4" />
+          Cargando cursos...
+        </div>
+      </div>
+    )
   }
 
   // If no courses are available, show a message
   if (courses.length === 0) {
     return (
-      <div className="relative bg-gray-100 dark:bg-boxdark">
-        <div className="absolute top-50 left-0 right-0 text-center p-6 bg-white dark:bg-boxdark rounded shadow-lg max-w-lg mx-auto">
-          <p className="text-xl text-black dark:text-white font-semibold">
-            No existen cursos asignados a esta sede. Por favor, comuníquese con central.
-          </p>
+      <>
+        <Breadcrumb pageName="Subir Estudiantes" />
+        <div className="mx-auto max-w-6xl px-4 py-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-6 flex flex-col items-center justify-center text-center">
+            <XCircle className="h-20 w-20 mb-6 text-red-500" />
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              No existen cursos asignados a esta sede.
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Por favor, comuníquese con central para asignar cursos.
+            </p>
+          </div>
         </div>
-      </div>
+      </>
     )
   }
 
   // Main JSX structure
   return (
     <>
-      <Breadcrumb pageName="Subir Estudiantes" /> {/* Breadcrumb component for navigation */}
-      <div className="flex justify-center mt-8">
-        <div className="w-full max-w-md">
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center">
+      <Breadcrumb pageName="Subir Estudiantes ⬆️" /> {/* Breadcrumb component for navigation */}
+      <div className="flex justify-center mt-8 px-4">
+        <div className="w-full max-w-lg">
+          <div className="rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800">
+            <div className="border-b border-gray-200 py-4 px-6 dark:border-gray-700 flex items-center justify-between">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Subir Estudiantes</h3>
               <TourUploadStudents />
-              <h3 className="font-medium text-black dark:text-white ml-21">Subir Estudiantes</h3>
             </div>
-            <div className="p-6.5">
-              <label htmlFor="curso" className="block text-sm font-medium text-black dark:text-white mb-2">
+            <div className="p-6">
+              <label htmlFor="curso" className="block text-base font-medium text-gray-800 dark:text-white mb-4">
                 Seleccionar curso:
               </label>
               <select
                 id="curso"
                 value={selectedCourse}
                 onChange={(e) => setSelectedCourse(e.target.value)} // Update selected course
-                className="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md dark:bg-boxdark dark:border-strokedark dark:text-white"
+                className="w-full mb-6 px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Seleccionar curso"
               >
                 <option value="">Seleccionar curso</option>
                 {courses.map(({ course_id, courseName }) => (
@@ -177,37 +188,65 @@ const UploadStudents = () => {
                   </option>
                 ))}
               </select>
-
-              <p className="text-center text-sm font-medium text-black dark:text-white mb-4">
+              <p className="text-center text-base font-medium text-gray-800 dark:text-white mb-6">
                 Favor de seleccionar un archivo Excel (.xls, .xlsx)
               </p>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".xls,.xlsx"
-                onChange={handleFileChange} // Handle file change
-                className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-              />
+              <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 transition-all duration-300">
+                <input
+                  id="file-input"
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".xls,.xlsx"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div className="flex flex-col items-center justify-center">
+                  {fileSelected ? (
+                    <>
+                      <FileText className="h-12 w-12 text-green-500 mb-3" />
+                      <p className="text-lg font-semibold text-gray-900 dark:text-white">{fileSelected.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Archivo seleccionado</p>
+                    </>
+                  ) : (
+                    <>
+                      <UploadCloud className="h-12 w-12 text-blue-500 mb-3" />
+                      <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                        Arrastra y suelta tu archivo aquí
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">o haz clic para seleccionar</p>
+                    </>
+                  )}
+                </div>
+              </div>
 
               <button
-                className={`mt-4 w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90 transition-opacity ${fileSelected && selectedCourse ? "opacity-100 cursor-pointer" : "opacity-50 cursor-not-allowed"
+                id="confirm-submit"
+                className={`mt-6 w-full flex justify-center items-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-700 p-3 font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${fileSelected && selectedCourse && !apiLoading
+                    ? "opacity-100 cursor-pointer"
+                    : "opacity-50 cursor-not-allowed"
                   }`}
-                onClick={handleUpload} // Upload the file when clicked
-                disabled={!fileSelected || !selectedCourse} // Disable button if no file or course selected
-                id="confirm-submit" // ID for the tour
+                onClick={handleUpload}
+                disabled={!fileSelected || !selectedCourse || apiLoading}
               >
-                Confirmar Subida
+                {apiLoading ? (
+                  <>
+                    <Loader2 className="animate-spin h-5 w-5 mr-3" /> Cargando...
+                  </>
+                ) : (
+                  "Confirmar Subida"
+                )}
               </button>
 
-              <div className="mt-6 text-center">
-                <p className="text-black dark:text-white">¿Necesitas una plantilla? Descarga la plantilla de Excel.</p>
+              <div className="mt-8 text-center border-t border-gray-200 dark:border-gray-700 pt-6">
+                <p className="text-gray-800 dark:text-white mb-4">
+                  ¿Necesitas una plantilla? Descarga la plantilla de Excel.
+                </p>
                 <button
-                  onClick={handleDownloadTemplate} // Trigger download when clicked
-                  className="mt-2 rounded bg-primary p-2 font-medium text-white transition-opacity"
                   id="plantilla-excel"
+                  onClick={handleDownloadTemplate}
+                  className="inline-flex items-center rounded-lg bg-gradient-to-br from-green-500 to-teal-600 p-3 font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
                 >
-                  Descargar Plantilla
+                  <Download className="h-5 w-5 mr-2" /> Descargar Plantilla
                 </button>
               </div>
             </div>
@@ -215,8 +254,11 @@ const UploadStudents = () => {
         </div>
       </div>
       {apiLoading && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="text-white text-xl">Espere un momento en lo que se suben los Estudiantes...</div>
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="flex flex-col items-center text-white text-xl">
+            <Loader2 className="animate-spin h-12 w-12 text-blue-400 mb-4" />
+            Espere un momento en lo que se suben los Estudiantes...
+          </div>
         </div>
       )}
     </>

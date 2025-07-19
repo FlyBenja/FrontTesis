@@ -66,7 +66,7 @@ const CreateUserWithoutLogin: React.FC<CreateUserWithoutLoginProps> = ({ onClose
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-auto p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-32 md:max-w-3xl md:mt-40 lg:max-w-4xl lg:mt-35 lg:ml-[330px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
         {/* Header */}
         <div className="text-center mb-6">
           <div className="w-12 h-12 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">

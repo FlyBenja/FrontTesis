@@ -4,6 +4,7 @@ import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import HeadquartersComponent from "../../components/Tours/GeneralCoordinator/TourHeadquarters"
 import CreateHeadquartersModal from "../../components/Modals/CreateHeadquarters"
+import { Building, PlusCircle, Pencil, ChevronLeft, ChevronRight } from "lucide-react" // Import Lucide React icons
 
 interface HeadquartersType {
   id: number
@@ -14,14 +15,12 @@ interface HeadquartersType {
 const CreateHeadquarters: React.FC = () => {
   const [headquarters, setHeadquarters] = useState<HeadquartersType[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [modalType, setModalType] = useState<'crear' | 'editar'>('crear')
+  const [modalType, setModalType] = useState<"crear" | "editar">("crear")
   const [selectedSede, setSelectedSede] = useState<HeadquartersType | null>(null)
-
   const [currentPage, setCurrentPage] = useState(1)
   const [headquartersPerPage, setHeadquartersPerPage] = useState(5)
   const [maxPageButtons, setMaxPageButtons] = useState(5)
 
-  // Hacemos fetchHeadquarters reutilizable
   const fetchHeadquarters = async () => {
     try {
       const sedes = await getSedes()
@@ -41,7 +40,6 @@ const CreateHeadquarters: React.FC = () => {
     fetchHeadquarters()
     window.addEventListener("resize", handleResize)
     handleResize()
-
     return () => {
       window.removeEventListener("resize", handleResize)
     }
@@ -49,10 +47,10 @@ const CreateHeadquarters: React.FC = () => {
 
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setHeadquartersPerPage(10)
+      setHeadquartersPerPage(8) // Adjusted for smaller screens
       setMaxPageButtons(3)
     } else {
-      setHeadquartersPerPage(10)
+      setHeadquartersPerPage(5) // Adjusted for larger screens
       setMaxPageButtons(5)
     }
   }
@@ -69,18 +67,22 @@ const CreateHeadquarters: React.FC = () => {
   }
 
   const getPageRange = () => {
-    let start = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
-    const end = Math.min(totalPages, start + maxPageButtons - 1)
+    const range: number[] = []
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2))
+    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1)
 
-    if (end - start + 1 < maxPageButtons) {
-      start = Math.max(1, end - maxPageButtons + 1)
+    if (endPage - startPage + 1 < maxPageButtons) {
+      startPage = Math.max(1, endPage - maxPageButtons + 1)
     }
 
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+    for (let i = startPage; i <= endPage; i++) {
+      range.push(i)
+    }
+    return range
   }
 
   const handleOpenCreateModal = () => {
-    setModalType('crear')
+    setModalType("crear")
     setSelectedSede(null)
     setIsModalOpen(true)
   }
@@ -88,7 +90,7 @@ const CreateHeadquarters: React.FC = () => {
   const handleEditClick = (sedeId: number) => {
     const sedeToEdit = headquarters.find((sede) => sede.id === sedeId)
     if (sedeToEdit) {
-      setModalType('editar')
+      setModalType("editar")
       setSelectedSede(sedeToEdit)
       setIsModalOpen(true)
     }
@@ -101,116 +103,126 @@ const CreateHeadquarters: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="Crear Sede" />
-      <div className="mx-auto max-w-5xl px-1 py-1">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-          <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">Sedes Registradas</h3>
-          <div className="flex items-center space-x-3">
-            <button
-              id="boton-crear-sede"
-              onClick={handleOpenCreateModal}
-              className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center shadow-md hover:shadow-lg"
-            >
-              Crear Nueva Sede
-            </button>
-            <HeadquartersComponent />
+      <div className="mx-auto max-w-7xl px-4 py-6">
+        {/* Header and Table Container */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 mb-6">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-green-500 to-teal-600 px-8 py-6 rounded-t-3xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <Building className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white">Sedes Registradas</h3>
+                  <p className="text-green-100 text-sm">Gestiona las sedes del sistema</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  id="boton-crear-sede"
+                  onClick={handleOpenCreateModal}
+                  className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center gap-2 transition-all duration-200 backdrop-blur-sm border border-white/20"
+                >
+                  <PlusCircle className="h-5 w-5" />
+                  <span>Crear Nueva Sede</span>
+                </button>
+                <HeadquartersComponent />
+              </div>
+            </div>
+          </div>
+          {/* Table */}
+          <div className="p-8">
+            <div className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+              <table id="tabla-sedes" className="min-w-full bg-white dark:bg-gray-800">
+                <thead className="bg-gradient-to-r from-green-500 to-teal-600 text-white text-sm uppercase tracking-wider">
+                  <tr>
+                    <th className="py-3 px-4 text-left rounded-tl-xl hidden sm:table-cell">No.</th>
+                    <th className="py-3 px-4 text-left">Nombre</th>
+                    <th className="py-3 px-4 text-center hidden sm:table-cell">Dirección</th>
+                    <th className="py-3 px-4 text-center rounded-tr-xl">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentHeadquarters.length > 0 ? (
+                    currentHeadquarters.map((sede) => (
+                      <tr
+                        key={sede.id}
+                        className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+                      >
+                        <td className="py-3 px-4 text-center text-gray-900 dark:text-white font-medium hidden sm:table-cell">
+                          {sede.id}
+                        </td>
+                        <td className="py-3 px-4 text-left text-gray-900 dark:text-white font-medium">{sede.nombre}</td>
+                        <td className="py-3 px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
+                          {sede.direccion}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <button
+                            id="edit-sede"
+                            onClick={() => handleEditClick(sede.id)}
+                            className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg inline-flex items-center gap-1"
+                          >
+                            <Pencil className="w-4 h-4" />
+                            Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="py-12 text-center text-gray-500 dark:text-gray-400">
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                            <Building className="w-8 h-8 text-gray-400" />
+                          </div>
+                          <p className="text-lg font-medium">No existen sedes registradas</p>
+                          <p className="text-sm">Crea tu primera sede para comenzar</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div id="pagination" className="mt-8 flex justify-center items-center space-x-2">
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                {getPageRange().map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => paginate(page)}
+                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page ? "bg-gradient-to-br from-green-500 to-teal-600 text-white shadow-lg" : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"}`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
-
-        <div className="overflow-x-auto">
-          <table
-            id="tabla-sedes"
-            className="min-w-full bg-white border border-gray-200 rounded-lg dark:bg-boxdark dark:border-strokedark"
-          >
-            <thead className="bg-gray-100 text-sm dark:bg-meta-4 dark:text-white">
-              <tr>
-                <th className="py-2 px-4 text-left hidden sm:table-cell">Número</th>
-                <th className="py-2 px-4 text-left">Nombre</th>
-                <th className="py-2 px-4 text-center hidden sm:table-cell">Dirección</th>
-                <th className="py-2 px-4 text-center">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentHeadquarters.length > 0 ? (
-                currentHeadquarters.map((sede) => (
-                  <tr
-                    key={sede.id}
-                    className="border-t border-gray-200 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-meta-4 transition-colors duration-150"
-                  >
-                    <td className="py-2 px-4 text-left text-black dark:text-white hidden sm:table-cell">{sede.id}</td>
-                    <td className="py-2 px-4 text-left text-black dark:text-white">{sede.nombre}</td>
-                    <td className="py-2 px-4 text-center text-black dark:text-white hidden sm:table-cell">{sede.direccion}</td>
-                    <td className="py-2 px-4 text-center">
-                      <button
-                        id="edit-sede"
-                        onClick={() => handleEditClick(sede.id)}
-                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors duration-150"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none">
-                          <path
-                            d="M17.707 6.293l-2.414-2.414a1 1 0 0 0-1.414 0l-9 9a1 1 0 0 0-.293.707v3.586a1 1 0 0 0 1 1h3.586a1 1 0 0 0 .707-.293l9-9a1 1 0 0 0 0-1.414z"
-                            stroke="white"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                          />
-                        </svg>
-                        Editar
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={4} className="py-2 px-4 text-center text-gray-500 dark:text-gray-400">
-                    No existen sedes registradas.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div id="pagination" className="mt-4 flex justify-center">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8592;
-          </button>
-          {getPageRange().map((page) => (
-            <button
-              key={page}
-              onClick={() => paginate(page)}
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                ? "bg-blue-600 text-white"
-                : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8594;
-          </button>
-        </div>
       </div>
-
       <CreateHeadquartersModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         type={modalType}
         initialData={
           selectedSede
-            ? {
-              sede_id: selectedSede.id,
-              nameSede: selectedSede.nombre,
-              address: selectedSede.direccion
-            }
+            ? { sede_id: selectedSede.id, nameSede: selectedSede.nombre, address: selectedSede.direccion }
             : undefined
         }
         onSuccess={fetchHeadquarters}

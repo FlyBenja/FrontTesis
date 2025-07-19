@@ -1,57 +1,76 @@
-import { driver } from 'driver.js'; 
-import 'driver.js/dist/driver.css'; 
+import { driver } from 'driver.js'
+import 'driver.js/dist/driver.css'
 
-/**
- * This component provides a guided tour for the coordinator management interface.
- * The tour walks the user through the coordinator table, creation button, and deletion functionality.
- */
-const TourCoordinator = () => {
-  /**
-   * Starts the guided tour by initializing the driver.js object and defining the steps.
-   * Each step highlights an element and provides a description to guide the user.
-   */
+const TourThesisCoordinator = () => {
   const startTour = () => {
     const driverObj = driver({
-      showProgress: true, // Show progress bar
-      animate: true, // Enable animations
-      prevBtnText: 'Anterior', // Text for the "Previous" button
-      nextBtnText: 'Siguiente', // Text for the "Next" button
-      doneBtnText: 'Finalizar', // Text for the "Done" button
-      progressText: 'Paso {{current}} de {{total}}', // Progress bar text
-    });
+      showProgress: true,
+      animate: true,
+      prevBtnText: 'Anterior',
+      nextBtnText: 'Siguiente',
+      doneBtnText: 'Finalizar',
+      progressText: 'Paso {{current}} de {{total}}',
+    })
 
     driverObj.setSteps([
       {
-        element: '#tabla-coordinadores', // ID of the coordinator table
+        element: 'h3:text("Coordinadores de Tesis")', // Mejor poner un id si quieres más precisión
         popover: {
-          title: 'Tabla de Coordinadores', // Title for the coordinator table step
-          description: 'Aquí se muestran todos los coordinadores registrados en el sistema.', // Description for the coordinator table step
+          title: 'Coordinadores de Tesis',
+          description: 'Aquí puedes gestionar los coordinadores que administran las tesis.',
           side: 'bottom',
           align: 'start',
         },
       },
       {
-        element: '#boton-crear-coordinador', // ID of the "Create Coordinator" button
+        element: '#btn-crear-coordinador',
         popover: {
-          title: 'Crear Coordinador', // Title for the "Create Coordinator" step
-          description: 'Haz clic aquí para abrir el formulario de creación de un nuevo coordinador.', // Description for the "Create Coordinator" step
+          title: 'Crear Coordinador',
+          description: 'Haz clic para crear un nuevo coordinador de tesis.',
           side: 'bottom',
           align: 'start',
         },
       },
       {
-        element: '#delete-coordinador', // Class for the "Delete" buttons
+        element: '#tabla-coordinadores',
         popover: {
-          title: 'Eliminar Coordinador', // Title for the "Delete Coordinator" step
-          description: 'Puedes eliminar un coordinador haciendo clic en el botón "Eliminar" de la fila correspondiente.', // Description for the "Delete Coordinator" step
+          title: 'Tabla de Coordinadores',
+          description: 'Aquí se muestran todos los coordinadores registrados.',
           side: 'bottom',
           align: 'start',
         },
       },
-    ]);
+      {
+        element: '.switch-activar-coordinador',
+        popover: {
+          title: 'Activar/Desactivar',
+          description: 'Activa o desactiva la cuenta del coordinador.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '.btn-editar-coordinador',
+        popover: {
+          title: 'Editar Coordinador',
+          description: 'Edita la información del coordinador seleccionado.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '#paginacion-coordinadores',
+        popover: {
+          title: 'Paginación',
+          description: 'Si hay muchos coordinadores, aquí puedes navegar entre las páginas.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+    ])
 
-    driverObj.drive(); // Start the tour
-  };
+    driverObj.drive()
+  }
 
   return (
     <div>
@@ -87,4 +106,4 @@ const TourCoordinator = () => {
   );
 };
 
-export default TourCoordinator;
+export default TourThesisCoordinator

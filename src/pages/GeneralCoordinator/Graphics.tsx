@@ -5,6 +5,7 @@ import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb.tsx"
 import CardDataStats from "../../components/Cards/CardDataStats.tsx"
 import TasksStudents from "../../components/Graphics/TasksStudents"
 import PercentageHeadquarters from "../../components/Graphics/PercentageHeadquarters"
+import { Users, CheckCircle, Clock } from "lucide-react" // Import Lucide icons
 
 const Graphics: React.FC = () => {
   // State to store the total number of students, total students per headquarters, and revision data
@@ -23,7 +24,6 @@ const Graphics: React.FC = () => {
       try {
         // Obtener la sede-id desde localStorage en lugar de la API
         const selectedSedeId = Number(localStorage.getItem("selectedSedeId"))
-
         if (selectedSedeId) {
           // Fetching students data for the specific 'sede'
           const studentsData = await getStudentsSede(selectedSedeId)
@@ -34,11 +34,15 @@ const Graphics: React.FC = () => {
         }
       } catch (error) {
         // Error handling
+        console.error("Error fetching graphics data:", error)
+        setTotalStudents(0)
+        setTotalStudentsHeadquarters(0)
+        setTotalApprovedRevisions(0)
+        setTotalInRevisions(0)
       } finally {
         setIsLoading(false)
       }
     }
-
     // Invoking the function to fetch data
     fetchData()
   }, [])
@@ -48,130 +52,71 @@ const Graphics: React.FC = () => {
     totalStudentsHeadquarters && totalStudents
       ? ((totalStudentsHeadquarters / (totalStudents || 1)) * 100).toFixed(2)
       : "0"
-
   const approvedRevisionsPercentage =
     totalApprovedRevisions && totalInRevisions
       ? ((totalApprovedRevisions / (totalInRevisions || 1)) * 100).toFixed(2)
       : "0"
 
   return (
-    <div className="px-4 py-6">
+    <div className="min-h-screen bg-gray-50 px-4 py-6 dark:bg-gray-900 sm:px-6 lg:px-8">
       {/* Header section with Breadcrumb */}
       <div className="mb-6">
-        <Breadcrumb pageName="Graficas" />
+        <Breadcrumb pageName="Gráficas" />
       </div>
 
       {/* Stats Cards Section */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Resumen de Estadísticas</h2>
-
+        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">Resumen de Estadísticas ✨</h2>
         {isLoading ? (
           // Loading state for stats cards
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
             {[1, 2, 3].map((index) => (
               <div
                 key={index}
-                className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark animate-pulse"
+                className="animate-pulse rounded-xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800"
               >
-                <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700">
-                  <div className="h-5 w-5"></div>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700">
+                  <div className="h-6 w-6 rounded-full bg-gray-300 dark:bg-gray-600"></div>
                 </div>
-                <div className="mt-4 h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="mt-4 flex items-center">
-                  <div className="h-8 w-1/3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                </div>
-                <div className="mt-2 h-3 w-1/4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="mt-4 h-6 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div className="mt-2 h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div className="mt-4 h-4 w-1/3 rounded bg-gray-200 dark:bg-gray-700"></div>
               </div>
             ))}
           </div>
         ) : (
           // Actual stats cards
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
             <CardDataStats
               title="Total Estudiantes"
               total={totalStudents ? totalStudents.toLocaleString() : "0"}
-              rate={studentHeadquartersPercentage}
-              levelDown={false}
+              rate={`${studentHeadquartersPercentage}%`}
+              levelUp={Number(studentHeadquartersPercentage) > 0}
+              levelDown={Number(studentHeadquartersPercentage) < 0}
             >
-              <svg
-                className="fill-primary dark:fill-white"
-                width="22"
-                height="18"
-                viewBox="0 0 22 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.18418 8.03751C9.31543 8.03751 11.0686 6.35313 11.0686 4.25626C11.0686 2.15938 9.31543 0.475006 7.18418 0.475006C5.05293 0.475006 3.2998 2.15938 3.2998 4.25626C3.2998 6.35313 5.05293 8.03751 7.18418 8.03751ZM7.18418 2.05626C8.45605 2.05626 9.52168 3.05313 9.52168 4.29063C9.52168 5.52813 8.49043 6.52501 7.18418 6.52501C5.87793 6.52501 4.84668 5.52813 4.84668 4.29063C4.84668 3.05313 5.9123 2.05626 7.18418 2.05626Z"
-                  fill=""
-                />
-                <path
-                  d="M15.8124 9.6875C17.6687 9.6875 19.1468 8.24375 19.1468 6.42188C19.1468 4.6 17.6343 3.15625 15.8124 3.15625C13.9905 3.15625 12.478 4.6 12.478 6.42188C12.478 8.24375 13.9905 9.6875 15.8124 9.6875ZM15.8124 4.7375C16.8093 4.7375 17.5999 5.49375 17.5999 6.45625C17.5999 7.41875 16.8093 8.175 15.8124 8.175C14.8155 8.175 14.0249 7.41875 14.0249 6.45625C14.0249 5.49375 14.8155 4.7375 15.8124 4.7375Z"
-                  fill=""
-                />
-                <path
-                  d="M15.9843 10.0313H15.6749C14.6437 10.0313 13.6468 10.3406 12.7874 10.8563C11.8593 9.61876 10.3812 8.79376 8.73115 8.79376H5.67178C2.85303 8.82814 0.618652 11.0625 0.618652 13.8469V16.3219C0.618652 16.975 1.13428 17.4906 1.7874 17.4906H20.2468C20.8999 17.4906 21.4499 16.9406 21.4499 16.2875V15.4625C21.4155 12.4719 18.9749 10.0313 15.9843 10.0313ZM2.16553 15.9438V13.8469C2.16553 11.9219 3.74678 10.3406 5.67178 10.3406H8.73115C10.6562 10.3406 12.2374 11.9219 12.2374 13.8469V15.9438H2.16553V15.9438ZM19.8687 15.9438H13.7499V13.8469C13.7499 13.2969 13.6468 12.7469 13.4749 12.2313C14.0937 11.7844 14.8499 11.5781 15.6405 11.5781H15.9499C18.0812 11.5781 19.8343 13.3313 19.8343 15.4625V15.9438H19.8687Z"
-                  fill=""
-                />
-              </svg>
+              <Users className="h-6 w-6" />
             </CardDataStats>
-
             <CardDataStats
               title="Revisiones Aprobadas"
               total={totalApprovedRevisions ? totalApprovedRevisions.toLocaleString() : "0"}
-              rate={approvedRevisionsPercentage}
-              levelDown={false}
+              rate={`${approvedRevisionsPercentage}%`}
+              levelUp={Number(approvedRevisionsPercentage) > 0}
+              levelDown={Number(approvedRevisionsPercentage) < 0}
             >
-              <svg
-                className="fill-primary dark:fill-white"
-                width="22"
-                height="18"
-                viewBox="0 0 22 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.18418 8.03751C9.31543 8.03751 11.0686 6.35313 11.0686 4.25626C11.0686 2.15938 9.31543 0.475006 7.18418 0.475006C5.05293 0.475006 3.2998 2.15938 3.2998 4.25626C3.2998 6.35313 5.05293 8.03751 7.18418 8.03751ZM7.18418 2.05626C8.45605 2.05626 9.52168 3.05313 9.52168 4.29063C9.52168 5.52813 8.49043 6.52501 7.18418 6.52501C5.87793 6.52501 4.84668 5.52813 4.84668 4.29063C4.84668 3.05313 5.9123 2.05626 7.18418 2.05626Z"
-                  fill=""
-                />
-                <path
-                  d="M15.8124 9.6875C17.6687 9.6875 19.1468 8.24375 19.1468 6.42188C19.1468 4.6 17.6343 3.15625 15.8124 3.15625C13.9905 3.15625 12.478 4.6 12.478 6.42188C12.478 8.24375 13.9905 9.6875 15.8124 9.6875ZM15.8124 4.7375C16.8093 4.7375 17.5999 5.49375 17.5999 6.45625C17.5999 7.41875 16.8093 8.175 15.8124 8.175C14.8155 8.175 14.0249 7.41875 14.0249 6.45625C14.0249 5.49375 14.8155 4.7375 15.8124 4.7375Z"
-                  fill=""
-                />
-                <path
-                  d="M15.9843 10.0313H15.6749C14.6437 10.0313 13.6468 10.3406 12.7874 10.8563C11.8593 9.61876 10.3812 8.79376 8.73115 8.79376H5.67178C2.85303 8.82814 0.618652 11.0625 0.618652 13.8469V16.3219C0.618652 16.975 1.13428 17.4906 1.7874 17.4906H20.2468C20.8999 17.4906 21.4499 16.9406 21.4499 16.2875V15.4625C21.4155 12.4719 18.9749 10.0313 15.9843 10.0313ZM2.16553 15.9438V13.8469C2.16553 11.9219 3.74678 10.3406 5.67178 10.3406H8.73115C10.6562 10.3406 12.2374 11.9219 12.2374 13.8469V15.9438H2.16553V15.9438ZM19.8687 15.9438H13.7499V13.8469C13.7499 13.2969 13.6468 12.7469 13.4749 12.2313C14.0937 11.7844 14.8499 11.5781 15.6405 11.5781H15.9499C18.0812 11.5781 19.8343 13.3313 19.8343 15.4625V15.9438H19.8687Z"
-                  fill=""
-                />
-              </svg>
+              <CheckCircle className="h-6 w-6" />
             </CardDataStats>
-
             <CardDataStats
               title="Total en Revisiones"
               total={totalInRevisions ? totalInRevisions.toLocaleString() : "0"}
-              rate={approvedRevisionsPercentage}
-              levelDown={false}
+              rate={`${
+                100 - Number(approvedRevisionsPercentage) > 0
+                  ? (100 - Number(approvedRevisionsPercentage)).toFixed(2)
+                  : "0"
+              }%`}
+              levelUp={false}
+              levelDown={100 - Number(approvedRevisionsPercentage) > 0}
             >
-              <svg
-                className="fill-primary dark:fill-white"
-                width="22"
-                height="18"
-                viewBox="0 0 22 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.18418 8.03751C9.31543 8.03751 11.0686 6.35313 11.0686 4.25626C11.0686 2.15938 9.31543 0.475006 7.18418 0.475006C5.05293 0.475006 3.2998 2.15938 3.2998 4.25626C3.2998 6.35313 5.05293 8.03751 7.18418 8.03751ZM7.18418 2.05626C8.45605 2.05626 9.52168 3.05313 9.52168 4.29063C9.52168 5.52813 8.49043 6.52501 7.18418 6.52501C5.87793 6.52501 4.84668 5.52813 4.84668 4.29063C4.84668 3.05313 5.9123 2.05626 7.18418 2.05626Z"
-                  fill=""
-                />
-                <path
-                  d="M15.8124 9.6875C17.6687 9.6875 19.1468 8.24375 19.1468 6.42188C19.1468 4.6 17.6343 3.15625 15.8124 3.15625C13.9905 3.15625 12.478 4.6 12.478 6.42188C12.478 8.24375 13.9905 9.6875 15.8124 9.6875ZM15.8124 4.7375C16.8093 4.7375 17.5999 5.49375 17.5999 6.45625C17.5999 7.41875 16.8093 8.175 15.8124 8.175C14.8155 8.175 14.0249 7.41875 14.0249 6.45625C14.0249 5.49375 14.8155 4.7375 15.8124 4.7375Z"
-                  fill=""
-                />
-                <path
-                  d="M15.9843 10.0313H15.6749C14.6437 10.0313 13.6468 10.3406 12.7874 10.8563C11.8593 9.61876 10.3812 8.79376 8.73115 8.79376H5.67178C2.85303 8.82814 0.618652 11.0625 0.618652 13.8469V16.3219C0.618652 16.975 1.13428 17.4906 1.7874 17.4906H20.2468C20.8999 17.4906 21.4499 16.9406 21.4499 16.2875V15.4625C21.4155 12.4719 18.9749 10.0313 15.9843 10.0313ZM2.16553 15.9438V13.8469C2.16553 11.9219 3.74678 10.3406 5.67178 10.3406H8.73115C10.6562 10.3406 12.2374 11.9219 12.2374 13.8469V15.9438H2.16553V15.9438ZM19.8687 15.9438H13.7499V13.8469C13.7499 13.2969 13.6468 12.7469 13.4749 12.2313C14.0937 11.7844 14.8499 11.5781 15.6405 11.5781H15.9499C18.0812 11.5781 19.8343 13.3313 19.8343 15.4625V15.9438H19.8687Z"
-                  fill=""
-                />
-              </svg>
+              <Clock className="h-6 w-6" />
             </CardDataStats>
           </div>
         )}
@@ -179,39 +124,38 @@ const Graphics: React.FC = () => {
 
       {/* Charts Section */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Visualización de Datos</h2>
-
+        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">Visualización de Datos 📊</h2>
         {isLoading ? (
           // Loading state for charts
           <div className="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5">
-            <div className="col-span-12 xl:col-span-6 animate-pulse">
-              <div className="rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark h-96">
-                <div className="mb-4 h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-[calc(100%-2rem)] w-full bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="col-span-12 animate-pulse xl:col-span-6">
+              <div className="h-96 rounded-xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                <div className="mb-4 h-6 w-1/3 rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div className="h-[calc(100%-2rem)] w-full rounded bg-gray-200 dark:bg-gray-700"></div>
               </div>
             </div>
-            <div className="col-span-12 xl:col-span-6 animate-pulse">
-              <div className="rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark h-96">
-                <div className="mb-4 h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-[calc(100%-2rem)] w-full bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="col-span-12 animate-pulse xl:col-span-6">
+              <div className="h-96 rounded-xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                <div className="mb-4 h-6 w-1/3 rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div className="h-[calc(100%-2rem)] w-full rounded bg-gray-200 dark:bg-gray-700"></div>
               </div>
             </div>
           </div>
         ) : (
           // Actual charts
           <div className="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5">
-            <div className="col-span-12 xl:col-span-6 transition-transform duration-300 hover:scale-[1.01]">
-              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark overflow-hidden">
-                <div className="p-4 border-b border-stroke dark:border-strokedark">
-                  <h3 className="font-semibold text-black dark:text-white">Porcentaje por Sede</h3>
+            <div className="col-span-12 transition-transform duration-300 hover:scale-[1.01] xl:col-span-6">
+              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                <div className="border-b border-gray-200 p-4 dark:border-gray-700">
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Porcentaje por Sede 📍</h3>
                 </div>
                 <PercentageHeadquarters />
               </div>
             </div>
-            <div className="col-span-12 xl:col-span-6 transition-transform duration-300 hover:scale-[1.01]">
-              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark overflow-hidden">
-                <div className="p-4 border-b border-stroke dark:border-strokedark">
-                  <h3 className="font-semibold text-black dark:text-white">Tareas de Estudiantes</h3>
+            <div className="col-span-12 transition-transform duration-300 hover:scale-[1.01] xl:col-span-6">
+              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                <div className="border-b border-gray-200 p-4 dark:border-gray-700">
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Tareas de Estudiantes 🧑‍🎓</h3>
                 </div>
                 <TasksStudents />
               </div>
@@ -222,17 +166,17 @@ const Graphics: React.FC = () => {
 
       {/* Additional Info Section */}
       {!isLoading && (
-        <div className="rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <div>
-              <h4 className="text-lg font-semibold text-black dark:text-white">Resumen de Actividad</h4>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Resumen de Actividad 🚀</h4>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Última actualización: {new Date().toLocaleDateString()}
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="inline-block h-3 w-3 rounded-full bg-primary"></span>
-              <span className="text-sm font-medium text-black dark:text-white">
+              <span className="inline-block h-3 w-3 rounded-full bg-blue-500"></span>
+              <span className="text-sm font-medium text-gray-900 dark:text-white">
                 Estudiantes activos: {totalStudentsHeadquarters || 0}
               </span>
             </div>

@@ -1,96 +1,62 @@
-import React, { ReactNode } from 'react';
+import type React from "react"
+import type { ReactNode } from "react"
+import { ArrowUp, ArrowDown } from "lucide-react" // Import Lucide icons
 
 /**
  * Props interface for the CardDataStats component.
- * 
  */
 interface CardDataStatsProps {
-  title: string;
-  total: string;
-  rate: string;
-  levelUp?: boolean;
-  levelDown?: boolean;
-  children: ReactNode;
+  title: string
+  total: string
+  rate: string
+  levelUp?: boolean
+  levelDown?: boolean
+  children: ReactNode
 }
 
 /**
  * CardDataStats Component
- * 
+ *
  * This component displays a card containing statistical data such as a total value,
  * a rate of change, and a graphical indicator for increasing or decreasing trends.
  * It also accepts an icon or element as a child to visually represent the data.
- * 
  */
-const CardDataStats: React.FC<CardDataStatsProps> = ({
-  title,
-  total,
-  rate,
-  levelUp,
-  levelDown,
-  children,
-}) => {
+const CardDataStats: React.FC<CardDataStatsProps> = ({ title, total, rate, levelUp, levelDown, children }) => {
   return (
-    <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+    <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-gray-700 dark:bg-gray-800">
+      {/* Background Gradient Overlay */}
+      <div className="absolute inset-0 -z-10 opacity-10 dark:opacity-20">
+        <div className="h-full w-full bg-gradient-to-br from-purple-500 to-blue-500 dark:from-purple-800 dark:to-blue-800 blur-3xl"></div>
+      </div>
 
       {/* Icon Container */}
-      <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 shadow-md">
         {children}
       </div>
 
       {/* Data and Rate Section */}
-      <div className="mt-4 flex items-end justify-between">
+      <div className="mt-5 flex items-end justify-between">
         {/* Total and Title */}
         <div>
-          <h4 className="text-title-md font-bold text-black dark:text-white">
-            {total}
-          </h4>
-          <span className="text-sm font-medium">{title}</span>
+          <h4 className="text-2xl font-extrabold text-gray-900 dark:text-white">{total}</h4>
+          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</span>
         </div>
 
         {/* Rate and Trend Indicator */}
         <span
-          className={`flex items-center gap-1 text-sm font-medium ${levelUp ? 'text-meta-3' : ''
-            } ${levelDown ? 'text-meta-5' : ''}`}
+          className={`flex items-center gap-1 text-sm font-semibold ${
+            levelUp ? "text-green-500" : ""
+          } ${levelDown ? "text-red-500" : ""}`}
         >
           {rate}
-
           {/* Upward Trend Icon */}
-          {levelUp && (
-            <svg
-              className="fill-meta-3"
-              width="10"
-              height="11"
-              viewBox="0 0 10 11"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4.35716 2.47737L0.908974 5.82987L5.0443e-07 4.94612L5 0.0848689L10 4.94612L9.09103 5.82987L5.64284 2.47737L5.64284 10.0849L4.35716 10.0849L4.35716 2.47737Z"
-                fill=""
-              />
-            </svg>
-          )}
-
+          {levelUp && <ArrowUp className="h-4 w-4" />}
           {/* Downward Trend Icon */}
-          {levelDown && (
-            <svg
-              className="fill-meta-5"
-              width="10"
-              height="11"
-              viewBox="0 0 10 11"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5.64284 7.69237L9.09102 4.33987L10 5.22362L5 10.0849L-8.98488e-07 5.22362L0.908973 4.33987L4.35716 7.69237L4.35716 0.0848701L5.64284 0.0848704L5.64284 7.69237Z"
-                fill=""
-              />
-            </svg>
-          )}
+          {levelDown && <ArrowDown className="h-4 w-4" />}
         </span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CardDataStats;
+export default CardDataStats

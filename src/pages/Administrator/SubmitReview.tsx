@@ -4,6 +4,7 @@ import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getDatosPerfil } from "../../ts/General/GetProfileData" // Make sure to import correctly
 import { enviaRevision } from "../../ts/Administrator/SubmitReview" // Make sure to import correctly
 import ModalCreateUserSinLogin from "../../components/Modals/CreateUserWithoutLogin"
+import { User, FileText, CheckCircle, Loader2, UploadCloud } from "lucide-react"
 
 /**
  * Component for submitting thesis reviews
@@ -124,68 +125,113 @@ const SubmitReview: React.FC = () => {
   return (
     <>
       <Breadcrumb pageName="Enviar Tesis a Revisión" />
-      <div className="mx-auto max-w-4xl px-6 py-8 bg-white rounded-xl shadow-md">
-        <div className="relative mb-6">
-          <h1 className="text-2xl font-semibold text-center text-gray-800">Formulario</h1>
+      <div className="mx-auto max-w-4xl px-6 py-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
+        <div className="relative mb-8 flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Formulario de Revisión</h1>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="absolute right-0 top-0 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-5 py-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Crear Usuario
           </button>
         </div>
 
         <div className="mb-6">
-          <label htmlFor="studentId" className="block text-sm font-semibold text-gray-700 dark:text-white">
-            Carnet
+          <label htmlFor="studentId" className="block text-lg font-semibold text-gray-700 dark:text-white mb-2">
+            <User className="inline-block h-5 w-5 mr-2 text-blue-500" /> Carnet del Estudiante
           </label>
           <input
             type="text"
             id="studentId"
             value={studentId}
             onChange={handleStudentIdChange}
-            className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-boxdark dark:border-strokedark dark:text-white"
-            placeholder="Ingresa el carnet"
+            className="w-full px-4 py-3 mt-1 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white placeholder:text-gray-400 text-base"
+            placeholder="Ingresa el carnet del estudiante"
           />
         </div>
 
-        <label className="block text-sm font-semibold text-gray-700 dark:text-white mb-4 text-center">
-          Archivos Solicitados
-        </label>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 text-center">Archivos Solicitados</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
           <div className="w-full">
-            <label htmlFor="file1" className="block text-sm font-semibold text-gray-700 dark:text-white">
-              Tesis Aprobada
+            <label htmlFor="file1" className="block text-lg font-semibold text-gray-700 dark:text-white mb-2">
+              <FileText className="inline-block h-5 w-5 mr-2 text-green-500" /> Tesis Aprobada
             </label>
-            <input
-              type="file"
-              id="file1"
-              onChange={handleFile1Change}
-              className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-            />
+            <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-green-500 transition-all duration-300">
+              <input
+                type="file"
+                id="file1"
+                onChange={handleFile1Change}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="flex flex-col items-center justify-center">
+                {approvedThesis ? (
+                  <>
+                    <CheckCircle className="h-12 w-12 text-green-500 mb-3" />
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">{approvedThesis.name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Archivo seleccionado</p>
+                  </>
+                ) : (
+                  <>
+                    <UploadCloud className="h-12 w-12 text-blue-500 mb-3" />
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Arrastra y suelta tu tesis aquí
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">o haz clic para seleccionar</p>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="w-full">
-            <label htmlFor="file2" className="block text-sm font-semibold text-gray-700 dark:text-white">
-              Carta de Aprobación
+            <label htmlFor="file2" className="block text-lg font-semibold text-gray-700 dark:text-white mb-2">
+              <FileText className="inline-block h-5 w-5 mr-2 text-purple-500" /> Carta de Aprobación
             </label>
-            <input
-              type="file"
-              id="file2"
-              onChange={handleFile2Change}
-              className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-            />
+            <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-purple-500 transition-all duration-300">
+              <input
+                type="file"
+                id="file2"
+                onChange={handleFile2Change}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="flex flex-col items-center justify-center">
+                {approvalLetter ? (
+                  <>
+                    <CheckCircle className="h-12 w-12 text-green-500 mb-3" />
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">{approvalLetter.name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Archivo seleccionado</p>
+                  </>
+                ) : (
+                  <>
+                    <UploadCloud className="h-12 w-12 text-blue-500 mb-3" />
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Arrastra y suelta tu carta aquí
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">o haz clic para seleccionar</p>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="mb-6 flex justify-center">
           <button
             onClick={handleSubmit}
-            disabled={loading}
-            className={`px-6 py-2 w-full sm:w-auto ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500`}
+            disabled={loading || !studentId || !approvedThesis || !approvalLetter || campusId === null}
+            className={`px-8 py-3 w-full flex justify-center items-center rounded-lg bg-gradient-to-br from-green-500 to-teal-600 font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 ${loading || !studentId || !approvedThesis || !approvalLetter || campusId === null
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+              }`}
           >
-            {loading ? "Enviando..." : "Enviar Revisión"}
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin h-5 w-5 mr-3" /> Enviando...
+              </>
+            ) : (
+              "Enviar Revisión"
+            )}
           </button>
         </div>
       </div>

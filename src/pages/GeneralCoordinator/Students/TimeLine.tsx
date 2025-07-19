@@ -7,6 +7,7 @@ import ModalNota from "../../../components/Modals/UpdateNote"
 import Swal from "sweetalert2"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFIndividual from "../../../components/Pdfs/generatesIndividualPDF"
+import { ArrowLeft, CalendarDays, Clock, FileText, Award, Users, Printer, XCircle } from "lucide-react" // Import Lucide React icons
 
 /**
  * Interface for a single event in the timeline
@@ -24,41 +25,29 @@ interface TimeLineEvent {
  * Displays a chronological timeline of student activities
  */
 const TimeLine: React.FC = () => {
-  // Retrieving current location and navigation from React Router
   const location = useLocation()
   const navigate = useNavigate()
-
-  // Setting state for pagination, events, and loading indicator
   const [events, setEvents] = useState<TimeLineEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
-
-  // Extracting student data and selected year/course from the location state
   const { estudiante, selectedAño, selectedCurso } = location.state || {}
   const studentName = estudiante ? estudiante.userName : "Desconocido"
   const userId = estudiante ? estudiante.id : null
 
-  /**
-   * Fetching the timeline events when the component mounts or userId changes
-   */
   useEffect(() => {
-    // If no valid userId is provided, display an error alert
     if (!userId) {
       showAlert("error", "¡Error!", "No se proporcionó un user_id válido.")
       setLoading(false)
       return
     }
 
-    // Function to fetch the timeline events
     const fetchTimeline = async () => {
       try {
         setLoading(true)
-        // Fetching events for the student based on userId
         const logs = await getTimeLineEstudiante(userId)
-        // Sorting events by date in descending order and formatting the date
         setEvents(
           logs
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Orden descendente
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .map((log) => ({
               user_id: log.user_id,
               typeEvent: log.typeEvent,
@@ -68,20 +57,17 @@ const TimeLine: React.FC = () => {
             })),
         )
       } catch (err: any) {
-        // Handling errors if needed
+        console.error("Error fetching timeline:", err)
+        showAlert("error", "Error", "Hubo un problema al cargar la línea de tiempo.")
       } finally {
         setLoading(false)
       }
     }
-
     fetchTimeline()
   }, [userId])
 
-  /**
-   * Function to show SweetAlert messages
-   */
-  const showAlert = (type: "success" | "error", title: string, text: string) => {
-    const confirmButtonColor = type === "success" ? "#28a745" : "#dc3545"
+  const showAlert = (type: "success" | "error" | "warning", title: string, text: string) => {
+    const confirmButtonColor = type === "success" ? "#28a745" : type === "error" ? "#dc3545" : "#ffc107"
     Swal.fire({
       icon: type,
       title,
@@ -91,67 +77,68 @@ const TimeLine: React.FC = () => {
     })
   }
 
-  /**
-   * Function to handle PDF generation when the "Imprimir Reporte" button is clicked
-   */
   const handlePrintPDF = () => {
     if (estudiante && selectedAño) {
-      generaPDFIndividual(estudiante, selectedAño, selectedCurso) // Llamamos a la función que genera el PDF
+      generaPDFIndividual(estudiante, selectedAño, selectedCurso)
+    } else {
+      showAlert("warning", "Información Faltante", "No se puede generar el reporte sin datos del estudiante o año.")
     }
   }
 
-  /**
-   * Responsive design: adjust container styles on window resize
-   */
-  useEffect(() => {
-    const handleResize = () => {
-      // Podemos agregar ajustes responsivos específicos aquí si es necesario
-    }
-
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  // Loading state: if still loading, display loading text
   if (loading) {
-    return <div>Cargando línea de tiempo...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="flex flex-col items-center text-gray-700 dark:text-gray-300">
+          <svg
+            className="animate-spin h-10 w-10 text-blue-500 mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <p className="text-lg">Cargando línea de tiempo... ⏳</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <>
-      <Breadcrumb pageName="TimeLine" />
-      <div className="mb-4 flex items-center justify-between sm:justify-start gap-4">
-        {/* Botón de regresar */}
+      <Breadcrumb pageName="TimeLine ⏳" />
+      <div className="mb-6 flex items-center justify-between sm:justify-start gap-4">
         <button
           id="back-button"
-          className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
+          className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
           onClick={() => navigate(-1)}
         >
-          <span className="mr-2">←</span> Regresar
+          <ArrowLeft className="h-5 w-5 mr-2" /> Regresar
         </button>
-
-        {/* Botón para iniciar el recorrido */}
         <TourTimeLine />
-
         <button
           onClick={() => setModalOpen(true)}
-          className="ml-[-15px] md:ml-[270px] px-17 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+          className="px-6 py-2 rounded-full bg-gradient-to-br from-green-500 to-teal-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
         >
-          Nota
+          <Award className="h-5 w-5 inline-block mr-2" /> Nota
         </button>
       </div>
-
-      <div className="mx-auto max-w-6xl px-6 -my-3">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-black dark:text-white">Línea de Tiempo - {studentName}</h2>
-          <div className="flex gap-4">
+      <div className="mx-auto max-w-7xl px-4 py-6">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl">
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4 md:mb-0 flex items-center">
+            <Users className="h-8 w-8 mr-3 text-blue-600" /> Línea de Tiempo - {studentName}
+          </h2>
+          <div className="flex flex-col sm:flex-row gap-4">
             <button
               id="print-report"
               onClick={handlePrintPDF}
-              className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+              className="flex items-center px-6 py-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              Imprimir Reporte
+              <Printer className="h-5 w-5 mr-2" /> Imprimir Reporte
             </button>
             <button
               id="view-tasks"
@@ -160,72 +147,57 @@ const TimeLine: React.FC = () => {
                   state: { estudiante, selectedAño },
                 })
               }}
-              className="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md dark:bg-blue-600"
+              className="flex items-center px-6 py-2 bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             >
-              Ver Tareas
+              <FileText className="h-5 w-5 mr-2" /> Ver Tareas
             </button>
           </div>
         </div>
-
         <div id="timeline" className="mt-8 overflow-x-auto pb-4">
           {events.length > 0 ? (
-            <ol className="flex items-center min-w-max" style={{ paddingRight: "2rem" }}>
+            <ol className="flex items-center min-w-max bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
               {events.map((event, index) => (
                 <li
                   key={index}
-                  className="relative flex-shrink-0 flex flex-col justify-start"
-                  style={{ minWidth: "280px", maxWidth: "350px", minHeight: "180px" }}
+                  className="relative flex-shrink-0 flex flex-col justify-start items-center text-center"
+                  style={{ minWidth: "280px", maxWidth: "350px", minHeight: "220px" }}
                 >
-                  <div className="flex items-start">
-                    <div className="z-10 flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0 mt-2">
-                      <svg
-                        className="w-4 h-4 text-blue-800 dark:text-blue-300"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                      </svg>
+                  <div className="flex flex-col items-center">
+                    <div className="z-10 flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full ring-4 ring-white dark:bg-blue-900 dark:ring-gray-900 shadow-md">
+                      <CalendarDays className="w-6 h-6 text-blue-800 dark:text-blue-300" />
                     </div>
                     {index < events.length - 1 && (
                       <div
-                        className="flex w-full bg-gray-200 h-0.5 dark:bg-gray-700 mt-6 ml-2"
-                        style={{ minWidth: "50px" }}
+                        className="flex w-full bg-gray-300 h-1 dark:bg-gray-700 mt-4"
+                        style={{ minWidth: "100px" }}
                       ></div>
                     )}
                   </div>
-                  <div className="mt-4 pr-8">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{event.typeEvent}</h3>
-                    <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-                      {event.date}
+                  <div className="mt-6 px-4">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{event.typeEvent}</h3>
+                    <time className="block mb-2 text-sm font-medium leading-none text-gray-500 dark:text-gray-400 flex items-center justify-center">
+                      <Clock className="h-4 w-4 mr-1" /> {event.date}
                     </time>
-                    <p className="text-base font-normal text-gray-500 dark:text-gray-400">{event.description}</p>
+                    <p className="text-base font-normal text-gray-700 dark:text-gray-300">{event.description}</p>
                   </div>
                 </li>
               ))}
             </ol>
           ) : (
-            <table className="min-w-full">
-              <tbody>
-                <tr>
-                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
-                    No Se Encontraron Eventos En Este Estudiante.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center">
+              <XCircle className="h-20 w-20 mb-6 text-red-500" />
+              <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                ¡No Se Encontraron Eventos En Este Estudiante! 😔
+              </p>
+              <p className="text-lg text-gray-600 dark:text-gray-400">
+                Parece que no hay actividades registradas para este estudiante.
+              </p>
+            </div>
           )}
         </div>
       </div>
-      {/* Modal de calificación */}
       {userId && selectedCurso && (
-        <ModalNota
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          studentId={userId}
-          courseId={selectedCurso}
-        />
+        <ModalNota isOpen={modalOpen} onClose={() => setModalOpen(false)} studentId={userId} courseId={selectedCurso} />
       )}
     </>
   )

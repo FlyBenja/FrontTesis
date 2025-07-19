@@ -7,6 +7,7 @@ import { getDatosPerfil, type PerfilData } from "../../ts/General/GetProfileData
 import TourInfoCap from "../../components/Tours/Student/TourInfoCap"
 import Swal from "sweetalert2"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import { ArrowLeft, MessageSquare, Calendar } from "lucide-react" // Import Lucide React icons
 
 /**
  * Interface defining the structure for the comments
@@ -25,10 +26,8 @@ interface Comentario {
 const InfoChapter: React.FC = () => {
   const navigate = useNavigate() // Hook for navigating to different routes
   const location = useLocation() // Hook for accessing location state passed via navigation
-
   // Destructure data passed from the previous page
   const { task_id, endTask, endTime, NameCapitulo } = location.state || {}
-
   // States for managing comment text, previous comments, user ID, and whether the input is blocked
   const [comentario, setComentario] = useState<string>("") // State for current comment text
   const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]) // State for storing previous comments
@@ -46,19 +45,15 @@ const InfoChapter: React.FC = () => {
     const currentDate = new Date()
     const endDate = new Date(endTask) // Convert the passed endTask date into a Date object
     const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()) // Strip the time for current date comparison
-
     const currentHour = currentDate.getHours()
     const currentMinutes = currentDate.getMinutes()
     const currentSeconds = currentDate.getSeconds()
-
     // Format the current time into HH:MM:SS
     const formattedCurrentTime = `${currentHour.toString().padStart(2, "0")}:${currentMinutes.toString().padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
     const formattedCurrentDateTime = `${currentDateOnly.toISOString().split("T")[0]} ${formattedCurrentTime}`
-
     // Format the task's end time for comparison
     const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()))
     const formattedEndDateTime = `${endDateOnly.toISOString().split("T")[0]} ${endTime || ""}`
-
     // Return true if the task's end date/time is in the past
     if (isNaN(endDateOnly.getTime())) return true
     return formattedCurrentDateTime > formattedEndDateTime
@@ -77,11 +72,9 @@ const InfoChapter: React.FC = () => {
    */
   const cargarComentarios = async () => {
     if (!task_id || !userId) return // If task_id or userId are missing, do nothing
-
     try {
       // Fetch the comments using the task_id and user_id
       const comentarios: ComentarioData = await getComentarios(task_id, userId)
-
       // Map the fetched comments into the required format
       const comentariosFormateados = comentarios.comments.map((comment) => ({
         id: comment.comment_id, // Unique comment ID
@@ -90,10 +83,8 @@ const InfoChapter: React.FC = () => {
         role: comment.role,
         comment_active: comment.comment_active,
       }))
-
       // Update state with formatted comments
       setComentariosPrevios(comentariosFormateados)
-
       // Check if the first comment is from the student and block input accordingly
       if (comentariosFormateados.length > 0 && comentariosFormateados[0].role === "Estudiante") {
         setInputBloqueado(true)
@@ -125,7 +116,6 @@ const InfoChapter: React.FC = () => {
         })
       }
     }
-
     cargarPerfil() // Call the function to load profile data
   }, [])
 
@@ -160,14 +150,12 @@ const InfoChapter: React.FC = () => {
       })
       return
     }
-
     // Prepare the comment data
     const commentData = {
       comment: comentario,
       role: "student",
       user_id: userId,
     }
-
     try {
       // Attempt to send the comment via the API
       await enviaComentario(task_id, commentData)
@@ -201,75 +189,85 @@ const InfoChapter: React.FC = () => {
     <>
       {/* Breadcrumb to show the current page's name */}
       <Breadcrumb pageName={`Detalle del Capítulo - ${NameCapitulo}`} />
-
-      <div className="mb-4 flex justify-between">
-        {/* Button to go back to the previous page */}
-        <button
-          id="back-button"
-          className="flex items-center text-gray-700 dark:text-white bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-md"
-          onClick={() => navigate(-1)}
-        >
-          <span className="mr-2">←</span> Regresar
-        </button>
+      <div className="mb-6 flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          {/* Button to go back to the previous page */}
+          <button
+            id="back-button"
+            className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" /> Regresar
+          </button>
+          {/* Tour start button */}
+          <TourInfoCap />
+        </div>
       </div>
-
-      {/* Tour start button */}
-      <TourInfoCap />
-
-      <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
-        {/* Display previous comments */}
-        <div id="comentarios-previos" className="w-full md:w-1/2 h-72 bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
-          <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Comentarios Previos</h4>
-          {comentariosPrevios.length === 0 ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">No hay comentarios sobre alguna corrección</p>
-          ) : (
-            <ul className="space-y-4">
-              {/* List of previous comments */}
-              {comentariosPrevios.map((comentario) => (
-                <li key={comentario.id} className="p-4 bg-white dark:bg-boxdark rounded-lg shadow-md">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">{comentario.texto}</p>
-                  <span className="block text-xs text-gray-500 dark:text-gray-400">{comentario.role}</span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">{comentario.fecha}</span>
+      <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
+        {/* Display the previous comments */}
+        <div
+          id="comentarios-previos"
+          className="w-full md:w-1/2 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl overflow-y-auto max-h-[600px]"
+        >
+          <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <MessageSquare className="h-6 w-6 mr-3 text-blue-500" /> Comentarios Previos
+          </h4>
+          {comentariosPrevios.length > 0 ? (
+            <ul className="space-y-5">
+              {comentariosPrevios.map((comentario, index) => (
+                <li
+                  key={`${comentario.id}-${index}`}
+                  className="p-5 bg-gray-50 dark:bg-gray-700 rounded-xl shadow-md border border-gray-200 dark:border-gray-600 transition-all duration-300 hover:shadow-lg"
+                >
+                  <p className="text-base text-gray-800 dark:text-gray-200 mb-2">{comentario.texto}</p>
+                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                    <span className="font-medium">Rol: {comentario.role}</span>
+                    <span className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1 text-gray-500" /> {comentario.fecha}
+                    </span>
+                  </div>
                 </li>
               ))}
             </ul>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400 text-center">
+              <MessageSquare className="h-12 w-12 mb-4 text-gray-400" />
+              <p className="text-lg font-medium">No hay comentarios previos para este capítulo. 📝</p>
+            </div>
           )}
         </div>
-
-        {/* Send new comment section */}
-        <div id="enviar-comentario" className="w-full md:w-1/2 h-72 p-4 bg-white dark:bg-boxdark rounded-lg">
-          <h4 className="text-lg font-semibold text-black dark:text-white mb-4">Enviar Comentario</h4>
-          {/* Textarea for typing the comment */}
+        {/* Form to submit a new comment */}
+        <div
+          id="enviar-comentario"
+          className="w-full md:w-1/2 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl flex flex-col"
+        >
+          <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <MessageSquare className="h-6 w-6 mr-3 text-blue-500" /> Enviar Comentario
+          </h4>
           <textarea
             id="textarea-comentario"
+            disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado}
             value={comentario}
             onChange={handleComentarioChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={5}
+            className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white placeholder:text-gray-400 flex-grow"
+            rows={8}
             placeholder="Escribe tu comentario aquí..."
-            disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado} // Disable textarea if input is blocked or button is disabled
           />
-          <div className="flex flex-col md:flex-row justify-between items-center mt-1 md:mt-4">
-            {/* Show a message if the button is disabled */}
-            {isButtonDisabled() && (
-              <div className="mb-2 md:mb-0">
-                <p className="text-red-500 text-sm">Tarea llegó a fecha límite.</p>
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-2">
+            {(isButtonDisabled() || isComentarioBloqueado) && (
+              <div className="text-red-500 text-sm font-medium">
+                {isButtonDisabled() && <p>Tarea llegó a fecha límite.</p>}
+                {isComentarioBloqueado && <p>Admin ha bloqueado los comentarios.</p>}
               </div>
             )}
-            {isComentarioBloqueado && (
-              <div className="mb-2 md:mb-0">
-                <p className="text-red-500 text-sm">Admin ha bloqueado los comentarios.</p>
-              </div>
-            )}
-            {/* Submit button to send the comment */}
             <button
               id="enviar-button"
-              className={`px-4 py-2 rounded-md ml-auto ${inputBloqueado || isButtonDisabled() || isComentarioBloqueado
-                  ? "bg-gray-400 text-white cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-                }`}
+              disabled={isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""}
+              className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 ${isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""
+                ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+                } ${!(isButtonDisabled() || isComentarioBloqueado) && "md:ml-auto"}`}
               onClick={handleEnviarComentario}
-              disabled={inputBloqueado || isButtonDisabled() || isComentarioBloqueado} // Disable the button based on the condition
             >
               Enviar Comentario
             </button>

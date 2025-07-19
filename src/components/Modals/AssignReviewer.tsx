@@ -13,6 +13,7 @@ interface AssignReviewerProps {
 interface Revisor {
   user_id: number
   name: string
+  active: boolean
 }
 
 const AssignReviewer: React.FC<AssignReviewerProps> = ({ onClose, revisionThesisId }) => {
@@ -27,7 +28,8 @@ const AssignReviewer: React.FC<AssignReviewerProps> = ({ onClose, revisionThesis
     const fetchRevisores = async () => {
       try {
         const revisoresList = await getRevisores()
-        setRevisores(revisoresList)
+        const filteredRevisores = revisoresList.filter((revisor: Revisor) => revisor.active)
+        setRevisores(filteredRevisores)
       } catch (err) {
         setError("Error al cargar los revisores.")
       } finally {
@@ -88,8 +90,7 @@ const AssignReviewer: React.FC<AssignReviewerProps> = ({ onClose, revisionThesis
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-auto p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
-        {/* Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-32 md:max-w-3xl md:mt-40 lg:max-w-4xl lg:mt-35 lg:ml-[330px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
         <div className="text-center mb-6">
           <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +139,6 @@ const AssignReviewer: React.FC<AssignReviewerProps> = ({ onClose, revisionThesis
             )}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex justify-end mt-5">
             <button
               type="button"

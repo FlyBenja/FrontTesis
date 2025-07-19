@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { getTimeLineEstudiante } from "../../ts/General/GetTimeLineStudent"
 import { getDatosPerfil } from "../../ts/General/GetProfileData"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import { CalendarDays, Clock, Users, XCircle } from "lucide-react" // Import Lucide React icons
 
 /**
  * Interface for the structure of a timeline event
@@ -20,9 +21,6 @@ interface TimeLineEvent {
  */
 const Start: React.FC = () => {
   // State hooks for various pieces of information in the component
-  const [currentPage, setCurrentPage] = useState(1) // Current page number for pagination
-  const [eventsPerPage, setEventsPerPage] = useState(3) // Number of events per page
-  const [maxPageButtons, setMaxPageButtons] = useState(10) // Maximum number of page buttons to display in pagination
   const [events, setEvents] = useState<TimeLineEvent[]>([]) // Array to store the fetched timeline events
   const [loading, setLoading] = useState(true) // Loading state to show loading message while data is being fetched
   const [userName, setUserName] = useState("") // State to store the user's name
@@ -36,7 +34,6 @@ const Start: React.FC = () => {
         setLoading(true) // Set loading to true before fetching data
         const perfil = await getDatosPerfil() // Fetch user profile data
         setUserName(perfil.userName) // Set user name from profile data
-
         const logs = await getTimeLineEstudiante(perfil.user_id) // Fetch timeline events for the student
         setEvents(
           logs
@@ -51,140 +48,88 @@ const Start: React.FC = () => {
         )
       } catch (err: any) {
         // Error handling if necessary (e.g., displaying an error message)
+        console.error("Error fetching timeline:", err)
       } finally {
         setLoading(false) // Set loading to false once the data has been fetched
       }
     }
-
     fetchProfileAndTimeline() // Call the function to fetch the profile and timeline data
-  }, []) // Empty dependency array means this effect runs only once after the component mounts
-
-  // Pagination logic
-  const indexOfLastEvent = currentPage * eventsPerPage // Calculate the index of the last event on the current page
-  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage // Calculate the index of the first event on the current page
-  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent) // Get the events for the current page
-  const totalPages = Math.ceil(events.length / eventsPerPage) // Calculate the total number of pages
-
-  /**
-   * Pagination handler function to change the page
-   */
-  const paginate = (pageNumber: number) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
-      // Ensure the page number is valid
-      setCurrentPage(pageNumber) // Set the current page
-    }
-  }
-
-  /**
-   * Calculate the range of pages to display in the pagination
-   */
-  const getPageRange = () => {
-    const range: number[] = []
-    const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2)) // Start page based on the current page
-    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1) // End page based on the maximum number of buttons
-
-    for (let i = startPage; i <= endPage; i++) {
-      // Push the page numbers into the range array
-      range.push(i)
-    }
-
-    return range // Return the range of page numbers
-  }
-
-  /**
-   * Handle window resizing and adjust the number of events per page and max page buttons based on screen size
-   */
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        // If the screen width is less than 768px (mobile view)
-        setEventsPerPage(4) // Set the number of events per page to 4
-        setMaxPageButtons(5) // Set the maximum number of pagination buttons to 5
-      } else {
-        // For larger screens (desktop view)
-        setEventsPerPage(3) // Set the number of events per page to 3
-        setMaxPageButtons(10) // Set the maximum number of pagination buttons to 10
-      }
-    }
-
-    handleResize() // Call the resize handler initially
-    window.addEventListener("resize", handleResize) // Add event listener for window resize
-    return () => window.removeEventListener("resize", handleResize) // Cleanup the event listener when the component is unmounted
-  }, []) // Empty dependency array means this effect runs only once after the component mounts
+  }, []) // Empty dependency array means this effect runs only once after the component mounts [^2]
 
   // Display loading message if data is still being fetched
   if (loading) {
-    return <div>Cargando línea de tiempo...</div> // Display loading message while fetching data
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="flex flex-col items-center text-gray-700 dark:text-gray-300">
+          <svg
+            className="animate-spin h-10 w-10 text-blue-500 mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <p className="text-lg">Cargando línea de tiempo... ⏳</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <>
-      <Breadcrumb pageName="TimeLine" /> {/* Display breadcrumb with the page name "TimeLine" */}
-      <div className="mx-auto max-w-6xl px-6 -my-3">
-        <h2 className="text-2xl font-bold text-black dark:text-white mb-8">
-          Línea de Tiempo - {userName} {/* Display the timeline title with the user's name */}
-        </h2>
-
-        <div className="relative border-l-2 border-gray-200 dark:border-strokedark">
-          {/* If there are events, display them */}
-          {currentEvents.length > 0 ? (
-            currentEvents.map((event, index) => (
-              <div key={index} className="mb-8 pl-8 relative">
-                <div className="absolute left-[-1.25rem] top-0 flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full">
-                  <span>📝</span> {/* Display an icon for the event */}
-                </div>
-                <div className={`p-4 rounded-lg shadow-md bg-white dark:bg-boxdark dark:text-white`}>
-                  <h3 className="text-lg font-semibold">{event.typeEvent}</h3> {/* Display event type */}
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{event.description}</p>{" "}
-                  {/* Display event description */}
-                  <p className="mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">{event.date}</p>{" "}
-                  {/* Display event date */}
-                </div>
-              </div>
-            ))
-          ) : (
-            // If no events are found, display a message
-            <table className="min-w-full">
-              <tbody>
-                <tr>
-                  <td colSpan={3} className="py-2 px-4 text-center text-gray-500 dark:text-white">
-                    No Se Encontrarón Eventos En Este Estudiante.{" "}
-                    {/* Message indicating no events were found for this student */}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          )}
+      <Breadcrumb pageName="TimeLine ⏳" />
+      <div className="mx-auto max-w-7xl px-4 py-6">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl">
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4 md:mb-0 flex items-center">
+            <Users className="h-8 w-8 mr-3 text-blue-600" /> Línea de Tiempo - {userName}
+          </h2>
         </div>
-
-        <div className="mt-4 flex justify-center">
-          {/* Pagination buttons */}
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1} // Disable the button if on the first page
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8592; {/* Left arrow for previous page */}
-          </button>
-          {getPageRange().map((page) => (
-            <button
-              key={page}
-              onClick={() => paginate(page)} // Navigate to the clicked page
-              className={`mx-1 px-3 py-1 rounded-md border ${currentPage === page
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white"
-                }`}
-            >
-              {page} {/* Display the page number */}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages} // Disable the button if on the last page
-            className="mx-1 px-3 py-1 rounded-md border bg-white text-blue-600 hover:bg-blue-100 dark:bg-boxdark dark:text-white disabled:opacity-50"
-          >
-            &#8594; {/* Right arrow for next page */}
-          </button>
+        <div id="timeline" className="mt-8 overflow-x-auto pb-4">
+          {events.length > 0 ? (
+            <ol className="flex items-center min-w-max bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
+              {events.map((event, index) => (
+                <li
+                  key={index}
+                  className="relative flex-shrink-0 flex flex-col justify-start items-center text-center"
+                  style={{ minWidth: "280px", maxWidth: "350px", minHeight: "220px" }}
+                >
+                  <div className="flex flex-col items-center">
+                    <div className="z-10 flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full ring-4 ring-white dark:bg-blue-900 dark:ring-gray-900 shadow-md">
+                      <CalendarDays className="w-6 h-6 text-blue-800 dark:text-blue-300" />
+                    </div>
+                    {index < events.length - 1 && (
+                      <div
+                        className="flex w-full bg-gray-300 h-1 dark:bg-gray-700 mt-4"
+                        style={{ minWidth: "100px" }}
+                      ></div>
+                    )}
+                  </div>
+                  <div className="mt-6 px-4">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{event.typeEvent}</h3>
+                    <time className="block mb-2 text-sm font-medium leading-none text-gray-500 dark:text-gray-400 flex items-center justify-center">
+                      <Clock className="h-4 w-4 mr-1" /> {event.date}
+                    </time>
+                    <p className="text-base font-normal text-gray-700 dark:text-gray-300">{event.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center">
+              <XCircle className="h-20 w-20 mb-6 text-red-500" />
+              <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                {"¡No Se Encontraron Eventos En Este Estudiante! 😔"}
+              </p>
+              <p className="text-lg text-gray-600 dark:text-gray-400">
+                {"Parece que no hay actividades registradas para este estudiante."}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </>
