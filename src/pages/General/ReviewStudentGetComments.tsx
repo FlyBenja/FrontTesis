@@ -79,6 +79,7 @@ const StudentReviewComments: React.FC = () => {
   // Get student info from the first review (assuming all reviews are from the same student)
   const studentInfo = reviews.length > 0 ? reviews[0].user : null
   const campusInfo = reviews.length > 0 ? reviews[0].user.location : null
+
   return (
     <>
       <Breadcrumb pageName="Revisión de estudiante" />
@@ -97,16 +98,13 @@ const StudentReviewComments: React.FC = () => {
           </div>
         ) : reviews.length > 0 ? (
           <div className="space-y-6">
-            {/* Student Information Card - Shown only once */}
             <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden">
               <div className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-t-xl">
                 <h2 className="text-lg font-bold text-white">Información del Estudiante</h2>
               </div>
               <div className="p-6">
                 <div className="grid md:grid-cols-3 gap-6">
-                  {/* Student info */}
                   <div className="flex flex-col md:flex-row items-start gap-4">
-                    {/* Profile photo */}
                     <div className="flex-shrink-0">
                       {studentInfo?.profilePhoto ? (
                         <img
@@ -120,7 +118,6 @@ const StudentReviewComments: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    {/* Student details */}
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Datos del Alumno</h3>
                       <div className="space-y-1 text-sm">
@@ -136,7 +133,6 @@ const StudentReviewComments: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  {/* Campus info */}
                   <div className="md:col-span-2">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Datos de la Sede</h3>
                     <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
@@ -151,7 +147,7 @@ const StudentReviewComments: React.FC = () => {
                 </div>
               </div>
             </div>
-            {/* Reviews List - Each review shown separately */}
+
             <h2 className="text-xl font-bold text-gray-800 dark:text-white mt-8 mb-4">Revisiones ({reviews.length})</h2>
             <div className="grid gap-6">
               {reviews.map((review) => (
@@ -159,25 +155,26 @@ const StudentReviewComments: React.FC = () => {
                   key={review.revision_thesis_id}
                   className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg"
                 >
-                  {/* Header with status */}
                   <div
-                    className={`px-6 py-3 flex justify-between items-center ${review.active_process ? "bg-green-500" : "bg-red-500"} rounded-t-xl`}
+                    className={`px-6 py-3 flex justify-between items-center ${review.approvaltheses && review.approvaltheses[0]?.status === "approved"
+                        ? "bg-green-500"
+                        : "bg-red-500"
+                      } rounded-t-xl`}
                   >
                     <h2 className="text-lg font-bold text-white">Revisión #{review.revision_thesis_id}</h2>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        review.active_process
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${review.approvaltheses && review.approvaltheses[0]?.status === "approved"
                           ? "bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200"
                           : "bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200"
-                      }`}
+                        }`}
                     >
-                      {review.active_process ? "En proceso" : "Finalizado"}
+                      {review.approvaltheses && review.approvaltheses[0]?.status === "approved"
+                        ? "Aprobado"
+                        : "Finalizado"}
                     </span>
                   </div>
-                  {/* Main content */}
                   <div className="p-6">
                     <div className="grid md:grid-cols-2 gap-6">
-                      {/* Reviewer info */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Datos del Revisor</h3>
                         <div className="space-y-3">
@@ -196,13 +193,12 @@ const StudentReviewComments: React.FC = () => {
                           ))}
                         </div>
                       </div>
-                      {/* Date information */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Fecha de Revisión</h3>
                         <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                           {review.approvaltheses &&
-                          review.approvaltheses[0]?.status === "approved" &&
-                          review.approvaltheses[0]?.date_approved ? (
+                            review.approvaltheses[0]?.status === "approved" &&
+                            review.approvaltheses[0]?.date_approved ? (
                             <div>
                               <p className="text-base font-medium text-gray-800 dark:text-white">
                                 {formatDate(new Date(review.approvaltheses[0].date_approved).toString()).short}
@@ -224,7 +220,7 @@ const StudentReviewComments: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    {/* Comments Section */}
+
                     <div className="mt-6">
                       <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3 flex items-center">
                         <MessageSquare className="mr-2 h-5 w-5" /> Comentarios
@@ -269,7 +265,7 @@ const StudentReviewComments: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    {/* Actions */}
+
                     <div className="mt-6 flex flex-wrap gap-4">
                       {review.thesis_dir && (
                         <button

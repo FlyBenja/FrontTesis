@@ -105,7 +105,7 @@ const AssignPG: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Asignar PG 📚" />
+      <Breadcrumb pageName="Asignar PG" />
       <div className="p-6 max-w-xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl mt-16 border border-gray-200 dark:border-gray-700">
         <div className="border-b border-gray-200 py-4 px-6 dark:border-gray-700 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">

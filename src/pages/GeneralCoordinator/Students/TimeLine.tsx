@@ -110,7 +110,7 @@ const TimeLine: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="TimeLine ⏳" />
+      <Breadcrumb pageName="TimeLine" />
       <div className="mb-6 flex items-center justify-between sm:justify-start gap-4">
         <button
           id="back-button"
@@ -129,8 +129,8 @@ const TimeLine: React.FC = () => {
       </div>
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl">
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4 md:mb-0 flex items-center">
-            <Users className="h-8 w-8 mr-3 text-blue-600" /> Línea de Tiempo - {studentName}
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-2 md:mb-0 flex items-center">
+            <Users className="h-7 w-7 mr-3 text-blue-600" /> Línea de Tiempo - {studentName}
           </h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <button

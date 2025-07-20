@@ -2,12 +2,22 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { createHeadquartersCoordinator } from "../../ts/GeneralCoordinator/CreateHeadquartersCoordinator"
 import { getSedes } from "../../ts/GeneralCoordinator/GetHeadquarters"
+import { getHeadquartersCoordinator } from "../../ts/GeneralCoordinator/GetHeadquartersCoordinator"
 import Swal from "sweetalert2"
 
 interface Sede {
   sede_id: number
   nameSede: string
   address: string
+}
+
+interface Coordinator {
+  user_id: number
+  name: string
+  email: string
+  carnet: string
+  sede_id: number | null
+  location: { nameSede: string } | null
 }
 
 interface CreateCoordinatorProps {
@@ -22,13 +32,29 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
   const [correo, setCorreo] = useState<string>("")
   const [sedeId, setSedeId] = useState<number | null>(null)
   const [sedes, setSedes] = useState<Sede[]>([])
+  const [coordinators, setCoordinators] = useState<Coordinator[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    const fetchSedes = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getSedes()
-        setSedes(data)
+        const sedesData = await getSedes()
+        const coordinatorsData = await getHeadquartersCoordinator()
+
+        const transformedCoordinators = coordinatorsData.map((coord) => ({
+          user_id: coord.user_id,
+          name: coord.name,
+          email: coord.email,
+          carnet: coord.carnet,
+          sede_id: coord.sede_id,
+          location: coord.location,
+        }))
+
+        setSedes(sedesData)
+        setCoordinators(transformedCoordinators)
+        setCodigo("")
+        setNombre("")
+        setCorreo("")
         setSedeId(null)
       } catch (error: any) {
         Swal.fire({
@@ -42,11 +68,7 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
     }
 
     if (isOpen) {
-      fetchSedes()
-      setCodigo("")
-      setNombre("")
-      setCorreo("")
-      setSedeId(null)
+      fetchData()
     }
   }, [isOpen])
 
@@ -88,12 +110,18 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
     }
   }
 
+  // Filtrar sedes que no tienen coordinador asignado
+  const assignedSedesIds = coordinators
+    .filter((coord) => coord.sede_id !== null)
+    .map((coord) => coord.sede_id)
+
+  const availableSedes = sedes.filter((sede) => !assignedSedesIds.includes(sede.sede_id))
+
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-auto p-4">
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-32 md:max-w-3xl md:mt-40 lg:max-w-4xl lg:mt-35 lg:ml-[330px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
-        {/* Header */}
         <div className="text-center mb-6">
           <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,21 +138,20 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                👤 Nombre Completo
+                📧 Correo Electrónico
               </label>
               <input
-                type="text"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
+                type="email"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
                 className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
                            bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
                            focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:bg-white dark:focus:bg-gray-600
                            transition-all duration-200 outline-none"
-                placeholder="Ingrese el nombre completo"
+                placeholder="ejemplo@miumg.edu.gt"
                 required
               />
             </div>
@@ -147,17 +174,17 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                📧 Correo Electrónico
+                👤 Nombre Completo
               </label>
               <input
-                type="email"
-                value={correo}
-                onChange={(e) => setCorreo(e.target.value)}
+                type="text"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
                 className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
                            bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
                            focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:bg-white dark:focus:bg-gray-600
                            transition-all duration-200 outline-none"
-                placeholder="ejemplo@miumg.edu.gt"
+                placeholder="Ingrese el nombre completo"
                 required
               />
             </div>
@@ -173,7 +200,7 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
                 required
               >
                 <option value="">Seleccione una sede</option>
-                {sedes.map((sede) => (
+                {availableSedes.map((sede) => (
                   <option key={sede.sede_id} value={sede.sede_id}>
                     {sede.nameSede}
                   </option>
@@ -182,7 +209,6 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex justify-end mt-5">
             <button
               type="button"

@@ -60,7 +60,7 @@ const Proposals: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Propuestas del Estudiante 📄" />
+      <Breadcrumb pageName="Propuestas del Estudiante" />
       <div className="mb-6 flex items-center justify-between sm:justify-start gap-4">
         <button
           id="back-button"

@@ -197,8 +197,9 @@ const CreateThesisCoordinator: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3"> {/* Este agrupador es la clave */}
+              <div className="flex items-center gap-3">
                 <button
+                  id="boton-crear-coordinador-tesis"
                   onClick={() => openModal()}
                   className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center gap-2 transition-all duration-200 backdrop-blur-sm border border-white/20"
                 >
@@ -212,7 +213,7 @@ const CreateThesisCoordinator: React.FC = () => {
           {/* Table */}
           <div className="p-8">
             <div className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
-              <table className="min-w-full bg-white dark:bg-gray-800">
+              <table id="tabla-coordinadores-tesis" className="min-w-full bg-white dark:bg-gray-800">
                 <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
                   <tr>
                     <th className="py-3 px-4 text-left rounded-tl-xl">Nombre</th>
@@ -240,6 +241,7 @@ const CreateThesisCoordinator: React.FC = () => {
                         <td className="py-3 px-4">
                           <div className="flex items-center justify-center gap-3">
                             <button
+                              id="boton-editar-coordinador-tesis"
                               onClick={() => openModal(coordinator)}
                               className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
                             >
@@ -285,8 +287,8 @@ const CreateThesisCoordinator: React.FC = () => {
                     key={page}
                     onClick={() => paginate(page)}
                     className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page
-                        ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
-                        : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                      ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                      : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
                       }`}
                   >
                     {page}

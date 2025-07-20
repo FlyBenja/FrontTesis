@@ -56,7 +56,7 @@ const Chapters: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName={`Detalle del ${tarea?.title} 📚`} />
+      <Breadcrumb pageName={`Detalle del ${tarea?.title}`} />
       <div className="mb-6 flex justify-between items-center">
         <button
           id="back-button"

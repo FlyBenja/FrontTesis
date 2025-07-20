@@ -145,7 +145,7 @@ const ListProfessors: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Listar Catedráticos 🧑‍🏫" />
+      <Breadcrumb pageName="Listar Catedráticos" />
       <div className="mx-auto max-w-6xl px-4 py-6">
         <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
           <div className="flex-grow w-full md:w-auto">

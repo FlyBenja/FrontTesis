@@ -162,7 +162,7 @@ const UploadStudents = () => {
   // Main JSX structure
   return (
     <>
-      <Breadcrumb pageName="Subir Estudiantes ⬆️" /> {/* Breadcrumb component for navigation */}
+      <Breadcrumb pageName="Subir Estudiantes" /> {/* Breadcrumb component for navigation */}
       <div className="flex justify-center mt-8 px-4">
         <div className="w-full max-w-lg">
           <div className="rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800">

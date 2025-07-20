@@ -88,17 +88,17 @@ const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdmin
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                👤 Nombre Completo
+                📧 Correo Electrónico
               </label>
               <input
-                type="text"
-                value={adminUserName}
-                onChange={(e) => setAdminUserName(e.target.value)}
+                type="email"
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
                 className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
                            bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
                            focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 focus:bg-white dark:focus:bg-gray-600
                            transition-all duration-200 outline-none"
-                placeholder="Ingresa el nombre completo"
+                placeholder="ejemplo@miumg.edu.gt"
                 required
               />
             </div>
@@ -120,17 +120,17 @@ const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdmin
 
           <div className="mb-3">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              📧 Correo Electrónico
+              👤 Nombre Completo
             </label>
             <input
-              type="email"
-              value={adminEmail}
-              onChange={(e) => setAdminEmail(e.target.value)}
+              type="text"
+              value={adminUserName}
+              onChange={(e) => setAdminUserName(e.target.value)}
               className="w-full px-3 py-1.5 border-2 border-gray-200 dark:border-gray-600 rounded-md text-sm
                          bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
                          focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 focus:bg-white dark:focus:bg-gray-600
                          transition-all duration-200 outline-none"
-              placeholder="ejemplo@miumg.edu.gt"
+              placeholder="Ingresa el nombre completo"
               required
             />
           </div>

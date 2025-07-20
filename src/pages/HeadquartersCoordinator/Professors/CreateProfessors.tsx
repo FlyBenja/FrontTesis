@@ -82,7 +82,7 @@ const CreateProfessor = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Crear Catedrático 👨‍🏫" />
+      <Breadcrumb pageName="Crear Catedrático" />
       <div className="flex justify-center mt-8 px-4">
         <div className="w-full max-w-lg overflow-hidden">
           <div className="rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800">

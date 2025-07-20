@@ -218,7 +218,7 @@ const Proposal: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Subir Propuesta 📄" /> {/* Breadcrumb navigation component */}
+      <Breadcrumb pageName="Subir Propuesta" /> {/* Breadcrumb navigation component */}
       <div className="mx-auto max-w-6xl px-4 py-6">
         {taskId === null || noProposalUploaded ? (
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-6 flex flex-col items-center justify-center text-center">

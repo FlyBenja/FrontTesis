@@ -265,7 +265,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Historial --> */}
               <li>
                 <NavLink
-                  to="/coordinadortesis/historial"
+                  to="/coordinadorgeneral/historial"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-bold text-xl text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname === '/coordinadortesis/historial' &&
                     'bg-graydark dark:bg-meta-4'
                     }`}

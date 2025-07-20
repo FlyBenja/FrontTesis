@@ -107,7 +107,7 @@ const TasksStudent: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Tareas del Estudiante 📝" />
+      <Breadcrumb pageName="Tareas del Estudiante" />
       <div className="mb-6 flex items-center justify-between sm:justify-start gap-4">
         <button
           id="back-button"

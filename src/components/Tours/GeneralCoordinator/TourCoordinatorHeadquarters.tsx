@@ -1,11 +1,11 @@
-import { driver } from 'driver.js'; 
-import 'driver.js/dist/driver.css'; 
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 /**
  * This component provides a guided tour for the coordinator management interface.
  * The tour walks the user through the coordinator table, creation button, and deletion functionality.
  */
-const Headquarters = () => {
+const TourCoordinatorHeadquarters = () => {
   /**
    * Starts the guided tour by initializing the driver.js object and defining the steps.
    * Each step highlights an element and provides a description to guide the user.
@@ -40,10 +40,19 @@ const Headquarters = () => {
         },
       },
       {
-        element: '#delete-coordinador', // Class for the "Delete" buttons
+        element: '#boton-asignar-coordinador', // ID of the "Create Coordinator" button
         popover: {
-          title: 'Eliminar Coordinador', // Title for the "Delete Coordinator" step
-          description: 'Puedes eliminar un coordinador haciendo clic en el botón "Eliminar" de la fila correspondiente.', // Description for the "Delete Coordinator" step
+          title: 'Asignar Coordinador', // Title for the "Create Coordinator" step
+          description: 'Haz clic aquí para abrir el formulario de Asignar a un coordinador que no tenga sede asignada.', // Description for the "Create Coordinator" step
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
+        element: '#remover-coordinador', // Class for the "Delete" buttons
+        popover: {
+          title: 'Remover Coordinador', // Title for the "Delete Coordinator" step
+          description: 'Puedes remover un coordinador haciendo clic en el botón "Remover" de la fila correspondiente para quitarle la sede asignada.', // Description for the "Delete Coordinator" step
           side: 'bottom',
           align: 'start',
         },
@@ -87,4 +96,4 @@ const Headquarters = () => {
   );
 };
 
-export default Headquarters;
+export default TourCoordinatorHeadquarters;

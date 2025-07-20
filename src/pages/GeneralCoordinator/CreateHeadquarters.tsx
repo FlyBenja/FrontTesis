@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { getSedes } from "../../ts/GeneralCoordinator/GetHeadquarters"
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
-import HeadquartersComponent from "../../components/Tours/GeneralCoordinator/TourHeadquarters"
+import HeadquartersTour from "../../components/Tours/GeneralCoordinator/TourHeadquarters"
 import CreateHeadquartersModal from "../../components/Modals/CreateHeadquarters"
 import { Building, PlusCircle, Pencil, ChevronLeft, ChevronRight } from "lucide-react" // Import Lucide React icons
 
@@ -107,7 +107,7 @@ const CreateHeadquarters: React.FC = () => {
         {/* Header and Table Container */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 mb-6">
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-500 to-teal-600 px-8 py-6 rounded-t-3xl">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-6 rounded-t-3xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -127,7 +127,7 @@ const CreateHeadquarters: React.FC = () => {
                   <PlusCircle className="h-5 w-5" />
                   <span>Crear Nueva Sede</span>
                 </button>
-                <HeadquartersComponent />
+                <HeadquartersTour />
               </div>
             </div>
           </div>
@@ -135,7 +135,7 @@ const CreateHeadquarters: React.FC = () => {
           <div className="p-8">
             <div className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
               <table id="tabla-sedes" className="min-w-full bg-white dark:bg-gray-800">
-                <thead className="bg-gradient-to-r from-green-500 to-teal-600 text-white text-sm uppercase tracking-wider">
+                <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
                   <tr>
                     <th className="py-3 px-4 text-left rounded-tl-xl hidden sm:table-cell">No.</th>
                     <th className="py-3 px-4 text-left">Nombre</th>
@@ -159,7 +159,7 @@ const CreateHeadquarters: React.FC = () => {
                         </td>
                         <td className="py-3 px-4 text-center">
                           <button
-                            id="edit-sede"
+                            id="boton-edita-sede"
                             onClick={() => handleEditClick(sede.id)}
                             className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
                           >

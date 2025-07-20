@@ -40,10 +40,10 @@ const Headquarters = () => {
         },
       },
       {
-        element: "#delete-sede", // Class for the "Delete" buttons
+        element: "#boton-edita-sede", // Class for the "Delete" buttons
         popover: {
-          title: "Eliminar Sede", // Title for the "Delete Sede" step
-          description: 'Puedes eliminar una sede haciendo clic en el botón "Eliminar" de la fila correspondiente.', // Description for the "Delete Sede" step
+          title: "Editar Sede", // Title for the "Delete Sede" step
+          description: 'Puedes editar una sede haciendo clic en el botón "Editar" de la fila correspondiente.', // Description for the "Delete Sede" step
           side: "bottom",
           align: "start",
         },

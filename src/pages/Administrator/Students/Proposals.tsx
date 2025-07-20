@@ -155,7 +155,7 @@ const Proposals: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Propuestas del Estudiante 📄" /> {/* Breadcrumb component for navigation */}
+      <Breadcrumb pageName="Propuestas del Estudiante" /> {/* Breadcrumb component for navigation */}
       <div className="mb-6 flex items-center justify-between sm:justify-start gap-4">
         {/* Botón de regresar */}
         <button

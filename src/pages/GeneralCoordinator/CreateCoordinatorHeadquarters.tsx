@@ -202,7 +202,7 @@ const CreateCoordinatorSede: React.FC = () => {
                         <td className="py-3 px-4 text-center text-gray-900 dark:text-white">{coordinator.sede}</td>
                         <td className="py-3 px-4 text-center">
                           <button
-                            id="delete-coordinador"
+                            id="remover-coordinador"
                             onClick={() => handleDeleteClick(coordinator.id, coordinator.sede_id)}
                             className="px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
                           >

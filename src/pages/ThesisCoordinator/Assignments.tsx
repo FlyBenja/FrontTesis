@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 import { getRevisionesEnRevision } from "../../ts/ThesisCoordinatorandReviewer/GetReviewsInReview"
 import { getDatosPerfil, type PerfilData } from "../../ts/General/GetProfileData"
+import TourAssignments from "../../components/Tours/ThesisCoordinator/TourAssignments"
 import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { Search, Loader2, ChevronLeft, ChevronRight } from "lucide-react" // Import Lucide React icons
@@ -172,14 +173,16 @@ const Assignments: React.FC = () => {
             )}
           </div>
           <button
+            id="cambiar-orden"
             onClick={handleChangeOrder}
             className="px-5 py-2 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             Cambiar Orden ({order === "asc" ? "Ascendente" : "Descendente"})
           </button>
+          <TourAssignments />
         </div>
         <div className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
-          <table className="min-w-full bg-white dark:bg-gray-800">
+          <table id="tabla-revisiones" className="min-w-full bg-white dark:bg-gray-800">
             <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
               <tr>
                 <th className="py-3 px-4 text-left rounded-tl-xl">No.</th>
@@ -212,7 +215,12 @@ const Assignments: React.FC = () => {
                       {revision.approvalThesis.status}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Ver detalle</button>
+                      <button
+                        id="boton-ver-detalle"
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                      >
+                        Ver detalle
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -242,11 +250,10 @@ const Assignments: React.FC = () => {
               <button
                 key={page}
                 onClick={() => paginate(page)}
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${
-                  currentPage === page
-                    ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
-                    : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                }`}
+                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page
+                  ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                  : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                  }`}
               >
                 {page}
               </button>

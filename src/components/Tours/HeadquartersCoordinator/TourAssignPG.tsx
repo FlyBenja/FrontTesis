@@ -22,19 +22,10 @@ const TourAssignPG = () => {
 
         driverObj.setSteps([
             {
-                element: '#sede', // ID of the "Select Campus" field
-                popover: {
-                    title: 'Seleccionar Sede', // Title for the "Select Campus" step
-                    description: 'Aquí debes seleccionar la sede a la que deseas asignar los proyectos de graduación (PG).', // Description for the "Select Campus" step
-                    side: 'bottom',
-                    align: 'start',
-                },
-            },
-            {
                 element: '#pg1', // ID of the checkbox "PG1"
                 popover: {
                     title: 'Activar PG I', // Title for the "Activate PG I" step
-                    description: 'Marca esta casilla si deseas activar el Proyecto de Graduación I (PG I) para la sede seleccionada.', // Description for the "Activate PG I" step
+                    description: 'Marca esta casilla si deseas activar el Proyecto de Graduación I (PG I).', // Description for the "Activate PG I" step
                     side: 'bottom',
                     align: 'start',
                 },
@@ -43,7 +34,7 @@ const TourAssignPG = () => {
                 element: '#pg2', // ID of the checkbox "PG2"
                 popover: {
                     title: 'Activar PG II', // Title for the "Activate PG II" step
-                    description: 'Marca esta casilla si deseas activar el Proyecto de Graduación II (PG II) para la sede seleccionada.', // Description for the "Activate PG II" step
+                    description: 'Marca esta casilla si deseas activar el Proyecto de Graduación II (PG II).', // Description for the "Activate PG II" step
                     side: 'bottom',
                     align: 'start',
                 },

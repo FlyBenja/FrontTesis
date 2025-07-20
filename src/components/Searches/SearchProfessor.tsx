@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { getDatosPerfil } from "../../ts/General/GetProfileData"
 import { getCatedraticos } from "../../ts/HeadquartersCoordinator/GetProfessor"
 import { getCatedraticoPorCarnet } from "../../ts/HeadquartersCoordinator/GetProfessorCard"
+import { Search, Loader2 } from "lucide-react" // Import Lucide icons
 
 /**
  * Props for the SearchProfessor component.
@@ -71,43 +72,20 @@ const SearchProfessor: React.FC<SearchProfessorProps> = ({ onSearchResults }) =>
   }
 
   return (
-    <div className="mb-4 flex items-center">
-      <div className="relative flex-1 max-w-md">
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <div className="p-2 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/50 dark:to-purple-900/50 rounded-xl">
-            <svg
-              className="w-4 h-4 text-blue-600 dark:text-blue-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </div>
-        <input
-          id="search-input"
-          type="text"
-          placeholder="🔍 Buscar por Código / Nombre Catedrático" // "Search by Code / Professor Name"
-          value={searchCarnet}
-          onChange={(e) => setSearchCarnet(e.target.value)} // Update the searchCarnet state as the user types
-          className="w-full pl-16 pr-4 py-3 bg-white/80 dark:bg-gray-800/80 border border-gray-300/50 dark:border-gray-600/50 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 transition-all duration-300 backdrop-blur-sm shadow-lg hover:shadow-xl text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400"
-        />
-        {isSearching && (
-          <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-            <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-500 border-t-transparent"></div>
-          </div>
-        )}
-      </div>
+    <div className="relative flex items-center">
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Buscar por Carnet de Estudiante 🔍" // Input placeholder with emoji
+        value={searchCarnet} // Bind the input value to the searchCarnet state
+        onChange={(e) => setSearchCarnet(e.target.value)} // Update the searchCarnet state on input change
+        className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-gray-900 shadow-sm outline-none transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-600 sm:w-80"
+      />
+      <Search className="absolute left-3 h-5 w-5 text-gray-400 dark:text-gray-300" />
       {isSearching && (
-        <div className="ml-4 flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
-          <div className="animate-pulse w-2 h-2 bg-blue-500 rounded-full"></div>
-          <span className="font-medium">Buscando...</span>
+        <div className="absolute right-3">
+          <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+          <span className="sr-only">Buscando...</span>
         </div>
       )}
     </div>

@@ -162,6 +162,7 @@ function App() {
             <Route path="capitulo" element={<ChaptersCoordinator />} />
             <Route path="ver-tareas" element={<CreateTasksCoordinator />} />
             <Route path="historial" element={<Record />} />
+            <Route path="historial/detalle" element={<RecordDetails />} />
           </>
         )}
 

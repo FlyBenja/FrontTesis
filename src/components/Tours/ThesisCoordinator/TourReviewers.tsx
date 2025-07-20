@@ -1,67 +1,56 @@
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 
-/**
- * TourCreateAdmin component
- * 
- * This component renders a help button that triggers a guided tour
- * explaining how to manage administrators within the system.
- * 
- */
-const TourCreateAdmin = () => {
-    /**
-     * Starts the guided tour for the admin management interface
-     */
+const TourReviewers = () => {
     const startTour = () => {
         const driverObj = driver({
-            showProgress: true, // Show the progress bar
-            animate: true, // Enable animations
-            prevBtnText: 'Anterior', // "Previous" button text
-            nextBtnText: 'Siguiente', // "Next" button text
-            doneBtnText: 'Finalizar', // "Finish" button text
-            progressText: 'Paso {{current}} de {{total}}', // Progress bar text
+            showProgress: true,
+            animate: true,
+            prevBtnText: 'Anterior',
+            nextBtnText: 'Siguiente',
+            doneBtnText: 'Finalizar',
+            progressText: 'Paso {{current}} de {{total}}',
         });
 
         driverObj.setSteps([
             {
-                element: '#tabla-admins', // ID of the administrators table
+                element: '#tabla-revisores',
                 popover: {
-                    title: 'Tabla de Administradores',
-                    description: 'Aquí se muestran todos los administradores registrados en el sistema.',
+                    title: 'Tabla de Revisores',
+                    description: 'Aquí puedes ver a todos los revisores registrados.',
                     side: 'bottom',
                     align: 'start',
                 },
             },
             {
-                element: '#boton-crear-admin', // ID of the "Create Admin" button
+                element: '#boton-crear-revisor',
                 popover: {
-                    title: 'Crear Administrador',
-                    description: 'Haz clic aquí para abrir el formulario de creación de un nuevo administrador.',
+                    title: 'Crear Revisor',
+                    description: 'Presiona aquí para registrar un nuevo revisor.',
                     side: 'bottom',
                     align: 'start',
                 },
             },
             {
-                element: '#remove-admin', // ID of the "Remove Admin" button
+                element: '#boton-editar-revisor',
                 popover: {
-                    title: 'Remover Administrador',
-                    description: 'Puedes remover un administrador y volverlo un catedratico en la sede que tiene asiganda haciendo clic en el botón "Remover" de la fila correspondiente.',
-                    side: 'bottom',
+                    title: 'Editar Revisor',
+                    description: 'Presiona para modificar un revisor ya registrado.',
+                    side: 'top',
                     align: 'start',
                 },
             },
         ]);
 
-        driverObj.drive(); // Start the guided tour
+        driverObj.drive();
     };
 
     return (
         <div>
-            {/* Button to start the tour */}
             <button
                 onClick={startTour}
                 className="relative w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 rounded-full shadow-md hover:shadow-lg transition duration-300 group"
-                aria-label="Iniciar recorrido guiado" // "Start guided tour" tooltip
+                aria-label="Iniciar recorrido guiado"
             >
                 <svg
                     className="w-5 h-5"
@@ -80,13 +69,12 @@ const TourCreateAdmin = () => {
                         <circle cx="12" cy="17" r="1" fill="currentColor"></circle>
                     </g>
                 </svg>
-                {/* Tooltip */}
                 <span className="absolute bottom-full z-50 left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-xs text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-                    Iniciar recorrido de ayuda {/* "Start guided tour" tooltip text */}
+                    Iniciar recorrido de ayuda
                 </span>
             </button>
         </div>
     );
 };
 
-export default TourCreateAdmin;
+export default TourReviewers;

@@ -7,6 +7,7 @@ import ActivaRevisores from "../../components/Switchers/ActivateReviewers"
 import CrearRevisor from "../../components/Modals/CreateReviewer"
 import Swal from "sweetalert2"
 import { User, ChevronLeft, ChevronRight, PlusCircle, XCircle } from "lucide-react"
+import TourReviewers from "../../components/Tours/ThesisCoordinator/TourReviewers"
 
 const Reviewers: React.FC = () => {
   const [revisores, setRevisores] = useState<any[]>([])
@@ -178,17 +179,21 @@ const Reviewers: React.FC = () => {
                   <p className="text-blue-100 text-sm">Gestiona los revisores del sistema</p>
                 </div>
               </div>
-              <button
-                onClick={() => openModal()}
-                className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center gap-2 transition-all duration-200 backdrop-blur-sm border border-white/20"
-              >
-                <PlusCircle className="h-5 w-5" />
-                <span>Crear Nuevo</span>
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  id="boton-crear-revisor"
+                  onClick={() => openModal()}
+                  className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center gap-2 transition-all duration-200 backdrop-blur-sm border border-white/20"
+                >
+                  <PlusCircle className="h-5 w-5" />
+                  <span>Crear Nuevo</span>
+                </button>
+                <TourReviewers />
+              </div>
             </div>
           </div>
           <div className="p-8">
-            <div className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+            <div id="tabla-revisores" className="overflow-x-auto rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
               <table className="min-w-full bg-white dark:bg-gray-800">
                 <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
                   <tr>
@@ -218,6 +223,7 @@ const Reviewers: React.FC = () => {
                         <td className="py-4 px-4">
                           <div className="flex items-center justify-center gap-3">
                             <button
+                              id="boton-editar-revisor"
                               onClick={() => openModal(revisor)}
                               className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg"
                             >
@@ -262,8 +268,8 @@ const Reviewers: React.FC = () => {
                     key={page}
                     onClick={() => paginate(page)}
                     className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page
-                        ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
-                        : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                      ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                      : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
                       }`}
                   >
                     {page}

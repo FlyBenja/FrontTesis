@@ -11,6 +11,8 @@ const Profile = () => {
   const [profileImage, setProfileImage] = useState<string>()
   const [profileData, setProfileData] = useState<PerfilData | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [storedRole, setStoredRole] = useState<number | null>(null);
+
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -22,13 +24,15 @@ const Profile = () => {
         } else {
           setProfileImage(`${data.userName.charAt(0).toUpperCase()}`)
         }
+        const roleStr = localStorage.getItem('userRole')
+        setStoredRole(roleStr ? parseInt(roleStr) : null)
       } catch (error) {
-        // Error handling
+        // manejo de error
       }
     }
-
     fetchProfileData()
   }, [])
+
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -129,45 +133,55 @@ const Profile = () => {
                 </div>
 
                 {/* Info Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div
+                  className={`grid ${profileData?.NombreSede ? "grid-cols-3" : "grid-cols-1 md:grid-cols-2 md:mx-auto md:max-w-xl"
+                    } gap-4 mt-8`}
+                >
+                  {/* Nivel de Acceso */}
                   <div
                     className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 
-                                  rounded-2xl p-6 border border-blue-200 dark:border-blue-800"
+                rounded-2xl p-6 border border-blue-200 dark:border-blue-800"
                   >
                     <div className="flex items-center justify-center mb-3">
                       <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
                         <FaUser className="text-white text-lg" />
                       </div>
                     </div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Rol</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Nivel de Acceso</h3>
                     <p className="text-blue-600 dark:text-blue-400 font-medium">{profileData.roleName}</p>
                   </div>
 
+                  {/* Carnet o Código */}
                   <div
                     className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 
-                                  rounded-2xl p-6 border border-green-200 dark:border-green-800"
+                rounded-2xl p-6 border border-green-200 dark:border-green-800"
                   >
                     <div className="flex items-center justify-center mb-3">
                       <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
                         <FaIdCard className="text-white text-lg" />
                       </div>
                     </div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Carnet</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
+                      {storedRole === 1 ? "Carnet" : "Código"}
+                    </h3>
                     <p className="text-green-600 dark:text-green-400 font-medium">{profileData.carnet}</p>
                   </div>
 
-                  <div
-                    className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 
-                                  rounded-2xl p-6 border border-purple-200 dark:border-purple-800"
-                  >
-                    <div className="flex items-center justify-center mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-                        <FaBuilding className="text-white text-lg" />
+                  {/* Sede, solo si existe */}
+                  {profileData?.NombreSede && (
+                    <div
+                      className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 
+                  rounded-2xl p-6 border border-purple-200 dark:border-purple-800"
+                    >
+                      <div className="flex items-center justify-center mb-3">
+                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                          <FaBuilding className="text-white text-lg" />
+                        </div>
                       </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Sede</h3>
+                      <p className="text-purple-600 dark:text-purple-400 font-medium">{profileData.NombreSede}</p>
                     </div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Sede</h3>
-                    <p className="text-purple-600 dark:text-purple-400 font-medium">{profileData.NombreSede}</p>
-                  </div>
+                  )}
                 </div>
               </div>
             ) : (

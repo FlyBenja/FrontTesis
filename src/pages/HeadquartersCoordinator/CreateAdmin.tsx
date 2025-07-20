@@ -137,7 +137,7 @@ const CreateAdmin: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Crear Admin a Sede 👑" />
+      <Breadcrumb pageName="Crear Administrador y Asignarlo a una Sede" />
       <div className="mx-auto max-w-7xl px-4 py-6">
         {/* Header and Table Container */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 mb-6">
@@ -200,11 +200,11 @@ const CreateAdmin: React.FC = () => {
                         </td>
                         <td className="py-3 px-4 text-center">
                           <button
-                            id="delete-admin"
+                            id="remove-admin"
                             onClick={() => handleDeleteClick(admin.id || 0)}
                             className="px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
                           >
-                            <Trash2 className="h-4 w-4" /> Eliminar
+                            <Trash2 className="h-4 w-4" /> Remover
                           </button>
                         </td>
                       </tr>
@@ -239,11 +239,10 @@ const CreateAdmin: React.FC = () => {
                   <button
                     key={page}
                     onClick={() => paginate(page)}
-                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${
-                      currentPage === page
+                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page
                         ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
                         : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                    }`}
+                      }`}
                   >
                     {page}
                   </button>
