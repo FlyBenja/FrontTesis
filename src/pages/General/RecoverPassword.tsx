@@ -85,8 +85,8 @@ const RecoverPassword: React.FC = () => {
 
           {/* Header */}
           <div className="text-center mb-8 mt-8">
-            <div className="inline-block p-2 bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl mb-4">
-              <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-20 h-auto" />
+            <div className="inline-block p-2 rounded-2xl mb-4">
+              <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-48 h-auto" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Recuperar Contraseña</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">

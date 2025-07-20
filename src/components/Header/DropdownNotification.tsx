@@ -84,7 +84,7 @@ const DropdownNotification = () => {
             setDropdownOpen(!dropdownOpen) // Toggle dropdown visibility
           }}
           to="#"
-          className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20 backdrop-blur-sm"
+          className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg hover:shadow-xl transform transition-all duration-300 border-2 border-white/20 backdrop-blur-sm"
         >
           {notifying && (
             <span className="absolute -top-1 -right-1 z-10 h-3 w-3 rounded-full bg-gradient-to-r from-red-500 to-pink-500 shadow-lg">

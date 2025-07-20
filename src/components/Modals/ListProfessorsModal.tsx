@@ -198,7 +198,7 @@ const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedR
             onClick={handleAssign}
             disabled={!selectedCatedratico}
             className="flex-1 px-4 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700
-                       text-white font-medium rounded-md transition-all duration-200 transform hover:scale-105 text-sm
+                       text-white font-medium rounded-md transition-all duration-200 transform text-sm
                        disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
                        shadow-lg hover:shadow-xl"
           >

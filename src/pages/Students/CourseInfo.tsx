@@ -210,7 +210,7 @@ const CourseInfo: React.FC = () => {
         <div className="mb-6">
           <button
             id="back-button"
-            className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
+            className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
             onClick={() => navigate(-1)}
           >
             <ChevronLeft className="h-5 w-5 mr-2" /> Regresar
@@ -309,7 +309,7 @@ const CourseInfo: React.FC = () => {
                       disabled={
                         currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
                       }
-                      className={`px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
+                      className={`px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
                           ? "bg-gray-400 cursor-not-allowed focus:ring-gray-500"
                           : "bg-green-600 hover:bg-green-700 focus:ring-green-500"
                         }`}
@@ -339,7 +339,7 @@ const CourseInfo: React.FC = () => {
                         )
                       }
                       disabled={!currentTarea.submission_complete}
-                      className={`px-6 py-3 rounded-xl font-semibold flex items-center justify-center shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${!currentTarea.submission_complete
+                      className={`px-6 py-3 rounded-xl font-semibold flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${!currentTarea.submission_complete
                           ? "bg-gray-400 text-white cursor-not-allowed focus:ring-gray-500"
                           : "bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500"
                         }`}

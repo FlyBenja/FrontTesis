@@ -107,7 +107,7 @@ const Login: React.FC = () => {
         <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 dark:border-gray-700/50">
           {/* Logo Section */}
           <div className="text-center mb-8">
-            <div className="inline-block p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4">
+            <div className="inline-block p-2 rounded-2xl mb-4">
               <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-48 h-auto" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Iniciar Sesión</h1>

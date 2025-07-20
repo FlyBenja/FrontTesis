@@ -210,7 +210,7 @@ const Chapters: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             id="back-button"
-            className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
+            className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
             onClick={() => navigate(-1)}
           >
             <ArrowLeft className="h-5 w-5 mr-2" /> Regresar
@@ -220,7 +220,7 @@ const Chapters: React.FC = () => {
 
         <button
           id="bloquear-button"
-          className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 ${isComentarioBloqueado
+          className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg ${isComentarioBloqueado
               ? "bg-green-600 text-white hover:bg-green-700"
               : "bg-red-600 text-white hover:bg-red-700"
             }`}
@@ -290,7 +290,7 @@ const Chapters: React.FC = () => {
             <button
               id="enviar-button"
               disabled={isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""}
-              className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 ${isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""
+              className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg ${isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""
                   ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
                   : "bg-blue-600 hover:bg-blue-700 text-white"
                 } ${!(isButtonDisabled() || isComentarioBloqueado) && "md:ml-auto"}`}

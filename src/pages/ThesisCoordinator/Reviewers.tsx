@@ -219,7 +219,7 @@ const Reviewers: React.FC = () => {
                           <div className="flex items-center justify-center gap-3">
                             <button
                               onClick={() => openModal(revisor)}
-                              className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+                              className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg"
                             >
                               Editar
                             </button>

@@ -150,7 +150,7 @@ const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdmin
               type="submit"
               disabled={loading}
               className="px-4 py-1.5 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700
-                         text-white font-medium rounded-md transition-all duration-200 transform hover:scale-105 text-sm
+                         text-white font-medium rounded-md transition-all duration-200 transform text-sm
                          disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
                          shadow-lg hover:shadow-xl"
             >

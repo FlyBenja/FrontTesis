@@ -164,7 +164,7 @@ const DropdownUser = () => {
                 className="flex items-center gap-4 text-sm font-medium duration-300 ease-in-out hover:text-blue-600 dark:hover:text-blue-400 lg:text-base p-3 rounded-2xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 transition-all group"
               >
                 {/* User icon */}
-                <div className="p-2 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/50 dark:to-purple-900/50 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                <div className="p-2 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/50 dark:to-purple-900/50 rounded-xl transition-transform duration-300">
                   <svg
                     className="fill-current w-5 h-5 text-blue-600 dark:text-blue-400"
                     viewBox="0 0 22 22"
@@ -191,7 +191,7 @@ const DropdownUser = () => {
                 className="flex items-center gap-4 text-sm font-medium duration-300 ease-in-out hover:text-blue-600 dark:hover:text-blue-400 lg:text-base p-3 rounded-2xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 transition-all group"
               >
                 {/* Settings icon */}
-                <div className="p-2 bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/50 dark:to-red-900/50 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                <div className="p-2 bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/50 dark:to-red-900/50 rounded-xl transition-transform duration-300">
                   <svg
                     className="fill-current w-5 h-5 text-orange-600 dark:text-orange-400"
                     viewBox="0 0 22 22"
@@ -217,7 +217,7 @@ const DropdownUser = () => {
             onClick={handleLogout}
             className="flex items-center gap-4 px-6 py-4 text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 duration-300 ease-in-out lg:text-base p-3 rounded-2xl hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 dark:hover:from-red-900/20 dark:hover:to-pink-900/20 transition-all group"
           >
-            <div className="p-2 bg-gradient-to-br from-red-100 to-pink-100 dark:from-red-900/50 dark:to-pink-900/50 rounded-xl group-hover:scale-110 transition-transform duration-300">
+            <div className="p-2 bg-gradient-to-br from-red-100 to-pink-100 dark:from-red-900/50 dark:to-pink-900/50 rounded-xl transition-transform duration-300">
               <svg
                 className="fill-current w-5 h-5 text-red-600 dark:text-red-400"
                 viewBox="0 0 22 22"

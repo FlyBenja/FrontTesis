@@ -153,7 +153,7 @@ const AssignPG: React.FC = () => {
           </div>
           <button
             type="submit"
-            className={`w-full flex justify-center items-center px-6 py-3 rounded-lg font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isButtonDisabled || loading ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-br from-blue-600 to-purple-700"}`}
+            className={`w-full flex justify-center items-center px-6 py-3 rounded-lg font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isButtonDisabled || loading ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-br from-blue-600 to-purple-700"}`}
             disabled={isButtonDisabled || loading}
           >
             {loading ? (

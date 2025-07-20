@@ -120,8 +120,8 @@ const ChangePassword: React.FC = () => {
               <FaArrowLeft className="w-4 h-4" />
               Regresar
             </button>
-            <div className="inline-block p-2 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl mb-4">
-              <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-20 h-auto" />
+            <div className="inline-block p-2 rounded-2xl mb-4">
+              <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-48 h-auto" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Cambiar Contraseña</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm">Actualiza tu contraseña de acceso</p>

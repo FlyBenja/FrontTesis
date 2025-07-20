@@ -161,7 +161,7 @@ const CreateHeadquarters: React.FC = () => {
                           <button
                             id="edit-sede"
                             onClick={() => handleEditClick(sede.id)}
-                            className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg inline-flex items-center gap-1"
+                            className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
                           >
                             <Pencil className="w-4 h-4" />
                             Editar

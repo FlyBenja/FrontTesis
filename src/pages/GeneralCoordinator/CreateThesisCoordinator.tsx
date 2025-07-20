@@ -8,7 +8,7 @@ import TourThesisCoordinator from "../../components/Tours/GeneralCoordinator/Tou
 import ActivateThesisCoordinator from "../../components/Switchers/ActivateThesisCoordinator"
 import CreateThesisCoordinatorModal from "../../components/Modals/CreateThesisCoordinator"
 import Swal from "sweetalert2"
-import { User, ChevronLeft, ChevronRight, PlusCircle, XCircle, Pencil } from "lucide-react" // Import Lucide icons
+import { User, ChevronLeft, ChevronRight, UserPlus, XCircle, Pencil } from "lucide-react" // Import Lucide icons
 
 const CreateThesisCoordinator: React.FC = () => {
   const [coordinators, setCoordinators] = useState<any[]>([])
@@ -202,7 +202,7 @@ const CreateThesisCoordinator: React.FC = () => {
                   onClick={() => openModal()}
                   className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl flex items-center gap-2 transition-all duration-200 backdrop-blur-sm border border-white/20"
                 >
-                  <PlusCircle className="h-5 w-5" />
+                  <UserPlus className="h-5 w-5" />
                   <span>Crear Nuevo</span>
                 </button>
                 <TourThesisCoordinator />
@@ -241,7 +241,7 @@ const CreateThesisCoordinator: React.FC = () => {
                           <div className="flex items-center justify-center gap-3">
                             <button
                               onClick={() => openModal(coordinator)}
-                              className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg inline-flex items-center gap-1"
+                              className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
                             >
                               <Pencil className="w-4 h-4" />
                               Editar

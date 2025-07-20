@@ -125,7 +125,7 @@ const TimeLine: React.FC = () => {
       <div className="mb-6 flex items-center justify-between sm:justify-start gap-4">
         <button
           id="back-button"
-          className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
+          className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
           onClick={() => navigate(-1)}
         >
           <ArrowLeft className="h-5 w-5 mr-2" /> Regresar
@@ -133,7 +133,7 @@ const TimeLine: React.FC = () => {
         <TourTimeLine />
         <button
           onClick={() => setModalOpen(true)}
-          className="px-6 py-2 rounded-full bg-gradient-to-br from-green-500 to-teal-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+          className="px-6 py-2 rounded-full bg-gradient-to-br from-green-500 to-teal-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
         >
           <Award className="h-5 w-5 inline-block mr-2" /> Nota
         </button>
@@ -147,7 +147,7 @@ const TimeLine: React.FC = () => {
             <button
               id="print-report"
               onClick={handlePrintPDF}
-              className="flex items-center px-6 py-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="flex items-center px-6 py-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <Printer className="h-5 w-5 mr-2" /> Imprimir Reporte
             </button>
@@ -158,7 +158,7 @@ const TimeLine: React.FC = () => {
                   state: { estudiante, selectedAño },
                 })
               }}
-              className="flex items-center px-6 py-2 bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="flex items-center px-6 py-2 bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             >
               <FileText className="h-5 w-5 mr-2" /> Ver Tareas
             </button>

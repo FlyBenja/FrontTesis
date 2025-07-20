@@ -159,7 +159,7 @@ const CreateThesisCoordinatorModal: React.FC<CreateThesisCoordinatorModalProps> 
               type="submit"
               disabled={isLoading}
               className="px-4 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700
-                         text-white font-medium rounded-md transition-all duration-200 transform hover:scale-105 text-sm
+                         text-white font-medium rounded-md transition-all duration-200 transform text-sm
                          disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
                          shadow-lg hover:shadow-xl"
             >

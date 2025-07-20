@@ -146,7 +146,7 @@ const CreateProfessor = () => {
                 </div>
                 <button
                   type="submit"
-                  className={`flex w-full justify-center items-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-700 p-3 font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+                  className={`flex w-full justify-center items-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-700 p-3 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
                   disabled={loading}
                 >
                   {loading ? (

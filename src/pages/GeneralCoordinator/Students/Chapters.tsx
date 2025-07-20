@@ -60,7 +60,7 @@ const Chapters: React.FC = () => {
       <div className="mb-6 flex justify-between items-center">
         <button
           id="back-button"
-          className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
+          className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
           onClick={() => navigate(-1)}
         >
           <ArrowLeft className="h-5 w-5 mr-2" /> Regresar

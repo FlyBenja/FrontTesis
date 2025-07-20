@@ -251,7 +251,7 @@ const ListStudents: React.FC = () => {
           <div className="flex items-center space-x-3">
             <button
               id="print-report"
-              className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={() => handlePrintPDF(Number(selectedAño), Number(selectedCurso))}
             >
               <Printer className="h-5 w-5 mr-2" /> Imprimir Reporte

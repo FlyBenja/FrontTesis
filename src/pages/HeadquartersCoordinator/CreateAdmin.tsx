@@ -202,7 +202,7 @@ const CreateAdmin: React.FC = () => {
                           <button
                             id="delete-admin"
                             onClick={() => handleDeleteClick(admin.id || 0)}
-                            className="px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white text-sm font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg inline-flex items-center gap-1"
+                            className="px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
                           >
                             <Trash2 className="h-4 w-4" /> Eliminar
                           </button>

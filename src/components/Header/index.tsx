@@ -84,7 +84,7 @@ const Header = (props: {
               e.stopPropagation()
               props.setSidebarOpen(!props.sidebarOpen)
             }}
-            className="z-99999 block rounded-2xl border border-gray-200/50 bg-white/80 backdrop-blur-sm p-2 shadow-lg hover:shadow-xl dark:border-gray-700/50 dark:bg-gray-800/80 lg:hidden transition-all duration-300 hover:scale-105"
+            className="z-99999 block rounded-2xl border border-gray-200/50 bg-white/80 backdrop-blur-sm p-2 shadow-lg hover:shadow-xl dark:border-gray-700/50 dark:bg-gray-800/80 lg:hidden transition-all duration-300"
           >
             <span className="relative block h-5.5 w-5.5 cursor-pointer">
               <span className="du-block absolute right-0 h-full w-full">

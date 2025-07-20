@@ -251,7 +251,7 @@ const CreateTasks: React.FC = () => {
                     setIsModalOpen(true)
                     setModalMode("create")
                   }}
-                  className={`px-6 py-3 rounded-xl hover:bg-gradient-to-l transition duration-300 flex items-center justify-center text-lg font-semibold shadow-md hover:shadow-lg hover:scale-105 ${
+                  className={`px-6 py-3 rounded-xl hover:bg-gradient-to-l transition duration-300 flex items-center justify-center text-lg font-semibold shadow-md hover:shadow-lg ${
                     isCurrentYear
                       ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                       : "bg-gray-400 text-gray-700 cursor-not-allowed"
@@ -303,7 +303,7 @@ const CreateTasks: React.FC = () => {
                             setModalMode("edit")
                             setSelectedTaskId(task.task_id)
                           }}
-                          className={`ml-4 px-3 py-2 rounded-full flex items-center justify-center text-white text-lg font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ${
+                          className={`ml-4 px-3 py-2 rounded-full flex items-center justify-center text-white text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 ${
                             isCurrentYear ? "bg-yellow-500 hover:bg-yellow-600" : "bg-gray-400 cursor-not-allowed"
                           }`}
                           disabled={!isCurrentYear}

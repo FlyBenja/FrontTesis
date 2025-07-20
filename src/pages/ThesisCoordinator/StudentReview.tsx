@@ -157,7 +157,7 @@ const StudentReview: React.FC = () => {
                       <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Documento de Tesis</h3>
                       <div className="flex flex-wrap gap-4">
                         <button
-                          className="flex items-center px-5 py-2.5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          className="flex items-center px-5 py-2.5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                           onClick={() => handleDownload(revision.thesis_dir, `tesis_${revision.user.carnet}.pdf`)}
                         >
                           <Download className="mr-2 h-5 w-5" /> Descargar Tesis
@@ -181,7 +181,7 @@ const StudentReview: React.FC = () => {
 
                 <div className="mt-6 text-right">
                   <button
-                    className="flex items-center justify-center ml-auto px-5 py-2.5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="flex items-center justify-center ml-auto px-5 py-2.5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     onClick={() => handleOpenModal(revision.revision_thesis_id)}
                   >
                     <User className="mr-2 h-5 w-5" /> Asignar Revisor

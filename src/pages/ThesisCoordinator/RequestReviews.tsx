@@ -158,7 +158,7 @@ const RequestReviews: React.FC = () => {
           </div>
           <button
             onClick={handleChangeOrder}
-            className="px-5 py-2 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="px-5 py-2 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             Cambiar Orden ({order === "asc" ? "Ascendente" : "Descendente"})
           </button>

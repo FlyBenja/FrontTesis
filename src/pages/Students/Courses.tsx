@@ -85,7 +85,7 @@ const Courses: React.FC = () => {
           {courses.map((course) => (
             <div
               key={course.course_id}
-              className="w-full max-w-sm p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
+              className="w-full max-w-sm p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 transform transition-all duration-300 hover:shadow-2xl"
             >
               <div className="flex items-center justify-center mb-6">
                 <BookOpen className="h-16 w-16 text-purple-600 dark:text-purple-400" />
@@ -94,7 +94,7 @@ const Courses: React.FC = () => {
               <p className="text-gray-700 dark:text-gray-300 mb-6 text-center leading-relaxed">{course.description}</p>
               <button
                 onClick={() => handleNavigate(course.courseName, course.course_id)}
-                className="w-full py-3 px-4 bg-gradient-to-br from-blue-600 to-purple-700 text-white rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full py-3 px-4 bg-gradient-to-br from-blue-600 to-purple-700 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Ver más detalles
               </button>

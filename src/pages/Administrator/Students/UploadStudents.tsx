@@ -221,7 +221,7 @@ const UploadStudents = () => {
 
               <button
                 id="confirm-submit"
-                className={`mt-6 w-full flex justify-center items-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-700 p-3 font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${fileSelected && selectedCourse && !apiLoading
+                className={`mt-6 w-full flex justify-center items-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-700 p-3 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${fileSelected && selectedCourse && !apiLoading
                     ? "opacity-100 cursor-pointer"
                     : "opacity-50 cursor-not-allowed"
                   }`}
@@ -244,7 +244,7 @@ const UploadStudents = () => {
                 <button
                   id="plantilla-excel"
                   onClick={handleDownloadTemplate}
-                  className="inline-flex items-center rounded-lg bg-gradient-to-br from-green-500 to-teal-600 p-3 font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.01] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  className="inline-flex items-center rounded-lg bg-gradient-to-br from-green-500 to-teal-600 p-3 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
                 >
                   <Download className="h-5 w-5 mr-2" /> Descargar Plantilla
                 </button>
