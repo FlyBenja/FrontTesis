@@ -9,7 +9,7 @@ import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFGeneral from "../../../components/Pdfs/generatePDFGeneral"
 import BuscadorEstudiantes from "../../../components/Searches/SearchStudents"
 import TourStudents from "../../../components/Tours/Administrator/TourStudents"
-import { Users, ChevronLeft, ChevronRight, Printer } from "lucide-react" // Import Lucide React icons
+import { Users, ChevronLeft, ChevronRight, Printer } from "lucide-react"
 
 /**
  * Interface for student data
@@ -18,8 +18,8 @@ interface Estudiante {
   id: number
   userName: string
   carnet: string
-  curso: string
-  año: number
+  email: string
+  sedeId: number
   fotoPerfil: string
 }
 
@@ -84,6 +84,7 @@ const ListStudents: React.FC = () => {
   const fetchEstudiantes = async (sedeId: number, courseId: string, nameYear: string) => {
     try {
       const estudiantesRecuperados = await getStudents(sedeId, Number.parseInt(courseId), Number.parseInt(nameYear))
+      console.log(estudiantesRecuperados)
       setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : []) // Set students in state
     } catch {
       setEstudiantes([]) // Set empty list in case of error

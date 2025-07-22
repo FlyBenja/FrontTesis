@@ -16,11 +16,10 @@ interface Estudiante {
   id: number
   userName: string
   carnet: string
-  curso: string
-  año: number
+  email: string
+  sedeId: number
   fotoPerfil: string
 }
-
 /**
  * Interface for course data
  */
@@ -68,7 +67,7 @@ const ListStudents: React.FC = () => {
 
   const fetchEstudiantes = async (courseId: string, nameYear: string) => {
     try {
-      const sedeId = 0
+      const sedeId = Number(localStorage.getItem("selectedSedeId"))
       const estudiantesRecuperados = await getStudents(sedeId, Number.parseInt(courseId), Number.parseInt(nameYear))
       setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : [])
     } catch {
@@ -92,7 +91,7 @@ const ListStudents: React.FC = () => {
   }
 
   const handleStudentClick = (estudiante: Estudiante) => {
-    navigate(`/administrador/time-line`, {
+    navigate(`/coordinadorgeneral/time-line`, {
       state: {
         estudiante,
         selectedAño,
@@ -168,7 +167,7 @@ const ListStudents: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Listar Estudiantes" />
+      <Breadcrumb pageName="Listar Estudiantes 🧑‍🎓" />
       <div className="mx-auto max-w-6xl px-4 py-6">
         <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex-grow w-full md:w-auto">
@@ -181,7 +180,7 @@ const ListStudents: React.FC = () => {
           <div className="flex items-center space-x-3">
             <button
               id="print-report"
-              className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={() => handlePrintPDF(Number(selectedAño), Number(selectedCurso))}
             >
               <Printer className="h-5 w-5 mr-2" /> Imprimir Reporte
@@ -272,11 +271,10 @@ const ListStudents: React.FC = () => {
               <button
                 key={page}
                 onClick={() => paginate(page)}
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${
-                  currentPage === page
-                    ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
-                    : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                }`}
+                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page
+                  ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                  : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                  }`}
               >
                 {page}
               </button>

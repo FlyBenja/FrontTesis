@@ -163,6 +163,25 @@ const Reviewers: React.FC = () => {
     )
   }
 
+  const renderProfilePhoto = (profilePhoto: string, userName: string) => {
+    if (profilePhoto) {
+      return (
+        <img
+          src={profilePhoto || "/placeholder.svg"}
+          alt={userName}
+          className="w-10 h-10 rounded-full object-cover border-2 border-blue-400 shadow-sm"
+        />
+      )
+    } else {
+      const initial = userName.charAt(0).toUpperCase()
+      return (
+        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg shadow-md">
+          {initial}
+        </div>
+      )
+    }
+  }
+
   return (
     <>
       <Breadcrumb pageName="Revisores o Auxiliares" />
@@ -197,7 +216,8 @@ const Reviewers: React.FC = () => {
               <table className="min-w-full bg-white dark:bg-gray-800">
                 <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
                   <tr>
-                    <th className="py-3 px-4 text-left rounded-tl-xl">Nombre del revisor</th>
+                    <th className="py-3 px-4 text-left rounded-tl-xl">Foto</th>
+                    <th className="py-3 px-4 text-center hidden md:table-cell">Nombre</th>
                     <th className="py-3 px-4 text-center hidden md:table-cell">Correo</th>
                     <th className="py-3 px-4 text-center hidden md:table-cell">Código</th>
                     <th className="py-3 px-4 text-center rounded-tr-xl">Acciones</th>
@@ -211,6 +231,9 @@ const Reviewers: React.FC = () => {
                         className={`border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 ${index % 2 === 0 ? "bg-gray-50/50 dark:bg-gray-800/50" : ""
                           }`}
                       >
+                        <td className="py-3 px-4 text-center">
+                          {renderProfilePhoto(revisor.fotoPerfil, revisor.name)}
+                        </td>
                         <td className="py-4 px-4 text-center text-gray-900 dark:text-white font-medium">
                           {revisor.name}
                         </td>

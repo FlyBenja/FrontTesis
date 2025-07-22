@@ -8,6 +8,7 @@ export const getHeadquartersCoordinator = async (): Promise<{
     carnet: string;
     sede_id: number;
     location: { nameSede: string };
+    profilePhoto: string;
 }[]> => {
     try {
         // Retrieve the authentication token from localStorage

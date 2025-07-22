@@ -150,7 +150,7 @@ const CreateHeadquarters: React.FC = () => {
                         key={sede.id}
                         className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
                       >
-                        <td className="py-3 px-4 text-center text-gray-900 dark:text-white font-medium hidden sm:table-cell">
+                        <td className="py-3 px-4 text-left text-gray-900 dark:text-white font-medium hidden sm:table-cell">
                           {sede.id}
                         </td>
                         <td className="py-3 px-4 text-left text-gray-900 dark:text-white font-medium">{sede.nombre}</td>

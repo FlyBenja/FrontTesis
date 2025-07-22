@@ -15,6 +15,7 @@ interface CoordinatorType {
   correo: string
   sede: string
   sede_id: number
+  fotoPerfil: string
 }
 
 const CreateCoordinatorSede: React.FC = () => {
@@ -34,6 +35,7 @@ const CreateCoordinatorSede: React.FC = () => {
         correo: item.email,
         sede: item.location?.nameSede || "Sin sede",
         sede_id: item.sede_id || 0,
+        fotoPerfil: item.profilePhoto,
       }))
       const sortedCoordinators = transformedData.sort((a, b) => a.id - b.id)
       setCoordinators(sortedCoordinators)
@@ -135,9 +137,28 @@ const CreateCoordinatorSede: React.FC = () => {
     }
   }
 
+  const renderProfilePhoto = (profilePhoto: string, userName: string) => {
+    if (profilePhoto) {
+      return (
+        <img
+          src={profilePhoto || "/placeholder.svg"}
+          alt={userName}
+          className="w-10 h-10 rounded-full object-cover border-2 border-blue-400 shadow-sm"
+        />
+      )
+    } else {
+      const initial = userName.charAt(0).toUpperCase()
+      return (
+        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg shadow-md">
+          {initial}
+        </div>
+      )
+    }
+  }
+
   return (
     <>
-      <Breadcrumb pageName="Crear Coordinador" />
+      <Breadcrumb pageName="Crear Coordinador de Sede" />
       <div className="mx-auto max-w-7xl px-4 py-6">
         {/* Header and Table Container */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 mb-6">
@@ -180,7 +201,8 @@ const CreateCoordinatorSede: React.FC = () => {
               <table id="tabla-coordinadores" className="min-w-full bg-white dark:bg-gray-800">
                 <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
                   <tr>
-                    <th className="py-3 px-4 text-left rounded-tl-xl">Nombre</th>
+                    <th className="py-3 px-4 text-left rounded-tl-xl">Foto</th>
+                    <th className="py-3 px-4 text-center hidden sm:table-cell">Nombre</th>
                     <th className="py-3 px-4 text-center hidden sm:table-cell">Correo</th>
                     <th className="py-3 px-4 text-center">Sede</th>
                     <th className="py-3 px-4 text-center rounded-tr-xl">Acción</th>
@@ -193,6 +215,9 @@ const CreateCoordinatorSede: React.FC = () => {
                         key={coordinator.id}
                         className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
                       >
+                        <td className="py-3 px-4 text-center">
+                          {renderProfilePhoto(coordinator.fotoPerfil, coordinator.nombre)}
+                        </td>
                         <td className="py-3 px-4 text-left text-gray-900 dark:text-white font-medium">
                           {coordinator.nombre}
                         </td>
@@ -242,11 +267,10 @@ const CreateCoordinatorSede: React.FC = () => {
                   <button
                     key={page}
                     onClick={() => paginate(page)}
-                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${
-                      currentPage === page
-                        ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
-                        : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                    }`}
+                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page
+                      ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                      : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                      }`}
                   >
                     {page}
                   </button>

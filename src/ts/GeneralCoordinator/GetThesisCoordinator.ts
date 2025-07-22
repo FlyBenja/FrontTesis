@@ -6,7 +6,8 @@ interface ThesisCoordinator {
   name: string;
   email: string;
   carnet: string;
-  active: boolean;
+  active: boolean;  
+  profilePhoto: string;
 }
 
 // Asynchronous function to fetch the list of Thesis Coordinators

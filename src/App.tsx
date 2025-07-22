@@ -18,7 +18,7 @@ import CreateCoordinatorSede from './pages/GeneralCoordinator/CreateCoordinatorH
 import CreateCoordinatorTesis from './pages/GeneralCoordinator/CreateThesisCoordinator';
 import CreateTasksCoordinator from './pages/GeneralCoordinator/CreateTasks';
 import ListStudentsCoordinator from './pages/GeneralCoordinator/Students/ListStudents';
-import AdminTimeLineCoordinator from './pages/GeneralCoordinator/Students/TimeLine';
+import CoordinatorGeneralTimeLine from './pages/GeneralCoordinator/Students/TimeLine';
 import StudentTasksCoordinator from './pages/GeneralCoordinator/Students/TasksStudent';
 import ProposalsCoordinator from './pages/GeneralCoordinator/Students/Proposals';
 import ChaptersCoordinator from './pages/GeneralCoordinator/Students/Chapters';
@@ -156,7 +156,7 @@ function App() {
             <Route path="crear-coordinador-sede" element={<CreateCoordinatorSede />} />
             <Route path="crear-coordinador-tesis" element={<CreateCoordinatorTesis />} />
             <Route path="listado-estudiantes" element={<ListStudentsCoordinator />} />
-            <Route path="time-line" element={<AdminTimeLineCoordinator />} />
+            <Route path="time-line" element={<CoordinatorGeneralTimeLine />} />
             <Route path="tareas-estudiante" element={<StudentTasksCoordinator />} />
             <Route path="propuestas" element={<ProposalsCoordinator />} />
             <Route path="capitulo" element={<ChaptersCoordinator />} />
