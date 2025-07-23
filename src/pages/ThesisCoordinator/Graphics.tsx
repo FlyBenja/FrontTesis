@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { getTotalesRevision } from "../../ts/ThesisCoordinatorandReviewer/TotalsReview.ts"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb.tsx"
 import CardDataStats from "../../components/Cards/CardDataStats.tsx"
-import GraficaPorSede from "../../components/Graphics/TotalReviewsPerHeadquarters.tsx"
+import GraficaPorSede from "../../components/Graphics/ThesisCoordinator/TotalReviewsPerHeadquarters.tsx"
 import { List, CheckCircle, XCircle, AlertCircle } from "lucide-react" // Import Lucide icons
 
 /**

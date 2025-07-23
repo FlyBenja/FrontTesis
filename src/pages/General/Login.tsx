@@ -6,12 +6,14 @@ import Swal from "sweetalert2"
 import umgLogo from "../../images/Login/logo3.png"
 import ofiLogo from "../../images/Login/sistemas1_11zon.png"
 import axios from "axios"
+import { useSedes } from "../../components/ReloadPages/HeadquarterSelectContext"
 
 const Login: React.FC = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const { reloadSedes } = useSedes()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -72,6 +74,10 @@ const Login: React.FC = () => {
           navigate("/cambia/contraseña")
         })
       } else {
+        if (response.data.rol === 5) {
+          await reloadSedes()
+        }
+
         Swal.fire({
           icon: "success",
           title: "¡Bienvenido!",
@@ -79,7 +85,9 @@ const Login: React.FC = () => {
           confirmButtonColor: "#10b981",
         }).then(() => {
           const validRoles = [1, 3, 4, 5, 6, 7]
-          const rolePath = validRoles.includes(response.data.rol) ? rolePaths[response.data.rol] : "/"
+          const rolePath = validRoles.includes(response.data.rol)
+            ? rolePaths[response.data.rol]
+            : "/"
           navigate(rolePath)
         })
       }
@@ -100,12 +108,10 @@ const Login: React.FC = () => {
       className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-cover bg-center bg-no-repeat relative"
       style={{ backgroundImage: `url(${ofiLogo})` }}
     >
-      {/* Overlay for better contrast */}
       <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
 
       <div className="relative z-10 w-full max-w-md mx-4">
         <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 dark:border-gray-700/50">
-          {/* Logo Section */}
           <div className="text-center mb-8">
             <div className="inline-block p-2 rounded-2xl mb-4">
               <img src={umgLogo || "/placeholder.svg"} alt="UMG Logo" className="w-48 h-auto" />
@@ -115,7 +121,6 @@ const Login: React.FC = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Field */}
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 📧 Correo Electrónico
@@ -139,7 +144,6 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            {/* Password Field */}
             <div className="space-y-2">
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 🔒 Contraseña
@@ -163,7 +167,6 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -183,7 +186,6 @@ const Login: React.FC = () => {
             </button>
           </form>
 
-          {/* Forgot Password Link */}
           <div className="mt-6 text-center">
             <a
               href="/recuperar-contraseña"

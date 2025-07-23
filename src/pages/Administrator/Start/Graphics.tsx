@@ -4,8 +4,8 @@ import { getDatosPerfil, type PerfilData } from "../../../ts/General/GetProfileD
 import { getStudentsSede } from "../../../ts/Administrator/GetStudentsSede.ts"
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb.tsx"
 import CardDataStats from "../../../components/Cards/CardDataStats.tsx"
-import TareasEstudiantes from "../../../components/Graphics/TasksStudents"
-import PorcentajeSede from "../../../components/Graphics/PercentageHeadquarters"
+import TareasEstudiantes from "../../../components/Graphics/Administrator/TasksStudents.tsx"
+import PorcentajeSede from "../../../components/Graphics/Administrator/PercentageHeadquarters.tsx"
 import { Users, CheckCircle, Clock, MapPin, GraduationCap } from "lucide-react" // Import Lucide icons
 
 /**

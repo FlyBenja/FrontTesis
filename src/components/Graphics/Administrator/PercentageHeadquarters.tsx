@@ -2,8 +2,8 @@ import type { ApexOptions } from "apexcharts"
 import type React from "react"
 import { useEffect, useState } from "react"
 import ReactApexChart from "react-apexcharts"
-import { getDatosPerfil } from "../../ts/General/GetProfileData"
-import { getSedeComplete, type SedeStats } from "../../ts/Administrator/GetCompleteHeadquarters"
+import { getDatosPerfil } from "../../../ts/General/GetProfileData"
+import { getSedeComplete, type SedeStats } from "../../../ts/Administrator/GetCompleteHeadquarters"
 import { Loader2 } from "lucide-react" // Import spinner icon
 
 /**
