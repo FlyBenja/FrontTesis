@@ -162,10 +162,10 @@ const CreateTasks: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setTasksPerPage(8) // Set tasks per page to 8 for small screens
-        setMaxPageButtons(5) // Set maximum page buttons to 5 for small screens
+        setTasksPerPage(10) // Set tasks per page to 8 for small screens
+        setMaxPageButtons(3) // Set maximum page buttons to 5 for small screens
       } else {
-        setTasksPerPage(5) // Set tasks per page to 5 for large screens
+        setTasksPerPage(10) // Set tasks per page to 5 for large screens
         setMaxPageButtons(10) // Set maximum page buttons to 10 for large screens
       }
     }

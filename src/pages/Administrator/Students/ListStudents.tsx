@@ -224,8 +224,8 @@ const ListStudents: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setEstudiantesPerPage(8) // Set more students per page on smaller screens
-        setMaxPageButtons(5) // Set fewer page buttons
+        setEstudiantesPerPage(10) // Set more students per page on smaller screens
+        setMaxPageButtons(3) // Set fewer page buttons
       } else {
         setEstudiantesPerPage(10) // Set default students per page
         setMaxPageButtons(10) // Set default page buttons

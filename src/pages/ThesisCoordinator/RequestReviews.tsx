@@ -112,10 +112,10 @@ const RequestReviews: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setRevisionesPerPage(8) // Ajusta el número de elementos por página en pantallas pequeñas
-        setMaxPageButtons(5) // Ajusta la cantidad de botones de paginación en pantallas pequeñas
+        setRevisionesPerPage(10) // Ajusta el número de elementos por página en pantallas pequeñas
+        setMaxPageButtons(3) // Ajusta la cantidad de botones de paginación en pantallas pequeñas
       } else {
-        setRevisionesPerPage(5) // Ajusta el número de elementos por página en pantallas grandes
+        setRevisionesPerPage(10) // Ajusta el número de elementos por página en pantallas grandes
         setMaxPageButtons(10) // Ajusta la cantidad de botones de paginación en pantallas grandes
       }
     }

@@ -31,8 +31,8 @@ const ListProfessors: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setProfessorsPerPage(8)
-        setMaxPageButtons(5)
+        setProfessorsPerPage(10)
+        setMaxPageButtons(3)
       } else {
         setProfessorsPerPage(10)
         setMaxPageButtons(10)

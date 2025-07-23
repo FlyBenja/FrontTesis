@@ -48,10 +48,10 @@ const Reviewers: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setRevisoresPerPage(8)
-        setMaxPageButtons(5)
+        setRevisoresPerPage(10)
+        setMaxPageButtons(3)
       } else {
-        setRevisoresPerPage(5)
+        setRevisoresPerPage(10)
         setMaxPageButtons(10)
       }
     }

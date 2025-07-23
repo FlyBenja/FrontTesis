@@ -103,10 +103,10 @@ const CreateTasks = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setTasksPerPage(8)
-        setMaxPageButtons(5)
+        setTasksPerPage(10)
+        setMaxPageButtons(3)
       } else {
-        setTasksPerPage(5)
+        setTasksPerPage(10)
         setMaxPageButtons(10)
       }
     }

@@ -61,11 +61,11 @@ const CreateAdmin: React.FC = () => {
 
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setAdminsPerPage(8) // Adjusted for smaller screens
+      setAdminsPerPage(10) // Adjusted for smaller screens
       setMaxPageButtons(3)
     } else {
-      setAdminsPerPage(5) // Adjusted for larger screens
-      setMaxPageButtons(5)
+      setAdminsPerPage(10) // Adjusted for larger screens
+      setMaxPageButtons(10)
     }
   }
 

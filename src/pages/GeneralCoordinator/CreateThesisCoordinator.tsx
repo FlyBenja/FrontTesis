@@ -67,10 +67,10 @@ const CreateThesisCoordinator: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setCoordinatorsPerPage(8)
-        setMaxPageButtons(5)
+        setCoordinatorsPerPage(10)
+        setMaxPageButtons(3)
       } else {
-        setCoordinatorsPerPage(5)
+        setCoordinatorsPerPage(10)
         setMaxPageButtons(10)
       }
     }

@@ -148,8 +148,8 @@ const ListStudents: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setEstudiantesPerPage(8)
-        setMaxPageButtons(5)
+        setEstudiantesPerPage(10)
+        setMaxPageButtons(3)
       } else {
         setEstudiantesPerPage(10)
         setMaxPageButtons(10)
@@ -162,7 +162,7 @@ const ListStudents: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Listar Estudiantes 🧑‍🎓" />
+      <Breadcrumb pageName="Listar Estudiantes" />
       <div className="mx-auto max-w-6xl px-4 py-6">
         <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex-grow w-full md:w-auto">

@@ -47,11 +47,11 @@ const CreateHeadquarters: React.FC = () => {
 
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setHeadquartersPerPage(8) // Adjusted for smaller screens
+      setHeadquartersPerPage(10) // Adjusted for smaller screens
       setMaxPageButtons(3)
     } else {
-      setHeadquartersPerPage(5) // Adjusted for larger screens
-      setMaxPageButtons(5)
+      setHeadquartersPerPage(10) // Adjusted for larger screens
+      setMaxPageButtons(10)
     }
   }
 

@@ -136,10 +136,10 @@ const MyAssignments: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setRevisionesPerPage(8)
-        setMaxPageButtons(5)
+        setRevisionesPerPage(10)
+        setMaxPageButtons(3)
       } else {
-        setRevisionesPerPage(5)
+        setRevisionesPerPage(10)
         setMaxPageButtons(10)
       }
     }

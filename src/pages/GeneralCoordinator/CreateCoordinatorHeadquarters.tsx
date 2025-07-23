@@ -55,11 +55,11 @@ const CreateCoordinatorSede: React.FC = () => {
 
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setCoordinatorsPerPage(8) // Adjusted for smaller screens
+      setCoordinatorsPerPage(10) // Adjusted for smaller screens
       setMaxPageButtons(3)
     } else {
-      setCoordinatorsPerPage(5) // Adjusted for larger screens
-      setMaxPageButtons(5)
+      setCoordinatorsPerPage(10) // Adjusted for larger screens
+      setMaxPageButtons(10)
     }
   }
 
