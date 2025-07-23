@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { getYears } from "../../ts/General/GetYears"
 import { getTareas } from "../../ts/General/GetTasks"
-import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import TourCreatesTasks from "../../components/Tours/Administrator/TourCreatesTasks"
+import { useSede } from "../../components/ReloadPages/HeadquartersContext"
 
 export interface Task {
   task_id: number
@@ -18,7 +18,7 @@ export interface Task {
   year_id: number
 }
 
-const CreateTasks: React.FC = () => {
+const CreateTasks = () => {
   const [selectedCourse, setSelectedCourse] = useState("")
   const [selectedYear, setSelectedYear] = useState("")
   const [years, setYears] = useState<number[]>([])
@@ -27,6 +27,7 @@ const CreateTasks: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [tasksPerPage, setTasksPerPage] = useState(3)
   const [maxPageButtons, setMaxPageButtons] = useState(5)
+  const { selectedSede } = useSede()
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -58,24 +59,19 @@ const CreateTasks: React.FC = () => {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      if (selectedCourse && selectedYear) {
-        const selectedSedeId = Number(localStorage.getItem("selectedSedeId"))
-        const retrievedTasks = await getTareas(selectedSedeId, Number(selectedCourse), Number(selectedYear))
-        const sortedTasks = retrievedTasks.sort((a: Task, b: Task) => {
-          return b.task_id - a.task_id
-        })
+      if (selectedCourse && selectedYear && selectedSede) {
+        const retrievedTasks = await getTareas(Number(selectedSede), Number(selectedCourse), Number(selectedYear))
+        const sortedTasks = retrievedTasks.sort((a: Task, b: Task) => b.task_id - a.task_id)
         setTasks(Array.isArray(sortedTasks) ? sortedTasks : [])
       }
     }
     fetchTasks()
-  }, [selectedCourse, selectedYear])
+  }, [selectedCourse, selectedYear, selectedSede])
 
   const formatTime24Hour = (timeStr: string) => {
     const [hours, minutes, seconds] = timeStr.split(":").map(Number)
     const amPm = hours < 12 ? "AM" : "PM"
-    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")} ${amPm}`
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")} ${amPm}`
   }
 
   const indexOfLastTask = currentPage * tasksPerPage
@@ -264,11 +260,10 @@ const CreateTasks: React.FC = () => {
                       <button
                         key={page}
                         onClick={() => paginate(page)}
-                        className={`px-4 py-2 rounded-lg border transition-colors duration-200 ${
-                          currentPage === page
-                            ? "bg-indigo-500 text-white border-indigo-500"
-                            : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                        }`}
+                        className={`px-4 py-2 rounded-lg border transition-colors duration-200 ${currentPage === page
+                          ? "bg-indigo-500 text-white border-indigo-500"
+                          : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          }`}
                       >
                         {page}
                       </button>

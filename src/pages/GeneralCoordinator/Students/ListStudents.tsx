@@ -7,11 +7,9 @@ import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFGeneral from "../../../components/Pdfs/GeneralCoordinator/generatePDFGeneral"
 import BuscadorEstudiantes from "../../../components/Searches/SearchStudents"
 import TourStudents from "../../../components/Tours/Administrator/TourStudents"
-import { Users, ChevronLeft, ChevronRight, Printer } from "lucide-react" // Import Lucide React icons
+import { Users, ChevronLeft, ChevronRight, Printer } from "lucide-react"
+import { useSede } from "../../../components/ReloadPages/HeadquartersContext"
 
-/**
- * Interface for student data
- */
 interface Estudiante {
   id: number
   userName: string
@@ -20,19 +18,15 @@ interface Estudiante {
   sedeId: number
   fotoPerfil: string
 }
-/**
- * Interface for course data
- */
+
 interface Curso {
   course_id: number
   courseName: string
 }
 
-/**
- * List Students Component
- * Displays a list of students with filtering and pagination
- */
 const ListStudents: React.FC = () => {
+  const { selectedSede } = useSede()
+  const SedeId = Number(selectedSede)
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([])
   const [years, setYears] = useState<number[]>([])
   const [selectedAño, setSelectedAño] = useState<string>("")
@@ -45,6 +39,7 @@ const ListStudents: React.FC = () => {
 
   useEffect(() => {
     const fetchInitialData = async () => {
+      const SedeId = Number(selectedSede)
       const yearsRecuperados = await getYears()
       setYears(yearsRecuperados.map((yearObj) => yearObj.year))
       const currentYear = new Date().getFullYear().toString()
@@ -58,16 +53,15 @@ const ListStudents: React.FC = () => {
         { course_id: 1, courseName: "Proyecto de Graduación I" },
         { course_id: 2, courseName: "Proyecto de Graduación II" },
       ])
-      if (currentYear) {
-        fetchEstudiantes(initialCourseId, currentYear)
+      if (currentYear && SedeId) {
+        fetchEstudiantes(initialCourseId, currentYear, SedeId)
       }
     }
     fetchInitialData()
-  }, [])
+  }, [SedeId]) // Se añade SedeId como dependencia para que cargue al cambiar
 
-  const fetchEstudiantes = async (courseId: string, nameYear: string) => {
+  const fetchEstudiantes = async (courseId: string, nameYear: string, sedeId: number) => {
     try {
-      const sedeId = Number(localStorage.getItem("selectedSedeId"))
       const estudiantesRecuperados = await getStudents(sedeId, Number.parseInt(courseId), Number.parseInt(nameYear))
       setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : [])
     } catch {
@@ -78,15 +72,16 @@ const ListStudents: React.FC = () => {
   const handleAñoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const añoSeleccionado = e.target.value
     setSelectedAño(añoSeleccionado)
-    if (añoSeleccionado && selectedCurso) {
-      fetchEstudiantes(selectedCurso, añoSeleccionado)
+    if (añoSeleccionado && selectedCurso && SedeId) {
+      fetchEstudiantes(selectedCurso, añoSeleccionado, SedeId)
     }
   }
 
   const handleCursoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCurso(e.target.value)
-    if (selectedAño && e.target.value) {
-      fetchEstudiantes(e.target.value, selectedAño)
+    const cursoSeleccionado = e.target.value
+    setSelectedCurso(cursoSeleccionado)
+    if (selectedAño && cursoSeleccionado && SedeId) {
+      fetchEstudiantes(cursoSeleccionado, selectedAño, SedeId)
     }
   }
 

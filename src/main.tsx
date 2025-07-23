@@ -9,50 +9,48 @@ import './css/style.css';
 import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';
 import Swal from 'sweetalert2';
+import { SedeProvider } from './components/ReloadPages/HeadquartersContext'; // Asegúrate de tener la ruta correcta aquí
 
-// Creating a root element to render the React app
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-// Protected route for changing the password, checking if the user is logged in
 const ProtectedRouteCambiaContra = () => {
-  const navigate = useNavigate();  // Hook to navigate between routes
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    // Verificar si el localStorage está vacío
-    if (localStorage.length === 0) {
-      // Mostrar alerta usando SweetAlert2
-      Swal.fire({
-        icon: 'warning',
-        title: 'Acceso denegado',
-        text: 'Favor de iniciar sesión para continuar.',
-        confirmButtonText: 'Entendido',
-        customClass: {
-          confirmButton: 'bg-red-600 text-white',  // Custom styling for the confirm button
-        },
-      }).then(() => {
-        navigate('/');  // Redirect to the homepage after the alert
-      });
-    }
-  }, [navigate]);
+    useEffect(() => {
+        if (localStorage.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Acceso denegado',
+                text: 'Favor de iniciar sesión para continuar.',
+                confirmButtonText: 'Entendido',
+                customClass: {
+                    confirmButton: 'bg-red-600 text-white',
+                },
+            }).then(() => {
+                navigate('/');
+            });
+        }
+    }, [navigate]);
 
-  return <CambiaContra />;  // Render the CambiaContra component if the user is authenticated
+    return <CambiaContra />;
 };
 
-// Rendering the application to the DOM
 root.render(
-  <React.StrictMode>
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/estudiantes/*" element={<App />} />
-        <Route path="/administrador/*" element={<App />} />
-        <Route path="/coordinadorsede/*" element={<App />} />
-        <Route path="/coordinadortesis/*" element={<App />} />
-        <Route path="/coordinadorgeneral/*" element={<App />} />
-        <Route path="/revisortesis/*" element={<App />} />
-        <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />
-        <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
-      </Routes>
-    </Router>
-  </React.StrictMode>,
+    <React.StrictMode>
+        <SedeProvider>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Login />} />
+                    <Route path="/estudiantes/*" element={<App />} />
+                    <Route path="/administrador/*" element={<App />} />
+                    <Route path="/coordinadorsede/*" element={<App />} />
+                    <Route path="/coordinadortesis/*" element={<App />} />
+                    <Route path="/coordinadorgeneral/*" element={<App />} />
+                    <Route path="/revisortesis/*" element={<App />} />
+                    <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />
+                    <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
+                </Routes>
+            </Router>
+        </SedeProvider>
+    </React.StrictMode>,
 );

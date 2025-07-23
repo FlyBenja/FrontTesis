@@ -19,9 +19,9 @@ const TasksStudent: React.FC = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const selectedSedeId = Number(localStorage.getItem("selectedSedeId"))
+        const selectedSedeId = estudiante.sedeId
         setSedeId(selectedSedeId)
-      } catch (err) {}
+      } catch (err) { }
     }
     fetchProfileData()
   }, [])
@@ -32,7 +32,7 @@ const TasksStudent: React.FC = () => {
         try {
           const retrievedTasks = await getTareasSede(sedeId, selectedAño)
           setTareas(retrievedTasks)
-        } catch (err) {}
+        } catch (err) { }
       }
     }
     fetchTasks()

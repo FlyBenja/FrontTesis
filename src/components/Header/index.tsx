@@ -1,8 +1,7 @@
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import { useEffect, useRef, useState } from "react"
-import { getSedes } from "../../ts/GeneralCoordinator/GetHeadquarters"
+import { Link} from "react-router-dom"
 import DropdownNotification from "./DropdownNotification"
 import DropdownUser from "./DropdownUser"
+import SedeSelector from "../Selectors/HeadquartersSelector"
 import LogoIcon from "../../images/logo/logo-icon.svg"
 import DarkModeSwitcher from "./DarkModeSwitcher"
 
@@ -15,11 +14,6 @@ const Header = (props: {
 }) => {
   // Extract role from localStorage
   const role = localStorage.getItem("userRole")
-  const [sedes, setSedes] = useState<{ sede_id: number; nameSede: string; address: string }[]>([])
-  const hasFetched = useRef(false)
-  const [selectedSede, setSelectedSede] = useState<string>("")
-  const location = useLocation()
-  const navigate = useNavigate()
 
   // Define role-based routes
   const roleRoutes: { [key: string]: string } = {
@@ -30,47 +24,6 @@ const Header = (props: {
     "5": "/coordinadorgeneral/graficas",
     "6": "/coordinadortesis/graficas",
     "7": "/revisortesis/graficas",
-  }
-
-  useEffect(() => {
-    const fetchSedes = async () => {
-      try {
-        const data = await getSedes()
-        setSedes(data)
-        hasFetched.current = true // We mark that the request has already been made
-      } catch (error) {
-        console.error("Error al obtener las sedes:", error)
-      }
-    }
-
-    if (!hasFetched.current) {
-      fetchSedes()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (sedes.length > 0) {
-      const storedSede = localStorage.getItem("selectedSedeId")
-      if (storedSede && sedes.some((s) => s.sede_id.toString() === storedSede)) {
-        setSelectedSede(storedSede)
-      } else {
-        setSelectedSede(sedes[0].sede_id.toString())
-        localStorage.setItem("selectedSedeId", sedes[0].sede_id.toString())
-      }
-    }
-  }, [sedes])
-
-  // In the onChange of the select:
-  const handleSedeChange = (value: string) => {
-    setSelectedSede(value)
-    localStorage.setItem("selectedSedeId", value)
-    if (location.pathname === "/coordinadorgeneral/graficas") {
-      // Reload the current page
-      window.location.reload()
-    } else {
-      // Navigate to the desired page
-      navigate("/coordinadorgeneral/graficas")
-    }
   }
 
   return (
@@ -118,52 +71,7 @@ const Header = (props: {
 
         {/* <!-- Sede selector for role 5 (Coordinador General) --> */}
         {role === "5" && (
-          <div
-            className="flex-1 max-w-xs mx-auto sm:mx-7 sm:max-w-sm md:max-w-md"
-            style={{
-              position: "relative",
-              left: window.innerWidth <= 640 ? "-8px" : "-10px", // move 20px to the left on mobile
-              top: window.innerWidth <= 640 ? "-7.5px" : "1px", // go up 10px on mobile
-            }}
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-3xl border border-blue-200/50 dark:border-blue-700/50 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <label
-                  htmlFor="sede"
-                  className="text-sm font-semibold text-gray-800 dark:text-gray-200 whitespace-nowrap"
-                >
-                  Seleccione sede:
-                </label>
-              </div>
-              <select
-                id="sede"
-                className="w-full px-4 py-2.5 text-sm bg-white/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 border border-gray-300/50 dark:border-gray-600/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 transition-all duration-300 backdrop-blur-sm shadow-lg hover:shadow-xl"
-                value={selectedSede}
-                onChange={(e) => handleSedeChange(e.target.value)}
-              >
-                {sedes.length === 0 ? (
-                  <option disabled value="">
-                    No existen sedes registradas
-                  </option>
-                ) : (
-                  sedes.map((sede) => (
-                    <option key={sede.sede_id} value={sede.sede_id}>
-                      {sede.nameSede}
-                    </option>
-                  ))
-                )}
-              </select>
-            </div>
-          </div>
+          <SedeSelector/>
         )}
 
         {/* <!-- Spacer when role is not 5 --> */}
@@ -174,16 +82,12 @@ const Header = (props: {
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {/* <!-- Dark Mode Switcher --> */}
             <DarkModeSwitcher />
-            {/* <!-- Dark Mode Switcher --> */}
             {/* <!-- Notification Dropdown (only for Estudiante and Administrador) --> */}
             {(role === "1" || role === "3") && <DropdownNotification />}
-            {/* <!-- Notification Dropdown --> */}
           </ul>
           {/* <!-- User Menu --> */}
           <DropdownUser />
-          {/* <!-- User Menu --> */}
         </div>
-        {/* <!-- Right side items --> */}
       </div>
     </header>
   )

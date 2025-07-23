@@ -4,7 +4,7 @@ import type React from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import HeadquartersTour from "../../components/Tours/GeneralCoordinator/TourHeadquarters"
 import CreateHeadquartersModal from "../../components/Modals/CreateHeadquarters"
-import { Building, PlusCircle, Pencil, ChevronLeft, ChevronRight } from "lucide-react" // Import Lucide React icons
+import { Building, PlusCircle, Pencil, ChevronLeft, ChevronRight } from "lucide-react"
 
 interface HeadquartersType {
   id: number
