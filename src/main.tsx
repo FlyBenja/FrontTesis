@@ -9,7 +9,8 @@ import './css/style.css';
 import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';
 import Swal from 'sweetalert2';
-import { SedeProvider } from './components/ReloadPages/HeadquartersContext'; // Asegúrate de tener la ruta correcta aquí
+import { SedeProvider } from './components/ReloadPages/HeadquarterPagesContext';
+import { SedesProvider } from "./components/ReloadPages/HeadquarterSelectContext"
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
@@ -37,20 +38,22 @@ const ProtectedRouteCambiaContra = () => {
 
 root.render(
     <React.StrictMode>
-        <SedeProvider>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/estudiantes/*" element={<App />} />
-                    <Route path="/administrador/*" element={<App />} />
-                    <Route path="/coordinadorsede/*" element={<App />} />
-                    <Route path="/coordinadortesis/*" element={<App />} />
-                    <Route path="/coordinadorgeneral/*" element={<App />} />
-                    <Route path="/revisortesis/*" element={<App />} />
-                    <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />
-                    <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
-                </Routes>
-            </Router>
-        </SedeProvider>
+        <SedesProvider>
+            <SedeProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<Login />} />
+                        <Route path="/estudiantes/*" element={<App />} />
+                        <Route path="/administrador/*" element={<App />} />
+                        <Route path="/coordinadorsede/*" element={<App />} />
+                        <Route path="/coordinadortesis/*" element={<App />} />
+                        <Route path="/coordinadorgeneral/*" element={<App />} />
+                        <Route path="/revisortesis/*" element={<App />} />
+                        <Route path="/cambia/contraseña" element={<ProtectedRouteCambiaContra />} />
+                        <Route path="/recuperar-contraseña" element={<RecuperarContra />} />
+                    </Routes>
+                </Router>
+            </SedeProvider>
+        </SedesProvider>
     </React.StrictMode>,
 );

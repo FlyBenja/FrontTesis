@@ -1,37 +1,14 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import { getSedes } from "../../ts/GeneralCoordinator/GetHeadquarters"
-import { useSede } from "../../components/ReloadPages/HeadquartersContext"
+import { useSede } from "../ReloadPages/HeadquarterPagesContext"
+import { useSedes } from "../ReloadPages/HeadquarterSelectContext"
 
-type Sede = {
-  sede_id: number
-  nameSede: string
-  address: string
-}
-
-type Props = {
-  onChange?: (value: string) => void
-  reloadSedes?: () => void  // Función opcional para recargar sedes externamente
-}
-
-const SedeSelector = ({ onChange, reloadSedes }: Props) => {
-  const [sedes, setSedes] = useState<Sede[]>([])
+const SedeSelector = ({ onChange }: { onChange?: (value: string) => void }) => {
+  const { sedes } = useSedes()
   const hasSetSelectedSede = useRef(false)
   const { selectedSede, setSelectedSede } = useSede()
   const navigate = useNavigate()
   const location = useLocation()
-
-  useEffect(() => {
-    const fetchSedes = async () => {
-      try {
-        const data = await getSedes()
-        setSedes(data)
-      } catch (error) {
-        console.error("Error al obtener las sedes:", error)
-      }
-    }
-    fetchSedes()
-  }, [])
 
   useEffect(() => {
     if (!hasSetSelectedSede.current && sedes.length > 0) {
@@ -40,17 +17,11 @@ const SedeSelector = ({ onChange, reloadSedes }: Props) => {
       }
       hasSetSelectedSede.current = true
     }
-  }, [sedes])
+  }, [sedes, selectedSede, setSelectedSede])
 
   const handleSedeChange = (value: string) => {
     setSelectedSede(value)
-    if (typeof onChange === "function") {
-      onChange(value)
-    }
-
-    if (reloadSedes) {
-      reloadSedes() // Aquí recargamos la API si nos pasan la función
-    }
+    if (onChange) onChange(value)
 
     // Navegación según ruta actual
     if (location.pathname.startsWith("/coordinadorgeneral/time-line")) {

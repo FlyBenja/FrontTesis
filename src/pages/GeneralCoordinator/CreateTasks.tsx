@@ -3,7 +3,7 @@ import { getYears } from "../../ts/General/GetYears"
 import { getTareas } from "../../ts/General/GetTasks"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import TourCreatesTasks from "../../components/Tours/Administrator/TourCreatesTasks"
-import { useSede } from "../../components/ReloadPages/HeadquartersContext"
+import { useSede } from "../../components/ReloadPages/HeadquarterPagesContext"
 
 export interface Task {
   task_id: number

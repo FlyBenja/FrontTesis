@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { createSede } from "../../ts/GeneralCoordinator/CreateHeadquarters"
 import { updateSede } from "../../ts/GeneralCoordinator/UpdateHeadquarters"
+import { useSedes } from "../ReloadPages/HeadquarterSelectContext"  // Importa el hook del contexto
 
 interface CreateHeadquartersProps {
   isOpen: boolean
@@ -26,6 +27,7 @@ const CreateHeadquartersModal: React.FC<CreateHeadquartersProps> = ({
   const [sedeNombre, setSedeNombre] = useState("")
   const [sedeDireccion, setSedeDireccion] = useState("")
   const [loading, setLoading] = useState(false)
+  const { reloadSedes } = useSedes() // Usa el contexto para recargar sedes
 
   useEffect(() => {
     setSedeNombre("")
@@ -68,7 +70,8 @@ const CreateHeadquartersModal: React.FC<CreateHeadquartersProps> = ({
         })
       } else if (type === "editar" && initialData) {
         const noCambios =
-          nombreActual === (initialData.nameSede || "").trim() && direccionActual === (initialData.address || "").trim()
+          nombreActual === (initialData.nameSede || "").trim() &&
+          direccionActual === (initialData.address || "").trim()
 
         if (noCambios) {
           onClose()
@@ -84,6 +87,8 @@ const CreateHeadquartersModal: React.FC<CreateHeadquartersProps> = ({
           confirmButtonText: "Aceptar",
         })
       }
+
+      await reloadSedes() // Recarga las sedes para actualizar el selector
 
       onSuccess()
       setSedeNombre("")

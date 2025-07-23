@@ -8,7 +8,7 @@ import generaPDFGeneral from "../../../components/Pdfs/GeneralCoordinator/genera
 import BuscadorEstudiantes from "../../../components/Searches/SearchStudents"
 import TourStudents from "../../../components/Tours/Administrator/TourStudents"
 import { Users, ChevronLeft, ChevronRight, Printer } from "lucide-react"
-import { useSede } from "../../../components/ReloadPages/HeadquartersContext"
+import { useSede } from "../../../components/ReloadPages/HeadquarterPagesContext"
 
 interface Estudiante {
   id: number
