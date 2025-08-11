@@ -45,11 +45,11 @@ import CourseInfo from './pages/Students/CourseInfo';
 import ChapterInfo from './pages/Students/InfoChapter';
 
 // Headquarters Coordinator
-import UploadProfessors from './pages/HeadquartersCoordinator/Professors/UploadProfessors';
+/* import UploadProfessors from './pages/HeadquartersCoordinator/Professors/UploadProfessors';
 import ListProfessors from './pages/HeadquartersCoordinator/Professors/ListProfessors';
 import CreateProfessors from './pages/HeadquartersCoordinator/Professors/CreateProfessors';
 import CreateCommission from './pages/HeadquartersCoordinator/Commissions/CreateCommission';
-import ListCommission from './pages/HeadquartersCoordinator/Commissions/ListCommission';
+import ListCommission from './pages/HeadquartersCoordinator/Commissions/ListCommission'; */
 import CreateAdmin from './pages/HeadquartersCoordinator/CreateAdmin';
 import AssignPG from './pages/HeadquartersCoordinator/AssignPG';
 
@@ -138,11 +138,11 @@ function App() {
         {/* Headquarters Coordinator */}
         {role === 4 && (
           <>
-            <Route path="subir-catedraticos" element={<UploadProfessors />} />
+            {/*             <Route path="subir-catedraticos" element={<UploadProfessors />} />
             <Route path="listado-catedraticos" element={<ListProfessors />} />
             <Route path="crear-catedraticos" element={<CreateProfessors />} />
             <Route path="crear-comision" element={<CreateCommission />} />
-            <Route path="listado-comision" element={<ListCommission />} />
+            <Route path="listado-comision" element={<ListCommission />} /> */}
             <Route path="crea-admin" element={<CreateAdmin />} />
             <Route path="asignapg" element={<AssignPG />} />
           </>

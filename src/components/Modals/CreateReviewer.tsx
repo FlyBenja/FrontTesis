@@ -112,7 +112,7 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">🎫 Carnet</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">🎫 Código</label>
               <input
                 type="text"
                 value={carnet}
@@ -121,7 +121,7 @@ const CreateReviewer: React.FC<CreateReviewerProps> = ({ onClose, revisor }) => 
                            bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white
                            focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-gray-600
                            transition-all duration-200 outline-none"
-                placeholder="Carnet del revisor"
+                placeholder="Código del revisor"
                 required
               />
             </div>

@@ -1,30 +1,30 @@
-import axios from 'axios';
+import axios from "axios";
 
-// Function to submit a task
-export const entregarTarea = async (taskData: { user_id: number; task_id: number }) => {
+// Function to submit a task with PDF file
+export const entregarTarea = async (taskData: { user_id: number; task_id: number; file: File }) => {
   try {
-    // Retrieve the authentication token from localStorage
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
+    if (!token) throw new Error("Token de autenticación no encontrado");
 
-    // If no token is found, throw an error
-    if (!token) throw new Error('Token de autenticación no encontrado'); // Authentication token not found
+    // Construir FormData
+    const formData = new FormData();
+    formData.append("user_id", String(taskData.user_id));
+    formData.append("task_id", String(taskData.task_id));
+    formData.append("file", taskData.file);
 
-    // Make a POST request to submit the task
-    await axios.post('http://localhost:3000/api/task-submissions', taskData, {
+    // Hacer POST como multipart/form-data
+    await axios.post("http://localhost:3000/api/task-submissions", formData, {
       headers: {
-        Authorization: `Bearer ${token}`, // Include the authentication token in the request headers
-        'Content-Type': 'application/json', // Specify the content type as JSON
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
-
   } catch (error: any) {
-    // Error handling
     if (axios.isAxiosError(error)) {
-      // If the error is an Axios error, extract and throw the error message from the API response
-      const errorMessage = error.response?.data?.message || 'Error desconocido al enviar la tarea'; // Unknown error if no specific message is found
+      const errorMessage =
+        error.response?.data?.message || "Error desconocido al enviar la tarea";
       throw new Error(errorMessage);
     } else {
-      // If it's not an Axios error, rethrow the error
       throw error;
     }
   }

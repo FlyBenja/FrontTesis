@@ -211,8 +211,17 @@ const Assignments: React.FC = () => {
                     <td className="py-3 px-4 text-center text-black dark:text-white hidden md:table-cell">
                       {formatDate(revision.date_revision)}
                     </td>
-                    <td className="py-3 px-4 text-center text-black dark:text-white bg-yellow-300 dark:bg-yellow-500 font-semibold hidden md:table-cell">
-                      {revision.approvalThesis.status}
+                    <td
+                      className={`py-3 px-4 text-center text-black dark:text-white font-semibold hidden md:table-cell
+    ${revision.approval_status === "En revisión"
+                          ? "bg-yellow-300 dark:bg-yellow-500"
+                          : revision.approval_status === "Rechazado"
+                            ? "bg-red-600 dark:bg-red-600"
+                            : ""
+                        }
+  `}
+                    >
+                      {revision.approval_status}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <button

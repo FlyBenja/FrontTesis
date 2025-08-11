@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { getDatosPerfil } from "../../ts/General/GetProfileData"
 import { getTareas } from "../../ts/General/GetTasks"
 import { getTareasEstudiante } from "../../ts/Students/GetTasksStudent"
-import { entregarTarea } from "../../ts/Students/DeliverTask"
-import { Calendar, Clock, ArrowLeft, ArrowRight, MessageSquare, CheckCircle, XCircle, ChevronLeft } from "lucide-react"
+import ThesisDeliveryModal from "../../components/Modals/ThesisDeliveryModal"
+import { Calendar, Clock, ArrowLeft, ArrowRight, MessageSquare, CheckCircle, XCircle } from "lucide-react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import Swal from "sweetalert2"
 import type React from "react"
@@ -19,6 +19,10 @@ const CourseInfo: React.FC = () => {
   const [tareas, setTareas] = useState<any[]>([])
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalTaskId, setModalTaskId] = useState<number | null>(null)
+  const [modalTaskTitle, setModalTaskTitle] = useState<string>("")
+
 
   /**
    * Fetch tasks for the course when component mounts or courseId changes
@@ -131,42 +135,6 @@ const CourseInfo: React.FC = () => {
   }
 
   /**
-   * Handle task submission
-   */
-  const handleEntregarTarea = async (task_id: number) => {
-    try {
-      const perfil = await getDatosPerfil()
-      const taskData = { user_id: perfil.user_id, task_id }
-      const tareaEntregada = tareas.find((tarea) => tarea.task_id === task_id)
-      if (tareaEntregada) {
-        await entregarTarea(taskData)
-        Swal.fire({
-          icon: "success",
-          title: "Tarea entregada",
-          text: `Tarea "${tareaEntregada.title}" entregada correctamente.`,
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: "bg-green-600 text-white",
-          },
-        })
-        setTareas((prevTareas) =>
-          prevTareas.map((tarea) => (tarea.task_id === task_id ? { ...tarea, submission_complete: true } : tarea)),
-        )
-      }
-    } catch (error: any) {
-      Swal.fire({
-        icon: "error",
-        title: "Error al entregar tarea",
-        text: error.message || "Ocurrió un error al intentar entregar la tarea.",
-        confirmButtonText: "OK",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
-      })
-    }
-  }
-
-  /**
    * Check if the submit button should be disabled based on task deadline
    */
   const isButtonDisabled = (endTask: string, endTime: string | undefined): boolean => {
@@ -203,6 +171,22 @@ const CourseInfo: React.FC = () => {
 
   const currentTarea = tareas[currentTaskIndex]
 
+  // Función para abrir modal
+  const openModal = () => {
+    if (!currentTarea) return
+    setModalTaskId(currentTarea.task_id)
+    setModalTaskTitle(currentTarea.title)
+    setIsModalOpen(true)
+  }
+
+  // Función para cerrar modal
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setModalTaskId(null)
+    setModalTaskTitle("")
+  }
+
+
   return (
     <>
       <Breadcrumb pageName={courseTitle} />
@@ -213,7 +197,7 @@ const CourseInfo: React.FC = () => {
             className="flex items-center px-5 py-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 shadow-md hover:shadow-lg transition-all duration-300 dark:from-gray-700 dark:to-gray-900 dark:text-white dark:hover:from-gray-600 dark:hover:to-gray-800"
             onClick={() => navigate(-1)}
           >
-            <ChevronLeft className="h-5 w-5 mr-2" /> Regresar
+            <ArrowLeft className="h-5 w-5 mr-2" /> Regresar
           </button>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -305,28 +289,14 @@ const CourseInfo: React.FC = () => {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4 mt-4">
                     <button
-                      onClick={() => handleEntregarTarea(currentTarea.task_id)}
-                      disabled={
-                        currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
-                      }
-                      className={`px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
-                          ? "bg-gray-400 cursor-not-allowed focus:ring-gray-500"
-                          : "bg-green-600 hover:bg-green-700 focus:ring-green-500"
+                      onClick={openModal} // Abre el modal aquí
+                      disabled={currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)}
+                      className={`px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center shadow-md ${currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-green-600 hover:bg-green-700"
                         }`}
                     >
-                      {currentTarea.submission_complete ? (
-                        <>
-                          <CheckCircle className="mr-2 h-5 w-5" /> Entregada
-                        </>
-                      ) : isButtonDisabled(currentTarea.endTask, currentTarea.endTime) ? (
-                        <>
-                          <XCircle className="mr-2 h-5 w-5" /> Fuera de plazo
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle className="mr-2 h-5 w-5" /> Entregar tarea
-                        </>
-                      )}
+                      <CheckCircle className="mr-2 h-5 w-5" /> Entregar Capitulo
                     </button>
                     <button
                       onClick={() =>
@@ -340,8 +310,8 @@ const CourseInfo: React.FC = () => {
                       }
                       disabled={!currentTarea.submission_complete}
                       className={`px-6 py-3 rounded-xl font-semibold flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${!currentTarea.submission_complete
-                          ? "bg-gray-400 text-white cursor-not-allowed focus:ring-gray-500"
-                          : "bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500"
+                        ? "bg-gray-400 text-white cursor-not-allowed focus:ring-gray-500"
+                        : "bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500"
                         }`}
                     >
                       <MessageSquare className="mr-2 h-5 w-5" /> Comentarios
@@ -372,6 +342,15 @@ const CourseInfo: React.FC = () => {
           )}
         </div>
       </div>
+      {/* Aquí se incluye el modal */}
+      {modalTaskId !== null && (
+        <ThesisDeliveryModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          taskId={modalTaskId}
+          taskTitle={modalTaskTitle}
+        />
+      )}
     </>
   )
 }

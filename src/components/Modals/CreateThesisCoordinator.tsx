@@ -19,7 +19,7 @@ const CreateThesisCoordinatorModal: React.FC<CreateThesisCoordinatorModalProps> 
     if (coordinator) {
       setEmail(coordinator.email || "")
       setName(coordinator.name || "")
-      setCódigo(coordinator.Código || "")
+      setCódigo(coordinator.carnet || "")
     } else {
       setEmail("")
       setName("")

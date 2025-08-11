@@ -174,24 +174,35 @@ const ReviewStudentCreateComments: React.FC = () => {
                   className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg"
                 >
                   <div
-                    className={`px-6 py-3 flex justify-between items-center ${review.approvaltheses && review.approvaltheses[0]?.status === "approved"
+                    className={`px-6 py-3 flex justify-between items-center ${!review.AssignedReviews[0]?.commentsRevisions ||
+                      review.AssignedReviews[0].commentsRevisions.length === 0 ||
+                      review.approvaltheses?.[0]?.status === "pending"
+                      ? "bg-yellow-500"
+                      : review.approvaltheses?.[0]?.status === "approved"
                         ? "bg-green-500"
                         : "bg-red-500"
                       } rounded-t-xl`}
                   >
                     <h2 className="text-lg font-bold text-white">Revisión #{review.revision_thesis_id}</h2>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${review.approvaltheses && review.approvaltheses[0]?.status === "approved"
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${!review.AssignedReviews[0]?.commentsRevisions ||
+                        review.AssignedReviews[0].commentsRevisions.length === 0 ||
+                        review.approvaltheses?.[0]?.status === "pending"
+                        ? "bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200"
+                        : review.approvaltheses?.[0]?.status === "approved"
                           ? "bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200"
                           : "bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200"
                         }`}
                     >
-                      {review.approvaltheses && review.approvaltheses[0]?.status === "approved"
-                        ? "Aprobado"
-                        : "Finalizado"}
+                      {!review.AssignedReviews[0]?.commentsRevisions ||
+                        review.AssignedReviews[0].commentsRevisions.length === 0 ||
+                        review.approvaltheses?.[0]?.status === "pending"
+                        ? "Pendiente a revisar"
+                        : review.approvaltheses?.[0]?.status === "approved"
+                          ? "Aprobado"
+                          : "Rechazado"}
                     </span>
                   </div>
-
                   <div className="p-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>

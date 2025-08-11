@@ -202,7 +202,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Inicio --> */}
 
               {/* <!-- Menu Item Catedraticos --> */}
-              <SidebarLinkGroup
+              {/*               <SidebarLinkGroup
                 activeCondition={pathname === '/coordinadorsede/ui' || pathname.includes('ui')}
               >
                 {(handleClick, open) => {
@@ -309,7 +309,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </React.Fragment>
                   );
                 }}
-              </SidebarLinkGroup>
+              </SidebarLinkGroup> */}
               {/* <!-- Menu Item Catedraticos --> */}
 
               {/* <!-- Menu Item Comisiones --> */}
