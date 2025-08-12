@@ -32,7 +32,7 @@ const CreateHeadquarters: React.FC = () => {
       const sortedHeadquarters = mappedHeadquarters.sort((a, b) => a.id - b.id)
       setHeadquarters(sortedHeadquarters)
     } catch (error) {
-      console.error("Error al obtener sedes:", error)
+      
     }
   }
 

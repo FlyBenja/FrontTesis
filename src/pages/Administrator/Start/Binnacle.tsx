@@ -37,7 +37,7 @@ const Binnacle = () => {
         const { sede } = await getDatosPerfil()
         setSedeId(sede)
       } catch (error) {
-        console.error("Error getting profile:", error)
+        
       }
     }
 
@@ -83,7 +83,7 @@ const Binnacle = () => {
             })),
           )
         } catch (error) {
-          console.error("Error getting activity log records:", error)
+          
         } finally {
           setIsLoading(false)
         }

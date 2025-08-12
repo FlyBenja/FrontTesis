@@ -117,7 +117,7 @@ const Record: React.FC = () => {
         basePath = "/revisortesis/historial/detalle"
         break
       default:
-        console.error("Rol no reconocido:", role)
+        
         return
     }
 

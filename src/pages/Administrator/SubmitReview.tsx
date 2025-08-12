@@ -56,7 +56,7 @@ const SubmitReview: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "Hubo un error al obtener los datos del perfil.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white", // Sets the button to red with white text
         },
@@ -74,7 +74,7 @@ const SubmitReview: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "Por favor, completa todos los campos.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white", // Sets the button to red with white text
         },
@@ -96,7 +96,7 @@ const SubmitReview: React.FC = () => {
         icon: "success",
         title: "Éxito",
         text: "La revisión ha sido enviada correctamente.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-green-600 text-white", // Sets the button to green with white text
         },
@@ -107,7 +107,7 @@ const SubmitReview: React.FC = () => {
         icon: "error",
         title: "Error",
         text: error.message || "Hubo un error al enviar la revisión. Inténtalo nuevamente.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white", // Sets the button to red with white text
         },

@@ -31,7 +31,7 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
           icon: "error",
           title: "Error",
           text: "No se pudieron obtener los datos del usuario.",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           customClass: { confirmButton: "bg-red-600 text-white" },
         });
       }
@@ -47,7 +47,7 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
           icon: "error",
           title: "Formato inválido",
           text: "Solo se permiten archivos PDF.",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           customClass: { confirmButton: "bg-red-600 text-white" },
         });
         return;
@@ -62,7 +62,7 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
         icon: "error",
         title: "Campos incompletos",
         text: "Debes seleccionar un archivo PDF antes de enviar.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: { confirmButton: "bg-red-600 text-white" },
       });
       return;
@@ -80,7 +80,7 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
         icon: "success",
         title: "Tesis entregada",
         text: `La tesis para "${taskTitle}" fue enviada correctamente.`,
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: { confirmButton: "bg-green-600 text-white" },
       });
       onClose();
@@ -90,7 +90,7 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
         icon: "error",
         title: "Error al enviar",
         text: error.message || "Ocurrió un error al entregar la tesis.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: { confirmButton: "bg-red-600 text-white" },
       });
     } finally {

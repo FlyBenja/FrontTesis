@@ -45,7 +45,6 @@ const Proposal: React.FC = () => {
           throw new Error("No se pudo obtener el ID del usuario.")
         }
       } catch (error: any) {
-        console.error("Error fetching initial data:", error)
         // Optionally show an alert for initial data fetch failure
       }
     }
@@ -68,7 +67,6 @@ const Proposal: React.FC = () => {
             setTaskId(null) // Clear task ID if no task for proposal is found
           }
         } catch (error: any) {
-          console.error("Error fetching tasks:", error)
           setTaskId(null) // Clear task ID if an error occurs
         }
       }
@@ -104,7 +102,6 @@ const Proposal: React.FC = () => {
         setNoProposalUploaded(true) // No proposal found
       }
     } catch (error) {
-      console.error("Error fetching proposal:", error)
       setPdfUrl(null)
       setApprovedProposal(0)
       setApprovalMessage("Pendiente Aprobar")
@@ -125,7 +122,7 @@ const Proposal: React.FC = () => {
         icon: "error",
         title: "Formato no válido",
         text: "Por favor, selecciona un archivo en formato PDF.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white",
         },
@@ -142,7 +139,7 @@ const Proposal: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "Por favor, selecciona un archivo PDF antes de continuar.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white",
         },
@@ -167,7 +164,7 @@ const Proposal: React.FC = () => {
           icon: "success",
           title: "Propuesta actualizada exitosamente",
           text: "Tu propuesta ha sido actualizada correctamente.",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           customClass: {
             confirmButton: "bg-green-600 text-white",
           },
@@ -182,7 +179,7 @@ const Proposal: React.FC = () => {
           icon: "success",
           title: "Propuesta subida exitosamente",
           text: "Tu propuesta ha sido subida correctamente.",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           customClass: {
             confirmButton: "bg-green-600 text-white",
           },
@@ -196,7 +193,7 @@ const Proposal: React.FC = () => {
         icon: "error",
         title: "Error al subir",
         text: error.response?.data?.message || error.message || "Error al procesar la propuesta",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white",
         },

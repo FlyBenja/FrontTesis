@@ -28,7 +28,7 @@ const StudentReview: React.FC = () => {
           const data = await getRevisionDetallePendi(userId)
           setRevisiones(data)
         } catch (error) {
-          console.error("Error al obtener detalles de revisiones pendientes:", error)
+
         } finally {
           setIsLoading(false) // Set loading to false
         }
@@ -64,7 +64,6 @@ const StudentReview: React.FC = () => {
       link.click()
       document.body.removeChild(link)
     } catch (error) {
-      console.error("Error al descargar el archivo:", error)
     }
   }
   return (

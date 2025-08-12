@@ -54,7 +54,6 @@ const CreateAdmin: React.FC = () => {
       const sortedAdmins = transformedAdmins.sort((a, b) => a.id - b.id)
       setAdmins(sortedAdmins)
     } catch (error) {
-      console.error("Error al obtener los administradores:", error)
       setAdmins([]) // Set to empty array on error
     }
   }
@@ -119,7 +118,7 @@ const CreateAdmin: React.FC = () => {
             title: "Administrador eliminado",
             text: `El administrador ha sido eliminado exitosamente.`,
             confirmButtonColor: "#10b981", // Changed to green for success
-            confirmButtonText: "OK",
+            confirmButtonText: "De Acuerdo",
           })
           await fetchAdmins()
         } catch (error: any) {
@@ -128,7 +127,7 @@ const CreateAdmin: React.FC = () => {
             title: "Error al eliminar administrador",
             text: error.message,
             confirmButtonColor: "#ef4444", // Changed to red for error
-            confirmButtonText: "OK",
+            confirmButtonText: "De Acuerdo",
           })
         }
       }

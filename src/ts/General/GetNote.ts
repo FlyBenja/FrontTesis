@@ -26,7 +26,6 @@ export const getNote = async (userId: number, courseId: number): Promise<Nota> =
 
         return response.data; // Return the data received from the API
     } catch (error) {
-        console.error('Error al obtener la nota:', error);
-        return { note: null }; // Return a default value if an error occurs
+
     }
 };

@@ -46,7 +46,7 @@ const generatesIndividualPDF = async (
     sede_id = Number(localStorage.getItem("selectedSedeId"))    // Obtener la sede-id desde localStorage en lugar de la API
     Usergenerate = perfilData.userName;
   } catch (error) {
-    console.error('No se pudo obtener el perfil del usuario:', error); // Error if user profile data cannot be fetched
+    
     return;
   }
 
@@ -57,7 +57,7 @@ const generatesIndividualPDF = async (
   const courseDetails = await getDetalleTareas(user_id, selectedCurso, sede_id, year);
 
   if (!courseDetails) {
-    console.error('No se pudieron obtener los detalles del estudiante y curso.'); // Error if course details cannot be fetched
+    
     return;
   }
 

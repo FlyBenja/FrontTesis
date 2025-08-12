@@ -77,7 +77,7 @@ const Proposals: React.FC = () => {
         icon: "error",
         title: "Error al obtener la propuesta",
         text: "No se pudo cargar la propuesta.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white",
         },
@@ -97,7 +97,7 @@ const Proposals: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "No se pudo obtener el ID del estudiante.",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white",
         },
@@ -130,7 +130,7 @@ const Proposals: React.FC = () => {
           icon: "success",
           title: "Propuesta Aprobada",
           text: `La propuesta ${selectedPropuesta} ha sido aprobada correctamente.`,
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           customClass: {
             confirmButton: "bg-green-600 text-white",
           },
@@ -144,7 +144,7 @@ const Proposals: React.FC = () => {
           icon: "error",
           title: "Error al aprobar la propuesta",
           text: error?.response?.data?.message || "No se pudo aprobar la propuesta.",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           customClass: {
             confirmButton: "bg-red-600 text-white",
           },

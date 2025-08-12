@@ -46,7 +46,7 @@ const CreateCommission: React.FC = () => {
         }
       } catch (error) {
         // Log any errors that occur during data fetching
-        console.error("Error al cargar los datos:", error)
+        
       } finally {
         // Set loading state to false once data fetching is done
         setLoading(false)
@@ -128,7 +128,7 @@ const CreateCommission: React.FC = () => {
       title, // Alert title
       text, // Alert message
       confirmButtonColor, // Set the button color
-      confirmButtonText: "OK", // Button text
+      confirmButtonText: "De Acuerdo", // Button text
     })
   }
 

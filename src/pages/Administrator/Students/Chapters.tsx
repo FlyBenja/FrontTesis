@@ -1,14 +1,14 @@
 import type React from "react"
+import Swal from "sweetalert2"
+import TourChapters from "../../../components/Tours/Administrator/TourChapters"
+import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
+import ViewStudentTask from "../../../components/Pdfs/ViewStudentTask";
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import Swal from "sweetalert2"
-import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import { enviaComentario } from "../../../ts/General/SendComment"
 import { getComentarios, type ComentarioData } from "../../../ts/General/GetComment"
 import { updateComentStats } from "../../../ts/Administrator/UpdateComentStat"
-import TourChapters from "../../../components/Tours/Administrator/TourChapters"
 import { ArrowLeft, MessageSquare, Calendar } from "lucide-react"
-
 
 /**
  * Interface for comment data with active status
@@ -28,7 +28,7 @@ interface Comentario {
 const Chapters: React.FC = () => {
   const navigate = useNavigate() // Hook for navigating between pages
   const location = useLocation() // Hook to get the state from the URL
-  const { tarea, estudiante } = location.state || {} // Destructure task and student from the location state
+  const { tarea, estudiante, selectedAño, selectedCurso } = location.state || {} // Destructure task and student from the location state
 
   const [comentario, setComentario] = useState<string>("") // State to store the new comment
   const [comentariosPrevios, setComentariosPrevios] = useState<Comentario[]>([]) // State to store previous comments
@@ -86,7 +86,7 @@ const Chapters: React.FC = () => {
         }))
         setComentariosPrevios(comentariosFormateados) // Update the state with the formatted comments
       } catch (error) {
-        console.error("Error loading comments:", error)
+        
       }
     }
     cargarComentarios()
@@ -124,7 +124,7 @@ const Chapters: React.FC = () => {
           ? "Los comentarios se han activado correctamente"
           : "Los comentario se han bloqueado exitosamente",
         icon: "success",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-green-500 text-white px-4 py-2 rounded-md",
         },
@@ -135,7 +135,7 @@ const Chapters: React.FC = () => {
           title: "Error",
           text: error.message,
           icon: "error",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           customClass: {
             confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
           },
@@ -153,7 +153,7 @@ const Chapters: React.FC = () => {
         title: "Error",
         text: "Datos de la tarea o estudiante no disponibles",
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
         },
@@ -185,7 +185,7 @@ const Chapters: React.FC = () => {
         title: "Comentario enviado",
         text: "El comentario se ha enviado exitosamente",
         icon: "success",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-green-500 text-white px-4 py-2 rounded-md",
         },
@@ -195,7 +195,7 @@ const Chapters: React.FC = () => {
         title: "Error",
         text: error.message || "Hubo un error al enviar el comentario",
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
         },
@@ -221,8 +221,8 @@ const Chapters: React.FC = () => {
         <button
           id="bloquear-button"
           className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg ${isComentarioBloqueado
-              ? "bg-green-600 text-white hover:bg-green-700"
-              : "bg-red-600 text-white hover:bg-red-700"
+            ? "bg-green-600 text-white hover:bg-green-700"
+            : "bg-red-600 text-white hover:bg-red-700"
             }`}
           onClick={() => handleDesactivarComentario(comentariosPrevios[0]?.id, isComentarioBloqueado)}
           disabled={comentariosPrevios.length === 0}
@@ -291,8 +291,8 @@ const Chapters: React.FC = () => {
               id="enviar-button"
               disabled={isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""}
               className={`px-6 py-2 rounded-full text-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg ${isButtonDisabled() || isComentarioBloqueado || comentario.trim() === ""
-                  ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
                 } ${!(isButtonDisabled() || isComentarioBloqueado) && "md:ml-auto"}`}
               onClick={handleEnviarComentario}
             >
@@ -301,6 +301,8 @@ const Chapters: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Mostrar ViewStudentTask debajo de comentarios */}
+      <ViewStudentTask estudiante={estudiante} selectedAño={selectedAño} selectedCurso={selectedCurso} />
     </>
   )
 }

@@ -33,7 +33,7 @@ const UploadStudents = () => {
           setCourses(coursesData) // Setting the fetched courses in state
         }
       } catch (error) {
-        console.error("Error getting courses:", error) // Logging any errors
+        
       } finally {
         setLoading(false) // Setting loading state to false after fetching is done
       }
@@ -51,7 +51,7 @@ const UploadStudents = () => {
       title, // Setting the title of the alert
       text, // Setting the text of the alert
       confirmButtonColor, // Setting the button color
-      confirmButtonText: "OK", // Setting the button text
+      confirmButtonText: "De Acuerdo", // Setting the button text
     })
   }
 

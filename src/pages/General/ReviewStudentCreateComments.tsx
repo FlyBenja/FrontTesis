@@ -29,7 +29,7 @@ const ReviewStudentCreateComments: React.FC = () => {
           setReviews(data)
           console.log("Reviews data:", data) // For debugging
         } catch (error) {
-          console.error("Error getting pending review details:", error)
+          
         } finally {
           setIsLoading(false)
         }
@@ -51,7 +51,7 @@ const ReviewStudentCreateComments: React.FC = () => {
       link.click()
       document.body.removeChild(link)
     } catch (error) {
-      console.error("Error downloading the file:", error)
+      
     }
   }
   /**

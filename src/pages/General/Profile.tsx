@@ -47,7 +47,7 @@ const Profile = () => {
           title: "¡Éxito!",
           text: "La foto de perfil se ha actualizado correctamente.",
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#10b981",
         }).then(() => {
           window.location.reload()
@@ -59,7 +59,7 @@ const Profile = () => {
           title: "Error",
           text: errorMessage,
           icon: "error",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#ef4444",
         })
       } finally {

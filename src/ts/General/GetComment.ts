@@ -16,12 +16,6 @@ export interface ComentarioData {
   comments: Comentario[]; // Array of comments
 }
 
-/**
- * Function to retrieve comments for a specific task given its task_id and user_id
- * @param task_id - The ID of the task for which comments are retrieved
- * @param user_id - The ID of the user requesting the comments
- * @returns A promise that resolves to an object of type ComentarioData containing the comments
- */
 export const getComentarios = async (task_id: number, user_id: number): Promise<ComentarioData> => {
   try {
     // Retrieve authentication token from localStorage

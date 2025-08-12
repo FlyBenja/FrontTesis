@@ -164,7 +164,7 @@ const TotalReviewsPerHeadquarters: React.FC = () => {
           },
         });
       } catch (error) {
-        console.error('Error al obtener los datos:', error);
+
       }
     };
 

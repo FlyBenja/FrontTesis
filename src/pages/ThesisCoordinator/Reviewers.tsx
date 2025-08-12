@@ -89,7 +89,7 @@ const Reviewers: React.FC = () => {
         title: "¡Éxito!",
         text: response.message,
         icon: "success",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#10b981",
       })
     } catch (err) {
@@ -101,7 +101,7 @@ const Reviewers: React.FC = () => {
         title: "Error",
         text: errorMessage,
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#ef4444",
       })
     }

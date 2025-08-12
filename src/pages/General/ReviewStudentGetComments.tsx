@@ -25,7 +25,7 @@ const StudentReviewComments: React.FC = () => {
           const data = await getComentariosRevision(userId)
           setReviews(data)
         } catch (error) {
-          console.error("Error getting pending review details:", error)
+          
         } finally {
           setIsLoading(false)
         }
@@ -47,7 +47,7 @@ const StudentReviewComments: React.FC = () => {
       link.click()
       document.body.removeChild(link)
     } catch (error) {
-      console.error("Error downloading the file:", error)
+      
     }
   }
   /**

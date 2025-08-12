@@ -58,7 +58,7 @@ const TasksStudents: React.FC = () => {
           categories,
         })
       } catch (error) {
-        console.error("Error fetching task stats:", error)
+
         setChartData({
           series: [
             { name: "Estudiantes Pendientes", data: [0] },

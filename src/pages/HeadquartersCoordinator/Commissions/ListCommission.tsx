@@ -66,7 +66,7 @@ const ListCommission: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error("Error al cargar los datos:", error) // Log any errors during data fetching
+        
       } finally {
         setLoading(false) // Set loading to false after data fetch
       }
@@ -124,7 +124,7 @@ const ListCommission: React.FC = () => {
           icon: "success",
           title: "Usuario eliminado",
           text: response.message,
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#28a745",
           customClass: { confirmButton: "text-white" },
         })
@@ -150,7 +150,7 @@ const ListCommission: React.FC = () => {
           icon: "error",
           title: "Error al eliminar",
           text: error?.message,
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#d33",
           customClass: { confirmButton: "text-white" },
         })

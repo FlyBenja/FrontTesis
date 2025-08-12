@@ -43,7 +43,7 @@ const AssignPG: React.FC = () => {
           icon: "error",
           title: "Error",
           text: error.message,
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#DC3545",
           customClass: { confirmButton: "text-white" },
         })
@@ -72,7 +72,7 @@ const AssignPG: React.FC = () => {
           icon: "success",
           title: "¡Asignación completada! 🎉",
           text: `El curso ${payload.course_id === 1 ? "PG I" : "PG II"} se asignó correctamente a la sede "${sedeNombre}" para el año ${currentYear}.`,
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#4CAF50",
           customClass: { confirmButton: "text-white" },
         })
@@ -84,7 +84,7 @@ const AssignPG: React.FC = () => {
           icon: "warning",
           title: "Nada que asignar",
           text: "Ambos cursos ya están asignados o no se seleccionó ninguno nuevo.",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#F59E0B",
           customClass: { confirmButton: "text-white" },
         })
@@ -94,7 +94,7 @@ const AssignPG: React.FC = () => {
         icon: "error",
         title: "Error en la asignación",
         text: error.message,
-        confirmButtonText: "OK",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#DC3545",
         customClass: { confirmButton: "text-white" },
       })

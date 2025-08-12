@@ -30,7 +30,7 @@ const DropdownNotification = () => {
         setSedeId(perfilData.sede) // Set the sede ID from the fetched profile data
         setUserId(perfilData.user_id) // Set the user ID from the fetched profile data
       } catch (error) {
-        console.error("Error fetching profile data:", error) // Log any errors in fetching profile data
+
       }
     }
 
@@ -48,7 +48,7 @@ const DropdownNotification = () => {
         setNotifications(notificationsData) // Set the fetched notifications
       }
     } catch (error) {
-      console.error("Error fetching notifications:", error) // Log any errors in fetching notifications
+
     }
   }
 

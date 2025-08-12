@@ -29,7 +29,6 @@ const Graphics: React.FC = () => {
           setTotalInRevisions(studentsData.totalInRevisions ?? 0)
         }
       } catch (error) {
-        console.error("Error fetching graphics data:", error)
         setTotalStudents(0)
         setTotalStudentsHeadquarters(0)
         setTotalApprovedRevisions(0)

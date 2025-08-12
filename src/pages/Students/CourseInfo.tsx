@@ -56,7 +56,7 @@ const CourseInfo: React.FC = () => {
           icon: "error",
           title: "Error al cargar las tareas",
           text: "Ocurrió un error al obtener las tareas. Intente nuevamente.",
-          confirmButtonText: "OK",
+          confirmButtonText: "De Acuerdo",
           customClass: {
             confirmButton: "bg-red-600 text-white",
           },
@@ -69,21 +69,6 @@ const CourseInfo: React.FC = () => {
       fetchTareas()
     }
   }, [courseId])
-
-  /**
-   * Show initial warning message when component mounts
-   */
-  useEffect(() => {
-    Swal.fire({
-      icon: "warning",
-      title: "Aviso",
-      text: "En este apartado, únicamente se debe confirmar la entrega de la tarea, sin que sea necesario cargar ningún archivo.",
-      confirmButtonText: "Aceptar",
-      customClass: {
-        confirmButton: "bg-red-600 text-white",
-      },
-    })
-  }, [])
 
   /**
    * Format date to DD/MM/YYYY
@@ -289,15 +274,16 @@ const CourseInfo: React.FC = () => {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4 mt-4">
                     <button
-                      onClick={openModal} // Abre el modal aquí
-                      disabled={currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)}
-                      className={`px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center shadow-md ${currentTarea.submission_complete || isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-green-600 hover:bg-green-700"
+                      onClick={openModal}
+                      disabled={isButtonDisabled(currentTarea.endTask, currentTarea.endTime)}
+                      className={`px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center shadow-md ${isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-green-600 hover:bg-green-700"
                         }`}
                     >
                       <CheckCircle className="mr-2 h-5 w-5" /> Entregar Capitulo
                     </button>
+
                     <button
                       onClick={() =>
                         handleNavigateToCapitulo(
@@ -308,8 +294,8 @@ const CourseInfo: React.FC = () => {
                           currentTarea.endTime,
                         )
                       }
-                      disabled={!currentTarea.submission_complete}
-                      className={`px-6 py-3 rounded-xl font-semibold flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${!currentTarea.submission_complete
+                      disabled={isButtonDisabled(currentTarea.endTask, currentTarea.endTime)}
+                      className={`px-6 py-3 rounded-xl font-semibold flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
                         ? "bg-gray-400 text-white cursor-not-allowed focus:ring-gray-500"
                         : "bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500"
                         }`}

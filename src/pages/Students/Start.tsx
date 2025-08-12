@@ -48,7 +48,6 @@ const Start: React.FC = () => {
         )
       } catch (err: any) {
         // Error handling if necessary (e.g., displaying an error message)
-        console.error("Error fetching timeline:", err)
       } finally {
         setLoading(false) // Set loading to false once the data has been fetched
       }

@@ -48,7 +48,7 @@ const Chapters: React.FC = () => {
         }))
         setPreviousComments(formattedComments)
       } catch (error) {
-        console.error("Error loading comments:", error)
+       
       }
     }
     loadComments()

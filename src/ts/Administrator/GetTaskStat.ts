@@ -37,7 +37,7 @@ export const getTaskStats = async (
     // Devolver directamente el array en lugar de fusionarlo en un objeto
     return response.data;
   } catch (error) {
-    console.error("Error al obtener estadísticas de tareas:", error);
+
     return [];
   }
 };

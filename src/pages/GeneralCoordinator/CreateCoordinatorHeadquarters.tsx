@@ -40,7 +40,7 @@ const CreateCoordinatorSede: React.FC = () => {
       const sortedCoordinators = transformedData.sort((a, b) => a.id - b.id)
       setCoordinators(sortedCoordinators)
     } catch (error) {
-      console.error("Error al obtener coordinadores:", error)
+      
     }
   }
 

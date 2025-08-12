@@ -40,7 +40,7 @@ const Graphics: React.FC = () => {
         }
       } catch (error) {
         // Error handling
-        console.error("Error fetching data:", error)
+        
         setTotalStudents(0)
         setTotalStudentsSede(0)
         setTotalApprovedRevisions(0)

@@ -36,7 +36,7 @@ const PercentageHeadquarters: React.FC = () => {
           })
         }
       } catch (error) {
-        console.error("Error fetching data:", error)
+
         setChartData({
           series: [0, 0],
           labels: ["Completado", "Pendiente"],

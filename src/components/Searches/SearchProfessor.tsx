@@ -64,7 +64,7 @@ const SearchProfessor: React.FC<SearchProfessorProps> = ({ onSearchResults }) =>
         onSearchResults(catedraticoEncontrado ? [catedraticoEncontrado] : []) // Return the found professor or an empty array
       }
     } catch (error) {
-      console.error("Error al buscar el catedrático:", error) // Log any error during the search
+      
       onSearchResults([]) // Return an empty array in case of error
     } finally {
       setIsSearching(false) // Set the searching state to false after the operation is completed

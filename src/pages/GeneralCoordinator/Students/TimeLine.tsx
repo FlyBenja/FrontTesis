@@ -57,7 +57,6 @@ const TimeLine: React.FC = () => {
             })),
         )
       } catch (err: any) {
-        console.error("Error fetching timeline:", err)
         showAlert("error", "Error", "Hubo un problema al cargar la línea de tiempo.")
       } finally {
         setLoading(false)
@@ -73,7 +72,7 @@ const TimeLine: React.FC = () => {
       title,
       text,
       confirmButtonColor,
-      confirmButtonText: "OK",
+      confirmButtonText: "De Acuerdo",
     })
   }
 

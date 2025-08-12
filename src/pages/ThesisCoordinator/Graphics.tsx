@@ -28,7 +28,7 @@ const Graphics: React.FC = () => {
         const data = await getTotalesRevision()
         setTotales(data.data)
       } catch (error) {
-        console.error(error)
+
       } finally {
         setLoading(false)
       }

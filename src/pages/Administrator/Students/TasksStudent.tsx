@@ -15,7 +15,7 @@ const TasksStudent: React.FC = () => {
   const [tareas, setTareas] = useState<Tarea[]>([])
   const [sedeId, setSedeId] = useState<number | null>(null)
   const [tareasEstudiante, setTareasEstudiante] = useState<TareaEstudiante[]>([])
-  const { estudiante, selectedAño } = location.state || {}
+  const { estudiante, selectedAño, selectedCurso } = location.state || {}
 
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const TasksStudent: React.FC = () => {
       })
     } else {
       navigate("/coordinadorgeneral/capitulo", {
-        state: { tarea: task, estudiante, selectedAño },
+        state: { tarea: task, estudiante, selectedAño, selectedCurso },
       })
     }
   }

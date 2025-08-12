@@ -51,7 +51,6 @@ const Courses: React.FC = () => {
       } catch (err: any) {
         setError("Hubo un error al recuperar los datos.")
         setLoading(false)
-        console.error(err)
       }
     }
     fetchData()

@@ -70,7 +70,7 @@ const SearchStudents: React.FC<SearchStudentsProps> = ({ selectedAño, selectedC
         onSearchResults(estudianteEncontrado ? [estudianteEncontrado] : []) // Return the found student or an empty array
       }
     } catch (error) {
-      console.error("Error during student search:", error)
+      
       onSearchResults([]) // Return an empty list in case of an error
     } finally {
       setIsSearching(false) // Set the search state to false once the search is complete

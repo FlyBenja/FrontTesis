@@ -22,7 +22,7 @@ export const SedesProvider = ({ children }: { children: ReactNode }) => {
       const data = await getSedes()
       setSedes(data)
     } catch (error) {
-      console.error("Error al obtener las sedes:", error)
+      
     }
   }, [])
 

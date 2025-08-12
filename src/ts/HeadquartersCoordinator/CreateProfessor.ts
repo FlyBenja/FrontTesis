@@ -26,7 +26,6 @@ export const createCatedratico = async (catedraticoData: {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage = error.response?.data?.message;
-      console.error(errorMessage);
       if (errorMessage) {
         throw new Error(errorMessage);
       }

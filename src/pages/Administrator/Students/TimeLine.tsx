@@ -88,7 +88,7 @@ const TimeLine: React.FC = () => {
       title,
       text,
       confirmButtonColor,
-      confirmButtonText: "OK",
+      confirmButtonText: "De Acuerdo",
     })
   }
 
@@ -155,7 +155,7 @@ const TimeLine: React.FC = () => {
               id="view-tasks"
               onClick={() => {
                 navigate("/administrador/tareas-estudiante", {
-                  state: { estudiante, selectedAño },
+                  state: { estudiante, selectedAño, selectedCurso },
                 })
               }}
               className="flex items-center px-6 py-2 bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
