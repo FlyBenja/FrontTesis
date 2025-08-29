@@ -21,7 +21,6 @@ const Proposal: React.FC = () => {
   const [approvedProposal, setApprovedProposal] = useState<number>(0) // State for tracking the approval status of the proposal
   const [taskId, setTaskId] = useState<number | null>(null) // State for storing the task ID
   const [sedeId, setSedeId] = useState<number | null>(null) // State for storing the site ID (Sede)
-  const [noProposalUploaded, setNoProposalUploaded] = useState<boolean>(false) // Flag for no proposals uploaded
 
   const propuestas = [
     { id: 1, titulo: "Propuesta 1" },
@@ -84,7 +83,6 @@ const Proposal: React.FC = () => {
         setPdfUrl(propuestaData.file_path) // Set the PDF URL for preview
         const approvalStatus = propuestaData.approved_proposal // Get the approval status of the proposal
         setApprovedProposal(approvalStatus) // Set the approval status
-        setNoProposalUploaded(false)
         // Set approval message based on the approval status
         if (approvalStatus === 0) {
           setApprovalMessage("Pendiente Aprobar")
@@ -99,13 +97,11 @@ const Proposal: React.FC = () => {
         setPdfUrl(null)
         setApprovedProposal(0)
         setApprovalMessage("Pendiente Aprobar")
-        setNoProposalUploaded(true) // No proposal found
       }
     } catch (error) {
       setPdfUrl(null)
       setApprovedProposal(0)
       setApprovalMessage("Pendiente Aprobar")
-      setNoProposalUploaded(true) // Error fetching means no proposal found or accessible
     }
   }
 
@@ -217,16 +213,14 @@ const Proposal: React.FC = () => {
     <>
       <Breadcrumb pageName="Subir Propuesta" /> {/* Breadcrumb navigation component */}
       <div className="mx-auto max-w-6xl px-4 py-6">
-        {taskId === null || noProposalUploaded ? (
+        {taskId === null ? (
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-6 flex flex-col items-center justify-center text-center">
             <XCircle className="h-20 w-20 mb-6 text-red-500" />
             <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              {taskId === null ? "¡No Existe Tarea Para Subir Propuestas! 😔" : "¡No Has Subido Tu Propuesta Aún! 😔"}
+              ¡No Existe Tarea Para Subir Propuestas! 😔
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-400">
-              {taskId === null
-                ? "Por favor, contacta a tu administrador para habilitar la tarea de propuestas."
-                : "Por favor, sube tu documento de propuesta para comenzar."}
+              Por favor, contacta a tu administrador para habilitar la tarea de propuestas.
             </p>
           </div>
         ) : (
@@ -240,16 +234,15 @@ const Proposal: React.FC = () => {
                 {propuestas.map((propuesta) => (
                   <div
                     key={propuesta.id}
-                    className={`flex items-center p-4 rounded-xl transition-all duration-300 border ${
-                      approvedProposal === propuesta.id
-                        ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-500"
-                        : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
-                    }`}
+                    className={`flex items-center p-4 rounded-xl transition-all duration-300 border ${approvedProposal === propuesta.id
+                      ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-500"
+                      : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
+                      }`}
                   >
                     <input
                       type="radio"
                       checked={approvedProposal === propuesta.id}
-                      onChange={() => {}} // No action on change, only reflects status
+                      onChange={() => { }} // No action on change, only reflects status
                       className="mr-2 cursor-default"
                       disabled // Always disabled for student view
                     />
@@ -259,9 +252,8 @@ const Proposal: React.FC = () => {
               </div>
               <div className="text-center">
                 <span
-                  className={`text-2xl font-semibold ${
-                    approvalMessage.includes("Aprobada") ? "text-green-600" : "text-red-600"
-                  }`}
+                  className={`text-2xl font-semibold ${approvalMessage.includes("Aprobada") ? "text-green-600" : "text-red-600"
+                    }`}
                 >
                   {approvalMessage}
                 </span>
@@ -274,20 +266,18 @@ const Proposal: React.FC = () => {
                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Subir PDF de Propuesta</h2>
                 <button
                   onClick={handleDownloadTemplate}
-                  className={`px-6 py-2 rounded-full text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                    approvedProposal !== 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-                  }`}
+                  className={`px-6 py-2 rounded-full text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${approvedProposal !== 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                    }`}
                   disabled={approvedProposal !== 0} // Block if the proposal is approved
                 >
                   Descargar Plantilla
                 </button>
               </div>
               <label
-                className={`flex flex-col items-center justify-center w-full h-32 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 transition-all ${
-                  approvedProposal !== 0
-                    ? "cursor-not-allowed opacity-70"
-                    : "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
-                }`}
+                className={`flex flex-col items-center justify-center w-full h-32 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 transition-all ${approvedProposal !== 0
+                  ? "cursor-not-allowed opacity-70"
+                  : "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                  }`}
               >
                 <div className="flex flex-col items-center">
                   <svg
@@ -324,11 +314,10 @@ const Proposal: React.FC = () => {
               <div className="flex justify-between items-center mt-4">
                 <button
                   onClick={handleUpload}
-                  className={`w-full px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-300 ${
-                    approvedProposal !== 0 || loading
-                      ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
-                      : "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
-                  }`}
+                  className={`w-full px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-300 ${approvedProposal !== 0 || loading
+                    ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
+                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
+                    }`}
                   disabled={approvedProposal !== 0 || loading} // Block if the proposal is approved or loading
                 >
                   {loading ? "Subiendo..." : "Subir Propuesta"}
