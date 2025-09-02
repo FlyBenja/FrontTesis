@@ -70,7 +70,7 @@ const TasksStudent: React.FC = () => {
           icon: "warning",
           title: "Aviso",
           text: "No puedes acceder al capítulo porque la tarea no ha sido entregada por el estudiante.",
-          confirmButtonText: "Entendido",
+          confirmButtonText: "De Acuerdo",
           customClass: {
             confirmButton: "bg-red-600 text-white",
           },
@@ -123,7 +123,7 @@ const TasksStudent: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center">
             <XCircle className="h-20 w-20 mb-6 text-red-500" />
             <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              ¡No Se Encontraron Tareas Creadas! 😔
+              ¡No Se Encontraron Tareas Creadas!  
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-400">
               Parece que no hay tareas asignadas para este estudiante en el año seleccionado.

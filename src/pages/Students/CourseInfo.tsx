@@ -107,7 +107,7 @@ const CourseInfo: React.FC = () => {
         icon: "error",
         title: "Acceso denegado",
         text: "No puedes acceder al capítulo porque la tarea no está entregada.",
-        confirmButtonText: "Entendido",
+        confirmButtonText: "De Acuerdo",
         customClass: {
           confirmButton: "bg-red-600 text-white",
         },

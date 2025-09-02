@@ -124,7 +124,7 @@ const generatePDFGeneral = async (
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(textColor.r, textColor.g, textColor.b);
-    doc.text(`Nombre: ${student.name} | Carnet: ${student.carnet} | Correo: ${student.email}`, 30, startY + 10);
+    doc.text(`Nombre: ${student.name} | Carnet: ${student.carnet} | Correo: ${student.email}`, 10, startY + 10);
 
     // Task submission table
     const tableStartY = startY + 20;

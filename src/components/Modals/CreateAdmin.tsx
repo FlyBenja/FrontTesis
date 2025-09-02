@@ -41,7 +41,7 @@ const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdmin
         title: "¡Administrador creado!",
         text: `El administrador ${adminUserName} ha sido creado exitosamente.`,
         confirmButtonColor: "#10b981",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
       })
 
       await onAdminCreated()
@@ -55,7 +55,7 @@ const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdmin
         title: "Error al crear administrador",
         text: error.message,
         confirmButtonColor: "#ef4444",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
       })
     } finally {
       setLoading(false)

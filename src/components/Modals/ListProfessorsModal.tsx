@@ -66,7 +66,7 @@ const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedR
           icon: "success",
           title: "¡Catedrático asignado!",
           text: `El catedrático ${selectedCatedratico.userName} ha sido asignado correctamente.`,
-          confirmButtonText: "Aceptar",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#10b981",
         })
         onClose()
@@ -75,7 +75,7 @@ const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedR
           icon: "error",
           title: "Error al asignar catedrático",
           text: error.message,
-          confirmButtonText: "Aceptar",
+          confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#ef4444",
         })
       }

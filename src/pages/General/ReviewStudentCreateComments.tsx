@@ -29,7 +29,7 @@ const ReviewStudentCreateComments: React.FC = () => {
           setReviews(data)
           console.log("Reviews data:", data) // For debugging
         } catch (error) {
-          
+
         } finally {
           setIsLoading(false)
         }
@@ -51,7 +51,7 @@ const ReviewStudentCreateComments: React.FC = () => {
       link.click()
       document.body.removeChild(link)
     } catch (error) {
-      
+
     }
   }
   /**
@@ -168,7 +168,7 @@ const ReviewStudentCreateComments: React.FC = () => {
 
             <h2 className="text-xl font-bold text-gray-800 dark:text-white mt-8 mb-4">Revisiones ({reviews.length})</h2>
             <div className="grid gap-6">
-              {reviews.map((review) => (
+              {reviews.map((review, index) => (
                 <div
                   key={review.revision_thesis_id}
                   className="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg"
@@ -297,7 +297,8 @@ const ReviewStudentCreateComments: React.FC = () => {
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-4">
-                      {review.thesis_dir && (
+                      {/* Mostrar botón Descargar Tesis SOLO en el primer review */}
+                      {index === 0 && review.thesis_dir && (
                         <button
                           className="flex items-center px-5 py-2.5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                           onClick={() =>
@@ -307,22 +308,25 @@ const ReviewStudentCreateComments: React.FC = () => {
                           <Download className="mr-2 h-5 w-5" /> Descargar Tesis
                         </button>
                       )}
-                      {review.active_process ? (
-                        <button
-                          className="flex items-center px-5 py-2.5 rounded-full bg-gradient-to-br from-green-500 to-teal-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
-                          onClick={() => handleGrade(review.revision_thesis_id)}
-                        >
-                          <CheckCircle className="mr-2 h-5 w-5" /> Calificar
-                        </button>
-                      ) : (
-                        <button
-                          className="flex items-center px-5 py-2.5 rounded-full bg-gray-400 text-white cursor-not-allowed shadow-md"
-                          disabled
-                          title="Esta revisión ya ha sido finalizada"
-                        >
-                          <CheckCircle className="mr-2 h-5 w-5" /> Calificar
-                        </button>
-                      )}
+
+                      {/* Mostrar botón Calificar SOLO en el primer review */}
+                      {index === 0 &&
+                        (review.active_process ? (
+                          <button
+                            className="flex items-center px-5 py-2.5 rounded-full bg-gradient-to-br from-green-500 to-teal-600 text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+                            onClick={() => handleGrade(review.revision_thesis_id)}
+                          >
+                            <CheckCircle className="mr-2 h-5 w-5" /> Calificar
+                          </button>
+                        ) : (
+                          <button
+                            className="flex items-center px-5 py-2.5 rounded-full bg-gray-400 text-white cursor-not-allowed shadow-md"
+                            disabled
+                            title="Esta revisión ya ha sido finalizada"
+                          >
+                            <CheckCircle className="mr-2 h-5 w-5" /> Calificar
+                          </button>
+                        ))}
                     </div>
                   </div>
                 </div>

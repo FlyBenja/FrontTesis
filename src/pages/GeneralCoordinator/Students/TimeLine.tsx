@@ -186,7 +186,7 @@ const TimeLine: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center">
               <XCircle className="h-20 w-20 mb-6 text-red-500" />
               <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                ¡No Se Encontraron Eventos En Este Estudiante! 😔
+                ¡No Se Encontraron Eventos En Este Estudiante!  
               </p>
               <p className="text-lg text-gray-600 dark:text-gray-400">
                 Parece que no hay actividades registradas para este estudiante.

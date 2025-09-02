@@ -217,8 +217,7 @@ const Assignments: React.FC = () => {
                           : revision.approval_status === "Rechazado"
                             ? "bg-red-600 dark:bg-red-600"
                             : ""
-                        }
-  `}
+                        }`}
                     >
                       {revision.approval_status}
                     </td>

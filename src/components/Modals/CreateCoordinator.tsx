@@ -62,7 +62,7 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
           title: "Error al cargar sedes",
           text: error.message || "No se pudieron cargar las sedes",
           confirmButtonColor: "#ef4444",
-          confirmButtonText: "Aceptar",
+          confirmButtonText: "De Acuerdo",
         })
       }
     }
@@ -93,7 +93,7 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
         title: "¡Coordinador creado!",
         text: `El coordinador ${nombre} ha sido creado exitosamente.`,
         confirmButtonColor: "#10b981",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
       })
       onCreated()
       onClose()
@@ -103,7 +103,7 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
         title: "Error al crear coordinador",
         text: error.message || "No se pudo crear el coordinador",
         confirmButtonColor: "#ef4444",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
       })
     } finally {
       setLoading(false)

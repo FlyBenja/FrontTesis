@@ -33,6 +33,7 @@ const ChangePassword: React.FC = () => {
         title: "Contraseñas no coinciden",
         text: "Por favor, asegúrate de que la nueva contraseña y la confirmación sean idénticas.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -44,6 +45,7 @@ const ChangePassword: React.FC = () => {
         title: "Contraseña inválida",
         text: "La nueva contraseña debe tener al menos 4 caracteres.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -56,6 +58,7 @@ const ChangePassword: React.FC = () => {
         title: "Autenticación requerida",
         text: "No se encontró un token de autenticación. Por favor, inicia sesión nuevamente.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -71,6 +74,7 @@ const ChangePassword: React.FC = () => {
         title: "¡Contraseña actualizada!",
         text: successMessage,
         confirmButtonColor: "#10b981",
+        confirmButtonText: "De Acuerdo",
       }).then(() => {
         navigate("/")
       })
@@ -85,6 +89,7 @@ const ChangePassword: React.FC = () => {
         title: "Error al cambiar la contraseña",
         text: errorMessage,
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
     }
   }
@@ -215,7 +220,7 @@ const ChangePassword: React.FC = () => {
                   Cambiando contraseña...
                 </div>
               ) : (
-                "🔄 Cambiar Contraseña"
+                "Cambiar Contraseña"
               )}
             </button>
           </form>

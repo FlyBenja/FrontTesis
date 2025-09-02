@@ -5,7 +5,7 @@ interface Review {
   date_assigned: string; // Date when the review was assigned
   date_revision: string; // Date of the revision
   active_process: boolean; // Indicates if the process is active
-  approval_status: string; // Status of the thesis approval
+  approval_status: string; // Status of the thesis approval (translated)
   revision_thesis_id: number; // ID of the thesis revision
   user: {
     user_id: number;
@@ -44,19 +44,31 @@ export const getRevisionesCordinador = async (
 
     // Check if the response contains the necessary data
     if (response.data && Array.isArray(response.data.reviews)) {
-      return response.data.reviews.map((review: any) => ({
-        date_assigned: review.date_assigned,
-        date_revision: review.RevisionThesis?.date_revision || 'No especificado',
-        active_process: review.RevisionThesis?.active_process ?? false,
-        approval_status: review.RevisionThesis?.approvaltheses?.[0]?.status || 'Desconocido',
-        revision_thesis_id: review.RevisionThesis?.revision_thesis_id || 0,
-        user: {
-          user_id: review.RevisionThesis?.User?.user_id || 0,
-          name: review.RevisionThesis?.User?.name || 'No disponible',
-          email: review.RevisionThesis?.User?.email || 'No disponible',
-          carnet: review.RevisionThesis?.User?.carnet || 'No disponible',
-        },
-      }));
+      return response.data.reviews.map((review: any) => {
+        const status = review.RevisionThesis?.approvaltheses?.[0]?.status || 'Desconocido';
+
+        return {
+          date_assigned: review.date_assigned,
+          date_revision: review.RevisionThesis?.date_revision || 'No especificado',
+          active_process: review.RevisionThesis?.active_process ?? false,
+
+          // ✅ Campo adicional traducido a español para mostrar en la tabla
+          approval_status:
+            status === 'en revisión'
+              ? 'En revisión'
+              : status === 'rechazado'
+                ? 'Rechazado'
+                : status,
+
+          revision_thesis_id: review.RevisionThesis?.revision_thesis_id || 0,
+          user: {
+            user_id: review.RevisionThesis?.User?.user_id || 0,
+            name: review.RevisionThesis?.User?.name || 'No disponible',
+            email: review.RevisionThesis?.User?.email || 'No disponible',
+            carnet: review.RevisionThesis?.User?.carnet || 'No disponible',
+          },
+        };
+      });
     }
 
     throw new Error('La respuesta no contiene datos de revisiones asignadas válidos.');

@@ -215,7 +215,7 @@ const CreateAdmin: React.FC = () => {
                           <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
                             <UserX className="w-8 h-8 text-gray-400" />
                           </div>
-                          <p className="text-lg font-medium">No hay administradores registrados. 😔</p>
+                          <p className="text-lg font-medium">No hay administradores registrados.  </p>
                           <p className="text-sm">Crea tu primer administrador para comenzar</p>
                         </div>
                       </td>

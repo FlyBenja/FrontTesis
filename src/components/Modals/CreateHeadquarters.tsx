@@ -66,7 +66,7 @@ const CreateHeadquartersModal: React.FC<CreateHeadquartersProps> = ({
           title: "¡Sede creada!",
           text: `La sede "${nombreActual}" ha sido creada exitosamente.`,
           confirmButtonColor: "#10b981",
-          confirmButtonText: "Aceptar",
+          confirmButtonText: "De Acuerdo",
         })
       } else if (type === "editar" && initialData) {
         const noCambios =
@@ -84,7 +84,7 @@ const CreateHeadquartersModal: React.FC<CreateHeadquartersProps> = ({
           title: "¡Sede actualizada!",
           text: `La sede "${nombreActual}" ha sido actualizada exitosamente.`,
           confirmButtonColor: "#10b981",
-          confirmButtonText: "Aceptar",
+          confirmButtonText: "De Acuerdo",
         })
       }
 
@@ -100,7 +100,7 @@ const CreateHeadquartersModal: React.FC<CreateHeadquartersProps> = ({
         title: type === "crear" ? "Error al crear sede" : "Error al actualizar sede",
         text: error.message,
         confirmButtonColor: "#ef4444",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
       })
     } finally {
       setLoading(false)

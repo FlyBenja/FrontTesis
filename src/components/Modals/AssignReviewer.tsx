@@ -64,7 +64,7 @@ const AssignReviewer: React.FC<AssignReviewerProps> = ({ onClose, revisionThesis
         title: "¡Éxito!",
         text: "Revisor asignado correctamente",
         icon: "success",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#10b981",
       }).then(() => {
         onClose()
@@ -80,7 +80,7 @@ const AssignReviewer: React.FC<AssignReviewerProps> = ({ onClose, revisionThesis
         title: "Error",
         text: errorMessage,
         icon: "error",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#ef4444",
       })
     } finally {

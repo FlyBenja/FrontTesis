@@ -29,6 +29,7 @@ const RecoverPassword: React.FC = () => {
         title: "Correo no válido",
         text: "Por favor, ingresa un correo electrónico válido con el dominio @miumg.edu.gt",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -42,6 +43,7 @@ const RecoverPassword: React.FC = () => {
         title: "¡Correo enviado!",
         text: successMessage,
         confirmButtonColor: "#10b981",
+        confirmButtonText: "De Acuerdo",
       }).then(() => {
         navigate(-1)
       })
@@ -56,6 +58,7 @@ const RecoverPassword: React.FC = () => {
         title: "Error al recuperar contraseña",
         text: errorMessage,
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
     }
   }
@@ -134,7 +137,7 @@ const RecoverPassword: React.FC = () => {
                   Enviando...
                 </div>
               ) : (
-                "📤 Enviar Contraseña"
+                "Enviar Contraseña"
               )}
             </button>
           </form>

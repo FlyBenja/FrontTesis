@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import umgLogo from '../../../images/Login/logo3.png';
-import { getDetalleTareas } from '../../../ts/Administrator/GetTaskDetails'; 
+import { getDetalleTareas } from '../../../ts/Administrator/GetTaskDetails';
 import { getDatosPerfil, PerfilData } from '../../../ts/General/GetProfileData';
 
 /**
@@ -46,7 +46,7 @@ const generatesIndividualPDF = async (
     sede_id = Number(localStorage.getItem("selectedSedeId"))    // Obtener la sede-id desde localStorage en lugar de la API
     Usergenerate = perfilData.userName;
   } catch (error) {
-    
+
     return;
   }
 
@@ -57,7 +57,7 @@ const generatesIndividualPDF = async (
   const courseDetails = await getDetalleTareas(user_id, selectedCurso, sede_id, year);
 
   if (!courseDetails) {
-    
+
     return;
   }
 
@@ -80,7 +80,7 @@ const generatesIndividualPDF = async (
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(200, 200, 200); // Light gray
   doc.text(
-    'UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)', 
+    'UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)',
     (doc.internal.pageSize.width - doc.getTextWidth('UNIVERSIDAD MARIANO GALVEZ DE GUATEMALA (UMG)')) / 2,
     15
   );
@@ -112,9 +112,9 @@ const generatesIndividualPDF = async (
   doc.text('Email:', 18, 70, { align: 'center' }); // "Email"
 
   doc.setFont('helvetica', 'normal'); // Back to normal text style
-  doc.text(student.name, 69.5, 50, { align: 'center' });
+  doc.text(student.name, 58.5, 50, { align: 'center' });
   doc.text(student.carnet, 40, 60, { align: 'center' });
-  doc.text(student.email, 50, 70, { align: 'center' });
+  doc.text(student.email, 52, 70, { align: 'center' });
 
   // Course Information (right column)
   doc.setFontSize(14);
@@ -127,7 +127,7 @@ const generatesIndividualPDF = async (
   doc.text('Año:', 13 + sectionWidth + 60, 70, { align: 'center' }); // "Year"
 
   doc.setFont('helvetica', 'normal'); // Back to normal text style
-  doc.text(student.course, 6 + sectionWidth + 100, 50, { align: 'center' });
+  doc.text(student.course, 7 + sectionWidth + 100, 50, { align: 'center' });
   doc.text(student.sede, -9 + sectionWidth + 100, 60, { align: 'center' });
   doc.text(String(selectedAño), -16 + sectionWidth + 100, 70, { align: 'center' });
 

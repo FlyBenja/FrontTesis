@@ -122,7 +122,7 @@ const CreateCoordinatorSede: React.FC = () => {
           title: "¡Coordinador removido!",
           text: "El coordinador ha sido removido exitosamente.",
           confirmButtonColor: "#10b981",
-          confirmButtonText: "Aceptar",
+          confirmButtonText: "De Acuerdo",
         })
         await fetchCoordinators()
       }
@@ -132,7 +132,7 @@ const CreateCoordinatorSede: React.FC = () => {
         title: "Error al eliminar",
         text: error.message || "No se pudo eliminar el coordinador",
         confirmButtonColor: "#ef4444",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
       })
     }
   }

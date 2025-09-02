@@ -151,7 +151,7 @@ const Password = () => {
                       Guardando...
                     </div>
                   ) : (
-                    "💾 Guardar Cambios"
+                    "Guardar Cambios"
                   )}
                 </button>
               </div>

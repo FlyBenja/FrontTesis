@@ -35,7 +35,7 @@ const MyAssignments: React.FC = () => {
         const perfil = await getDatosPerfil()
         setUserId(perfil.user_id)
       } catch (error) {
-        
+
       }
     }
     fetchUserId()
@@ -55,7 +55,7 @@ const MyAssignments: React.FC = () => {
           setIsCarnetSearch(carnet.length >= 10)
         }
       } catch (error) {
-        
+
         setRevisiones([])
         setFilteredRevisiones([])
         setIsCarnetSearch(carnet.length >= 10)

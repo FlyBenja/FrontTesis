@@ -47,7 +47,7 @@ const CreateUserWithoutLogin: React.FC<CreateUserWithoutLoginProps> = ({ onClose
         title: "¡Éxito!",
         text: "Usuario creado correctamente",
         icon: "success",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#10b981",
       })
       onClose()
@@ -56,7 +56,7 @@ const CreateUserWithoutLogin: React.FC<CreateUserWithoutLoginProps> = ({ onClose
         title: "Error",
         text: error instanceof Error ? error.message : "Error desconocido",
         icon: "error",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#ef4444",
       })
     } finally {

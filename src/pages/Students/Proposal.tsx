@@ -217,7 +217,7 @@ const Proposal: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-6 flex flex-col items-center justify-center text-center">
             <XCircle className="h-20 w-20 mb-6 text-red-500" />
             <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              ¡No Existe Tarea Para Subir Propuestas! 😔
+              ¡No Existe Tarea Para Subir Propuestas!  
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-400">
               Por favor, contacta a tu administrador para habilitar la tarea de propuestas.

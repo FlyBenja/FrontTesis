@@ -24,6 +24,7 @@ const Login: React.FC = () => {
         title: "Campos obligatorios",
         text: "Por favor, complete todos los campos.",
         confirmButtonColor: "#f59e0b",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -35,6 +36,7 @@ const Login: React.FC = () => {
         title: "Correo inválido",
         text: "Ingrese un correo electrónico válido.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -45,6 +47,7 @@ const Login: React.FC = () => {
         title: "Contraseña inválida",
         text: "La contraseña debe tener al menos 4 caracteres.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -70,6 +73,7 @@ const Login: React.FC = () => {
           title: "Cambio de contraseña requerido",
           text: "Primero favor de cambiar contraseña temporal.",
           confirmButtonColor: "#f59e0b",
+          confirmButtonText: "De Acuerdo",
         }).then(() => {
           navigate("/cambia/contraseña")
         })
@@ -83,6 +87,7 @@ const Login: React.FC = () => {
           title: "¡Bienvenido!",
           text: "Inicio de sesión exitoso.",
           confirmButtonColor: "#10b981",
+          confirmButtonText: "De Acuerdo",
         }).then(() => {
           const validRoles = [1, 3, 4, 5, 6, 7]
           const rolePath = validRoles.includes(response.data.rol)
@@ -97,6 +102,7 @@ const Login: React.FC = () => {
         title: "Error al iniciar sesión",
         text: error?.response?.data?.message || "Ocurrió un error inesperado. Por favor, inténtelo de nuevo.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
     } finally {
       setIsLoading(false)
@@ -181,7 +187,7 @@ const Login: React.FC = () => {
                   Iniciando sesión...
                 </div>
               ) : (
-                "🚀 Ingresar"
+                "Ingresar"
               )}
             </button>
           </form>
@@ -192,7 +198,7 @@ const Login: React.FC = () => {
               className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 
                        text-sm font-medium transition-colors duration-200 hover:underline"
             >
-              ¿Olvidaste tu contraseña? 🔑
+              ¿Olvidaste tu contraseña?
             </a>
           </div>
         </div>

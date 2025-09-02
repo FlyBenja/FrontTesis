@@ -78,7 +78,7 @@ function App() {
         icon: 'warning',
         title: 'Acceso Denegado',
         text: 'Favor de iniciar sesión para continuar.',
-        confirmButtonText: 'Entendido',
+        confirmButtonText: 'De Acuerdo',
         customClass: {
           confirmButton: 'bg-red-600 text-white',
         },

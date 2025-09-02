@@ -174,7 +174,7 @@ const Proposals: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-6 flex flex-col items-center justify-center text-center">
             <XCircle className="h-20 w-20 mb-6 text-red-500" />
             <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              {"¡Estudiante No Ha Subido Sus Propuestas! 😔"}
+              {"¡Estudiante No Ha Subido Sus Propuestas!  "}
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-400">
               Por favor, asegúrate de que el estudiante haya cargado su documento.

@@ -23,7 +23,7 @@ const ProtectedRouteCambiaContra = () => {
                 icon: 'warning',
                 title: 'Acceso denegado',
                 text: 'Favor de iniciar sesión para continuar.',
-                confirmButtonText: 'Entendido',
+                confirmButtonText: 'De Acuerdo',
                 customClass: {
                     confirmButton: 'bg-red-600 text-white',
                 },

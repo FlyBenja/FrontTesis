@@ -14,6 +14,7 @@ interface Revision {
   approvalThesis: {
     status: string;             // Status of the thesis approval
   };
+  approval_status: string;      // ✅ Campo adicional para usar directo en el componente
 }
 
 // Function to fetch thesis revisions in review
@@ -55,6 +56,13 @@ export const getRevisionesEnRevision = async (
         approvalThesis: {
           status: revision.ApprovalThesis.status,        // Assign the thesis approval status
         },
+        // ✅ Campo adicional traducido a español para mostrar en la tabla
+        approval_status:
+          revision.ApprovalThesis.status === "in revision"
+            ? "En revisión"
+            : revision.ApprovalThesis.status === "rejected"
+              ? "Rechazado"
+              : revision.ApprovalThesis.status,
       }));
     }
 

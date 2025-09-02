@@ -259,7 +259,7 @@ const Chapters: React.FC = () => {
           ) : (
             <div className="flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400 text-center">
               <MessageSquare className="h-12 w-12 mb-4 text-gray-400" />
-              <p className="text-lg font-medium">No hay comentarios previos para este capítulo. 📝</p>
+              <p className="text-lg font-medium">No hay comentarios previos para este capítulo.</p>
             </div>
           )}
         </div>

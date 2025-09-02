@@ -234,7 +234,7 @@ const ListStudents: React.FC = () => {
                     <td className="py-3 px-4 text-center text-gray-900 dark:text-white relative">
                       {est.userName}
                       <div className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded-md px-2 py-1 -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap dark:bg-gray-200 dark:text-gray-800 shadow-md">
-                        Ir Hacia TimeLine Estudiante ➡️
+                        Ir Hacia TimeLine Estudiante
                       </div>
                     </td>
                     <td className="py-3 px-4 text-center text-gray-700 dark:text-gray-300">{est.carnet}</td>
@@ -244,7 +244,7 @@ const ListStudents: React.FC = () => {
                 <tr>
                   <td colSpan={3} className="py-8 text-center text-gray-500 dark:text-gray-400">
                     <Users className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                    <p className="text-lg font-medium">No se encontraron estudiantes. 😔</p>
+                    <p className="text-lg font-medium">No se encontraron estudiantes.  </p>
                   </td>
                 </tr>
               )}

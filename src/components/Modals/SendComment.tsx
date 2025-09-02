@@ -24,7 +24,7 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
         title: "Error",
         text: "Todos los campos son obligatorios.",
         icon: "error",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#ef4444",
       })
       return
@@ -43,7 +43,7 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
         title: "¡Éxito!",
         text: "Comentario enviado correctamente",
         icon: "success",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#10b981",
       }).then(() => {
         onClose()
@@ -54,7 +54,7 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
         title: "Error",
         text: "No se pudo enviar el comentario.",
         icon: "error",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#ef4444",
       })
     } finally {

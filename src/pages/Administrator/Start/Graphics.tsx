@@ -69,7 +69,7 @@ const Graphics: React.FC = () => {
       </div>
       {/* Stats Cards Section */}
       <div className="mb-8">
-        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">Resumen de Estadísticas ✨</h2>
+        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">Resumen de Estadísticas</h2>
         {isLoading ? (
           // Loading state for stats cards
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
@@ -126,7 +126,7 @@ const Graphics: React.FC = () => {
       </div>
       {/* Charts Section */}
       <div className="mb-6">
-        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">Visualización de Datos 📊</h2>
+        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">Visualización de Datos</h2>
         {isLoading ? (
           // Loading state for charts
           <div className="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5">
@@ -150,7 +150,7 @@ const Graphics: React.FC = () => {
               <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
                 <div className="border-b border-gray-200 p-4 dark:border-gray-700 flex items-center">
                   <MapPin className="h-5 w-5 mr-2 text-blue-500" />
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Porcentaje por Sede 📍</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Porcentaje por Sede</h3>
                 </div>
                 <PorcentajeSede />
               </div>
@@ -159,7 +159,7 @@ const Graphics: React.FC = () => {
               <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
                 <div className="border-b border-gray-200 p-4 dark:border-gray-700 flex items-center">
                   <GraduationCap className="h-5 w-5 mr-2 text-purple-500" />
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Tareas de Estudiantes 🧑‍🎓</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Tareas de Estudiantes</h3>
                 </div>
                 <TareasEstudiantes />
               </div>
@@ -172,7 +172,7 @@ const Graphics: React.FC = () => {
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800">
           <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <div>
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Resumen de Actividad 🚀</h4>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Resumen de Actividad</h4>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Última actualización: {new Date().toLocaleDateString()}
               </p>

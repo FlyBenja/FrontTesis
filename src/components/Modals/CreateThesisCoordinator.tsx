@@ -52,7 +52,7 @@ const CreateThesisCoordinatorModal: React.FC<CreateThesisCoordinatorModalProps> 
         title: "¡Éxito!",
         text: `Coordinador ${coordinator ? "actualizado" : "creado"} correctamente`,
         icon: "success",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#10b981",
       })
       onClose()
@@ -61,7 +61,7 @@ const CreateThesisCoordinatorModal: React.FC<CreateThesisCoordinatorModalProps> 
         title: "Error",
         text: error instanceof Error ? error.message : "Error desconocido",
         icon: "error",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#ef4444",
       })
     } finally {

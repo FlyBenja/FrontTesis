@@ -58,7 +58,7 @@ const AssignCoordinatorModal: React.FC<AssignCoordinatorProps> = ({ isOpen, onCl
           title: "Error al cargar datos",
           text: error.message || "No se pudieron cargar los datos necesarios",
           confirmButtonColor: "#ef4444",
-          confirmButtonText: "Aceptar",
+          confirmButtonText: "De Acuerdo",
         })
       }
     }
@@ -89,7 +89,7 @@ const AssignCoordinatorModal: React.FC<AssignCoordinatorProps> = ({ isOpen, onCl
         title: "¡Coordinador asignado!",
         text: "El coordinador ha sido asignado exitosamente a la sede.",
         confirmButtonColor: "#10b981",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
       })
       onAssigned()
       onClose()
@@ -99,7 +99,7 @@ const AssignCoordinatorModal: React.FC<AssignCoordinatorProps> = ({ isOpen, onCl
         title: "Error al asignar coordinador",
         text: error.message || "No se pudo asignar el coordinador a la sede",
         confirmButtonColor: "#ef4444",
-        confirmButtonText: "Aceptar",
+        confirmButtonText: "De Acuerdo",
       })
     } finally {
       setLoading(false)
