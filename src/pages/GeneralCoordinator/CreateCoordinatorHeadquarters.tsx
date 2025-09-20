@@ -40,7 +40,7 @@ const CreateCoordinatorSede: React.FC = () => {
       const sortedCoordinators = transformedData.sort((a, b) => a.id - b.id)
       setCoordinators(sortedCoordinators)
     } catch (error) {
-      
+
     }
   }
 
@@ -229,7 +229,12 @@ const CreateCoordinatorSede: React.FC = () => {
                           <button
                             id="remover-coordinador"
                             onClick={() => handleDeleteClick(coordinator.id, coordinator.sede_id)}
-                            className="px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
+                            disabled={coordinator.sede === "Sin sede"}
+                            className={`px-3 py-1.5 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md inline-flex items-center gap-1
+                            ${coordinator.sede === "Sin sede"
+                                ? "bg-gray-400 cursor-not-allowed opacity-70"
+                                : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-lg"
+                              }`}
                           >
                             <Trash2 className="h-4 w-4" />
                             Remover
