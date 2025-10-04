@@ -12,7 +12,7 @@ export const createSede = async (nameSede: string, address: string): Promise<voi
 
     // Make the POST request to the specified URL to create the 'sede'
     await axios.post(
-      'http://localhost:3000/api/sedes',  // API endpoint for creating a 'sede'
+      'http://3.211.255.190/api-docs/api/sedes',  // API endpoint for creating a 'sede'
       { nameSede, address },  // The payload containing the name of the 'sede'
       {
         headers: {

@@ -17,7 +17,7 @@ export const updateThesisCoordinator = async (
 
     // Make the PUT request to update the Thesis Coordinator
     const response = await axios.put(
-      'http://localhost:3000/api/thesisCoordinator/update',
+      'http://3.211.255.190/api-docs/api/thesisCoordinator/update',
       JSON.stringify({ user_id, name, email, carnet }),
       {
         headers: {

@@ -17,7 +17,7 @@ export const creaRevisor = async (data: RevisorData): Promise<void> => {
     }
 
     // URL de la API
-    const url = 'http://localhost:3000/api/reviewers';
+    const url = 'http://3.211.255.190/api-docs/api/reviewers';
 
     // Realizar la solicitud POST
     await axios.post(url, data, {

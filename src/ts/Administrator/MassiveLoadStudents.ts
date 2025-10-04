@@ -35,7 +35,7 @@ export const cargaMasiva = async ({
 
     // Make a POST request to upload the file to the specified API endpoint
     const response = await axios.post(
-      'http://localhost:3000/api/usuarios/cargaMasiva',  // The URL for the bulk upload endpoint
+      'http://3.211.255.190/api-docs/api/usuarios/cargaMasiva',  // The URL for the bulk upload endpoint
       formData,  // Send the form data containing the file and other parameters
       {
         headers: {

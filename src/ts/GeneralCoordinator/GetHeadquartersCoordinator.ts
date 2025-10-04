@@ -20,7 +20,7 @@ export const getHeadquartersCoordinator = async (): Promise<{
         }
 
         // Make the GET request to the specified URL to get the coordinators
-        const response = await axios.get('http://localhost:3000/api/coordinator/list', {
+        const response = await axios.get('http://3.211.255.190/api-docs/api/coordinator/list', {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',

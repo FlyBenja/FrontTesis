@@ -17,7 +17,7 @@ export const deleteUserComision = async (groupId: number, userId: number): Promi
     }
 
     // Make the DELETE request to the API endpoint, passing the groupId and userId
-    const response = await axios.delete(`http://localhost:3000/api/comisiones/${groupId}/usuario/${userId}`, {
+    const response = await axios.delete(`http://3.211.255.190/api-docs/api/comisiones/${groupId}/usuario/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,  // Include the authentication token in the request headers
         'Content-Type': 'application/json',  // Specify the content type as JSON

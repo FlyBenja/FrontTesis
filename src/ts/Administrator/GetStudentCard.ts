@@ -25,7 +25,7 @@ export const getEstudiantePorCarnet = async (
 
     // Make a GET request to fetch student details based on carnet, sede, and year
     const response = await axios.get(
-      `http://localhost:3000/api/users/search?sede_id=${sedeId}&year=${year}&carnet=${carnet}`,
+      `http://3.211.255.190/api-docs/api/users/search?sede_id=${sedeId}&year=${year}&carnet=${carnet}`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,  // Include the authorization token in the request headers

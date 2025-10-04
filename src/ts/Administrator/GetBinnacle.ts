@@ -13,7 +13,7 @@ export const getBitacora = async (sedeId: number): Promise<any> => {
     }
 
     // Define the URL for the GET request, using the provided sedeId to specify the location
-    const url = `http://localhost:3000/api/bitacora/${sedeId}`;
+    const url = `http://3.211.255.190/api-docs/api/bitacora/${sedeId}`;
     
     // Make the GET request to the API with the appropriate headers
     const response = await axios.get(url, {

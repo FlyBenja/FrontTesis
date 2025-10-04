@@ -17,7 +17,7 @@ export const createCatedratico = async (catedraticoData: {
     }
 
     // Realizar la solicitud POST para crear el catedrático
-    await axios.post('http://localhost:3000/api/create/professor', catedraticoData, {
+    await axios.post('http://3.211.255.190/api-docs/api/create/professor', catedraticoData, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

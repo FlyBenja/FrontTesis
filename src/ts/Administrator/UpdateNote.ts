@@ -18,7 +18,7 @@ export const updateNote = async (
         }
 
         // Make the PUT request to update the note
-        await axios.put('http://localhost:3000/api/notas/update', notaData, {
+        await axios.put('http://3.211.255.190/api-docs/api/notas/update', notaData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',

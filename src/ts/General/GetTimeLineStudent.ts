@@ -19,7 +19,7 @@ export const getTimeLineEstudiante = async (user_id: number): Promise<Log[]> => 
     }
 
     // Define the URL for the API request using the `user_id`
-    const url = `http://localhost:3000/api/timeline/user/${user_id}`;
+    const url = `http://3.211.255.190/api-docs/api/timeline/user/${user_id}`;
     
     // Make the GET request to fetch the timeline data for the user
     const response = await axios.get(url, {

@@ -24,7 +24,7 @@ export const getTaskStats = async (
     }
 
     // Define the URL for the GET request, using the provided parameters
-    const url = `http://localhost:3000/api/graphics/task-stats/${courseId}/${year}/${sedeId}`;
+    const url = `http://3.211.255.190/api-docs/api/graphics/task-stats/${courseId}/${year}/${sedeId}`;
     
     // Make the GET request to the API with the appropriate headers
     const response = await axios.get<TaskStats[]>(url, {

@@ -21,7 +21,7 @@ export const activaUsuario = async (
 
     // Make a PATCH request to the specified URL to update the professor's active status
     const response = await axios.patch(
-      `http://localhost:3000/api/professors/${userId}/active`,  // The URL with the professor's user ID to be updated
+      `http://3.211.255.190/api-docs/api/professors/${userId}/active`,  // The URL with the professor's user ID to be updated
       {
         active,  // Send the active status as a parameter in the request body
       },

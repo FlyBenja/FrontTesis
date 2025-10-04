@@ -13,7 +13,7 @@ export const entregarTarea = async (taskData: { user_id: number; task_id: number
     formData.append("file", taskData.file);
 
     // Hacer POST como multipart/form-data
-    await axios.post("http://localhost:3000/api/task-submissions", formData, {
+    await axios.post("http://3.211.255.190/api-docs/api/task-submissions", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

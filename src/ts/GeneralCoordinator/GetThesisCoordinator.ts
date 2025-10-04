@@ -21,7 +21,7 @@ export const getThesisCoordinators = async (): Promise<ThesisCoordinator[]> => {
     }
 
     // Make the GET request to fetch thesis coordinators
-    const response = await axios.get('http://localhost:3000/api/thesisCoordinator/list', {
+    const response = await axios.get('http://3.211.255.190/api-docs/api/thesisCoordinator/list', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

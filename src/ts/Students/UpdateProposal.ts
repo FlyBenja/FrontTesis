@@ -13,7 +13,7 @@ export const updatePropuesta = async (propuestaData: { file: File; thesisSubmiss
     formData.append('user_id', propuestaData.user_id.toString());
 
     // Enviar la solicitud PUT para actualizar la propuesta
-    await axios.put(`http://localhost:3000/api/thesis-submission/${propuestaData.thesisSubmissions_id}/${propuestaData.user_id}/update`, formData, {
+    await axios.put(`http://3.211.255.190/api-docs/api/thesis-submission/${propuestaData.thesisSubmissions_id}/${propuestaData.user_id}/update`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',

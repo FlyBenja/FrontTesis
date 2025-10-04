@@ -54,7 +54,7 @@ const Login: React.FC = () => {
 
     setIsLoading(true)
     try {
-      const response = await axios.post("http://localhost:3000/auth/login", { email, password })
+      const response = await axios.post("http://3.211.255.190/api-docs/auth/login", { email, password })
       localStorage.setItem("authToken", response.data.token)
       localStorage.setItem("userRole", response.data.rol)
 

@@ -19,7 +19,7 @@ export const activateThesisCoordinator = async (
 
     // Make a POST request to toggle the active status of the Thesis Coordinator
     const response = await axios.post(
-      'http://localhost:3000/api/thesisCoordinator/toggle',
+      'http://3.211.255.190/api-docs/api/thesisCoordinator/toggle',
       { user_id: userId },
       {
         headers: {

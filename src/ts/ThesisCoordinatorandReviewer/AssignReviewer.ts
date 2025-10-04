@@ -16,7 +16,7 @@ export const asignaRevisor = async (data: AsignacionRevisor): Promise<void> => {
     }
 
     // URL de la API
-    const url = 'http://localhost:3000/api/assigned-review';
+    const url = 'http://3.211.255.190/api-docs/api/assigned-review';
 
     // Realizar la solicitud POST
     await axios.post(url, data, {

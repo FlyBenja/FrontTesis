@@ -22,7 +22,7 @@ export const getStudents = async (
     }
 
     const response = await axios.get(
-      `http://localhost:3000/api/sedes/${sedeId}/cursos/${courseId}/estudiantes/${nameYear}`,
+      `http://3.211.255.190/api-docs/api/sedes/${sedeId}/cursos/${courseId}/estudiantes/${nameYear}`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,

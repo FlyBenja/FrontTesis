@@ -18,7 +18,7 @@ export const updateRevisor = async (userId: number, data: RevisorData): Promise<
     }
 
     // URL de la API con el parámetro userId
-    const url = `http://localhost:3000/api/reviewers/${userId}`;
+    const url = `http://3.211.255.190/api-docs/api/reviewers/${userId}`;
 
     // Realizar la solicitud PUT para actualizar el revisor
     await axios.put(url, data, {
