@@ -12,6 +12,7 @@ interface Admin {
   email: string;         // The email of the admin
   name: string;          // The name of the admin
   carnet: string;        // The admin's identification number (e.g., student number)
+  active: boolean;     // Indicates if the admin is active
   sede: Sede;            // The 'sede' (location or department) where the admin belongs
   profilePhoto: string | null;  // URL or path to the profile photo (nullable)
 }

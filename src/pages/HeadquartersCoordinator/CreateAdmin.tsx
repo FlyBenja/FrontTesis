@@ -2,12 +2,13 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import { getAdmins } from "../../ts/HeadquartersCoordinator/GetAdmins"
-import { deleteAdmin } from "../../ts/HeadquartersCoordinator/DeleteAdmin"
+import { ActiveAdmin } from "../../ts/HeadquartersCoordinator/ActiveAdmin"
 import { getDatosPerfil } from "../../ts/General/GetProfileData"
+import ActivaAdmin from "../../components/Switchers/ActivateAdmin"
 import Swal from "sweetalert2"
 import TourCreateAdmin from "../../components/Tours/HeadquartersCoordinator/TourCreateAdmin"
 import CrearAdminModal from "../../components/Modals/CreateAdmin"
-import { UserPlus, Users, Trash2, ChevronLeft, ChevronRight, UserX } from "lucide-react" // Import Lucide React icons
+import { UserPlus, Users, ChevronLeft, ChevronRight, UserX } from "lucide-react"
 
 /**
  * Interface defining the structure of an Admin object
@@ -18,6 +19,7 @@ interface Admin {
   email: string
   sede: string
   carnet: string
+  active: boolean
 }
 
 /**
@@ -44,12 +46,13 @@ const CreateAdmin: React.FC = () => {
       const perfil = await getDatosPerfil()
       const sedeId = perfil.sede
       const data = await getAdmins(sedeId)
-      const transformedAdmins: Admin[] = data.map((admin) => ({
+      const transformedAdmins: Admin[] = data.map((admin: any) => ({
         id: admin.user_id,
         nombre: admin.name,
         email: admin.email,
         sede: admin.sede.nombre,
         carnet: admin.carnet,
+        active: admin.active, // Asegúrate que el backend envíe este campo
       }))
       const sortedAdmins = transformedAdmins.sort((a, b) => a.id - b.id)
       setAdmins(sortedAdmins)
@@ -60,10 +63,10 @@ const CreateAdmin: React.FC = () => {
 
   const handleResize = () => {
     if (window.innerWidth < 768) {
-      setAdminsPerPage(10) // Adjusted for smaller screens
+      setAdminsPerPage(10)
       setMaxPageButtons(3)
     } else {
-      setAdminsPerPage(10) // Adjusted for larger screens
+      setAdminsPerPage(10)
       setMaxPageButtons(10)
     }
   }
@@ -95,43 +98,54 @@ const CreateAdmin: React.FC = () => {
   }
 
   const handleOpenModal = () => setIsModalOpen(true)
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
+  const handleCloseModal = () => setIsModalOpen(false)
 
-  const handleDeleteClick = (adminId: number) => {
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¡Al eliminar el administrador se volverá un catedrático en la sede asignada!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "No, cancelar",
-      confirmButtonColor: "#ef4444", // Changed to red for delete action
-      cancelButtonColor: "#6b7280", // Changed to gray for cancel
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await deleteAdmin(adminId)
-          Swal.fire({
-            icon: "success",
-            title: "Administrador eliminado",
-            text: `El administrador ha sido eliminado exitosamente.`,
-            confirmButtonColor: "#10b981", // Changed to green for success
-            confirmButtonText: "De Acuerdo",
-          })
-          await fetchAdmins()
-        } catch (error: any) {
-          Swal.fire({
-            icon: "error",
-            title: "Error al eliminar administrador",
-            text: error.message,
-            confirmButtonColor: "#ef4444", // Changed to red for error
-            confirmButtonText: "De Acuerdo",
-          })
-        }
+  const handleActiveChange = async (userId: number, newStatus: boolean) => {
+    const updatedAdmins = admins.map((admin) =>
+      admin.id === userId ? { ...admin, active: newStatus } : admin,
+    )
+    setAdmins(updatedAdmins)
+
+    if (!newStatus) {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Este administrador no podrá iniciar sesión, ¿aún deseas desactivarlo?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, desactivar",
+        cancelButtonText: "No, cancelar",
+        confirmButtonColor: "#10b981",
+        cancelButtonColor: "#ef4444",
+      })
+      if (!result.isConfirmed) {
+        setAdmins(admins) // revertir cambios si cancela
+        return
       }
-    })
+    }
+
+    try {
+      const response = await ActiveAdmin(userId, newStatus)
+      Swal.fire({
+        title: "¡Éxito!",
+        text: response.message,
+        icon: "success",
+        confirmButtonText: "De Acuerdo",
+        confirmButtonColor: "#10b981",
+      })
+    } catch (err) {
+      // revertir si hay error
+      setAdmins((prev) =>
+        prev.map((admin) => (admin.id === userId ? { ...admin, active: !newStatus } : admin)),
+      )
+      const errorMessage = err instanceof Error ? err.message : "Error desconocido"
+      Swal.fire({
+        title: "Error",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonText: "De Acuerdo",
+        confirmButtonColor: "#ef4444",
+      })
+    }
   }
 
   return (
@@ -181,10 +195,11 @@ const CreateAdmin: React.FC = () => {
                 </thead>
                 <tbody>
                   {currentAdmins.length > 0 ? (
-                    currentAdmins.map((admin) => (
+                    currentAdmins.map((admin, index) => (
                       <tr
                         key={admin.id}
-                        className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+                        className={`border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 ${index % 2 === 0 ? "bg-gray-50/50 dark:bg-gray-800/50" : ""
+                          }`}
                       >
                         <td className="py-3 px-4 text-center text-gray-900 dark:text-white hidden sm:table-cell">
                           {admin.id}
@@ -197,14 +212,12 @@ const CreateAdmin: React.FC = () => {
                         <td className="py-3 px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
                           {admin.carnet}
                         </td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            id="remove-admin"
-                            onClick={() => handleDeleteClick(admin.id || 0)}
-                            className="px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
-                          >
-                            <Trash2 className="h-4 w-4" /> Remover
-                          </button>
+                        <td className="py-3 px-4 text-center" id="activa-admin">
+                          <ActivaAdmin
+                            enabled={admin.active}
+                            onChange={() => handleActiveChange(admin.id, !admin.active)}
+                            uniqueId={`admin-${admin.id}`}
+                          />
                         </td>
                       </tr>
                     ))
@@ -215,7 +228,7 @@ const CreateAdmin: React.FC = () => {
                           <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
                             <UserX className="w-8 h-8 text-gray-400" />
                           </div>
-                          <p className="text-lg font-medium">No hay administradores registrados.  </p>
+                          <p className="text-lg font-medium">No hay administradores registrados.</p>
                           <p className="text-sm">Crea tu primer administrador para comenzar</p>
                         </div>
                       </td>
@@ -224,6 +237,7 @@ const CreateAdmin: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
             {/* Pagination */}
             {totalPages > 1 && (
               <div id="pagination" className="mt-8 flex justify-center items-center space-x-2">
@@ -239,8 +253,8 @@ const CreateAdmin: React.FC = () => {
                     key={page}
                     onClick={() => paginate(page)}
                     className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page
-                        ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
-                        : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                      ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
+                      : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
                       }`}
                   >
                     {page}

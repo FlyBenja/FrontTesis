@@ -42,10 +42,10 @@ const TourCreateAdmin = () => {
                 },
             },
             {
-                element: '#remove-admin', // ID of the "Remove Admin" button
+                element: '#activa-admin', // ID of the "Activa Admin" button
                 popover: {
-                    title: 'Remover Administrador',
-                    description: 'Puedes remover un administrador y volverlo un catedratico en la sede que tiene asiganda haciendo clic en el botón "Remover" de la fila correspondiente.',
+                    title: 'Activa Administrador',
+                    description: 'Puedes activar o desactivar un administrador segun la fila correspondiente.',
                     side: 'bottom',
                     align: 'start',
                 },
