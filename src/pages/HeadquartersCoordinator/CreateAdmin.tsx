@@ -185,7 +185,6 @@ const CreateAdmin: React.FC = () => {
               <table id="tabla-admins" className="min-w-full bg-white dark:bg-gray-800">
                 <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
                   <tr>
-                    <th className="py-3 px-4 text-center rounded-tl-xl hidden sm:table-cell">No.</th>
                     <th className="py-3 px-4 text-left">Nombre</th>
                     <th className="py-3 px-4 text-center hidden sm:table-cell">Correo</th>
                     <th className="py-3 px-4 text-center">Sede</th>
@@ -201,9 +200,6 @@ const CreateAdmin: React.FC = () => {
                         className={`border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 ${index % 2 === 0 ? "bg-gray-50/50 dark:bg-gray-800/50" : ""
                           }`}
                       >
-                        <td className="py-3 px-4 text-center text-gray-900 dark:text-white hidden sm:table-cell">
-                          {admin.id}
-                        </td>
                         <td className="py-3 px-4 text-left text-gray-900 dark:text-white">{admin.nombre}</td>
                         <td className="py-3 px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
                           {admin.email}

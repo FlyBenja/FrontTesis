@@ -170,7 +170,6 @@ const RequestReviews: React.FC = () => {
           <table id="tabla-revisiones" className="min-w-full bg-white dark:bg-gray-800">
             <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
               <tr>
-                <th className="py-3 px-4 text-left rounded-tl-xl">No.</th>
                 <th className="py-3 px-4 text-center">Nombre</th>
                 {/* Estas columnas se ocultan en pantallas pequeñas */}
                 <th className="py-3 px-4 text-center hidden md:table-cell">Carnet</th>
@@ -187,7 +186,6 @@ const RequestReviews: React.FC = () => {
                     className="border-t border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 group"
                     onClick={() => handleVerDetalle(revision.user.user_id)}
                   >
-                    <td className="py-3 px-4 text-center text-black dark:text-white">{revision.revision_thesis_id}</td>
                     <td className="py-3 px-4 text-center text-black dark:text-white">{revision.user.name}</td>
                     {/* Estas columnas se ocultan en pantallas pequeñas */}
                     <td className="py-3 px-4 text-center text-black dark:text-white hidden md:table-cell">

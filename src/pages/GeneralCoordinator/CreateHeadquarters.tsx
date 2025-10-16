@@ -137,7 +137,6 @@ const CreateHeadquarters: React.FC = () => {
               <table id="tabla-sedes" className="min-w-full bg-white dark:bg-gray-800">
                 <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm uppercase tracking-wider">
                   <tr>
-                    <th className="py-3 px-4 text-left rounded-tl-xl hidden sm:table-cell">No.</th>
                     <th className="py-3 px-4 text-left">Nombre</th>
                     <th className="py-3 px-4 text-center hidden sm:table-cell">Dirección</th>
                     <th className="py-3 px-4 text-center rounded-tr-xl">Acción</th>
@@ -150,9 +149,6 @@ const CreateHeadquarters: React.FC = () => {
                         key={sede.id}
                         className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
                       >
-                        <td className="py-3 px-4 text-left text-gray-900 dark:text-white font-medium hidden sm:table-cell">
-                          {sede.id}
-                        </td>
                         <td className="py-3 px-4 text-left text-gray-900 dark:text-white font-medium">{sede.nombre}</td>
                         <td className="py-3 px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
                           {sede.direccion}
