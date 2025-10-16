@@ -97,12 +97,12 @@ const CourseInfo: React.FC = () => {
    */
   const handleNavigateToCapitulo = (
     task_id: number,
-    submissionComplete: boolean,
+    submission_complete: boolean,
     NameCapitulo: string,
     endTask: string,
     endTime: string | undefined,
   ) => {
-    if (!submissionComplete) {
+    if (!submission_complete) {
       Swal.fire({
         icon: "error",
         title: "Acceso denegado",

@@ -9,7 +9,7 @@ import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
 import generaPDFGeneral from "../../../components/Pdfs/generatePDFGeneral"
 import BuscadorEstudiantes from "../../../components/Searches/SearchStudents"
 import TourStudents from "../../../components/Tours/Administrator/TourStudents"
-import { Users, ChevronLeft, ChevronRight, Printer } from "lucide-react"
+import { Users, ChevronLeft, ChevronRight, Printer, XCircle } from "lucide-react"
 
 /**
  * Interface for student data
@@ -237,6 +237,26 @@ const ListStudents: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize) // Cleanup event listener
   }, [])
 
+  // If no courses are available, show a message
+  if (cursos.length === 0) {
+    return (
+      <>
+        <Breadcrumb pageName="Listar Estudiantes" />
+        <div className="mx-auto max-w-6xl px-4 py-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-6 flex flex-col items-center justify-center text-center">
+            <XCircle className="h-20 w-20 mb-6 text-red-500" />
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              No existen cursos asignados a esta sede.
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Por favor, comuníquese con central para asignar cursos.
+            </p>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
       <Breadcrumb pageName="Listar Estudiantes" />
@@ -343,11 +363,10 @@ const ListStudents: React.FC = () => {
               <button
                 key={page}
                 onClick={() => paginate(page)}
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${
-                  currentPage === page
+                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page
                     ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg"
                     : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                }`}
+                  }`}
               >
                 {page}
               </button>

@@ -6,7 +6,7 @@ import { crearAsignacionSedeCurso } from "../../ts/HeadquartersCoordinator/Creat
 import TourAssignPG from "../../components/Tours/HeadquartersCoordinator/TourAssignPG"
 import Swal from "sweetalert2"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
-import { CheckSquare, BookOpen, MapPin, Loader2 } from "lucide-react" // Import Lucide React icons
+import { CheckSquare, BookOpen, Loader2 } from "lucide-react" // Import Lucide React icons
 
 /**
  * Component for assigning graduation projects to headquarters
@@ -110,7 +110,6 @@ const AssignPG: React.FC = () => {
         <div className="border-b border-gray-200 py-4 px-6 dark:border-gray-700 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
             <BookOpen className="h-6 w-6 mr-3 text-blue-500" /> Asignar PG1 y PG2 a {sedeNombre}{" "}
-            <MapPin className="h-5 w-5 ml-2 text-gray-500" />
           </h2>
           <TourAssignPG />
         </div>

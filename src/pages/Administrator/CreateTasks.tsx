@@ -7,7 +7,7 @@ import { getYears } from "../../ts/General/GetYears"
 import { getDatosPerfil } from "../../ts/General/GetProfileData"
 import { getTareas } from "../../ts/General/GetTasks"
 import TourCreatesTasks from "../../components/Tours/Administrator/TourCreatesTasks"
-import { CalendarDays, Book, PlusCircle, Edit, ChevronLeft, ChevronRight } from "lucide-react"
+import { CalendarDays, Book, PlusCircle, Edit, ChevronLeft, ChevronRight, XCircle } from "lucide-react"
 
 /**
  * Define the type for a "Task" object
@@ -179,6 +179,26 @@ const CreateTasks: React.FC = () => {
   // Check if the selected year is the current year
   const isCurrentYear = selectedYear === new Date().getFullYear().toString()
 
+  // If no courses are available, show a message
+  if (courses.length === 0) {
+    return (
+      <>
+        <Breadcrumb pageName="Crear Tareas" />
+        <div className="mx-auto max-w-6xl px-4 py-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-6 flex flex-col items-center justify-center text-center">
+            <XCircle className="h-20 w-20 mb-6 text-red-500" />
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              No existen cursos asignados a esta sede.
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Por favor, comuníquese con central para asignar cursos.
+            </p>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
       <Breadcrumb pageName="Crear Tareas" />
@@ -251,11 +271,10 @@ const CreateTasks: React.FC = () => {
                     setIsModalOpen(true)
                     setModalMode("create")
                   }}
-                  className={`px-6 py-3 rounded-xl hover:bg-gradient-to-l transition duration-300 flex items-center justify-center text-lg font-semibold shadow-md hover:shadow-lg ${
-                    isCurrentYear
-                      ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                      : "bg-gray-400 text-gray-700 cursor-not-allowed"
-                  }`}
+                  className={`px-6 py-3 rounded-xl hover:bg-gradient-to-l transition duration-300 flex items-center justify-center text-lg font-semibold shadow-md hover:shadow-lg ${isCurrentYear
+                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                    : "bg-gray-400 text-gray-700 cursor-not-allowed"
+                    }`}
                   disabled={!isCurrentYear}
                 >
                   <PlusCircle className="h-5 w-5 mr-2" /> Nueva Tarea
@@ -303,9 +322,8 @@ const CreateTasks: React.FC = () => {
                             setModalMode("edit")
                             setSelectedTaskId(task.task_id)
                           }}
-                          className={`ml-4 px-3 py-2 rounded-full flex items-center justify-center text-white text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 ${
-                            isCurrentYear ? "bg-yellow-500 hover:bg-yellow-600" : "bg-gray-400 cursor-not-allowed"
-                          }`}
+                          className={`ml-4 px-3 py-2 rounded-full flex items-center justify-center text-white text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 ${isCurrentYear ? "bg-yellow-500 hover:bg-yellow-600" : "bg-gray-400 cursor-not-allowed"
+                            }`}
                           disabled={!isCurrentYear}
                         >
                           <Edit className="w-6 h-6" />
@@ -328,11 +346,10 @@ const CreateTasks: React.FC = () => {
                       <button
                         key={page}
                         onClick={() => paginate(page)}
-                        className={`px-4 py-2 rounded-lg border transition-colors duration-200 ${
-                          currentPage === page
-                            ? "bg-indigo-500 text-white border-indigo-500"
-                            : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                        }`}
+                        className={`px-4 py-2 rounded-lg border transition-colors duration-200 ${currentPage === page
+                          ? "bg-indigo-500 text-white border-indigo-500"
+                          : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          }`}
                       >
                         {page}
                       </button>
