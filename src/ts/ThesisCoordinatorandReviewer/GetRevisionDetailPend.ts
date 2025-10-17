@@ -50,15 +50,15 @@ export const getRevisionDetallePendi = async (user_id: number): Promise<Revision
         date_revision: revision.date_revision,
         active_process: revision.active_process,
         user: {
-          name: revision.User.name,
-          carnet: revision.User.carnet,
-          email: revision.User.email,
-          profilePhoto: revision.User.profilePhoto,
+          name: revision.user.name,                    // Use lowercase 'user' from backend
+          carnet: revision.user.carnet,
+          email: revision.user.email,
+          profilePhoto: revision.user.profilePhoto,
           location: {
-            nameSede: revision.User.location.nameSede,
+            nameSede: revision.user.location.nameSede,
           },
           year: {
-            year: revision.User.year.year,
+            year: revision.user.year.year,
           },
         },
         assignedReviews: revision.AssignedReviews,

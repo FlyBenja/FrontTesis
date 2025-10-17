@@ -47,11 +47,11 @@ export const getRevisionesPendientes = async (
       return response.data.data.map((revision: any) => ({
         revision_thesis_id: revision.revision_thesis_id,  // Assign the thesis revision ID
         date_revision: revision.date_revision,            // Assign the revision date
-        approvals: revision.Approvals,                    // Assign the approval statuses
+        approvals: revision.approvaltheses || [],         // Use 'approvaltheses' from backend response
         user: {
-          user_id: revision.User.user_id,                 // Assign the student's user ID
-          name: revision.User.name,                       // Assign the student's name
-          carnet: revision.User.carnet,                   // Assign the student's carnet (ID)
+          user_id: revision.user.user_id,                 // Assign the student's user ID (lowercase 'user')
+          name: revision.user.name,                       // Assign the student's name
+          carnet: revision.user.carnet,                   // Assign the student's carnet (ID)
         },
         approvalThesis: {
           status: revision.ApprovalThesis.status,        // Assign the thesis approval status

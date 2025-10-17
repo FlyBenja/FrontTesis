@@ -69,9 +69,9 @@ export const getComentariosRevision = async (user_id: number): Promise<ThesisRev
           assigned_review_id: assignedReview.assigned_review_id,
           date_assigned: assignedReview.date_assigned,
           user: {
-            user_id: assignedReview.User.user_id,
-            name: assignedReview.User.name,
-            email: assignedReview.User.email,
+            user_id: assignedReview.User?.user_id || assignedReview.user?.user_id,
+            name: assignedReview.User?.name || assignedReview.user?.name,
+            email: assignedReview.User?.email || assignedReview.user?.email,
           },
           commentsRevisions: assignedReview.commentsRevisions || [],
         })),
@@ -81,15 +81,15 @@ export const getComentariosRevision = async (user_id: number): Promise<ThesisRev
           approved: approval.approved,
         })),
         user: {
-          name: revision.User.name,
-          carnet: revision.User.carnet,
-          email: revision.User.email,
-          profilePhoto: revision.User.profilePhoto,
+          name: revision.user.name,                    // Use lowercase 'user' from backend
+          carnet: revision.user.carnet,
+          email: revision.user.email,
+          profilePhoto: revision.user.profilePhoto,
           location: {
-            nameSede: revision.User.location.nameSede,
+            nameSede: revision.user.location.nameSede,
           },
           year: {
-            year: revision.User.year.year,
+            year: revision.user.year.year,
           },
         },
       }));

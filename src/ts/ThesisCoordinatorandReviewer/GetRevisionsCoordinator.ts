@@ -62,10 +62,10 @@ export const getRevisionesCordinador = async (
 
           revision_thesis_id: review.RevisionThesis?.revision_thesis_id || 0,
           user: {
-            user_id: review.RevisionThesis?.User?.user_id || 0,
-            name: review.RevisionThesis?.User?.name || 'No disponible',
-            email: review.RevisionThesis?.User?.email || 'No disponible',
-            carnet: review.RevisionThesis?.User?.carnet || 'No disponible',
+            user_id: review.RevisionThesis?.user?.user_id || 0,
+            name: review.RevisionThesis?.user?.name || 'No disponible',
+            email: review.RevisionThesis?.user?.email || 'No disponible',
+            carnet: review.RevisionThesis?.user?.carnet || 'No disponible',
           },
         };
       });

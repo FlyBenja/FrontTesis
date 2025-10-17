@@ -200,7 +200,7 @@ const RequestReviews: React.FC = () => {
                     <td className="py-3 px-4 text-center">
                       <button
                         id="boton-ver-detalle"
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-md shadow-md hover:shadow-lg transition-all duration-300"
                       >
                         Ver detalle
                       </button>

@@ -28,6 +28,7 @@ interface Admin {
 const CreateAdmin: React.FC = () => {
   const [admins, setAdmins] = useState<Admin[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [sedeId, setSedeId] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [adminsPerPage, setAdminsPerPage] = useState(5)
   const [maxPageButtons, setMaxPageButtons] = useState(5)
@@ -44,8 +45,9 @@ const CreateAdmin: React.FC = () => {
   const fetchAdmins = async () => {
     try {
       const perfil = await getDatosPerfil()
-      const sedeId = perfil.sede
-      const data = await getAdmins(sedeId)
+      const currentSedeId = perfil.sede
+      setSedeId(currentSedeId)
+      const data = await getAdmins(currentSedeId)
       const transformedAdmins: Admin[] = data.map((admin: any) => ({
         id: admin.user_id,
         nombre: admin.name,
@@ -268,7 +270,12 @@ const CreateAdmin: React.FC = () => {
           </div>
         </div>
       </div>
-      <CrearAdminModal isOpen={isModalOpen} onClose={handleCloseModal} onAdminCreated={fetchAdmins} />
+      <CrearAdminModal 
+        isOpen={isModalOpen} 
+        onClose={handleCloseModal} 
+        onAdminCreated={fetchAdmins} 
+        sedeId={sedeId}
+      />
     </>
   )
 }

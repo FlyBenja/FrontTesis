@@ -113,7 +113,7 @@ const CreateCoordinatorModal: React.FC<CreateCoordinatorProps> = ({ isOpen, onCl
       Swal.fire({
         icon: "success",
         title: "¡Coordinador creado!",
-        text: `El coordinador ${nombre} ha sido creado exitosamente.`,
+        text: `El coordinador "${nombre}" ha sido creado exitosamente.`,
         confirmButtonColor: "#10b981",
         confirmButtonText: "De Acuerdo",
       })

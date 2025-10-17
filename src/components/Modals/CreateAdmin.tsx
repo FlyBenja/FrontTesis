@@ -7,9 +7,10 @@ interface CreateAdminModalProps {
   isOpen: boolean
   onClose: () => void
   onAdminCreated: () => Promise<void>
+  sedeId: number
 }
 
-const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdminCreated }) => {
+const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdminCreated, sedeId }) => {
   const [adminUserName, setAdminUserName] = useState("")
   const [adminEmail, setAdminEmail] = useState("")
   const [adminCarnet, setAdminCarnet] = useState("")
@@ -58,6 +59,7 @@ const CreateAdmin: React.FC<CreateAdminModalProps> = ({ isOpen, onClose, onAdmin
         email: adminEmail,
         name: adminUserName,
         carnet: adminCarnet,
+        sede_id: sedeId,
       })
 
       Swal.fire({
