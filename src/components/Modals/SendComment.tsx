@@ -39,9 +39,11 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
         status: Number(status),
       })
 
+      const statusText = status === "1" ? "aprobado" : "rechazado"
+      
       Swal.fire({
-        title: "¡Éxito!",
-        text: "Comentario enviado correctamente",
+        title: "¡Comentario enviado!",
+        text: `El comentario "${titulo}" ha sido enviado exitosamente y la tesis ha sido ${statusText}.`,
         icon: "success",
         confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#10b981",
@@ -51,8 +53,8 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
       })
     } catch (error) {
       Swal.fire({
-        title: "Error",
-        text: "No se pudo enviar el comentario.",
+        title: "Error al enviar comentario",
+        text: error instanceof Error ? error.message : "Error desconocido",
         icon: "error",
         confirmButtonText: "De Acuerdo",
         confirmButtonColor: "#ef4444",
@@ -67,7 +69,7 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-32 md:max-w-3xl md:mt-40 lg:max-w-4xl lg:mt-35 lg:ml-[330px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -133,11 +135,11 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end mt-5">
+          <div className="flex justify-between mt-5">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-1.5 mr-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
+              className="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
                          text-gray-700 dark:text-gray-300 font-medium rounded-md transition-all duration-200 text-sm
                          border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-500"
             >
@@ -146,10 +148,10 @@ const SendComment: React.FC<SendCommentProps> = ({ onClose, revision_thesis_id }
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-1.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700
-                         text-white font-medium rounded-md transition-all duration-200 transform text-sm
-                         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
-                         shadow-lg hover:shadow-xl"
+              className="px-4 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700
+                       text-white font-medium rounded-md transition-all duration-200 text-sm
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                       shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20"
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">

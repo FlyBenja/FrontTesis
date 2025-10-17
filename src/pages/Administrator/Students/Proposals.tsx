@@ -77,10 +77,8 @@ const Proposals: React.FC = () => {
         icon: "error",
         title: "Error al obtener la propuesta",
         text: "No se pudo cargar la propuesta.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
       })
     }
   }
@@ -97,10 +95,8 @@ const Proposals: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "No se pudo obtener el ID del estudiante.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
       })
     }
   }, [userId])
@@ -130,10 +126,8 @@ const Proposals: React.FC = () => {
           icon: "success",
           title: "Propuesta Aprobada",
           text: `La propuesta ${selectedPropuesta} ha sido aprobada correctamente.`,
+          confirmButtonColor: "#10b981",
           confirmButtonText: "De Acuerdo",
-          customClass: {
-            confirmButton: "bg-green-600 text-white",
-          },
         })
         // Update state after successful approval
         setAprobadaPropuesta(selectedPropuesta)
@@ -144,10 +138,8 @@ const Proposals: React.FC = () => {
           icon: "error",
           title: "Error al aprobar la propuesta",
           text: error?.response?.data?.message || "No se pudo aprobar la propuesta.",
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
-          customClass: {
-            confirmButton: "bg-red-600 text-white",
-          },
         })
       }
     }

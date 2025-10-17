@@ -56,10 +56,8 @@ const CourseInfo: React.FC = () => {
           icon: "error",
           title: "Error al cargar las tareas",
           text: "Ocurrió un error al obtener las tareas. Intente nuevamente.",
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
-          customClass: {
-            confirmButton: "bg-red-600 text-white",
-          },
         })
       } finally {
         setLoading(false)
@@ -107,10 +105,8 @@ const CourseInfo: React.FC = () => {
         icon: "error",
         title: "Acceso denegado",
         text: "No puedes acceder al capítulo porque la tarea no está entregada.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
       })
       return
     }
@@ -186,7 +182,7 @@ const CourseInfo: React.FC = () => {
           </button>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-3xl">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-3xl">
             <h2 className="text-2xl font-bold mb-2">Información del Curso</h2>
             <p className="text-indigo-100 text-sm">
               {tareas.length > 0 ? `${tareas.length} tareas disponibles` : "No hay tareas disponibles"}
@@ -278,7 +274,7 @@ const CourseInfo: React.FC = () => {
                       disabled={isButtonDisabled(currentTarea.endTask, currentTarea.endTime)}
                       className={`px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center shadow-md ${isButtonDisabled(currentTarea.endTask, currentTarea.endTime)
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-green-600 hover:bg-green-700"
+                        : "bg-blue-600 hover:bg-purple-700"
                         }`}
                     >
                       <CheckCircle className="mr-2 h-5 w-5" /> Entregar Capitulo

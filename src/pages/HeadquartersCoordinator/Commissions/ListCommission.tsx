@@ -124,9 +124,8 @@ const ListCommission: React.FC = () => {
           icon: "success",
           title: "Usuario eliminado",
           text: response.message,
+          confirmButtonColor: "#10b981",
           confirmButtonText: "De Acuerdo",
-          confirmButtonColor: "#28a745",
-          customClass: { confirmButton: "text-white" },
         })
 
         // Re-fetch the data after deletion
@@ -150,9 +149,8 @@ const ListCommission: React.FC = () => {
           icon: "error",
           title: "Error al eliminar",
           text: error?.message,
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
-          confirmButtonColor: "#d33",
-          customClass: { confirmButton: "text-white" },
         })
       }
     }

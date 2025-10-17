@@ -107,7 +107,7 @@ const ChangePassword: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-cover bg-center bg-no-repeat relative"
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-cover bg-center bg-no-repeat relative"
       style={{ backgroundImage: `url(${ofiLogo})` }}
     >
       <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
@@ -209,10 +209,10 @@ const ChangePassword: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700
+              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700
                          text-white font-medium rounded-xl transition-all duration-200 transform text-sm
                          disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
-                         shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20"
+                         shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20"
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">

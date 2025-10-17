@@ -26,7 +26,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({ title, total, rate, level
     <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-gray-700 dark:bg-gray-800">
       {/* Background Gradient Overlay */}
       <div className="absolute inset-0 -z-10 opacity-10 dark:opacity-20">
-        <div className="h-full w-full bg-gradient-to-br from-purple-500 to-blue-500 dark:from-purple-800 dark:to-blue-800 blur-3xl"></div>
+        <div className="h-full w-full bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-800 dark:to-purple-800 blur-3xl"></div>
       </div>
 
       {/* Icon Container */}

@@ -70,10 +70,8 @@ const TasksStudent: React.FC = () => {
           icon: "warning",
           title: "Aviso",
           text: "No puedes acceder al capítulo porque la tarea no ha sido entregada por el estudiante.",
+          confirmButtonColor: "#f59e0b",
           confirmButtonText: "De Acuerdo",
-          customClass: {
-            confirmButton: "bg-red-600 text-white",
-          },
         })
         return
       }

@@ -153,33 +153,33 @@ const Profile = () => {
 
                   {/* Carnet o Código */}
                   <div
-                    className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 
-                rounded-2xl p-6 border border-green-200 dark:border-green-800"
+                    className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 
+                rounded-2xl p-6 border border-blue-200 dark:border-blue-800"
                   >
                     <div className="flex items-center justify-center mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                         <FaIdCard className="text-white text-lg" />
                       </div>
                     </div>
                     <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
                       {storedRole === 1 ? "Carnet" : "Código"}
                     </h3>
-                    <p className="text-green-600 dark:text-green-400 font-medium">{profileData.carnet}</p>
+                    <p className="text-blue-600 dark:text-blue-400 font-medium">{profileData.carnet}</p>
                   </div>
 
                   {/* Sede, solo si existe */}
                   {profileData?.NombreSede && (
                     <div
-                      className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 
-                  rounded-2xl p-6 border border-purple-200 dark:border-purple-800"
+                      className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 
+                  rounded-2xl p-6 border border-blue-200 dark:border-blue-800"
                     >
                       <div className="flex items-center justify-center mb-3">
-                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                           <FaBuilding className="text-white text-lg" />
                         </div>
                       </div>
                       <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Sede</h3>
-                      <p className="text-purple-600 dark:text-purple-400 font-medium">{profileData.NombreSede}</p>
+                      <p className="text-blue-600 dark:text-blue-400 font-medium">{profileData.NombreSede}</p>
                     </div>
                   )}
                 </div>

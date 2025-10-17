@@ -112,6 +112,7 @@ const InfoChapter: React.FC = () => {
           title: "Error",
           text: "Hubo un problema al obtener los datos del perfil",
           icon: "error",
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
         })
       }
@@ -143,10 +144,8 @@ const InfoChapter: React.FC = () => {
         title: "Error",
         text: "Datos de la tarea o del usuario no disponibles",
         icon: "error",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
-        },
       })
       return
     }
@@ -166,10 +165,8 @@ const InfoChapter: React.FC = () => {
         title: "Comentario enviado",
         text: "El comentario se ha enviado exitosamente",
         icon: "success",
+        confirmButtonColor: "#10b981",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-green-500 text-white px-4 py-2 rounded-md",
-        },
       })
     } catch (error: any) {
       // Show error alert if there was an issue submitting the comment
@@ -177,10 +174,8 @@ const InfoChapter: React.FC = () => {
         title: "Error",
         text: error.message || "Hubo un error al enviar el comentario",
         icon: "error",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
-        },
       })
     }
   }

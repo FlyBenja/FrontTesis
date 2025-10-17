@@ -205,7 +205,7 @@ const CreateTasks: React.FC = () => {
       <div className="mx-auto max-w-7xl px-4 py-6">
         {/* Header with Filters */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 mb-6">
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6 rounded-t-3xl">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-6 rounded-t-3xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,7 +294,7 @@ const CreateTasks: React.FC = () => {
                     className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-200"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
                         <span className="text-white font-bold text-lg">#{task.task_id}</span>
                       </div>
                       <div className="flex-1">
@@ -322,7 +322,7 @@ const CreateTasks: React.FC = () => {
                             setModalMode("edit")
                             setSelectedTaskId(task.task_id)
                           }}
-                          className={`ml-4 px-3 py-2 rounded-full flex items-center justify-center text-white text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 ${isCurrentYear ? "bg-yellow-500 hover:bg-yellow-600" : "bg-gray-400 cursor-not-allowed"
+                          className={`ml-4 px-3 py-2 rounded-full flex items-center justify-center text-white text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 ${isCurrentYear ? "bg-blue-500 hover:bg-purple-600" : "bg-gray-400 cursor-not-allowed"
                             }`}
                           disabled={!isCurrentYear}
                         >
@@ -347,7 +347,7 @@ const CreateTasks: React.FC = () => {
                         key={page}
                         onClick={() => paginate(page)}
                         className={`px-4 py-2 rounded-lg border transition-colors duration-200 ${currentPage === page
-                          ? "bg-indigo-500 text-white border-indigo-500"
+                          ? "bg-blue-500 text-white border-blue-500"
                           : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                           }`}
                       >

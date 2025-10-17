@@ -31,8 +31,8 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
           icon: "error",
           title: "Error",
           text: "No se pudieron obtener los datos del usuario.",
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
-          customClass: { confirmButton: "bg-red-600 text-white" },
         });
       }
     };
@@ -47,8 +47,8 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
           icon: "error",
           title: "Formato inválido",
           text: "Solo se permiten archivos PDF.",
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
-          customClass: { confirmButton: "bg-red-600 text-white" },
         });
         return;
       }
@@ -62,8 +62,8 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
         icon: "error",
         title: "Campos incompletos",
         text: "Debes seleccionar un archivo PDF antes de enviar.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: { confirmButton: "bg-red-600 text-white" },
       });
       return;
     }
@@ -78,20 +78,20 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
 
       Swal.fire({
         icon: "success",
-        title: "Tesis entregada",
-        text: `La tesis para "${taskTitle}" fue enviada correctamente.`,
+        title: "¡Tesis entregada!",
+        text: `La tesis "${taskTitle}" ha sido entregada exitosamente.`,
+        confirmButtonColor: "#10b981",
         confirmButtonText: "De Acuerdo",
-        customClass: { confirmButton: "bg-green-600 text-white" },
       });
       onClose();
       setPdfFile(null);
     } catch (error: any) {
       Swal.fire({
         icon: "error",
-        title: "Error al enviar",
-        text: error.message || "Ocurrió un error al entregar la tesis.",
+        title: "Error al entregar tesis",
+        text: error.message || "Error desconocido",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: { confirmButton: "bg-red-600 text-white" },
       });
     } finally {
       setLoading(false);
@@ -164,11 +164,10 @@ const ThesisDeliveryModal: React.FC<ThesisDeliveryModalProps> = ({
           <button
             onClick={handleSubmit}
             disabled={loading || !pdfFile || !userId}
-            className={`px-8 py-3 w-full flex justify-center items-center rounded-lg bg-gradient-to-br from-green-500 to-teal-600 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 ${
-              loading || !pdfFile || !userId
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
+            className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700
+                       text-white font-medium rounded-xl transition-all duration-200
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                       shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20"
           >
             {loading ? (
               <>

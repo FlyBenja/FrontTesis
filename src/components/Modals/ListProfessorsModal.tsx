@@ -62,10 +62,13 @@ const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedR
           rol_comision_id: selectedRow,
         })
 
+        const roleNames = Object.keys(ROLES_CODIGOS)
+        const selectedRoleName = roleNames.find(role => ROLES_CODIGOS[role] === selectedRow) || "rol desconocido"
+        
         Swal.fire({
           icon: "success",
           title: "¡Catedrático asignado!",
-          text: `El catedrático ${selectedCatedratico.userName} ha sido asignado correctamente.`,
+          text: `El catedrático "${selectedCatedratico.userName}" ha sido asignado exitosamente como ${selectedRoleName} en la comisión.`,
           confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#10b981",
         })
@@ -74,7 +77,7 @@ const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedR
         Swal.fire({
           icon: "error",
           title: "Error al asignar catedrático",
-          text: error.message,
+          text: error.message || "Error desconocido",
           confirmButtonText: "De Acuerdo",
           confirmButtonColor: "#ef4444",
         })
@@ -129,7 +132,7 @@ const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedR
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-2xl mt-16 md:max-w-3xl md:mt-15 lg:max-w-4xl lg:mt-15 lg:ml-[350px] transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95">
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -164,7 +167,7 @@ const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedR
                       className="w-10 h-10 rounded-full mr-4 object-cover"
                     />
                   ) : (
-                    <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-full mr-4 font-semibold">
+                    <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full mr-4 font-semibold">
                       {catedratico.userName.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -185,22 +188,22 @@ const ListProfessors: React.FC<ListProfessorsModalProps> = ({ onClose, selectedR
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-4">
+        <div className="flex justify-between">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
+            className="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 
                        text-gray-700 dark:text-gray-300 font-medium rounded-md transition-all duration-200 text-sm
                        border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-500"
           >
-            Cerrar
+            Cancelar
           </button>
           <button
             onClick={handleAssign}
             disabled={!selectedCatedratico}
-            className="flex-1 px-4 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700
-                       text-white font-medium rounded-md transition-all duration-200 transform text-sm
+            className="px-4 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700
+                       text-white font-medium rounded-md transition-all duration-200 text-sm
                        disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
-                       shadow-lg hover:shadow-xl"
+                       shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20"
           >
             Asignar
           </button>

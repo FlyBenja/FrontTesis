@@ -118,10 +118,8 @@ const Proposal: React.FC = () => {
         icon: "error",
         title: "Formato no válido",
         text: "Por favor, selecciona un archivo en formato PDF.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
       })
     }
   }
@@ -135,10 +133,8 @@ const Proposal: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "Por favor, selecciona un archivo PDF antes de continuar.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
       })
       return
     }
@@ -160,10 +156,8 @@ const Proposal: React.FC = () => {
           icon: "success",
           title: "Propuesta actualizada exitosamente",
           text: "Tu propuesta ha sido actualizada correctamente.",
+          confirmButtonColor: "#10b981",
           confirmButtonText: "De Acuerdo",
-          customClass: {
-            confirmButton: "bg-green-600 text-white",
-          },
         })
       } else {
         await subirPropuesta({
@@ -175,10 +169,8 @@ const Proposal: React.FC = () => {
           icon: "success",
           title: "Propuesta subida exitosamente",
           text: "Tu propuesta ha sido subida correctamente.",
+          confirmButtonColor: "#10b981",
           confirmButtonText: "De Acuerdo",
-          customClass: {
-            confirmButton: "bg-green-600 text-white",
-          },
         })
       }
       setPdfFile(null)
@@ -189,10 +181,8 @@ const Proposal: React.FC = () => {
         icon: "error",
         title: "Error al subir",
         text: error.response?.data?.message || error.message || "Error al procesar la propuesta",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
       })
     } finally {
       setLoading(false)

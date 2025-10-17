@@ -155,7 +155,7 @@ const UploadProfessors: React.FC = () => {
                 <button
                   id="download-template"
                   onClick={handleDownloadTemplate}
-                  className="inline-flex items-center rounded-lg bg-gradient-to-br from-green-500 to-teal-600 p-3 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  className="inline-flex items-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 p-3 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                   <Download className="h-5 w-5 mr-2" /> Descargar Plantilla
                 </button>

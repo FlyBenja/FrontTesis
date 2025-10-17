@@ -34,10 +34,8 @@ const Proposals: React.FC = () => {
         icon: "error",
         title: "Error al obtener la propuesta",
         text: "No se pudo cargar la propuesta.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
       })
     }
   }
@@ -50,10 +48,8 @@ const Proposals: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "No se pudo obtener el ID del estudiante.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white",
-        },
       })
     }
   }, [userId])

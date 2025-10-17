@@ -56,10 +56,8 @@ const SubmitReview: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "Hubo un error al obtener los datos del perfil.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white", // Sets the button to red with white text
-        },
       })
     }
   }
@@ -74,10 +72,8 @@ const SubmitReview: React.FC = () => {
         icon: "error",
         title: "Error",
         text: "Por favor, completa todos los campos.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white", // Sets the button to red with white text
-        },
       })
       return
     }
@@ -96,21 +92,17 @@ const SubmitReview: React.FC = () => {
         icon: "success",
         title: "Éxito",
         text: "La revisión ha sido enviada correctamente.",
+        confirmButtonColor: "#10b981",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-green-600 text-white", // Sets the button to green with white text
-        },
       })
     } catch (error: any) {
       // Shows the error message from the API
       Swal.fire({
         icon: "error",
-        title: "Error",
+        title: "Error al enviar",
         text: error.message || "Hubo un error al enviar la revisión. Inténtalo nuevamente.",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-600 text-white", // Sets the button to red with white text
-        },
       })
     } finally {
       setLoading(false) // Stops the loading indicator
@@ -220,7 +212,7 @@ const SubmitReview: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={loading || !studentId || !approvedThesis || !approvalLetter || campusId === null}
-            className={`px-8 py-3 w-full flex justify-center items-center rounded-lg bg-gradient-to-br from-green-500 to-teal-600 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 ${loading || !studentId || !approvedThesis || !approvalLetter || campusId === null
+            className={`px-8 py-3 w-full flex justify-center items-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${loading || !studentId || !approvedThesis || !approvalLetter || campusId === null
                 ? "opacity-50 cursor-not-allowed"
                 : ""
               }`}

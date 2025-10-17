@@ -124,10 +124,8 @@ const Chapters: React.FC = () => {
           ? "Los comentarios se han activado correctamente"
           : "Los comentario se han bloqueado exitosamente",
         icon: "success",
+        confirmButtonColor: "#10b981",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-green-500 text-white px-4 py-2 rounded-md",
-        },
       })
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -135,10 +133,8 @@ const Chapters: React.FC = () => {
           title: "Error",
           text: error.message,
           icon: "error",
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
-          customClass: {
-            confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
-          },
         })
       }
     }
@@ -153,10 +149,8 @@ const Chapters: React.FC = () => {
         title: "Error",
         text: "Datos de la tarea o estudiante no disponibles",
         icon: "error",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
-        },
       })
       return
     }
@@ -185,20 +179,16 @@ const Chapters: React.FC = () => {
         title: "Comentario enviado",
         text: "El comentario se ha enviado exitosamente",
         icon: "success",
+        confirmButtonColor: "#10b981",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-green-500 text-white px-4 py-2 rounded-md",
-        },
       })
     } catch (error: any) {
       Swal.fire({
         title: "Error",
         text: error.message || "Hubo un error al enviar el comentario",
         icon: "error",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
-        customClass: {
-          confirmButton: "bg-red-500 text-white px-4 py-2 rounded-md",
-        },
       })
     }
   }

@@ -104,7 +104,7 @@ const Calendar: React.FC = () => {
       <Breadcrumb pageName="Calendario" />
       <div className="mx-auto max-w-5xl px-4 py-0">
         <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-3xl p-8 border border-gray-200 dark:border-gray-700">
-          <header className="flex justify-between items-center mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 rounded-xl shadow-md">
+          <header className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-xl shadow-md">
             <button
               onClick={handlePrevMonth}
               className="flex items-center px-4 py-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300 text-white font-semibold"

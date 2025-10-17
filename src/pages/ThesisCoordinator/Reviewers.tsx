@@ -248,7 +248,7 @@ const Reviewers: React.FC = () => {
                             <button
                               id="boton-editar-revisor"
                               onClick={() => openModal(revisor)}
-                              className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg"
+                              className="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg"
                             >
                               Editar
                             </button>

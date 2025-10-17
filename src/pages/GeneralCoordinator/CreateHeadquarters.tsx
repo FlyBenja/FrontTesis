@@ -157,7 +157,7 @@ const CreateHeadquarters: React.FC = () => {
                           <button
                             id="boton-edita-sede"
                             onClick={() => handleEditClick(sede.id)}
-                            className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
+                            className="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-200 transform shadow-md hover:shadow-lg inline-flex items-center gap-1"
                           >
                             <Pencil className="w-4 h-4" />
                             Editar
@@ -195,7 +195,7 @@ const CreateHeadquarters: React.FC = () => {
                   <button
                     key={page}
                     onClick={() => paginate(page)}
-                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page ? "bg-gradient-to-br from-green-500 to-teal-600 text-white shadow-lg" : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"}`}
+                    className={`px-4 py-2 rounded-full font-medium transition-all duration-300 shadow-sm ${currentPage === page ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg" : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"}`}
                   >
                     {page}
                   </button>
