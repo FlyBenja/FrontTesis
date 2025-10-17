@@ -23,7 +23,6 @@ export const createAdmin = async (adminData: {
     });
 
     // Log success message (removed as requested)
-    // console.log('Administrador creado exitosamente');
   } catch (error) {
     // Error handling
     if (axios.isAxiosError(error)) {

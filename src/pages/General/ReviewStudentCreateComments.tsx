@@ -27,7 +27,6 @@ const ReviewStudentCreateComments: React.FC = () => {
         try {
           const data = await getComentariosRevision(userId)
           setReviews(data)
-          console.log("Reviews data:", data) // For debugging
         } catch (error) {
 
         } finally {

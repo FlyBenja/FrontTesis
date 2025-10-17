@@ -39,6 +39,7 @@ const ModalNota: React.FC<ModalNotaProps> = ({ isOpen, onClose, studentId, cours
         title: "Error",
         text: "La nota debe ser un número válido.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -57,6 +58,7 @@ const ModalNota: React.FC<ModalNotaProps> = ({ isOpen, onClose, studentId, cours
           title: "¡Nota actualizada!",
           text: `La nota del estudiante ha sido actualizada exitosamente a ${notaNumerica} puntos.`,
           confirmButtonColor: "#10b981",
+          confirmButtonText: "De Acuerdo",
         })
         onClose()
       } else {
@@ -65,6 +67,7 @@ const ModalNota: React.FC<ModalNotaProps> = ({ isOpen, onClose, studentId, cours
           title: "Error al actualizar nota",
           text: error || "Error desconocido",
           confirmButtonColor: "#ef4444",
+          confirmButtonText: "De Acuerdo",
         })
       }
     } finally {

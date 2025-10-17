@@ -256,7 +256,7 @@ const Proposal: React.FC = () => {
                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Subir PDF de Propuesta</h2>
                 <button
                   onClick={handleDownloadTemplate}
-                  className={`px-6 py-2 rounded-full text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${approvedProposal !== 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                  className={`px-6 py-2 rounded-full text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${approvedProposal !== 0 ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
                     }`}
                   disabled={approvedProposal !== 0} // Block if the proposal is approved
                 >
@@ -306,7 +306,7 @@ const Proposal: React.FC = () => {
                   onClick={handleUpload}
                   className={`w-full px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-300 ${approvedProposal !== 0 || loading
                     ? "bg-gray-400 text-gray-700 cursor-not-allowed dark:bg-gray-600 dark:text-gray-300"
-                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
+                    : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl"
                     }`}
                   disabled={approvedProposal !== 0 || loading} // Block if the proposal is approved or loading
                 >

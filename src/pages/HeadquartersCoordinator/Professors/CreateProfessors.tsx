@@ -24,6 +24,8 @@ const CreateProfessor = () => {
           icon: "error",
           title: "Error",
           text: "Error al obtener la sede",
+          confirmButtonColor: "#ef4444",
+          confirmButtonText: "De Acuerdo",
         })
       }
     }
@@ -36,7 +38,8 @@ const CreateProfessor = () => {
         icon: "warning",
         title: "Campos obligatorios",
         text: "Por favor, complete todos los campos.",
-        confirmButtonColor: "#ffc107",
+        confirmButtonColor: "#f59e0b",
+        confirmButtonText: "De Acuerdo",
       })
       return false
     }
@@ -65,7 +68,8 @@ const CreateProfessor = () => {
         icon: "success",
         title: "Catedrático creado exitosamente",
         text: "El catedrático fue creado correctamente. 🎉",
-        confirmButtonColor: "#28a745",
+        confirmButtonColor: "#10b981",
+        confirmButtonText: "De Acuerdo",
       })
     } catch (err: any) {
       const errorMessage = err.message || "Hubo un error al crear el catedrático."
@@ -73,7 +77,8 @@ const CreateProfessor = () => {
         icon: "error",
         title: "Error",
         text: errorMessage,
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
     } finally {
       setLoading(false)

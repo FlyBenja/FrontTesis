@@ -35,7 +35,6 @@ const CourseInfo: React.FC = () => {
         const currentYear = new Date().getFullYear()
         const tareasGenerales = await getTareas(perfil.sede, courseId, currentYear)
         const tareasEstudiante = await getTareasEstudiante(perfil.user_id, currentYear, perfil.sede)
-
         const tareasCombinadas = tareasGenerales
           .map((tarea) => {
             const tareaEstudiante = tareasEstudiante.find((t) => t.task_id === tarea.task_id)

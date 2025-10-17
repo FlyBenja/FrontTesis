@@ -216,7 +216,7 @@ const InfoChapter: React.FC = () => {
                 >
                   <p className="text-base text-gray-800 dark:text-gray-200 mb-2">{comentario.texto}</p>
                   <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                    <span className="font-medium">Rol: {comentario.role}</span>
+                    <span className="font-medium">{comentario.role}</span>
                     <span className="flex items-center">
                       <Calendar className="h-4 w-4 mr-1 text-gray-500" /> {comentario.fecha}
                     </span>

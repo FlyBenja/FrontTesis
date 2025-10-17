@@ -122,7 +122,7 @@ const SubmitReview: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Formulario de Revisión</h1>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-5 py-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-5 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Crear Usuario
           </button>
@@ -212,7 +212,7 @@ const SubmitReview: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={loading || !studentId || !approvedThesis || !approvalLetter || campusId === null}
-            className={`px-8 py-3 w-full flex justify-center items-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${loading || !studentId || !approvedThesis || !approvalLetter || campusId === null
+            className={`px-8 py-3 w-full flex justify-center items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${loading || !studentId || !approvedThesis || !approvalLetter || campusId === null
                 ? "opacity-50 cursor-not-allowed"
                 : ""
               }`}

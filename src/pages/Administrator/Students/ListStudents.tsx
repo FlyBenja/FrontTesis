@@ -84,7 +84,6 @@ const ListStudents: React.FC = () => {
   const fetchEstudiantes = async (sedeId: number, courseId: string, nameYear: string) => {
     try {
       const estudiantesRecuperados = await getStudents(sedeId, Number.parseInt(courseId), Number.parseInt(nameYear))
-      console.log(estudiantesRecuperados)
       setEstudiantes(Array.isArray(estudiantesRecuperados) ? estudiantesRecuperados : []) // Set students in state
     } catch {
       setEstudiantes([]) // Set empty list in case of error

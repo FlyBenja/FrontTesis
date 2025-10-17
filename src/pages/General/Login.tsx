@@ -24,7 +24,7 @@ const Login: React.FC = () => {
         title: "Campos obligatorios",
         text: "Por favor, complete todos los campos.",
         confirmButtonColor: "#f59e0b",
-        confirmButtonText: "De Acuerdo",
+        confirmButtonText: "De acuerdo",
       })
       return
     }

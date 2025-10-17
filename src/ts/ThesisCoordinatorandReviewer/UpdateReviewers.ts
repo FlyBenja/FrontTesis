@@ -9,7 +9,6 @@ interface RevisorData {
 
 // Función para actualizar un revisor
 export const updateRevisor = async (userId: number, data: RevisorData): Promise<void> => {
-    console.log(userId);
   try {
     // Obtener el token de autenticación desde localStorage
     const token = localStorage.getItem('authToken');

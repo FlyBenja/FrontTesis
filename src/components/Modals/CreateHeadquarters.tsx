@@ -63,6 +63,7 @@ const CreateHeadquartersModal: React.FC<CreateHeadquartersProps> = ({
         title: "Error",
         text: "Por favor complete todos los campos.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }

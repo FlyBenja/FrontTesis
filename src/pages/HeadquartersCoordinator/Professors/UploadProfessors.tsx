@@ -22,7 +22,7 @@ const UploadProfessors: React.FC = () => {
           icon: "error",
           title: "¡Error!",
           text: "No se pudo obtener la información del perfil.",
-          confirmButtonColor: "#dc3545",
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
         })
       }
@@ -41,7 +41,7 @@ const UploadProfessors: React.FC = () => {
         icon: "error",
         title: "¡Error!",
         text: "Archivo o sede no seleccionada.",
-        confirmButtonColor: "#dc3545",
+        confirmButtonColor: "#ef4444",
         confirmButtonText: "De Acuerdo",
       })
       return
@@ -56,7 +56,7 @@ const UploadProfessors: React.FC = () => {
         icon: "success",
         title: "Carga completada",
         text: response.message || "Los catedráticos se han cargado exitosamente. 🎉",
-        confirmButtonColor: "#28a745",
+        confirmButtonColor: "#10b981",
         confirmButtonText: "De Acuerdo",
       })
       handleReset()
@@ -66,7 +66,7 @@ const UploadProfessors: React.FC = () => {
           icon: "error",
           title: "¡Error!",
           text: error.message,
-          confirmButtonColor: "#dc3545",
+          confirmButtonColor: "#ef4444",
           confirmButtonText: "De Acuerdo",
         })
       }

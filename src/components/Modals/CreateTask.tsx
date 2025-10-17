@@ -51,6 +51,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
           title: "Error",
           text: "No se pudieron cargar los cursos.",
           confirmButtonColor: "#ef4444",
+          confirmButtonText: "De Acuerdo",
         })
       } finally {
         setLoading(false)
@@ -84,6 +85,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
             title: "Error",
             text: "No se pudieron cargar los datos de la tarea.",
             confirmButtonColor: "#ef4444",
+            confirmButtonText: "De Acuerdo",
           })
         }
       }
@@ -107,6 +109,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
         title: "Error",
         text: "Por favor complete todos los campos.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -117,6 +120,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
         title: "Error",
         text: "La Fecha Final debe ser mayor a la Fecha Inicial.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -127,6 +131,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
         title: "Error",
         text: "La Hora Final debe ser mayor a la Fecha Inicial.",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
       return
     }
@@ -142,6 +147,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
           title: "Error",
           text: "Curso seleccionado no encontrado.",
           confirmButtonColor: "#ef4444",
+          confirmButtonText: "De Acuerdo",
         })
         return
       }
@@ -179,6 +185,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
           title: "Error",
           text: `No se pudo ${mode === "create" ? "crear" : "actualizar"} la tarea "${title}". ${resultMessage}`,
           confirmButtonColor: "#ef4444",
+          confirmButtonText: "De Acuerdo",
         })
       } else {
         Swal.fire({
@@ -186,6 +193,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
           title: mode === "create" ? "¡Tarea creada!" : "¡Tarea actualizada!",
           text: `La tarea "${title}" ha sido ${mode === "create" ? "creada" : "actualizada"} exitosamente.`,
           confirmButtonColor: "#10b981",
+          confirmButtonText: "De Acuerdo",
         })
         onClose()
       }
@@ -195,6 +203,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
         title: "Error",
         text: error instanceof Error ? error.message : "Error desconocido",
         confirmButtonColor: "#ef4444",
+        confirmButtonText: "De Acuerdo",
       })
     } finally {
       setLoading(false)
@@ -393,9 +402,9 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, mode, taskId }) => {
                   Procesando...
                 </div>
               ) : mode === "create" ? (
-                "🚀 Crear Tarea"
+                "Crear Tarea"
               ) : (
-                "✨ Actualizar"
+                "Actualizar"
               )}
             </button>
           </div>
